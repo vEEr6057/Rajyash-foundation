@@ -45,23 +45,12 @@ Buttons (primary / secondary / ghost / destructive, multiple sizes) · Inputs & 
 
 Sample screens already designed (reference layouts): public landing, donor "Donate food" multi-step flow, admin dashboard, live tracking.
 
-## Motion & effects (this answers "what about animation?")
-The system ships a restrained, purposeful motion set — easing `--ease-emphasized cubic-bezier(.2,.8,.3,1)`, durations `--dur-fast .18s / --dur .24s / --dur-slow .28s`. Six keyframes:
+## Motion & effects
+Full motion language is its own spec: **[`/tokens/MOTION.md`](../../tokens/MOTION.md)** (principles, budget table, per-component specs), with paste-ready code in **`/tokens/motion.css`** (tokens + keyframes + CSS-only interactions + reduced-motion guard) and **`/tokens/motion.ts`** (Motion `motion/react` variants + `useCountUp`). Live reference: `docs/design/rajyash-motion-system.html`.
 
-| Keyframe | Use |
-|---|---|
-| `rj-live` | pulsing ring on **live / en-route** location dots + map marker (our tracking feature) |
-| `rj-shimmer` | skeleton loading placeholders |
-| `rj-spin` | spinner / inline loading |
-| `rj-toast-in` | toast + modal entrance (rise + fade + slight scale) |
-| `rj-sheet-up` | mobile bottom-sheet slide-up |
-| `rj-fade-in` | overlay / content fade |
+Five principles: (1) motion is feedback not decoration; (2) **transform + opacity only** (never width/height/top/left/box-shadow/filter — CWV); (3) **two budgets** — app/portal frugal (≤200ms, touch `:active`, only the live dot + skeleton loop), public generous (reveals, springs, count-ups); (4) reduced-motion is first-class (moves→fades, loops stop); (5) touch not hover.
 
-Rules:
-- **Subtle and functional**, not decorative. Motion communicates state (loading, live, arrival), not flourish.
-- **`prefers-reduced-motion` is honoured** (tokens file kills durations) — keep that block; accessibility requirement.
-- Hover/press: use token color shifts (`--primary-hover`) + small transitions, not big movement.
-- For richer transitions in React, our stack has **Motion (Framer Motion)** available — use it sparingly, same easing/duration tokens.
+Key pieces: app route enter via `.rj-route-shell` (CSS) · public route via View Transitions API · scroll reveals via Motion `revealContainer/revealItem` (`once:true`, public only) · claim-success `successPop` · toast/sheet/badge/pill variants · impact-counter `useCountUp`. Build each screen's motion to its surface budget.
 
 ## How phases consume this
 1. **Phase 1** copies `/tokens/globals.css` into `src/app/globals.css` (Tailwind v4 + shadcn, `@theme` already wired), installs the fonts (`next/font` or `<link>`), sets up shadcn themed to these tokens, builds the status-pill + skeleton + toast primitives. Decide the hex-vs-HSL opacity question here.

@@ -73,10 +73,6 @@
   --shadow-sm: 0 1px 2px rgba(50,38,20,.06), 0 1px 1px rgba(50,38,20,.04);
   --shadow-md: 0 4px 14px rgba(50,38,20,.08), 0 1px 3px rgba(50,38,20,.05);
   --shadow-lg: 0 14px 38px rgba(50,38,20,.13), 0 3px 8px rgba(50,38,20,.06);
-
-  /* Motion */
-  --ease-emphasized: cubic-bezier(.2,.8,.3,1);
-  --dur-fast: .18s; --dur: .24s; --dur-slow: .28s;
 }
 
 .dark {
@@ -217,18 +213,5 @@
   :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
 }
 
-/* ============================================================
-   Motion — from the design system (docs/design/rajyash-design-system.html)
-   Subtle + functional: communicates state, not decoration.
-   ============================================================ */
-@keyframes rj-spin { to { transform: rotate(360deg); } }
-@keyframes rj-toast-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
-@keyframes rj-live { 0% { box-shadow: 0 0 0 0 rgba(46,125,70,.5); } 70% { box-shadow: 0 0 0 9px rgba(46,125,70,0); } 100% { box-shadow: 0 0 0 0 rgba(46,125,70,0); } }
-@keyframes rj-shimmer { 0% { background-position: -420px 0; } 100% { background-position: 420px 0; } }
-@keyframes rj-fade-in { from { opacity: 0; } to { opacity: 1; } }
-@keyframes rj-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
-
-/* Accessibility: respect reduced motion (REQUIRED — keep this) */
-@media (prefers-reduced-motion: reduce) {
-  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
-}
+/* Motion (tokens, keyframes, CSS interactions, reduced-motion guard) lives in
+   motion.css — import it AFTER this file. See tokens/MOTION.md for the spec. */

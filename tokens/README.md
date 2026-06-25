@@ -4,10 +4,14 @@ Warm, accessible (WCAG-AA), light + dark token set for the Rajyash Foundation
 food-rescue app. Direction: **Saffron + Leaf**. Maps 1:1 to Tailwind + shadcn/ui.
 
 ## Files
-- **`globals.css`** — Tailwind **v4** + shadcn. CSS variables on `:root` / `.dark`,
-  exposed as utilities via `@theme inline`. This is the recommended setup.
+- **`globals.css`** — Tailwind **v4** + shadcn. Color/type/shadow variables on
+  `:root` / `.dark`, exposed as utilities via `@theme inline`. The recommended setup.
 - **`tailwind.config.js`** — Tailwind **v3** fallback. Wires the same variables
   to `theme.extend`. Still requires the `:root` / `.dark` blocks from `globals.css`.
+- **`motion.css`** — motion tokens + keyframes + CSS-only interactions + the
+  reduced-motion guard. **Import AFTER `globals.css`.**
+- **`motion.ts`** — Motion (`motion/react`) variants, springs, and the
+  `useCountUp` hook. See **`MOTION.md`** for the full motion spec + budget table.
 
 ## Install (Tailwind v4)
 1. Copy `globals.css` into `app/globals.css` (or `src/index.css`) and import it.

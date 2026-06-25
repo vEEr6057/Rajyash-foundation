@@ -44,10 +44,11 @@ Next step: `/gsd-plan-phase 1`. **Razorpay NGO KYC** is a parallel-track blocker
 ## Design system (read before building any UI)
 
 Locked design system, imported from claude.ai/design.
-- [tokens/globals.css](tokens/globals.css) — **CANONICAL tokens** (Tailwind v4 + shadcn, `.dark`, `@theme` mapped, motion keyframes). Phase 1 → `src/app/globals.css`. ([tokens/tailwind.config.js](tokens/tailwind.config.js) = v3 fallback, [tokens/README.md](tokens/README.md) = notes.)
+- [tokens/globals.css](tokens/globals.css) — **CANONICAL color/type tokens** (Tailwind v4 + shadcn, `.dark`, `@theme` mapped). Phase 1 → `src/app/globals.css`. ([tokens/tailwind.config.js](tokens/tailwind.config.js) = v3 fallback, [tokens/README.md](tokens/README.md) = notes.)
+- **Motion:** [tokens/MOTION.md](tokens/MOTION.md) (spec) + [tokens/motion.css](tokens/motion.css) (tokens/keyframes/CSS interactions/reduced-motion — import AFTER globals.css) + [tokens/motion.ts](tokens/motion.ts) (Motion `motion/react` variants + `useCountUp`). Two budgets: app/portal frugal, public generous. Transform+opacity only.
 - [docs/design/UI-SPEC.md](docs/design/UI-SPEC.md) — the binding contract (color, type, status pills, motion, components).
-- [docs/design/rajyash-design-system.html](docs/design/rajyash-design-system.html) — full rendered reference (the visual oracle).
-- Caveat: tokens are raw hex → Tailwind opacity modifiers (`bg-primary/50`) need HSL conversion (decide in Phase 1).
+- [docs/design/rajyash-design-system.html](docs/design/rajyash-design-system.html) + [docs/design/rajyash-motion-system.html](docs/design/rajyash-motion-system.html) — full rendered references (visual oracles).
+- Caveat: color tokens are raw hex → Tailwind opacity modifiers (`bg-primary/50`) need HSL conversion (decide in Phase 1).
 
 Look: warm saffron `#C04E12` + leaf-green `#2E7D46` on cream `#FBF7F0`; Bricolage Grotesque (display) + Mukta/Noto (EN/GU/HI body); light + dark; restrained functional motion (`rj-live` pulse for tracking, `rj-shimmer` skeletons; `prefers-reduced-motion` honoured). Build every screen from these tokens — never invent colors/sizes.
 
