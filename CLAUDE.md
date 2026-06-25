@@ -41,6 +41,15 @@ This project is managed with GSD. Canonical planning docs live in `.planning/`:
 
 Next step: `/gsd-plan-phase 1`. **Razorpay NGO KYC** is a parallel-track blocker — start early, must clear before Phase 5.
 
+## Design system (read before building any UI)
+
+Locked design system, imported from claude.ai/design. Source of truth in `docs/design/`:
+- [docs/design/UI-SPEC.md](docs/design/UI-SPEC.md) — the binding contract (color, type, status pills, motion, components).
+- [docs/design/design-tokens.css](docs/design/design-tokens.css) — production tokens; Phase 1 drops into `globals.css` + Tailwind `@theme` bridge.
+- [docs/design/rajyash-design-system.html](docs/design/rajyash-design-system.html) — full rendered reference (the visual oracle).
+
+Look: warm saffron `#C04E12` + leaf-green `#2E7D46` on cream `#FBF7F0`; Bricolage Grotesque (display) + Mukta/Noto (EN/GU/HI body); light + dark; restrained functional motion (`rj-live` pulse for tracking, `rj-shimmer` skeletons; `prefers-reduced-motion` honoured). Build every screen from these tokens — never invent colors/sizes.
+
 ## Rules (read before writing code)
 
 Borrowed + adapted from the Quixera/`kaka` workspace, trimmed to our Next.js + Postgres stack:
