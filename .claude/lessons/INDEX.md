@@ -16,4 +16,4 @@ Caps: 20 lessons/session (overflow → `INDEX-pending.md`); 200 lines in INDEX (
 
 ---
 
-(no lessons yet — first real debugging gotcha goes here)
+- [2026-06-25 general/MEDIUM/verified] create-next-app-into-existing-planning-repo — scaffold into a temp dir + copy in (create-next-app blocks on existing .planning/.claude/tokens; Windows mv perm fails; @latest=Next 16, pin @15) → general/create-next-app-into-existing-planning-repo.md
