@@ -1,11 +1,14 @@
 # UI-SPEC — Rajyash Food-Rescue Design System
 
 Binding design contract for **all phases**. Imported from claude.ai/design
-(`0e5ea7a4-…`). Source of truth files in this folder:
+(`0e5ea7a4-…`). Source of truth:
 
-- `rajyash-design-system.html` — full rendered reference (open in a browser to see it)
-- `design-tokens.css` — production-ready tokens (drop into `globals.css` in Phase 1)
-- this spec — the rules every phase honours
+- **`/tokens/globals.css`** — CANONICAL token file (Tailwind v4 + shadcn, `.dark` class, `@theme` mapping done, motion keyframes appended). Phase 1 drops this into `src/app/globals.css`.
+- `/tokens/tailwind.config.js` — Tailwind v3 fallback. `/tokens/README.md` — install notes.
+- `docs/design/rajyash-design-system.html` — full rendered reference (the visual oracle).
+- this spec — the rules every phase honours.
+
+> Tokens caveat (from tokens/README): colors are raw hex, so Tailwind opacity modifiers (`bg-primary/50`) don't work as-is. If shadcn components need them, convert the vars to HSL channel triplets in Phase 1.
 
 When building any screen, match this. Don't invent new colors, type sizes, or radii — use the tokens.
 
@@ -61,6 +64,6 @@ Rules:
 - For richer transitions in React, our stack has **Motion (Framer Motion)** available — use it sparingly, same easing/duration tokens.
 
 ## How phases consume this
-1. **Phase 1** wires `design-tokens.css` into `globals.css`, adds the `@theme` Tailwind bridge, installs fonts, sets up shadcn themed to these tokens, builds the status-pill + skeleton + toast primitives.
+1. **Phase 1** copies `/tokens/globals.css` into `src/app/globals.css` (Tailwind v4 + shadcn, `@theme` already wired), installs the fonts (`next/font` or `<link>`), sets up shadcn themed to these tokens, builds the status-pill + skeleton + toast primitives. Decide the hex-vs-HSL opacity question here.
 2. **Every later phase** composes only from these primitives/tokens. New component → add it to `src/components/ui` themed to tokens, never a one-off color.
 3. Keep `rajyash-design-system.html` as the visual oracle; if a screen drifts from it, the screen is wrong.

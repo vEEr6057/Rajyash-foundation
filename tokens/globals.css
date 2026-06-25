@@ -1,0 +1,234 @@
+/* ============================================================
+   Rajyash Food-Rescue — Design Tokens
+   Tailwind CSS v4 + shadcn/ui
+   Drop into app/globals.css (or src/index.css).
+   Toggle dark mode by adding class="dark" to <html>.
+   ============================================================ */
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Surfaces */
+  --background: #FBF7F0;
+  --foreground: #22271F;
+  --surface: #FFFFFF;
+  --surface-2: #F6F1E7;
+  --card: #FFFFFF;
+  --card-foreground: #22271F;
+  --popover: #FFFFFF;
+  --popover-foreground: #22271F;
+
+  /* Brand — saffron */
+  --primary: #C04E12;             /* action fills, white text (4.8:1) */
+  --primary-foreground: #FFFFFF;
+  --primary-hover: #A8420E;
+  --primary-soft: #FBE7D2;
+  --primary-soft-foreground: #8A3D10;
+  --saffron: #F2711C;             /* vivid accent — icons, charts, highlights */
+
+  /* Brand — leaf */
+  --leaf: #2E7D46;                /* positive action, white text (5.1:1) */
+  --leaf-foreground: #FFFFFF;
+  --leaf-hover: #266A3B;
+  --leaf-soft: #DEF0E2;
+  --leaf-soft-foreground: #1E6B36;
+  --leaf-bright: #46A35E;
+
+  /* shadcn neutrals */
+  --secondary: #F6F1E7;
+  --secondary-foreground: #22271F;
+  --muted: #F1EBDF;
+  --muted-foreground: #6E665A;
+  --subtle-foreground: #938A7B;
+  --accent: #F6F1E7;
+  --accent-foreground: #22271F;
+
+  /* Semantic */
+  --success: #2E7D46; --success-foreground: #FFFFFF; --success-soft: #DEF0E2; --success-soft-foreground: #1E6B36;
+  --warning: #B26A07; --warning-foreground: #FFFFFF; --warning-soft: #FBEAD0; --warning-soft-foreground: #8A5208;
+  --destructive: #BE3B2E; --destructive-foreground: #FFFFFF; --destructive-soft: #F7E0DC; --destructive-soft-foreground: #9A271C;
+  --info: #0E6F9E; --info-foreground: #FFFFFF; --info-soft: #DBEBF4; --info-soft-foreground: #125C7E;
+
+  /* Form + focus */
+  --border: #E8E0CF;
+  --border-strong: #D9CFBA;
+  --input: #D9CFBA;
+  --ring: #E0651B;
+
+  /* Pickup status pills */
+  --st-requested-bg: #FCEBD4;  --st-requested-fg: #8A4E12;  --st-requested-dot: #E8842B;
+  --st-accepted-bg: #DCEBF4;   --st-accepted-fg: #1C5A78;   --st-accepted-dot: #2E8BBE;
+  --st-enroute-bg: #D7EEF0;    --st-enroute-fg: #125C68;    --st-enroute-dot: #1E9AA8;
+  --st-pickedup-bg: #E9E1F6;   --st-pickedup-fg: #5B3A8A;   --st-pickedup-dot: #8155C6;
+  --st-delivered-bg: #DCF0DF;  --st-delivered-fg: #1E6B36;  --st-delivered-dot: #34A853;
+  --st-cancelled-bg: #F4DEDB;  --st-cancelled-fg: #8C2F27;  --st-cancelled-dot: #C0392C;
+
+  /* Radius + type */
+  --radius: 0.75rem;              /* 12px base */
+  --font-display: "Bricolage Grotesque", "Mukta", system-ui, sans-serif;
+  --font-sans: "Mukta", "Noto Sans Devanagari", "Noto Sans Gujarati", system-ui, sans-serif;
+
+  /* Elevation (warm-tinted) */
+  --shadow-sm: 0 1px 2px rgba(50,38,20,.06), 0 1px 1px rgba(50,38,20,.04);
+  --shadow-md: 0 4px 14px rgba(50,38,20,.08), 0 1px 3px rgba(50,38,20,.05);
+  --shadow-lg: 0 14px 38px rgba(50,38,20,.13), 0 3px 8px rgba(50,38,20,.06);
+
+  /* Motion */
+  --ease-emphasized: cubic-bezier(.2,.8,.3,1);
+  --dur-fast: .18s; --dur: .24s; --dur-slow: .28s;
+}
+
+.dark {
+  --background: #15140F;
+  --foreground: #F3ECDD;
+  --surface: #1F1D16;
+  --surface-2: #28241A;
+  --card: #1F1D16;
+  --card-foreground: #F3ECDD;
+  --popover: #1F1D16;
+  --popover-foreground: #F3ECDD;
+
+  --primary: #C8531A; --primary-foreground: #FFFFFF; --primary-hover: #DA5F22;
+  --primary-soft: #3A2412; --primary-soft-foreground: #F4B07C;
+  --saffron: #F8924A;
+
+  --leaf: #2E7D46; --leaf-foreground: #FFFFFF; --leaf-hover: #358A50;
+  --leaf-soft: #16301F; --leaf-soft-foreground: #7FCB92; --leaf-bright: #56B36E;
+
+  --secondary: #28241A; --secondary-foreground: #F3ECDD;
+  --muted: #2A2619; --muted-foreground: #A99F8C; --subtle-foreground: #827963;
+  --accent: #28241A; --accent-foreground: #F3ECDD;
+
+  --success: #2E7D46; --success-foreground: #FFFFFF; --success-soft: #16301F; --success-soft-foreground: #7FCB92;
+  --warning: #C98A2E; --warning-foreground: #1A1206; --warning-soft: #3A2D12; --warning-soft-foreground: #F0C277;
+  --destructive: #C0392C; --destructive-foreground: #FFFFFF; --destructive-soft: #3A1C17; --destructive-soft-foreground: #F0A79C;
+  --info: #1E89B8; --info-foreground: #FFFFFF; --info-soft: #10303D; --info-soft-foreground: #86C7E2;
+
+  --border: #37321F;
+  --border-strong: #4A442E;
+  --input: #4A442E;
+  --ring: #F2842F;
+
+  --st-requested-bg: #3A2A12; --st-requested-fg: #F2C079; --st-requested-dot: #E8842B;
+  --st-accepted-bg: #142E3D;  --st-accepted-fg: #86C2E2;  --st-accepted-dot: #2E8BBE;
+  --st-enroute-bg: #0F3138;   --st-enroute-fg: #79CAD6;   --st-enroute-dot: #26B3C2;
+  --st-pickedup-bg: #241A3A;  --st-pickedup-fg: #BCA0E8;  --st-pickedup-dot: #9B72D6;
+  --st-delivered-bg: #15311E; --st-delivered-fg: #84D196; --st-delivered-dot: #3FBF5E;
+  --st-cancelled-bg: #391A17; --st-cancelled-fg: #F0A79C; --st-cancelled-dot: #D2503F;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.34);
+  --shadow-md: 0 4px 16px rgba(0,0,0,.42);
+  --shadow-lg: 0 16px 40px rgba(0,0,0,.55);
+}
+
+/* Map tokens to Tailwind v4 utilities:
+   bg-primary, text-primary-foreground, bg-leaf, text-muted-foreground,
+   bg-st-enroute-bg, text-st-enroute-fg, rounded-lg, font-display, … */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
+  --color-saffron: var(--saffron);
+
+  --color-leaf: var(--leaf);
+  --color-leaf-foreground: var(--leaf-foreground);
+  --color-leaf-soft: var(--leaf-soft);
+  --color-leaf-soft-foreground: var(--leaf-soft-foreground);
+  --color-leaf-bright: var(--leaf-bright);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-success-soft-foreground: var(--success-soft-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-soft-foreground: var(--warning-soft-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-destructive-soft-foreground: var(--destructive-soft-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-soft: var(--info-soft);
+  --color-info-soft-foreground: var(--info-soft-foreground);
+
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-st-requested-bg: var(--st-requested-bg);
+  --color-st-requested-fg: var(--st-requested-fg);
+  --color-st-requested-dot: var(--st-requested-dot);
+  --color-st-accepted-bg: var(--st-accepted-bg);
+  --color-st-accepted-fg: var(--st-accepted-fg);
+  --color-st-accepted-dot: var(--st-accepted-dot);
+  --color-st-enroute-bg: var(--st-enroute-bg);
+  --color-st-enroute-fg: var(--st-enroute-fg);
+  --color-st-enroute-dot: var(--st-enroute-dot);
+  --color-st-pickedup-bg: var(--st-pickedup-bg);
+  --color-st-pickedup-fg: var(--st-pickedup-fg);
+  --color-st-pickedup-dot: var(--st-pickedup-dot);
+  --color-st-delivered-bg: var(--st-delivered-bg);
+  --color-st-delivered-fg: var(--st-delivered-fg);
+  --color-st-delivered-dot: var(--st-delivered-dot);
+  --color-st-cancelled-bg: var(--st-cancelled-bg);
+  --color-st-cancelled-fg: var(--st-cancelled-fg);
+  --color-st-cancelled-dot: var(--st-cancelled-dot);
+
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * { border-color: var(--border); }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* Accessible focus ring on every interactive element */
+  :focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; }
+}
+
+/* ============================================================
+   Motion — from the design system (docs/design/rajyash-design-system.html)
+   Subtle + functional: communicates state, not decoration.
+   ============================================================ */
+@keyframes rj-spin { to { transform: rotate(360deg); } }
+@keyframes rj-toast-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+@keyframes rj-live { 0% { box-shadow: 0 0 0 0 rgba(46,125,70,.5); } 70% { box-shadow: 0 0 0 9px rgba(46,125,70,0); } 100% { box-shadow: 0 0 0 0 rgba(46,125,70,0); } }
+@keyframes rj-shimmer { 0% { background-position: -420px 0; } 100% { background-position: 420px 0; } }
+@keyframes rj-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes rj-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+/* Accessibility: respect reduced motion (REQUIRED — keep this) */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001ms !important; transition-duration: .001ms !important; }
+}
