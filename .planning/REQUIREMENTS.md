@@ -43,10 +43,9 @@
 
 - [ ] **NOT-01**: System sends an in-app notification on key status events
 - [ ] **NOT-02**: System sends a web push notification on key status events
-- [ ] **NOT-03**: System sends an SMS on key status events (DLT-registered templates)
-- [ ] **NOT-04**: System sends a WhatsApp message on key status events (Meta-approved templates)
-- [ ] **NOT-05**: Notifications dispatch through one channel-abstracted layer, each channel independently retryable
-- [ ] **NOT-06**: Failed notification deliveries are retried and de-duplicated (no double sends)
+- [ ] **NOT-03**: System sends an email on key status events (Resend)
+- [ ] **NOT-04**: Notifications dispatch through one channel-abstracted layer, each channel independently retryable, with SMS/WhatsApp pluggable later without rework
+- [ ] **NOT-05**: Failed notification deliveries are retried and de-duplicated (no double sends)
 
 ### Payments
 
@@ -75,8 +74,7 @@
 
 - [ ] **I18N-01**: All UI is available in English, Gujarati, and Hindi
 - [ ] **I18N-02**: User can switch language; choice persists
-- [ ] **I18N-03**: SMS and WhatsApp templates are registered/approved in each supported language
-- [ ] **I18N-04**: Gujarati and Hindi scripts render correctly (next-intl locale setup verified)
+- [ ] **I18N-03**: Gujarati and Hindi scripts render correctly (next-intl locale setup verified)
 
 ## v2 Requirements
 
@@ -86,6 +84,12 @@
 - **GEO-01**: Volunteer radius / geofencing filter for nearby pickups
 - **DON-07**: Periodic donor impact-receipt email summary
 - **VOL-07**: Proof-of-delivery photo visible to the donor
+
+### Notifications (when funded)
+
+- **NOT-06**: SMS status notifications via MSG91 (needs DLT registration + funding)
+- **NOT-07**: WhatsApp status notifications via Meta/MSG91 (needs template approval + ~₹2,000-2,500/mo funding)
+- **I18N-04**: SMS/WhatsApp templates registered/approved in each supported language (ships with NOT-06/07)
 
 ### Public / engagement
 
@@ -115,7 +119,7 @@ Populated during roadmap creation.
 | (to be filled by roadmapper) | | |
 
 **Coverage:**
-- v1 requirements: 39 total
+- v1 requirements: 44 total (AUTH 6, DON 6, VOL 6, TRK 4, NOT 5, PAY 4, ADM 6, PUB 4, I18N 3)
 - Mapped to phases: (pending roadmap)
 - Unmapped: (pending roadmap)
 

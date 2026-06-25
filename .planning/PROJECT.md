@@ -53,8 +53,9 @@ the rescue loop must work end to end. Everything else supports that loop.
 
 ## Constraints
 
-- **Tech stack**: Next.js + PostgreSQL — chosen; full-stack in one app (no microservices).
-- **Hosting/budget**: NGO — low-cost managed (Vercel + managed Postgres e.g. Neon/Supabase, free/low tiers). Keep ops light.
+- **Tech stack**: Next.js 15 App Router monolith + Supabase Postgres + Drizzle ORM. Clerk auth, Supabase Realtime tracking, Leaflet+OSM maps, Resend email, web-push, Inngest jobs, Razorpay payments, next-intl i18n, shadcn/Tailwind, RHF+Zod, TanStack Query + Zustand.
+- **Budget**: ZERO — foundation gives no funds. Free tiers only. Only deferred paid items: SMS/WhatsApp notifications (when funded), real domain (when funded). Razorpay takes 2% per donation (no upfront cost).
+- **Hosting**: Cloudflare Pages/Workers (free, commercial-allowed) via @opennextjs/cloudflare; Cloudflare Cron Triggers for scheduled jobs. Free `*.pages.dev` subdomain.
 - **Security**: payments verified server-side (webhook/signature, never trust client callback); authorize on
   server-side role, never a client-sent role; validate env at boot.
 - **Real-time**: live pickup tracking is a v1 core requirement, not a later add-on.
@@ -72,6 +73,14 @@ the rescue loop must work end to end. Everything else supports that loop.
 | Low-cost managed hosting (Vercel + Neon/Supabase) | NGO budget; minimal DevOps | — Pending |
 | Single-tenant, no RLS | One org, one city — multi-tenancy is needless complexity | — Pending |
 | Borrow kaka frontend conventions, drop backend/infra rules | ~90% of React patterns transfer; Spring/RLS/microservices don't | ✓ Good |
+| Zero budget — free tiers only | Foundation provides no funds; we self-fund nothing | — Pending |
+| Host on Cloudflare Pages/Workers (not Vercel) | Vercel Hobby bans commercial use; Cloudflare free allows it, no surprise bills; Next.js via @opennextjs/cloudflare | — Pending |
+| Supabase Postgres + Drizzle + Supabase Realtime | Free tier covers DB + live tracking + storage; Realtime dodges serverless WebSocket limit | — Pending |
+| Clerk auth (free 10K MAU) | Phone OTP first-class; Clerk absorbs auth-OTP SMS cost (no DLT needed) | — Pending |
+| v1 notifications = email + web push + in-app only | SMS (MSG91) and WhatsApp (Meta, ~₹0.13/msg since Jul 2025) are not free; dispatcher built channel-abstracted so they slot in when funded | — Pending |
+| Maps = Leaflet + OSM (display) + free geocoding | Zero billing risk for an NGO; Google Maps billing blowup avoided | — Pending |
+| Free `*.pages.dev` subdomain for v1 | No domain spend; buy real domain when funded | — Pending |
+| Private repo on developer's personal GitHub | No org cost; transfer to foundation later | — Pending |
 
 ## Evolution
 
