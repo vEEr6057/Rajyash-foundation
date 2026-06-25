@@ -19,6 +19,27 @@ Always create a branch before starting work. Never commit directly to `main`.
 2. Make changes; commit with conventional commits: `type(scope): message`
 3. Push, open PR, merge to `main`
 
+## Stacked PRs (one per phase)
+
+Each GSD phase gets its own branch + PR, **stacked** on the previous phase:
+
+- Phase N branch = `feature/phase-N-<slug>`, created **off the previous phase's branch** (`feature/phase-(N-1)-<slug>`), NOT off `main`.
+- PR **base = the previous phase's branch** (Phase 1's base is `main`).
+- Result: each PR's diff is only that phase's work; reviewers see clean, incremental changes.
+
+```
+main ← feature/phase-1-foundation ← feature/phase-2-rescue-loop ← feature/phase-3-… (PRs chain bottom-up)
+```
+
+Workflow:
+1. `git checkout feature/phase-(N-1)-<slug> && git checkout -b feature/phase-N-<slug>`
+2. Build the phase, commit, `git push -u origin feature/phase-N-<slug>`
+3. `gh pr create --base feature/phase-(N-1)-<slug> --head feature/phase-N-<slug>`
+
+When a lower PR merges to `main`: rebase the rest of the stack onto `main` and retarget the next PR's base to `main` (repeat up the stack). `git rebase --onto main feature/phase-(N-1)-<slug> feature/phase-N-<slug>`.
+
+Phase 1 = `feature/phase-1-foundation` (PR #1 → `main`). Phase 2 branches off it.
+
 ## Commit messages
 
 - Conventional commits: `feat(pickups): add donor pickup scheduling`, `fix(auth): correct OTP expiry check`.
