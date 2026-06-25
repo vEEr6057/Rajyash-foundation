@@ -1,0 +1,36 @@
+import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from "zod";
+
+/**
+ * Boot-time environment validation (D-06 / AUTH-06).
+ * Imported in next.config.ts so the app refuses to build/start when a required
+ * var is missing or malformed. Set SKIP_ENV_VALIDATION=1 only for lint/CI steps
+ * that don't need real values.
+ */
+export const env = createEnv({
+  server: {
+    DATABASE_URL: z.string().url(),
+    DIRECT_URL: z.string().url(),
+    CLERK_SECRET_KEY: z.string().min(1).startsWith("sk_"),
+  },
+  client: {
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).startsWith("pk_"),
+    NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().startsWith("/"),
+    NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().startsWith("/"),
+    NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: z.string().startsWith("/"),
+    NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: z.string().startsWith("/"),
+  },
+  // Next.js inlines NEXT_PUBLIC_* at build time, so they must be listed explicitly.
+  experimental__runtimeEnv: {
+    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:
+      process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
+    NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
+    NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
+    NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL:
+      process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL,
+    NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL:
+      process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,
+  },
+  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  emptyStringAsUndefined: true,
+});
