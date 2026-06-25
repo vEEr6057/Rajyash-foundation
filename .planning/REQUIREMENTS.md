@@ -112,17 +112,58 @@
 
 ## Traceability
 
-Populated during roadmap creation.
-
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| (to be filled by roadmapper) | | |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Pending |
+| AUTH-05 | Phase 1 | Pending |
+| AUTH-06 | Phase 1 | Pending |
+| DON-01 | Phase 2 | Pending |
+| DON-02 | Phase 2 | Pending |
+| DON-03 | Phase 2 | Pending |
+| DON-04 | Phase 2 | Pending |
+| DON-05 | Phase 2 | Pending |
+| DON-06 | Phase 2 | Pending |
+| VOL-01 | Phase 2 | Pending |
+| VOL-02 | Phase 2 | Pending |
+| VOL-03 | Phase 2 | Pending |
+| VOL-04 | Phase 2 | Pending |
+| VOL-05 | Phase 2 | Pending |
+| VOL-06 | Phase 2 | Pending |
+| TRK-01 | Phase 3 | Pending |
+| TRK-02 | Phase 3 | Pending |
+| TRK-03 | Phase 3 | Pending |
+| TRK-04 | Phase 3 | Pending |
+| NOT-01 | Phase 4 | Pending |
+| NOT-02 | Phase 4 | Pending |
+| NOT-03 | Phase 4 | Pending |
+| NOT-04 | Phase 4 | Pending |
+| NOT-05 | Phase 4 | Pending |
+| PAY-01 | Phase 5 | Pending |
+| PAY-02 | Phase 5 | Pending |
+| PAY-03 | Phase 5 | Pending |
+| PAY-04 | Phase 5 | Pending |
+| ADM-01 | Phase 6 | Pending |
+| ADM-02 | Phase 6 | Pending |
+| ADM-03 | Phase 6 | Pending |
+| ADM-04 | Phase 6 | Pending |
+| ADM-05 | Phase 6 | Pending |
+| ADM-06 | Phase 6 | Pending |
+| PUB-01 | Phase 7 | Pending |
+| PUB-02 | Phase 7 | Pending |
+| PUB-03 | Phase 7 | Pending |
+| PUB-04 | Phase 7 | Pending |
+| I18N-01 | Phase 7 | Pending |
+| I18N-02 | Phase 7 | Pending |
+| I18N-03 | Phase 7 | Pending |
 
 **Coverage:**
 - v1 requirements: 44 total (AUTH 6, DON 6, VOL 6, TRK 4, NOT 5, PAY 4, ADM 6, PUB 4, I18N 3)
-- Mapped to phases: (pending roadmap)
-- Unmapped: (pending roadmap)
+- Mapped to phases: 44/44
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-06-25*
-*Last updated: 2026-06-25 after initial definition*
+*Last updated: 2026-06-25 — traceability populated during roadmap creation*
