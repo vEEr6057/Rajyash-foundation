@@ -124,6 +124,25 @@ export function OnboardingForm() {
       </div>
 
       <div>
+        <Label htmlFor="phone">
+          Phone <span className="font-normal text-muted-foreground">(optional)</span>
+        </Label>
+        <Input
+          id="phone"
+          type="tel"
+          inputMode="numeric"
+          autoComplete="tel"
+          placeholder="10-digit mobile"
+          aria-invalid={!!errors.phone}
+          className={cn(errors.phone && "rj-field--error border-destructive")}
+          {...register("phone")}
+        />
+        {errors.phone && (
+          <p className="mt-1.5 text-sm text-destructive">{errors.phone.message}</p>
+        )}
+      </div>
+
+      <div>
         <Label htmlFor="city">City</Label>
         <Input id="city" {...register("city")} />
       </div>

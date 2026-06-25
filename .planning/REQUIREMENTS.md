@@ -8,11 +8,12 @@
 ### Authentication
 
 - [ ] **AUTH-01**: User can sign in with email
-- [ ] **AUTH-02**: User can sign in / verify via phone OTP
-- [ ] **AUTH-03**: OTP requests are rate-limited (per phone and per IP) to prevent SMS abuse
+- [ ] **AUTH-07**: User can sign in with Google (OAuth) — free, India-friendly, replaces phone OTP as the second factor for v1
 - [ ] **AUTH-04**: Users have a role (donor / volunteer / admin) that gates access to features
 - [ ] **AUTH-05**: Every server action re-verifies session, role, and resource ownership (no IDOR)
 - [ ] **AUTH-06**: User session persists across browser refresh
+
+> **Phone OTP moved to v2.** No free SMS OTP exists for India (Clerk blocks Indian numbers; all providers charge + most need DLT). v1 collects phone as an optional, unverified field at onboarding. See v2 AUTH-02/03.
 
 ### Donor
 
@@ -84,6 +85,11 @@
 - **GEO-01**: Volunteer radius / geofencing filter for nearby pickups
 - **DON-07**: Periodic donor impact-receipt email summary
 - **VOL-07**: Proof-of-delivery photo visible to the donor
+
+### Authentication (when funded)
+
+- **AUTH-02**: User can sign in / verify via phone OTP — deferred; cheapest path = **Fast2SMS (no DLT)** or 2Factor as a Clerk custom SMS provider (~₹0.11–0.35/OTP), not MSG91 (which needs DLT)
+- **AUTH-03**: OTP requests rate-limited per phone and per IP (ships with AUTH-02)
 
 ### Notifications (when funded)
 

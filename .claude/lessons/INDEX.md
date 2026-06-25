@@ -16,4 +16,5 @@ Caps: 20 lessons/session (overflow → `INDEX-pending.md`); 200 lines in INDEX (
 
 ---
 
+- [2026-06-26 auth/HIGH/verified] clerk-no-india-phone-otp — Clerk can't OTP Indian numbers; no free India SMS exists; v1 = email + Google OAuth, phone optional/unverified; later use Fast2SMS (no DLT) not MSG91 → auth/clerk-no-india-phone-otp.md
 - [2026-06-25 general/MEDIUM/verified] create-next-app-into-existing-planning-repo — scaffold into a temp dir + copy in (create-next-app blocks on existing .planning/.claude/tokens; Windows mv perm fails; @latest=Next 16, pin @15) → general/create-next-app-into-existing-planning-repo.md

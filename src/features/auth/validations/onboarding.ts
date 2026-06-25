@@ -12,6 +12,16 @@ export const onboardingSchema = z.object({
     .min(2, { message: "Please enter your name" })
     .max(80, { message: "Name is too long" }),
   city: z.string().trim().min(1, { message: "Please enter your city" }),
+  // Optional, unverified in v1 (phone-OTP deferred — Clerk can't OTP Indian numbers
+  // on the free tier; phone verification arrives in v2 via Fast2SMS, no DLT).
+  phone: z
+    .string()
+    .trim()
+    .regex(/^(\+91)?[6-9]\d{9}$/, {
+      message: "Enter a valid 10-digit Indian mobile number",
+    })
+    .optional()
+    .or(z.literal("")),
 });
 
 export const DEFAULT_ONBOARDING_CITY = DEFAULT_CITY;

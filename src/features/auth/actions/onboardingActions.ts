@@ -38,13 +38,18 @@ export async function completeOnboarding(
     const first = parsed.error.issues[0]?.message ?? "Invalid input";
     return { ok: false, code: "VALIDATION_ERROR", message: first };
   }
-  const { role, name, city } = parsed.data;
+  const { role, name, city, phone: phoneInput } = parsed.data;
 
   try {
     const client = await clerkClient();
     const user = await client.users.getUser(userId);
     const email = user.primaryEmailAddress?.emailAddress ?? null;
-    const phone = user.primaryPhoneNumber?.phoneNumber ?? null;
+    // v1: phone comes from the onboarding form (unverified). Fall back to any
+    // Clerk-held number if present (e.g. future phone-OTP in v2).
+    const phone =
+      (phoneInput && phoneInput.length > 0 ? phoneInput : null) ??
+      user.primaryPhoneNumber?.phoneNumber ??
+      null;
 
     await client.users.updateUserMetadata(userId, {
       publicMetadata: { role, onboardingComplete: true },

@@ -54,4 +54,37 @@ describe("onboardingSchema", () => {
         .success,
     ).toBe(false);
   });
+
+  it("accepts a valid Indian mobile in the optional phone field", () => {
+    expect(
+      onboardingSchema.safeParse({
+        role: "donor",
+        name: "Rajesh",
+        city: "Ahmedabad",
+        phone: "9876543210",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("accepts an empty phone (optional)", () => {
+    expect(
+      onboardingSchema.safeParse({
+        role: "donor",
+        name: "Rajesh",
+        city: "Ahmedabad",
+        phone: "",
+      }).success,
+    ).toBe(true);
+  });
+
+  it("rejects a malformed phone number", () => {
+    expect(
+      onboardingSchema.safeParse({
+        role: "donor",
+        name: "Rajesh",
+        city: "Ahmedabad",
+        phone: "12345",
+      }).success,
+    ).toBe(false);
+  });
 });
