@@ -42,3 +42,6 @@ yarn-debug.log*
 
 # typescript
 *.tsbuildinfo
+
+# playwright mcp runtime artifacts
+/.playwright-mcp/
