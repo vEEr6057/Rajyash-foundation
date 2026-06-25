@@ -53,7 +53,15 @@ Plans:
   3. Volunteer can browse available pickups as both a list and a map, then claim one — a second simultaneous claim attempt on the same pickup is rejected
   4. Volunteer can advance a claimed pickup through all four statuses (accepted → en route → picked up → delivered); invalid transitions are blocked server-side
   5. Volunteer can upload a proof-of-delivery photo on completion; status transition buttons show loading state and retry on patchy mobile networks
-**Plans**: TBD
+**Plans**: 7 plans
+Plans:
+- [ ] 02-01-PLAN.md — Wave 0: deps install (supabase-js, react-leaflet, leaflet, browser-image-compression), env vars, schema (pickups+statusEvents+3 enums), Leaflet icons, db:generate, RED test scaffolds
+- [ ] 02-02-PLAN.md — Wave 1: pickups+statusEvents repositories, Zod schemas, pickupService (claimPickup, advanceStatus, cancel, edit, repost), MockPickupService, adapter, barrel
+- [ ] 02-03-PLAN.md — Wave 1: server-only Supabase Storage client + Nominatim geocoder utility
+- [ ] 02-04-PLAN.md — Wave 2: all 8 server actions (create, upload URL, save photo, edit, cancel, repost, claim, advance) + force-dynamic stub pages
+- [ ] 02-05-PLAN.md — Wave 3: donor UI (PickupStatusPill, PickupForm, PhotoUploader, PickupMap/LeafletMapInner, PickupCard, donor list/new/detail/edit pages)
+- [ ] 02-06-PLAN.md — Wave 3: volunteer UI (ClaimButton+loading/retry, StatusAdvanceButton, VolunteerBoard, board list+map pages) — turns last RED test GREEN
+- [ ] 02-07-PLAN.md — Wave 4 (manual): Supabase Storage bucket create, db:push to live DB, Cloudflare secrets, E2E rescue loop verification
 **UI hint**: yes
 
 ### Phase 3: Live Tracking
@@ -128,7 +136,7 @@ Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 0/7 | Not started | - |
-| 2. Rescue Loop Core | 0/? | Not started | - |
+| 2. Rescue Loop Core | 0/7 | Planned | - |
 | 3. Live Tracking | 0/? | Not started | - |
 | 4. Notifications | 0/? | Not started | - |
 | 5. Payments | 0/? | Not started | - |
