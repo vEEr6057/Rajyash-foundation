@@ -32,7 +32,15 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Accessing a donor route as a volunteer (or vice versa) returns a 403; admin routes are inaccessible to non-admins
   4. Every server action stub re-checks session and role before proceeding — no action trusts middleware alone
   5. The app boots and refuses to start if any required env var is missing or malformed
-**Plans**: TBD
+**Plans**: 7 plans
+Plans:
+- [ ] 01-01-PLAN.md — Next.js scaffold, all dependencies, Cloudflare/drizzle-kit config, Vitest + test scaffolds
+- [ ] 01-02-PLAN.md — Design system: tokens/globals.css merge, HSL vars, motion.css, fonts, shadcn UI primitives
+- [ ] 01-03-PLAN.md — Env boot validation (t3-env + Zod), ROLES constant, Clerk session claim types
+- [ ] 01-04-PLAN.md — DB layer: Drizzle per-request client (cache + prepare:false), profiles schema, auth types
+- [ ] 01-05-PLAN.md — Clerk middleware (RBAC + onboarding gate), requireRole() helper, route groups + auth pages
+- [ ] 01-06-PLAN.md — Onboarding flow: role-select form (RHF+Zod), completeOnboarding server action, user.reload()
+- [ ] 01-07-PLAN.md — DEFERRED/manual: Supabase + Clerk account setup, Clerk dashboard session claim, drizzle-kit push, E2E verify
 **UI hint**: yes
 
 ### Phase 2: Rescue Loop Core
@@ -119,7 +127,7 @@ Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and 
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/? | Not started | - |
+| 1. Foundation | 0/7 | Not started | - |
 | 2. Rescue Loop Core | 0/? | Not started | - |
 | 3. Live Tracking | 0/? | Not started | - |
 | 4. Notifications | 0/? | Not started | - |
