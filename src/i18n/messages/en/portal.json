@@ -64,6 +64,7 @@
     "saveButton": "Save profile"
   },
   "dashboard": {
+    "title": "Dashboard",
     "greeting": "Welcome back, {name}",
     "donorTitle": "Donor dashboard",
     "volunteerTitle": "Volunteer dashboard",
