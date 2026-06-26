@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: in_progress
-stopped_at: Phase 4 (Notifications) built + Playwright-verified (branch feature/phase-4-notifications, PR #4 stacked on phase-3)
+stopped_at: Phase 6 (Admin) built + Playwright-verified (branch feature/phase-6-admin, PR #5 stacked on phase-4)
 last_updated: "2026-06-26"
-last_activity: 2026-06-26 — Phase 4 Notifications built, reviewed, E2E-verified; Phase 5 PARKED; Phase 6 next
+last_activity: 2026-06-26 — Phase 6 Admin built, reviewed, E2E-verified; Phase 5 PARKED; only Phase 7 remains
 progress:
   total_phases: 7
-  completed_phases: 4
-  total_plans: 25
-  completed_plans: 25
-  percent: 57
+  completed_phases: 5
+  total_plans: 31
+  completed_plans: 31
+  percent: 71
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-25)
 
 **Core value:** A donor can post surplus food and a volunteer can reliably claim, pick up, and deliver it to people in need — the rescue loop must work end to end.
-**Current focus:** Phase 6 — Admin Portal + Reporting (Phase 5 Payments PARKED)
+**Current focus:** Phase 7 — Public Site + i18n + PWA (Phase 5 Payments PARKED)
 
 ## Current Position
 
-Phase: 4 of 7 (Notifications) — complete; Phase 5 (Payments) PARKED; Phase 6 (Admin) next
-Plan: 6 of 6 in Phase 4
-Status: Phase 4 shipped (PR #4, stacked on phase-3); ready to start Phase 6
-Last activity: 2026-06-26 — Phase 4 built + reviewed + Playwright-E2E verified
+Phase: 6 of 7 (Admin) — complete; Phase 5 (Payments) PARKED; Phase 7 (Public/i18n/PWA) remains
+Plan: 6 of 6 in Phase 6
+Status: Phase 6 shipped (PR #5, stacked on phase-4); only Phase 7 remains
+Last activity: 2026-06-26 — Phase 6 built + reviewed + Playwright-E2E verified
 
-Progress: [██████░░░░] 57%
+Progress: [███████░░░] 71%
 
 ## Performance Metrics
 
@@ -85,5 +85,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-06-26
-Stopped at: Phase 4 built + reviewed + Playwright-verified (branch feature/phase-4-notifications, PR #4 stacked on phase-3). Deferred: Inngest prod sync + Resend domain/key.
-Resume file: .planning/phases/04-notifications/04-SUMMARY.md — next: Phase 6 (Admin Portal; Phase 5 Payments PARKED). Phase 6 decisions pre-banked (partners CRM-lite + servings/kg report).
+Stopped at: Phase 6 built + reviewed + Playwright-verified (branch feature/phase-6-admin, PR #5 stacked on phase-4). Phase 5 Payments PARKED.
+Resume file: .planning/phases/06-admin/06-SUMMARY.md — next: Phase 7 (Public Site + i18n + PWA) — the last v1 phase. Phase 5 (Payments) un-parks only if the foundation greenlights donations.

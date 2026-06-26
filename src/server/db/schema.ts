@@ -20,6 +20,42 @@ import {
 /** Role enum mirrors the app's ROLES constant (donor | volunteer | admin). */
 export const roleEnum = pgEnum("role", ROLES);
 
+// ── Partners (Phase 6, Admin) ────────────────────────────────────────
+/** Partner organization types (D-06). Mirrored in PARTNER_TYPES (constants). */
+export const partnerTypeEnum = pgEnum("partner_type", [
+  "restaurant",
+  "hall",
+  "event_planner",
+  "family",
+  "other",
+]);
+
+/**
+ * partners — a donor organization the foundation tracks (ADM-04 / D-06). A profile
+ * (donor user) may be linked to one partner via profiles.partnerId. Contact fields are
+ * nullable except name/type/city.
+ */
+export const partners = pgTable("partners", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  type: partnerTypeEnum("type").notNull(),
+  contactName: text("contact_name"),
+  contactPhone: text("contact_phone"),
+  contactEmail: text("contact_email"),
+  address: text("address"),
+  city: text("city").notNull().default("Ahmedabad"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+export type Partner = typeof partners.$inferSelect;
+export type NewPartner = typeof partners.$inferInsert;
+
 /**
  * profiles — one row per Clerk user. Clerk owns auth truth; this mirrors the
  * role + onboarding state for Phase 2+ joins (pickups, donations, etc.).
@@ -33,6 +69,9 @@ export const profiles = pgTable("profiles", {
   role: roleEnum("role").notNull(),
   city: text("city").notNull().default("Ahmedabad"),
   onboardingComplete: boolean("onboarding_complete").notNull().default(false),
+  // Admin (Phase 6): optional link to a partner org (D-06) + soft-deactivate flag (D-05).
+  partnerId: text("partner_id").references(() => partners.id), // nullable FK
+  deactivatedAt: timestamp("deactivated_at", { withTimezone: true }), // null = active
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .defaultNow(),

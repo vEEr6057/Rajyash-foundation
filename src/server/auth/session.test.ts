@@ -5,6 +5,12 @@ const authMock = vi.fn();
 vi.mock("@clerk/nextjs/server", () => ({ auth: () => authMock() }));
 // server-only is a no-op guard at runtime; stub it for the test environment.
 vi.mock("server-only", () => ({}));
+// getSession now reads the profile to enforce the soft-deactivate flag — mock the repo
+// so the auth tests don't hit the DB (default: an active profile).
+const getById = vi.fn();
+vi.mock("@/server/db/repositories/profiles", () => ({
+  profilesRepo: { getById: (...a: unknown[]) => getById(...a) },
+}));
 
 import { requireRole, getSession, AuthError } from "./session";
 
@@ -15,7 +21,11 @@ function session(userId: string | null, role?: string, onboardingComplete = true
   };
 }
 
-beforeEach(() => authMock.mockReset());
+beforeEach(() => {
+  authMock.mockReset();
+  getById.mockReset();
+  getById.mockResolvedValue({ deactivatedAt: null }); // active by default
+});
 
 describe("requireRole", () => {
   it("returns { userId, role } for an authenticated user with an allowed role", async () => {
@@ -69,5 +79,11 @@ describe("getSession", () => {
       role: "admin",
       onboardingComplete: false,
     });
+  });
+
+  it("returns null when the user is soft-deactivated (Phase 6)", async () => {
+    authMock.mockResolvedValue(session("u_6", "donor"));
+    getById.mockResolvedValue({ deactivatedAt: new Date() });
+    expect(await getSession()).toBeNull();
   });
 });
