@@ -16,9 +16,13 @@ const eslintConfig = [
       "node_modules/**",
       ".next/**",
       ".open-next/**",
+      ".wrangler/**",
       "out/**",
       "build/**",
       "next-env.d.ts",
+      // Serwist-generated service worker output (not hand-authored source).
+      "public/sw.js",
+      "public/swe-worker-*.js",
       // Non-app dirs: design-system reference, planning docs, memory, scratch.
       "tokens/**",
       "docs/**",
