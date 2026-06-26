@@ -7,6 +7,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { ROUTES } from "@/config/constants";
 import { getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "./LanguageSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 
 export async function PublicHeader() {
   const t = await getTranslations("landing");
@@ -62,9 +63,10 @@ export async function PublicHeader() {
           </Link>
         </nav>
 
-        {/* Right side: language + auth CTAs */}
+        {/* Right side: language + theme + auth CTAs */}
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
+          <ThemeToggle />
           <Link
             href={ROUTES.signIn}
             className={buttonVariants({ variant: "ghost", size: "sm" })}
