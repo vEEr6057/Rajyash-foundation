@@ -33,7 +33,14 @@ const ROLE_CARDS: Record<
   },
 };
 
-export function OnboardingForm() {
+// PUB-03: defaultRole pre-selects volunteer role when "Become a volunteer" CTA is clicked.
+// Auth is still server-side; this only pre-fills the UI — onboardingSchema + completeOnboarding
+// server action (AUTH-05 path) still validate the final role. (T-7-02-02, T-7-02-03)
+export function OnboardingForm({
+  defaultRole,
+}: {
+  defaultRole?: "donor" | "volunteer";
+}) {
   const router = useRouter();
   const { user } = useUser();
   const [serverError, setServerError] = useState<string | null>(null);
@@ -46,7 +53,10 @@ export function OnboardingForm() {
     formState: { errors, isSubmitting },
   } = useForm<OnboardingInput>({
     resolver: zodResolver(onboardingSchema),
-    defaultValues: { city: DEFAULT_CITY },
+    defaultValues: {
+      city: DEFAULT_CITY,
+      role: defaultRole, // pre-selects volunteer when coming from the landing page CTA
+    },
   });
 
   const role = watch("role");

@@ -72,7 +72,7 @@ describe("getCachedImpactReport (PUB-02 — all-time cached aggregate)", () => {
   it("test 3: cache key is ['impact-report-all-time'] and revalidate: 300", () => {
     // unstable_cache is called at module-load time (top-level const).
     // The hoisted spy captures args before beforeEach can clear them.
-    const [_fn, keys, opts] = unstableCacheSpy.calls[0] as [
+    const [, keys, opts] = unstableCacheSpy.calls[0] as [
       unknown,
       string[],
       { revalidate: number },
