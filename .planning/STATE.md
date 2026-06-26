@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in_progress
-stopped_at: Phase 6 (Admin) built + Playwright-verified (branch feature/phase-6-admin, PR #5 stacked on phase-4)
-last_updated: "2026-06-26"
-last_activity: 2026-06-26 — Phase 6 Admin built, reviewed, E2E-verified; Phase 5 PARKED; only Phase 7 remains
+status: "Phase 6 shipped (PR #5, stacked on phase-4); only Phase 7 remains"
+stopped_at: Phase 7 context gathered (discuss done); building
+last_updated: "2026-06-26T20:04:21.523Z"
+last_activity: 2026-06-26 — Phase 6 built + reviewed + Playwright-E2E verified
 progress:
   total_phases: 7
-  completed_phases: 5
+  completed_phases: 0
   total_plans: 31
-  completed_plans: 31
-  percent: 71
+  completed_plans: 5
+  percent: 16
 ---
 
 # Project State
@@ -84,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-26
-Stopped at: Phase 6 built + reviewed + Playwright-verified (branch feature/phase-6-admin, PR #5 stacked on phase-4). Phase 5 Payments PARKED.
-Resume file: .planning/phases/06-admin/06-SUMMARY.md — next: Phase 7 (Public Site + i18n + PWA) — the last v1 phase. Phase 5 (Payments) un-parks only if the foundation greenlights donations.
+Last session: 2026-06-26T20:04:21.507Z
+Stopped at: Phase 7 context gathered (discuss done); building
+Resume file: .planning/phases/07-public-site-i18n-pwa/07-CONTEXT.md
