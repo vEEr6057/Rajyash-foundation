@@ -45,3 +45,7 @@ yarn-debug.log*
 
 # playwright mcp runtime artifacts
 /.playwright-mcp/
+
+# PWA — Serwist builds this from app/sw.ts at compile time
+/public/sw.js
+/public/swe-worker*
