@@ -23,6 +23,9 @@ vi.mock("@/server/auth/session", () => ({
   getSession: vi.fn().mockResolvedValue({ userId: "vol-1", role: "volunteer" }),
 }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
+vi.mock("@/server/inngest/client", () => ({
+  inngest: { send: vi.fn().mockResolvedValue(undefined) },
+}));
 vi.mock("@/server/db/repositories/pickups", () => ({
   pickupsRepo: {
     getById: vi.fn(async () => h.pickupState.current),

@@ -16,6 +16,7 @@ Caps: 20 lessons/session (overflow → `INDEX-pending.md`); 200 lines in INDEX (
 
 ---
 
+- [2026-06-26 notifications/HIGH/verified] inngest-v4-api-and-dev-mode — Inngest v4: createFunction(options,handler) 2-arg w/ triggers+idempotency in options, no EventSchemas; explicit signingKey ⇒ prod mode ("Cannot deploy localhost") → set INNGEST_DEV=1 for local inngest-cli dev (never in prod) → notifications/inngest-v4-api-and-dev-mode.md
 - [2026-06-26 general/MEDIUM/verified] inngest-dev-flood-corrupts-next — inngest-cli dev probe flood (/api/inngest etc.) + stale .next → `Cannot find module vendor-chunks/@clerk` → server actions silently 200-fail (look like a hang); stop flood + `rm -rf .next` → general/inngest-dev-flood-corrupts-next.md
 - [2026-06-26 testing/LOW/verified] clerk-programmatic-test-signin — drive Clerk sign-in via `window.Clerk.client.signIn` + test code 424242 + setActive (not the fragile UI); signOut before switching accounts; grant geolocation per-origin → testing/clerk-programmatic-test-signin.md
 - [2026-06-26 auth/LOW/verified] clerk-redirect-env-vars-deprecated — AFTER_SIGN_UP_URL env ignored by Clerk v6+ (redirects to /); use `forceRedirectUrl` prop on <SignUp/>/<SignIn/> → auth/clerk-redirect-env-vars-deprecated.md

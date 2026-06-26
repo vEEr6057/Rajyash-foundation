@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Mukta, Noto_Sans_Devanagari } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Providers } from "./providers";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -57,7 +58,7 @@ export default function RootLayout({
         <body
           className={`${bricolage.variable} ${mukta.variable} ${notoDevanagari.variable} antialiased`}
         >
-          {children}
+          <Providers>{children}</Providers>
         </body>
       </html>
     </ClerkProvider>

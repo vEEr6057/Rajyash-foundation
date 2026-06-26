@@ -5,6 +5,7 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/api/inngest(.*)", // S2S — Inngest authenticates via signing-key signature, not Clerk
 ]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
