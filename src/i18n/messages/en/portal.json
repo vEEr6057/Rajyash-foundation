@@ -2,14 +2,15 @@
   "pickup": {
     "form": {
       "title": "Post surplus food",
-      "category": "Food category",
+      "subtitle": "Tell us what's available and where — a volunteer will pick it up.",
+      "category": "Food type",
       "quantity": "Quantity",
       "unit": "Unit",
-      "location": "Pickup location",
-      "windowStart": "Available from",
-      "windowEnd": "Available until",
+      "location": "Pickup address",
+      "windowStart": "Pickup from",
+      "windowEnd": "Pickup until",
       "notes": "Notes (optional)",
-      "attestation": "I confirm this food is safe for consumption and correctly described.",
+      "attestation": "I confirm this food is fresh, safely stored, and fit to share.",
       "submitCreate": "Post pickup",
       "submitEdit": "Save changes"
     },
@@ -17,35 +18,42 @@
       "postedBy": "Posted by {name}",
       "window": "Available {start} – {end}",
       "quantity": "{amount} {unit}",
-      "claimButton": "Claim pickup",
+      "claimButton": "Claim this pickup",
       "claiming": "Claiming…"
     },
     "detail": {
       "title": "Pickup details",
-      "advanceButton": "Mark as {nextStatus}",
+      "advanceButton": "Mark {nextStatus}",
       "advancing": "Updating…",
-      "proofUpload": "Upload proof of delivery",
+      "proofUpload": "Proof of delivery",
       "editButton": "Edit",
       "cancelButton": "Cancel pickup",
-      "quickRepost": "Repost this"
+      "quickRepost": "Repost this",
+      "foodPhoto": "Food",
+      "deliveredPhoto": "Delivered",
+      "history": "History",
+      "assigned": "assigned",
+      "unassigned": "unassigned"
     },
     "board": {
       "title": "Available pickups",
-      "emptyState": "No pickups available right now.",
+      "emptyState": "No open pickups right now. Check back soon.",
       "listTab": "List",
-      "mapTab": "Map"
+      "mapTab": "Map",
+      "mapButton": "Map"
     },
     "donor": {
       "title": "My pickups",
-      "newButton": "Post food",
-      "emptyState": "You haven't posted any pickups yet."
+      "newButton": "New",
+      "emptyState": "No pickups yet.",
+      "firstPickupCta": "Post your first pickup"
     }
   },
   "notifications": {
     "title": "Notifications",
     "empty": "No notifications yet.",
     "markRead": "Mark as read",
-    "markAllRead": "Mark all as read"
+    "markAllRead": "Mark all read"
   },
   "profile": {
     "title": "Your profile",
@@ -58,6 +66,14 @@
   "dashboard": {
     "greeting": "Welcome back, {name}",
     "donorTitle": "Donor dashboard",
-    "volunteerTitle": "Volunteer dashboard"
+    "volunteerTitle": "Volunteer dashboard",
+    "donorCta": "Got surplus food?",
+    "volunteerCta": "Ready to rescue?",
+    "welcomeFallback": "Welcome",
+    "postPickup": "Post a pickup",
+    "myPickups": "My pickups",
+    "browsePickups": "Browse pickups",
+    "mapView": "Map view",
+    "adminDashboard": "Admin dashboard"
   }
 }

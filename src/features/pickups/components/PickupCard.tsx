@@ -1,16 +1,14 @@
 import Link from "next/link";
 import { MapPin, Clock, Package } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import type { Pickup } from "@/server/db/schema";
 import { ROUTES } from "@/config/constants";
-import {
-  formatCategory,
-  formatQuantity,
-  formatWindow,
-} from "@/features/pickups/lib/format";
+import { formatQuantity, formatWindow } from "@/features/pickups/lib/format";
 import { PickupStatusPill } from "./PickupStatusPill";
 
 /** Presentational pickup summary card (links to detail). */
-export function PickupCard({ pickup }: { pickup: Pickup }) {
+export async function PickupCard({ pickup }: { pickup: Pickup }) {
+  const t = await getTranslations("common");
   return (
     <Link
       href={ROUTES.pickup(pickup.id)}
@@ -19,7 +17,7 @@ export function PickupCard({ pickup }: { pickup: Pickup }) {
       <div className="mb-2 flex items-center justify-between gap-2">
         <span className="inline-flex items-center gap-1.5 font-display font-bold">
           <Package className="size-4 text-primary" />
-          {formatCategory(pickup.category)}
+          {t(`foodCategory.${pickup.category}`)}
         </span>
         <PickupStatusPill status={pickup.status} />
       </div>

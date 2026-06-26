@@ -2,12 +2,10 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  PICKUP_STATUS_LABELS,
-  type PickupStatus,
-} from "@/config/constants";
+import { type PickupStatus } from "@/config/constants";
 import { nextStatus, isDeliveringTransition } from "@/features/pickups/lib/statusMachine";
 import {
   advancePickup,
@@ -26,6 +24,8 @@ export function StatusAdvanceSection({
   hasProof: boolean;
 }) {
   const router = useRouter();
+  const t = useTranslations("portal");
+  const tCommon = useTranslations("common");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
   const [proofDone, setProofDone] = useState(hasProof);
@@ -62,7 +62,7 @@ export function StatusAdvanceSection({
     <div className="space-y-3">
       {delivering && (
         <div>
-          <p className="mb-1.5 text-sm font-semibold">Proof of delivery</p>
+          <p className="mb-1.5 text-sm font-semibold">{t("pickup.detail.proofUpload")}</p>
           {proofDone ? (
             <p className="text-sm text-leaf">Proof photo added ✓</p>
           ) : (
@@ -79,7 +79,9 @@ export function StatusAdvanceSection({
         disabled={isPending || needsProof}
       >
         {isPending ? <Loader2 className="size-4 animate-spin" /> : null}
-        {isPending ? "Updating…" : `Mark ${PICKUP_STATUS_LABELS[next]}`}
+        {isPending
+          ? t("pickup.detail.advancing")
+          : t("pickup.detail.advanceButton", { nextStatus: tCommon(`status.${next}`) })}
       </Button>
       {needsProof && (
         <p className="text-xs text-muted-foreground">Add the proof photo to enable delivery.</p>
@@ -89,7 +91,7 @@ export function StatusAdvanceSection({
           {error}{" "}
           {!isPending && (
             <button type="button" className="underline" onClick={advance}>
-              Retry
+              {tCommon("buttons.retry")}
             </button>
           )}
         </p>

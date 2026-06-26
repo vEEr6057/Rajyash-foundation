@@ -1,5 +1,7 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { PICKUP_STATUS_PILL, type PickupStatus } from "@/config/constants";
-import { formatStatus } from "@/features/pickups/lib/format";
 import { cn } from "@/lib/utils";
 
 /** Status pill using the design-system per-state tokens (--st-<key>-bg/-fg/-dot). */
@@ -10,6 +12,7 @@ export function PickupStatusPill({
   status: PickupStatus;
   className?: string;
 }) {
+  const t = useTranslations("common");
   const k = PICKUP_STATUS_PILL[status];
   const live = status === "en_route";
   return (
@@ -27,7 +30,7 @@ export function PickupStatusPill({
         className={cn("size-2 rounded-full", live && "rj-dot-live")}
         style={{ background: `var(--st-${k}-dot)` }}
       />
-      {formatStatus(status)}
+      {t(`status.${status}`)}
     </span>
   );
 }

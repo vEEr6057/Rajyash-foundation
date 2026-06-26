@@ -4,13 +4,13 @@ import { useState, useTransition } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   FOOD_CATEGORIES,
-  FOOD_CATEGORY_LABELS,
   QUANTITY_UNITS,
   ROUTES,
   type FoodCategory,
@@ -53,6 +53,8 @@ export function PickupForm({
   defaults?: Partial<FormValues>;
 }) {
   const router = useRouter();
+  const t = useTranslations("portal");
+  const tCommon = useTranslations("common");
   const [serverError, setServerError] = useState<string | null>(null);
   const [geocoding, setGeocoding] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -112,7 +114,7 @@ export function PickupForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
       <div>
-        <Label htmlFor="category">Food type</Label>
+        <Label htmlFor="category">{t("pickup.form.category")}</Label>
         <select
           id="category"
           className="rj-field h-11 w-full rounded-lg border border-input bg-surface px-3 text-[15px]"
@@ -121,7 +123,7 @@ export function PickupForm({
           <option value="">Select…</option>
           {FOOD_CATEGORIES.map((c) => (
             <option key={c} value={c}>
-              {FOOD_CATEGORY_LABELS[c]}
+              {tCommon(`foodCategory.${c}`)}
             </option>
           ))}
         </select>
@@ -132,14 +134,14 @@ export function PickupForm({
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <Label htmlFor="quantity">Quantity</Label>
+          <Label htmlFor="quantity">{t("pickup.form.quantity")}</Label>
           <Input id="quantity" type="number" min={1} {...register("quantity")} />
           {errors.quantity && (
             <p className="mt-1.5 text-sm text-destructive">{errors.quantity.message}</p>
           )}
         </div>
         <div>
-          <Label htmlFor="quantityUnit">Unit</Label>
+          <Label htmlFor="quantityUnit">{t("pickup.form.unit")}</Label>
           <select
             id="quantityUnit"
             className="rj-field h-11 w-full rounded-lg border border-input bg-surface px-3 text-[15px]"
@@ -147,7 +149,7 @@ export function PickupForm({
           >
             {QUANTITY_UNITS.map((u) => (
               <option key={u} value={u}>
-                {u}
+                {tCommon(`quantityUnit.${u}`)}
               </option>
             ))}
           </select>
@@ -169,14 +171,14 @@ export function PickupForm({
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <Label htmlFor="windowStart">Pickup from</Label>
+          <Label htmlFor="windowStart">{t("pickup.form.windowStart")}</Label>
           <Input id="windowStart" type="datetime-local" {...register("windowStart")} />
           {errors.windowStart && (
             <p className="mt-1.5 text-sm text-destructive">{errors.windowStart.message}</p>
           )}
         </div>
         <div>
-          <Label htmlFor="windowEnd">Pickup until</Label>
+          <Label htmlFor="windowEnd">{t("pickup.form.windowEnd")}</Label>
           <Input id="windowEnd" type="datetime-local" {...register("windowEnd")} />
           {errors.windowEnd && (
             <p className="mt-1.5 text-sm text-destructive">{errors.windowEnd.message}</p>
@@ -185,7 +187,7 @@ export function PickupForm({
       </div>
 
       <div>
-        <Label htmlFor="address">Pickup address</Label>
+        <Label htmlFor="address">{t("pickup.form.location")}</Label>
         <div className="flex gap-2">
           <Input id="address" placeholder="Area, landmark, Ahmedabad" {...register("address")} />
           <Button type="button" variant="outline" onClick={findOnMap} disabled={geocoding}>
@@ -227,9 +229,7 @@ export function PickupForm({
 
       <label className="flex items-start gap-2 text-sm">
         <input type="checkbox" className="mt-1 size-4" {...register("safetyAttested")} />
-        <span>
-          I confirm this food is fresh, safely stored, and fit to share.
-        </span>
+        <span>{t("pickup.form.attestation")}</span>
       </label>
       {errors.safetyAttested && (
         <p className="-mt-3 text-sm text-destructive">{errors.safetyAttested.message}</p>
@@ -240,7 +240,11 @@ export function PickupForm({
       )}
 
       <Button type="submit" size="lg" className="w-full" disabled={isPending}>
-        {isPending ? "Saving…" : mode === "create" ? "Post pickup" : "Save changes"}
+        {isPending
+          ? tCommon("buttons.loading")
+          : mode === "create"
+            ? t("pickup.form.submitCreate")
+            : t("pickup.form.submitEdit")}
       </Button>
     </form>
   );
