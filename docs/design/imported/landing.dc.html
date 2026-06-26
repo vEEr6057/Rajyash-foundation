@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Mukta:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FBF7F0; color: #22271F; font-family: 'Mukta','Noto Sans Devanagari','Noto Sans Gujarati', system-ui, sans-serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  :root {
+    --font-display: 'Bricolage Grotesque','Mukta', system-ui, sans-serif;
+    --font-text: 'Mukta','Noto Sans Devanagari','Noto Sans Gujarati', system-ui, -apple-system, sans-serif;
+    --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 22px; --radius-pill: 999px;
+    --motion-fast: 140ms; --motion-snappy: 200ms; --motion-base: 280ms; --motion-slow: 520ms; --motion-deliberate: 640ms;
+    --ease-standard: cubic-bezier(.2,.8,.3,1); --ease-out: cubic-bezier(.16,1,.3,1); --ease-in: cubic-bezier(.4,0,1,1); --ease-back: cubic-bezier(.34,1.56,.64,1);
+  }
+  [data-theme="light"] {
+    --background:#FBF7F0; --surface:#FFFFFF; --surface-2:#F6F1E7; --muted:#F1EBDF;
+    --foreground:#22271F; --muted-foreground:#6E665A; --subtle-foreground:#938A7B;
+    --border:#E8E0CF; --border-strong:#D9CFBA; --input:#D9CFBA; --ring:#E0651B;
+    --primary:#C04E12; --primary-foreground:#FFFFFF; --primary-hover:#A8420E; --primary-soft:#FBE7D2; --primary-soft-foreground:#8A3D10;
+    --brand-saffron:#F2711C;
+    --leaf:#2E7D46; --leaf-foreground:#FFFFFF; --leaf-hover:#266A3B; --leaf-soft:#DEF0E2; --leaf-soft-foreground:#1E6B36; --leaf-bright:#46A35E;
+    --info:#0E6F9E; --info-soft:#DBEBF4; --info-soft-foreground:#125C7E;
+    --shadow-sm: 0 1px 2px rgba(50,38,20,.06), 0 1px 1px rgba(50,38,20,.04);
+    --shadow-md: 0 4px 14px rgba(50,38,20,.08), 0 1px 3px rgba(50,38,20,.05);
+    --shadow-lg: 0 14px 38px rgba(50,38,20,.13), 0 3px 8px rgba(50,38,20,.06);
+  }
+  [data-theme="dark"] {
+    --background:#15140F; --surface:#1F1D16; --surface-2:#28241A; --muted:#2A2619;
+    --foreground:#F3ECDD; --muted-foreground:#A99F8C; --subtle-foreground:#827963;
+    --border:#37321F; --border-strong:#4A442E; --input:#4A442E; --ring:#F2842F;
+    --primary:#C8531A; --primary-foreground:#FFFFFF; --primary-hover:#DA5F22; --primary-soft:#3A2412; --primary-soft-foreground:#F4B07C;
+    --brand-saffron:#F8924A;
+    --leaf:#2E7D46; --leaf-foreground:#FFFFFF; --leaf-hover:#358A50; --leaf-soft:#16301F; --leaf-soft-foreground:#7FCB92; --leaf-bright:#56B36E;
+    --info:#1E89B8; --info-soft:#10303D; --info-soft-foreground:#86C7E2;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.34);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.42);
+    --shadow-lg: 0 16px 40px rgba(0,0,0,.55);
+  }
+  ::placeholder { color: var(--subtle-foreground); opacity: 1; }
+  ::selection { background: var(--primary-soft); color: var(--primary-soft-foreground); }
+  *:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 6px; }
+  a { color: inherit; }
+  @keyframes rj-live { 0% { box-shadow: 0 0 0 0 rgba(46,125,70,.5); } 70% { box-shadow: 0 0 0 10px rgba(46,125,70,0); } 100% { box-shadow: 0 0 0 0 rgba(46,125,70,0); } }
+  @keyframes rj-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes rj-menu-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+  @keyframes rj-reveal { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important; } }
+  @media (max-width: 1099px) { [data-desk]{ display:none !important; } [data-mob]{ display:inline-flex !important; } }
+  @media (min-width: 1100px) { [data-mob]{ display:none !important; } [data-menu]{ display:none !important; } }
+  @media (max-width: 860px) { [data-hero]{ grid-template-columns:1fr !important; } [data-hero-visual]{ order:-1; } }
+  @media (max-width: 820px) { [data-about]{ grid-template-columns:1fr !important; } }
+  @media (max-width: 540px) { [data-brand-sub]{ display:none !important; } }
+</style>
+</helmet>
+<div ref="{{ rootRef }}" data-theme="light" data-screen-label="Rajyash Food Rescue — Landing" style="background:var(--background); color:var(--foreground); font-family:var(--font-text); min-height:100vh; line-height:1.55; overflow-x:hidden;">
+
+  <a href="#impact" style="position:absolute; left:-9999px; top:8px; z-index:200; padding:10px 16px; border-radius:10px; background:var(--primary); color:#fff; font-weight:700; font-size:14px;" style-focus="left:12px;">{{ c.skip }}</a>
+
+  <header style="position:sticky; top:0; z-index:90; background:color-mix(in srgb, var(--background) 84%, transparent); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px); border-bottom:1px solid var(--border);">
+    <div style="max-width:1220px; margin:0 auto; padding:12px clamp(16px,5vw,40px); display:flex; align-items:center; gap:11px;">
+      <a href="#top" style="display:flex; align-items:center; gap:11px; margin-right:auto; text-decoration:none;">
+        <span style="width:40px; height:40px; flex:none; border-radius:12px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:var(--shadow-sm);">
+          <svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"></path><path d="M7 21h10"></path><path d="M19.5 12 22 6"></path><path d="M16.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.05.78.34 1.24.73 1.62"></path><path d="M11.25 3c.27.1.8.53.74 1.36-.05.83-.93 1.2-.98 2.02-.06.78.33 1.24.72 1.62"></path><path d="M6.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.05.78.34 1.24.74 1.62"></path></svg>
+        </span>
+        <span style="line-height:1.12;">
+          <span style="display:block; font-family:var(--font-display); font-weight:800; font-size:16px; line-height:1.15; white-space:nowrap; letter-spacing:-.015em; color:var(--foreground);">{{ c.brandName }}</span>
+          <span data-brand-sub style="display:block; font-size:11.5px; color:var(--muted-foreground); font-weight:600; letter-spacing:.02em;">{{ c.brandSub }}</span>
+        </span>
+      </a>
+
+      <nav data-desk style="display:flex; align-items:center; gap:2px;">
+        <a href="#how" style="padding:8px 11px; border-radius:var(--radius-pill); font-size:14px; font-weight:600; white-space:nowrap; color:var(--muted-foreground); text-decoration:none; transition:background-color .14s, color .14s;" style-hover="background:var(--surface-2); color:var(--foreground);">{{ c.nav.how }}</a>
+        <a href="#impact" style="padding:8px 11px; border-radius:var(--radius-pill); font-size:14px; font-weight:600; white-space:nowrap; color:var(--muted-foreground); text-decoration:none; transition:background-color .14s, color .14s;" style-hover="background:var(--surface-2); color:var(--foreground);">{{ c.nav.impact }}</a>
+        <a href="#about" style="padding:8px 11px; border-radius:var(--radius-pill); font-size:14px; font-weight:600; white-space:nowrap; color:var(--muted-foreground); text-decoration:none; transition:background-color .14s, color .14s;" style-hover="background:var(--surface-2); color:var(--foreground);">{{ c.nav.about }}</a>
+        <a href="#contact" style="padding:8px 11px; border-radius:var(--radius-pill); font-size:14px; font-weight:600; white-space:nowrap; color:var(--muted-foreground); text-decoration:none; transition:background-color .14s, color .14s;" style-hover="background:var(--surface-2); color:var(--foreground);">{{ c.nav.contact }}</a>
+      </nav>
+
+      <div role="group" aria-label="Language" style="display:flex; align-items:center; padding:3px; background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-pill);">
+        <button onClick="{{ setEn }}" aria-label="English" style="{{ langBtn.en }}">EN</button>
+        <button onClick="{{ setGu }}" aria-label="ગુજરાતી" style="{{ langBtn.gu }}">ગુ</button>
+        <button onClick="{{ setHi }}" aria-label="हिन्दी" style="{{ langBtn.hi }}">हि</button>
+      </div>
+
+      <a data-desk href="#" style="padding:8px 13px; border-radius:var(--radius-pill); font-size:14px; font-weight:600; color:var(--foreground); text-decoration:none; transition:background-color .14s;" style-hover="background:var(--surface-2);">{{ c.signin }}</a>
+
+      <button data-desk onClick="{{ toggleTheme }}" aria-label="Toggle colour theme" style="width:40px; height:40px; flex:none; border-radius:var(--radius-pill); border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; transition:background-color .14s;" style-hover="background:var(--surface-2);">
+        <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></sc-if>
+        <sc-if value="{{ notDark }}" hint-placeholder-val="{{ true }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></sc-if>
+      </button>
+
+      <a data-desk href="#help" style="display:inline-flex; align-items:center; gap:7px; height:42px; padding:0 18px; border-radius:var(--radius-pill); background:var(--primary); color:#fff; font-weight:700; font-size:14.5px; text-decoration:none; box-shadow:var(--shadow-sm); transition:background-color .14s, transform .14s;" style-hover="background:var(--primary-hover); transform:translateY(-1px);">{{ c.becomeVol }}</a>
+
+      <button data-mob onClick="{{ toggleMenu }}" aria-label="Menu" style="display:none; width:44px; height:44px; flex:none; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); align-items:center; justify-content:center; cursor:pointer;">
+        <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></sc-if>
+        <sc-if value="{{ menuClosed }}" hint-placeholder-val="{{ true }}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></sc-if>
+      </button>
+    </div>
+
+    <sc-if value="{{ menuOpen }}" hint-placeholder-val="{{ false }}">
+      <div data-menu style="border-top:1px solid var(--border); background:var(--background); padding:10px clamp(16px,5vw,40px) 18px; animation:rj-menu-in .2s var(--ease-out);">
+        <nav style="display:flex; flex-direction:column; gap:2px; margin-bottom:12px;">
+          <a onClick="{{ closeMenu }}" href="#how" style="padding:13px 12px; border-radius:12px; font-size:16px; font-weight:600; color:var(--foreground); text-decoration:none;" style-hover="background:var(--surface-2);">{{ c.nav.how }}</a>
+          <a onClick="{{ closeMenu }}" href="#impact" style="padding:13px 12px; border-radius:12px; font-size:16px; font-weight:600; color:var(--foreground); text-decoration:none;" style-hover="background:var(--surface-2);">{{ c.nav.impact }}</a>
+          <a onClick="{{ closeMenu }}" href="#about" style="padding:13px 12px; border-radius:12px; font-size:16px; font-weight:600; color:var(--foreground); text-decoration:none;" style-hover="background:var(--surface-2);">{{ c.nav.about }}</a>
+          <a onClick="{{ closeMenu }}" href="#contact" style="padding:13px 12px; border-radius:12px; font-size:16px; font-weight:600; color:var(--foreground); text-decoration:none;" style-hover="background:var(--surface-2);">{{ c.nav.contact }}</a>
+        </nav>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px; border-top:1px solid var(--border);">
+          <a onClick="{{ closeMenu }}" href="#" style="font-size:15px; font-weight:600; color:var(--foreground); text-decoration:none;">{{ c.signin }}</a>
+          <button onClick="{{ toggleTheme }}" style="display:inline-flex; align-items:center; gap:8px; height:40px; padding:0 14px; border-radius:var(--radius-pill); border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:14px; font-weight:600; cursor:pointer;">
+            <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>{{ c.themeLight }}</sc-if>
+            <sc-if value="{{ notDark }}" hint-placeholder-val="{{ true }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>{{ c.themeDark }}</sc-if>
+          </button>
+        </div>
+        <a onClick="{{ closeMenu }}" href="#help" style="display:flex; align-items:center; justify-content:center; height:50px; margin-top:6px; border-radius:14px; background:var(--primary); color:#fff; font-weight:700; font-size:16px; text-decoration:none; box-shadow:var(--shadow-sm);">{{ c.becomeVol }}</a>
+      </div>
+    </sc-if>
+  </header>
+
+  <main id="top">
+
+    <section style="position:relative; overflow:hidden; padding:clamp(34px,6vw,76px) 0 clamp(46px,7vw,96px);">
+      <div aria-hidden="true" style="position:absolute; inset:0; pointer-events:none; z-index:0;">
+        <div style="position:absolute; top:-140px; right:-90px; width:440px; height:440px; border-radius:50%; background:radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--brand-saffron) 40%, transparent), transparent 70%); filter:blur(18px);"></div>
+        <div style="position:absolute; bottom:-180px; left:-130px; width:480px; height:480px; border-radius:50%; background:radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--leaf-bright) 32%, transparent), transparent 70%); filter:blur(22px);"></div>
+      </div>
+      <div style="position:relative; z-index:1; max-width:1220px; margin:0 auto; padding:0 clamp(16px,5vw,40px);">
+        <div data-hero style="display:grid; grid-template-columns:1.04fr 0.96fr; gap:clamp(28px,5vw,60px); align-items:center;">
+          <div>
+            <div data-reveal style="display:inline-flex; align-items:center; gap:9px; padding:7px 15px 7px 11px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-sm); margin-bottom:24px;">
+              <span style="position:relative; display:inline-flex; width:9px; height:9px; flex:none;"><span style="position:absolute; inset:0; border-radius:50%; background:var(--leaf); animation:rj-live 2.2s var(--ease-out) infinite;"></span><span style="position:relative; width:9px; height:9px; border-radius:50%; background:var(--leaf);"></span></span>
+              <span style="font-size:13.5px; font-weight:600; color:var(--foreground);">{{ c.heroLive }}</span>
+            </div>
+            <h1 data-reveal data-delay="70" style="font-family:var(--font-display); font-weight:800; font-size:clamp(38px,6.6vw,68px); line-height:1.02; letter-spacing:-.03em; margin:0 0 20px; max-width:15ch; text-wrap:balance;">{{ c.heroTitle }}</h1>
+            <p data-reveal data-delay="130" style="font-size:clamp(17px,2.3vw,21px); line-height:1.55; color:var(--muted-foreground); max-width:52ch; margin:0 0 30px;">{{ c.heroSub }}</p>
+            <div data-reveal data-delay="190" style="display:flex; flex-wrap:wrap; gap:12px; margin-bottom:26px;">
+              <a href="#help" style="display:inline-flex; align-items:center; justify-content:center; gap:9px; height:54px; padding:0 24px; border-radius:15px; background:var(--primary); color:#fff; font-weight:700; font-size:16.5px; text-decoration:none; white-space:nowrap; box-shadow:var(--shadow-sm); transition:background-color .14s, transform .14s, box-shadow .2s;" style-hover="background:var(--primary-hover); transform:translateY(-2px); box-shadow:var(--shadow-md);" style-active="transform:scale(.97);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"></path><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"></path><path d="m2 15 6 6"></path><path d="M19.5 8.5c.7-.7 1.5-1.6 1.5-2.7A2.73 2.73 0 0 0 16 4a2.78 2.78 0 0 0-5 1.8c0 1.2.8 2 1.5 2.8L16 12Z"></path></svg>
+                {{ c.donateFood }}
+              </a>
+              <a href="#help" style="display:inline-flex; align-items:center; justify-content:center; gap:9px; height:54px; padding:0 24px; border-radius:15px; background:transparent; color:var(--leaf); border:1.6px solid var(--leaf); font-weight:700; font-size:16.5px; text-decoration:none; white-space:nowrap; transition:background-color .14s, transform .14s;" style-hover="background:var(--leaf-soft); transform:translateY(-2px);" style-active="transform:scale(.97);">{{ c.becomeVol }}</a>
+            </div>
+            <div data-reveal data-delay="240" style="display:inline-flex; align-items:center; gap:8px; font-size:14.5px; font-weight:500; color:var(--subtle-foreground);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              {{ c.heroTrust }}
+            </div>
+          </div>
+
+          <div data-hero-visual data-reveal data-delay="160" style="position:relative;">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="rj-hero" shape="rounded" radius="26" fit="cover" placeholder="Drop a warm photo of food being shared" style="display:block; width:100%; height:clamp(360px,54vw,540px); box-shadow:var(--shadow-lg);" hint-size="100%,520px"></x-import>
+            <div style="position:absolute; left:-10px; bottom:22px; display:flex; align-items:center; gap:12px; padding:13px 17px; border-radius:18px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-lg);">
+              <span style="width:44px; height:44px; flex:none; border-radius:13px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"></path><path d="M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></span>
+              <span style="line-height:1.2;"><span style="display:block; font-family:var(--font-display); font-weight:800; font-size:24px; letter-spacing:-.02em;">200+</span><span style="display:block; font-size:13px; font-weight:600; color:var(--muted-foreground);">{{ c.heroFloat }}</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="impact" style="padding:clamp(20px,3vw,40px) 0 clamp(40px,6vw,80px); scroll-margin-top:80px;">
+      <div style="max-width:1220px; margin:0 auto; padding:0 clamp(16px,5vw,40px);">
+        <div style="position:relative; overflow:hidden; border-radius:28px; background:var(--surface-2); border:1px solid var(--border); padding:clamp(26px,4vw,52px);">
+          <div style="display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:clamp(24px,3vw,36px);">
+            <div>
+              <div data-reveal style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+                <span style="font-size:12.5px; font-weight:700; letter-spacing:.14em; white-space:nowrap; text-transform:uppercase; color:var(--brand-saffron);">{{ c.impactEyebrow }}</span>
+                <span style="height:1px; width:44px; background:var(--border-strong);"></span>
+              </div>
+              <h2 data-reveal data-delay="60" style="font-family:var(--font-display); font-weight:800; font-size:clamp(27px,4.2vw,42px); line-height:1.08; letter-spacing:-.025em; margin:0 0 12px; max-width:18ch; text-wrap:balance;">{{ c.impactTitle }}</h2>
+              <p data-reveal data-delay="110" style="font-size:clamp(15.5px,1.8vw,18px); line-height:1.55; color:var(--muted-foreground); max-width:52ch; margin:0;">{{ c.impactSub }}</p>
+            </div>
+            <div data-reveal data-delay="120" style="display:inline-flex; align-items:center; gap:9px; padding:8px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-sm); flex:none;">
+              <span style="position:relative; display:inline-flex; width:8px; height:8px;"><span style="position:absolute; inset:0; border-radius:50%; background:var(--leaf); animation:rj-live 2.2s var(--ease-out) infinite;"></span><span style="position:relative; width:8px; height:8px; border-radius:50%; background:var(--leaf);"></span></span>
+              <span style="font-size:13px; font-weight:600; white-space:nowrap; color:var(--muted-foreground);">{{ c.impactLive }}</span>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(232px,1fr)); gap:clamp(14px,2vw,20px);">
+            <div data-reveal data-delay="40" style="background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow-sm); padding:clamp(20px,2.6vw,28px); transition:transform .25s var(--ease-out), box-shadow .25s var(--ease-out);" style-hover="transform:translateY(-5px); box-shadow:var(--shadow-md);">
+              <span style="width:46px; height:46px; border-radius:13px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"></path><path d="M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></span>
+              <div data-count="219480" style="font-family:var(--font-display); font-weight:800; font-size:clamp(40px,5.6vw,58px); line-height:1; letter-spacing:-.035em; font-variant-numeric:tabular-nums; margin:18px 0 8px;">2,19,480</div>
+              <div style="font-size:16.5px; font-weight:700; margin-bottom:3px;">{{ c.statMeals }}</div>
+              <div style="font-size:13.5px; color:var(--muted-foreground);">{{ c.statMealsNote }}</div>
+            </div>
+            <div data-reveal data-delay="110" style="background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow-sm); padding:clamp(20px,2.6vw,28px); transition:transform .25s var(--ease-out), box-shadow .25s var(--ease-out);" style-hover="transform:translateY(-5px); box-shadow:var(--shadow-md);">
+              <span style="width:46px; height:46px; border-radius:13px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"></path><path d="M7 21h10"></path><path d="M12 3v18"></path><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"></path></svg></span>
+              <div data-count="87600" style="font-family:var(--font-display); font-weight:800; font-size:clamp(40px,5.6vw,58px); line-height:1; letter-spacing:-.035em; font-variant-numeric:tabular-nums; margin:18px 0 8px;">87,600</div>
+              <div style="font-size:16.5px; font-weight:700; margin-bottom:3px;">{{ c.statKg }}</div>
+              <div style="font-size:13.5px; color:var(--muted-foreground);">{{ c.statKgNote }}</div>
+            </div>
+            <div data-reveal data-delay="180" style="background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow-sm); padding:clamp(20px,2.6vw,28px); transition:transform .25s var(--ease-out), box-shadow .25s var(--ease-out);" style-hover="transform:translateY(-5px); box-shadow:var(--shadow-md);">
+              <span style="width:46px; height:46px; border-radius:13px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path><path d="M15 18H9"></path><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path><circle cx="17" cy="18" r="2"></circle><circle cx="7" cy="18" r="2"></circle></svg></span>
+              <div data-count="8940" style="font-family:var(--font-display); font-weight:800; font-size:clamp(40px,5.6vw,58px); line-height:1; letter-spacing:-.035em; font-variant-numeric:tabular-nums; margin:18px 0 8px;">8,940</div>
+              <div style="font-size:16.5px; font-weight:700; margin-bottom:3px;">{{ c.statDeliveries }}</div>
+              <div style="font-size:13.5px; color:var(--muted-foreground);">{{ c.statDeliveriesNote }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="how" style="padding:clamp(40px,6vw,82px) 0; scroll-margin-top:72px;">
+      <div style="max-width:1220px; margin:0 auto; padding:0 clamp(16px,5vw,40px);">
+        <div style="text-align:center; margin-bottom:clamp(30px,4vw,52px);">
+          <div data-reveal style="display:inline-flex; align-items:center; gap:12px; margin-bottom:14px;">
+            <span style="height:1px; width:30px; background:var(--border-strong);"></span>
+            <span style="font-size:12.5px; font-weight:700; letter-spacing:.14em; white-space:nowrap; text-transform:uppercase; color:var(--brand-saffron);">{{ c.howEyebrow }}</span>
+            <span style="height:1px; width:30px; background:var(--border-strong);"></span>
+          </div>
+          <h2 data-reveal data-delay="60" style="font-family:var(--font-display); font-weight:800; font-size:clamp(27px,4.2vw,44px); line-height:1.07; letter-spacing:-.025em; margin:0 auto 14px; max-width:18ch; text-wrap:balance;">{{ c.howTitle }}</h2>
+          <p data-reveal data-delay="110" style="font-size:clamp(15.5px,1.9vw,18px); line-height:1.55; color:var(--muted-foreground); max-width:54ch; margin:0 auto;">{{ c.howSub }}</p>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(266px,1fr)); gap:clamp(16px,2vw,22px);">
+          <div data-reveal data-delay="40" style="position:relative; overflow:hidden; background:var(--surface); border:1px solid var(--border); border-radius:22px; box-shadow:var(--shadow-sm); padding:clamp(24px,3vw,32px); transition:transform .25s var(--ease-out), box-shadow .25s var(--ease-out);" style-hover="transform:translateY(-5px); box-shadow:var(--shadow-md);">
+            <span aria-hidden="true" style="position:absolute; top:8px; right:18px; font-family:var(--font-display); font-weight:800; font-size:86px; line-height:1; color:var(--surface-2); letter-spacing:-.04em;">1</span>
+            <span style="position:relative; width:54px; height:54px; border-radius:16px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center; margin-bottom:20px;"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M9 14h6"></path><path d="M12 11v6"></path></svg></span>
+            <div style="position:relative; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--brand-saffron); margin-bottom:8px;">{{ c.stepLabel }} 01</div>
+            <h3 style="position:relative; font-family:var(--font-display); font-weight:700; font-size:20px; line-height:1.25; letter-spacing:-.01em; margin:0 0 9px;">{{ c.step1Title }}</h3>
+            <p style="position:relative; font-size:15px; line-height:1.55; color:var(--muted-foreground); margin:0;">{{ c.step1Desc }}</p>
+          </div>
+          <div data-reveal data-delay="110" style="position:relative; overflow:hidden; background:var(--surface); border:1px solid var(--border); border-radius:22px; box-shadow:var(--shadow-sm); padding:clamp(24px,3vw,32px); transition:transform .25s var(--ease-out), box-shadow .25s var(--ease-out);" style-hover="transform:translateY(-5px); box-shadow:var(--shadow-md);">
+            <span aria-hidden="true" style="position:absolute; top:8px; right:18px; font-family:var(--font-display); font-weight:800; font-size:86px; line-height:1; color:var(--surface-2); letter-spacing:-.04em;">2</span>
+            <span style="position:relative; width:54px; height:54px; border-radius:16px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center; margin-bottom:20px;"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8A2 2 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></svg></span>
+            <div style="position:relative; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--leaf); margin-bottom:8px;">{{ c.stepLabel }} 02</div>
+            <h3 style="position:relative; font-family:var(--font-display); font-weight:700; font-size:20px; line-height:1.25; letter-spacing:-.01em; margin:0 0 9px;">{{ c.step2Title }}</h3>
+            <p style="position:relative; font-size:15px; line-height:1.55; color:var(--muted-foreground); margin:0;">{{ c.step2Desc }}</p>
+          </div>
+          <div data-reveal data-delay="180" style="position:relative; overflow:hidden; background:var(--surface); border:1px solid var(--border); border-radius:22px; box-shadow:var(--shadow-sm); padding:clamp(24px,3vw,32px); transition:transform .25s var(--ease-out), box-shadow .25s var(--ease-out);" style-hover="transform:translateY(-5px); box-shadow:var(--shadow-md);">
+            <span aria-hidden="true" style="position:absolute; top:8px; right:18px; font-family:var(--font-display); font-weight:800; font-size:86px; line-height:1; color:var(--surface-2); letter-spacing:-.04em;">3</span>
+            <span style="position:relative; width:54px; height:54px; border-radius:16px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center; margin-bottom:20px;"><svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path><path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08v0c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66"></path><path d="m18 15-2-2"></path><path d="m15 18-2-2"></path></svg></span>
+            <div style="position:relative; font-size:12px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--brand-saffron); margin-bottom:8px;">{{ c.stepLabel }} 03</div>
+            <h3 style="position:relative; font-family:var(--font-display); font-weight:700; font-size:20px; line-height:1.25; letter-spacing:-.01em; margin:0 0 9px;">{{ c.step3Title }}</h3>
+            <p style="position:relative; font-size:15px; line-height:1.55; color:var(--muted-foreground); margin:0;">{{ c.step3Desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="help" style="padding:clamp(40px,6vw,82px) 0; scroll-margin-top:72px;">
+      <div style="max-width:1220px; margin:0 auto; padding:0 clamp(16px,5vw,40px);">
+        <div style="margin-bottom:clamp(28px,3.5vw,46px);">
+          <div data-reveal style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+            <span style="font-size:12.5px; font-weight:700; letter-spacing:.14em; white-space:nowrap; text-transform:uppercase; color:var(--brand-saffron);">{{ c.helpEyebrow }}</span>
+            <span style="height:1px; flex:1; background:var(--border);"></span>
+          </div>
+          <h2 data-reveal data-delay="60" style="font-family:var(--font-display); font-weight:800; font-size:clamp(27px,4.2vw,44px); line-height:1.07; letter-spacing:-.025em; margin:0 0 12px; max-width:20ch; text-wrap:balance;">{{ c.helpTitle }}</h2>
+          <p data-reveal data-delay="110" style="font-size:clamp(15.5px,1.9vw,18px); line-height:1.55; color:var(--muted-foreground); max-width:56ch; margin:0;">{{ c.helpSub }}</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:clamp(16px,2vw,22px);">
+          <div data-reveal data-delay="40" style="position:relative; overflow:hidden; background:var(--surface); border:1px solid var(--border); border-radius:24px; box-shadow:var(--shadow-md); padding:clamp(26px,3.2vw,38px); display:flex; flex-direction:column;">
+            <span aria-hidden="true" style="position:absolute; top:-60px; right:-60px; width:200px; height:200px; border-radius:50%; background:color-mix(in srgb, var(--brand-saffron) 14%, transparent);"></span>
+            <span style="position:relative; align-self:flex-start; display:inline-flex; align-items:center; height:28px; padding:0 13px; border-radius:var(--radius-pill); background:var(--primary-soft); color:var(--primary-soft-foreground); font-size:12.5px; font-weight:700; letter-spacing:.03em; white-space:nowrap; text-transform:uppercase; margin-bottom:20px;">{{ c.donorTag }}</span>
+            <span style="position:relative; width:58px; height:58px; border-radius:17px; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm); margin-bottom:18px;"><svg width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"></path><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"></path><path d="m2 15 6 6"></path><path d="M19.5 8.5c.7-.7 1.5-1.6 1.5-2.7A2.73 2.73 0 0 0 16 4a2.78 2.78 0 0 0-5 1.8c0 1.2.8 2 1.5 2.8L16 12Z"></path></svg></span>
+            <h3 style="position:relative; font-family:var(--font-display); font-weight:700; font-size:clamp(22px,2.6vw,27px); line-height:1.2; letter-spacing:-.015em; margin:0 0 10px;">{{ c.donorTitle }}</h3>
+            <p style="position:relative; font-size:15.5px; line-height:1.55; color:var(--muted-foreground); margin:0 0 20px;">{{ c.donorDesc }}</p>
+            <ul style="position:relative; list-style:none; margin:0 0 24px; padding:0; display:flex; flex-direction:column; gap:11px;">
+              <li style="display:flex; align-items:center; gap:11px; font-size:15px; font-weight:500;"><span style="width:22px; height:22px; flex:none; border-radius:50%; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>{{ c.donorP1 }}</li>
+              <li style="display:flex; align-items:center; gap:11px; font-size:15px; font-weight:500;"><span style="width:22px; height:22px; flex:none; border-radius:50%; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>{{ c.donorP2 }}</li>
+              <li style="display:flex; align-items:center; gap:11px; font-size:15px; font-weight:500;"><span style="width:22px; height:22px; flex:none; border-radius:50%; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>{{ c.donorP3 }}</li>
+            </ul>
+            <a href="#" style="position:relative; margin-top:auto; display:inline-flex; align-items:center; justify-content:center; gap:8px; height:52px; border-radius:14px; background:var(--primary); color:#fff; font-weight:700; font-size:16px; text-decoration:none; box-shadow:var(--shadow-sm); transition:background-color .14s, transform .14s;" style-hover="background:var(--primary-hover); transform:translateY(-2px);" style-active="transform:scale(.98);">{{ c.donateFood }}<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+          </div>
+
+          <div data-reveal data-delay="120" style="position:relative; overflow:hidden; background:var(--surface); border:1px solid var(--border); border-radius:24px; box-shadow:var(--shadow-md); padding:clamp(26px,3.2vw,38px); display:flex; flex-direction:column;">
+            <span aria-hidden="true" style="position:absolute; top:-60px; right:-60px; width:200px; height:200px; border-radius:50%; background:color-mix(in srgb, var(--leaf-bright) 16%, transparent);"></span>
+            <span style="position:relative; align-self:flex-start; display:inline-flex; align-items:center; height:28px; padding:0 13px; border-radius:var(--radius-pill); background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-size:12.5px; font-weight:700; letter-spacing:.03em; white-space:nowrap; text-transform:uppercase; margin-bottom:20px;">{{ c.volTag }}</span>
+            <span style="position:relative; width:58px; height:58px; border-radius:17px; background:var(--leaf); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-sm); margin-bottom:18px;"><svg width="29" height="29" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.5 2.8A2 2 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></svg></span>
+            <h3 style="position:relative; font-family:var(--font-display); font-weight:700; font-size:clamp(22px,2.6vw,27px); line-height:1.2; letter-spacing:-.015em; margin:0 0 10px;">{{ c.volTitle }}</h3>
+            <p style="position:relative; font-size:15.5px; line-height:1.55; color:var(--muted-foreground); margin:0 0 20px;">{{ c.volDesc }}</p>
+            <ul style="position:relative; list-style:none; margin:0 0 24px; padding:0; display:flex; flex-direction:column; gap:11px;">
+              <li style="display:flex; align-items:center; gap:11px; font-size:15px; font-weight:500;"><span style="width:22px; height:22px; flex:none; border-radius:50%; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>{{ c.volP1 }}</li>
+              <li style="display:flex; align-items:center; gap:11px; font-size:15px; font-weight:500;"><span style="width:22px; height:22px; flex:none; border-radius:50%; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>{{ c.volP2 }}</li>
+              <li style="display:flex; align-items:center; gap:11px; font-size:15px; font-weight:500;"><span style="width:22px; height:22px; flex:none; border-radius:50%; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>{{ c.volP3 }}</li>
+            </ul>
+            <a href="#" style="position:relative; margin-top:auto; display:inline-flex; align-items:center; justify-content:center; gap:8px; height:52px; border-radius:14px; background:var(--leaf); color:#fff; font-weight:700; font-size:16px; text-decoration:none; box-shadow:var(--shadow-sm); transition:background-color .14s, transform .14s;" style-hover="background:var(--leaf-hover); transform:translateY(-2px);" style-active="transform:scale(.98);">{{ c.becomeVol }}<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+          </div>
+        </div>
+
+        <div data-reveal style="margin-top:clamp(16px,2vw,22px); display:flex; flex-wrap:wrap; align-items:center; gap:16px 20px; padding:clamp(16px,2vw,22px) clamp(18px,2.4vw,26px); border-radius:18px; border:1px dashed var(--border-strong); background:var(--surface-2);">
+          <span style="width:46px; height:46px; flex:none; border-radius:13px; background:var(--surface); border:1px solid var(--border); color:var(--subtle-foreground); display:flex; align-items:center; justify-content:center;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg></span>
+          <div style="flex:1; min-width:200px;">
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:5px;">
+              <span style="font-family:var(--font-display); font-weight:700; font-size:17.5px; white-space:nowrap;">{{ c.fundsTitle }}</span>
+              <span style="display:inline-flex; align-items:center; height:22px; padding:0 9px; border-radius:var(--radius-pill); background:var(--muted); color:var(--subtle-foreground); font-size:11px; font-weight:700; letter-spacing:.05em; text-transform:uppercase;">{{ c.fundsBadge }}</span>
+            </div>
+            <div style="font-size:14px; color:var(--muted-foreground);">{{ c.fundsDesc }}</div>
+          </div>
+          <form onSubmit="{{ noop }}" style="display:flex; gap:9px; flex:none;">
+            <input type="email" aria-label="Email" placeholder="you@email.com" style="height:46px; width:clamp(150px,40vw,210px); padding:0 14px; border-radius:12px; border:1px solid var(--input); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; outline:none;" style-focus="border-color:var(--ring); box-shadow:0 0 0 3px color-mix(in srgb, var(--ring) 26%, transparent);">
+            <button type="submit" style="height:46px; padding:0 18px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-weight:700; font-size:14.5px; cursor:pointer; white-space:nowrap; transition:background-color .14s;" style-hover="background:var(--muted);">{{ c.fundsCta }}</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" style="padding:clamp(40px,6vw,82px) 0; scroll-margin-top:72px;">
+      <div style="max-width:1220px; margin:0 auto; padding:0 clamp(16px,5vw,40px);">
+        <div data-about style="display:grid; grid-template-columns:1.02fr 0.98fr; gap:clamp(28px,4vw,56px); align-items:center;">
+          <div>
+            <div data-reveal style="display:flex; align-items:center; gap:12px; margin-bottom:14px;">
+              <span style="font-size:12.5px; font-weight:700; letter-spacing:.14em; white-space:nowrap; text-transform:uppercase; color:var(--brand-saffron);">{{ c.aboutEyebrow }}</span>
+              <span style="height:1px; width:44px; background:var(--border-strong);"></span>
+            </div>
+            <h2 data-reveal data-delay="60" style="font-family:var(--font-display); font-weight:800; font-size:clamp(27px,4.2vw,42px); line-height:1.08; letter-spacing:-.025em; margin:0 0 18px; max-width:18ch; text-wrap:balance;">{{ c.aboutTitle }}</h2>
+            <p data-reveal data-delay="110" style="font-size:clamp(16px,1.9vw,18.5px); line-height:1.62; color:var(--muted-foreground); margin:0 0 24px; max-width:54ch;">{{ c.aboutBody }}</p>
+            <div data-reveal data-delay="150" style="display:inline-flex; align-items:center; gap:10px; padding:10px 16px; border-radius:var(--radius-pill); background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-size:14px; font-weight:600; margin-bottom:28px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+              {{ c.aboutTrust }}
+            </div>
+            <div style="display:flex; flex-wrap:wrap; gap:clamp(20px,4vw,40px);">
+              <div data-reveal data-delay="40"><div style="font-family:var(--font-display); font-weight:800; font-size:clamp(26px,3.2vw,34px); letter-spacing:-.02em; line-height:1;">{{ c.aboutStat1 }}</div><div style="font-size:13.5px; color:var(--muted-foreground); margin-top:5px;">{{ c.aboutStat1L }}</div></div>
+              <div data-reveal data-delay="90" style="border-left:1px solid var(--border); padding-left:clamp(20px,4vw,40px);"><div style="font-family:var(--font-display); font-weight:800; font-size:clamp(26px,3.2vw,34px); letter-spacing:-.02em; line-height:1;">{{ c.aboutStat2 }}</div><div style="font-size:13.5px; color:var(--muted-foreground); margin-top:5px;">{{ c.aboutStat2L }}</div></div>
+              <div data-reveal data-delay="140" style="border-left:1px solid var(--border); padding-left:clamp(20px,4vw,40px);"><div style="font-family:var(--font-display); font-weight:800; font-size:clamp(22px,2.7vw,30px); letter-spacing:-.02em; line-height:1.05;">{{ c.aboutStat3 }}</div><div style="font-size:13.5px; color:var(--muted-foreground); margin-top:5px;">{{ c.aboutStat3L }}</div></div>
+            </div>
+          </div>
+
+          <div data-reveal data-delay="120" style="position:relative;">
+            <x-import component-from-global-scope="image-slot" from="./image-slot.js" id="rj-about" shape="rounded" radius="24" fit="cover" placeholder="Drop a photo of volunteers / a delivery" style="display:block; width:100%; height:clamp(320px,42vw,440px); box-shadow:var(--shadow-lg);" hint-size="100%,420px"></x-import>
+            <figure style="position:absolute; right:-8px; bottom:-18px; max-width:300px; margin:0; padding:20px 22px; border-radius:20px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-lg);">
+              <span aria-hidden="true" style="font-family:var(--font-display); font-weight:800; font-size:40px; line-height:.6; color:var(--brand-saffron);">&#8220;</span>
+              <blockquote style="margin:6px 0 12px; font-size:16px; line-height:1.5; font-weight:600; color:var(--foreground);">{{ c.quote }}</blockquote>
+              <figcaption style="display:flex; align-items:center; gap:10px;"><span style="width:30px; height:30px; flex:none; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:12px; font-family:var(--font-display);">RF</span><span style="font-size:13px; font-weight:600; color:var(--muted-foreground);">{{ c.quoteAttr }}</span></figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:clamp(20px,3vw,40px) 0 clamp(46px,6vw,90px);">
+      <div style="max-width:1220px; margin:0 auto; padding:0 clamp(16px,5vw,40px);">
+        <div data-reveal style="position:relative; overflow:hidden; border-radius:28px; padding:clamp(36px,6vw,72px) clamp(24px,5vw,64px); background:linear-gradient(135deg, var(--primary), var(--brand-saffron)); box-shadow:var(--shadow-lg); text-align:center;">
+          <span aria-hidden="true" style="position:absolute; top:-80px; left:-60px; width:280px; height:280px; border-radius:50%; background:rgba(255,255,255,.12);"></span>
+          <span aria-hidden="true" style="position:absolute; bottom:-110px; right:-50px; width:320px; height:320px; border-radius:50%; background:rgba(255,255,255,.10);"></span>
+          <div style="position:relative;">
+            <div style="font-size:12.5px; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.82); margin-bottom:16px;">{{ c.finalEyebrow }}</div>
+            <h2 style="font-family:var(--font-display); font-weight:800; font-size:clamp(30px,5.2vw,54px); line-height:1.04; letter-spacing:-.03em; margin:0 auto 16px; max-width:18ch; color:#fff; text-wrap:balance;">{{ c.finalTitle }}</h2>
+            <p style="font-size:clamp(16px,2.1vw,20px); line-height:1.5; color:rgba(255,255,255,.9); margin:0 auto 32px; max-width:50ch;">{{ c.finalSub }}</p>
+            <div style="display:flex; flex-wrap:wrap; gap:13px; justify-content:center;">
+              <a href="#" style="display:inline-flex; align-items:center; justify-content:center; gap:9px; height:54px; padding:0 26px; border-radius:15px; background:#fff; color:var(--primary); font-weight:700; font-size:16.5px; text-decoration:none; white-space:nowrap; box-shadow:var(--shadow-md); transition:transform .14s;" style-hover="transform:translateY(-2px);" style-active="transform:scale(.97);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 14h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 16"></path><path d="m7 20 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"></path><path d="m2 15 6 6"></path><path d="M19.5 8.5c.7-.7 1.5-1.6 1.5-2.7A2.73 2.73 0 0 0 16 4a2.78 2.78 0 0 0-5 1.8c0 1.2.8 2 1.5 2.8L16 12Z"></path></svg>{{ c.donateFood }}</a>
+              <a href="#" style="display:inline-flex; align-items:center; justify-content:center; gap:9px; height:54px; padding:0 26px; border-radius:15px; background:rgba(255,255,255,.14); color:#fff; border:1.6px solid rgba(255,255,255,.55); font-weight:700; font-size:16.5px; text-decoration:none; white-space:nowrap; transition:background-color .14s, transform .14s;" style-hover="background:rgba(255,255,255,.24); transform:translateY(-2px);" style-active="transform:scale(.97);">{{ c.becomeVol }}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer id="contact" style="border-top:1px solid var(--border); background:var(--surface-2); scroll-margin-top:72px;">
+    <div style="max-width:1220px; margin:0 auto; padding:clamp(40px,5vw,64px) clamp(16px,5vw,40px) 28px; display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:clamp(28px,4vw,48px);">
+      <div style="max-width:34ch;">
+        <div style="display:flex; align-items:center; gap:11px; margin-bottom:16px;">
+          <span style="width:40px; height:40px; flex:none; border-radius:12px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:var(--shadow-sm);"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"></path><path d="M7 21h10"></path><path d="M19.5 12 22 6"></path><path d="M16.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.05.78.34 1.24.73 1.62"></path><path d="M11.25 3c.27.1.8.53.74 1.36-.05.83-.93 1.2-.98 2.02-.06.78.33 1.24.72 1.62"></path><path d="M6.25 3c.27.1.8.53.75 1.36-.06.83-.93 1.2-1 2.02-.05.78.34 1.24.74 1.62"></path></svg></span>
+          <span style="line-height:1.12;"><span style="display:block; font-family:var(--font-display); font-weight:800; font-size:16px; line-height:1.15; white-space:nowrap; letter-spacing:-.015em;">{{ c.brandName }}</span><span style="display:block; font-size:11.5px; color:var(--muted-foreground); font-weight:600;">{{ c.brandSub }}</span></span>
+        </div>
+        <p style="font-size:14.5px; line-height:1.55; color:var(--muted-foreground); margin:0 0 18px;">{{ c.footTagline }}</p>
+        <div style="display:flex; align-items:center; padding:3px; width:fit-content; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-pill);">
+          <button onClick="{{ setEn }}" aria-label="English" style="{{ langBtn.en }}">EN</button>
+          <button onClick="{{ setGu }}" aria-label="ગુજરાતી" style="{{ langBtn.gu }}">ગુ</button>
+          <button onClick="{{ setHi }}" aria-label="हिन्दी" style="{{ langBtn.hi }}">हि</button>
+        </div>
+      </div>
+
+      <div>
+        <h3 style="font-size:12.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--subtle-foreground); margin:0 0 16px;">{{ c.footExplore }}</h3>
+        <nav style="display:flex; flex-direction:column; gap:11px;">
+          <a href="#how" style="font-size:15px; font-weight:500; color:var(--muted-foreground); text-decoration:none;" style-hover="color:var(--foreground);">{{ c.nav.how }}</a>
+          <a href="#impact" style="font-size:15px; font-weight:500; color:var(--muted-foreground); text-decoration:none;" style-hover="color:var(--foreground);">{{ c.nav.impact }}</a>
+          <a href="#about" style="font-size:15px; font-weight:500; color:var(--muted-foreground); text-decoration:none;" style-hover="color:var(--foreground);">{{ c.nav.about }}</a>
+          <a href="#help" style="font-size:15px; font-weight:500; color:var(--muted-foreground); text-decoration:none;" style-hover="color:var(--foreground);">{{ c.helpEyebrow }}</a>
+          <a href="#" style="font-size:15px; font-weight:500; color:var(--muted-foreground); text-decoration:none;" style-hover="color:var(--foreground);">{{ c.signin }}</a>
+        </nav>
+      </div>
+
+      <div>
+        <h3 style="font-size:12.5px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--subtle-foreground); margin:0 0 16px;">{{ c.footContact }}</h3>
+        <div style="display:flex; flex-direction:column; gap:13px;">
+          <a href="mailto:rajyashfoundation@rajyashgroup.com" style="display:flex; align-items:center; gap:11px; font-size:14.5px; font-weight:500; color:var(--muted-foreground); text-decoration:none;" style-hover="color:var(--foreground);"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--brand-saffron);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"></rect><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path></svg></span>rajyashfoundation@rajyashgroup.com</a>
+          <a href="tel:+919875041206" style="display:flex; align-items:center; gap:11px; font-size:14.5px; font-weight:500; color:var(--muted-foreground); text-decoration:none;" style-hover="color:var(--foreground);"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--brand-saffron);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"></path></svg></span>+91-9875041206</a>
+          <div style="display:flex; align-items:flex-start; gap:11px; font-size:14.5px; font-weight:500; color:var(--muted-foreground);"><span style="width:34px; height:34px; flex:none; border-radius:10px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--brand-saffron);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></span><span style="padding-top:7px;">{{ c.footAddr }}</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--border);">
+      <div style="max-width:1220px; margin:0 auto; padding:18px clamp(16px,5vw,40px); display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px;">
+        <span style="font-size:13px; color:var(--subtle-foreground);">{{ c.footRights }}</span>
+        <span style="display:inline-flex; align-items:center; gap:7px; font-size:13px; color:var(--subtle-foreground);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--brand-saffron)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>{{ c.footMade }}</span>
+      </div>
+    </div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;light&quot;, &quot;dark&quot;], &quot;default&quot;: &quot;light&quot;, &quot;tsType&quot;: &quot;\&quot;light\&quot; | \&quot;dark\&quot;&quot;, &quot;section&quot;: &quot;Display&quot;}, &quot;lang&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;en&quot;, &quot;gu&quot;, &quot;hi&quot;], &quot;default&quot;: &quot;en&quot;, &quot;tsType&quot;: &quot;\&quot;en\&quot; | \&quot;gu\&quot; | \&quot;hi\&quot;&quot;, &quot;section&quot;: &quot;Display&quot;}}">
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  copy = {
+    en: {
+      skip: 'Skip to content', themeLight: 'Light', themeDark: 'Dark',
+      brandName: 'Rajyash Foundation', brandSub: 'Food Rescue',
+      nav: { how: 'How it works', impact: 'Impact', about: 'About', contact: 'Contact' },
+      signin: 'Sign in', becomeVol: 'Become a volunteer', donateFood: 'Donate surplus food',
+      heroLive: '200+ meals rescued every day',
+      heroTitle: 'Rescuing surplus food, with warmth.',
+      heroSub: 'Connecting surplus food to people in need across Ahmedabad — donors give, volunteers deliver.',
+      heroTrust: 'Running since 2023 · Ahmedabad', heroFloat: 'meals rescued each day',
+      impactEyebrow: 'Live impact', impactTitle: 'Every meal counts — so we count every one.',
+      impactSub: 'Real numbers from the field, updated as rescues happen.', impactLive: 'Live · updated just now',
+      statMeals: 'Meals served', statMealsNote: 'warm meals to people in need',
+      statKg: 'Kilograms rescued', statKgNote: 'of good food kept from waste',
+      statDeliveries: 'Deliveries completed', statDeliveriesNote: 'pickups delivered by volunteers',
+      howEyebrow: 'How it works', howTitle: 'The rescue loop, in three simple steps.',
+      howSub: 'From a donor’s extra food to someone’s plate — often on the very same day.', stepLabel: 'Step',
+      step1Title: 'A donor posts surplus food', step1Desc: 'A restaurant, family, or event planner lists what’s left over and a pickup time.',
+      step2Title: 'A volunteer claims & picks up', step2Desc: 'A nearby volunteer driver accepts the request and collects the food while it’s fresh.',
+      step3Title: 'Food reaches people in need', step3Desc: 'The meal is delivered to a shelter or community kitchen — warm, safe, and with dignity.',
+      helpEyebrow: 'Two ways to help', helpTitle: 'Give food, or give time.',
+      helpSub: 'Both keep the rescue loop turning. Choose the one that fits you.',
+      donorTag: 'For donors', donorTitle: 'Share your surplus',
+      donorDesc: 'Restaurants, families, and event planners — turn extra food into someone’s next meal instead of waste.',
+      donorP1: 'Restaurants & caterers', donorP2: 'Families & celebrations', donorP3: 'Event & wedding planners',
+      volTag: 'For volunteers', volTitle: 'Drive a rescue',
+      volDesc: 'Have a couple of hours and a way to travel? Pick up nearby and deliver hope across the city.',
+      volP1: 'Choose pickups near you', volP2: 'Flexible, on your schedule', volP3: 'Track the impact you make',
+      fundsTitle: 'Support with funds', fundsDesc: 'Monetary giving is on its way — leave your email and we’ll tell you when it opens.',
+      fundsBadge: 'Coming soon', fundsCta: 'Notify me',
+      aboutEyebrow: 'About us', aboutTitle: 'A warm idea from the Rajyash Foundation.',
+      aboutBody: 'The Rajyash Foundation is the social arm of the Rajyash Group, based in Ahmedabad. Since 2023 we’ve connected everyday surplus food to the people who need it most — turning abundance into dignity, one meal at a time.',
+      aboutTrust: 'A registered social initiative of the Rajyash Group',
+      quote: 'No one in our city should sleep hungry while good food goes to waste.', quoteAttr: 'The Rajyash Foundation team',
+      aboutStat1: '200+', aboutStat1L: 'meals rescued daily', aboutStat2: '2023', aboutStat2L: 'serving since', aboutStat3: 'Ahmedabad', aboutStat3L: 'where we serve',
+      finalEyebrow: 'Join the rescue', finalTitle: 'Good food, in the right hands.',
+      finalSub: 'Whether you have food to give or a few hours to drive, there’s a place for you in the loop.',
+      footTagline: 'Rescuing surplus food, with warmth — across Ahmedabad.',
+      footExplore: 'Explore', footContact: 'Contact', footAddr: 'Satellite, Ahmedabad 380015',
+      footRights: '© 2026 Rajyash Foundation. An initiative of the Rajyash Group.', footMade: 'Made with care in Ahmedabad.'
+    },
+    gu: {
+      skip: 'મુખ્ય સામગ્રી પર જાઓ', themeLight: 'લાઇટ', themeDark: 'ડાર્ક',
+      brandName: 'રાજયશ ફાઉન્ડેશન', brandSub: 'ફૂડ રેસ્ક્યૂ',
+      nav: { how: 'કેવી રીતે કામ કરે', impact: 'અસર', about: 'અમારા વિશે', contact: 'સંપર્ક' },
+      signin: 'સાઇન ઇન', becomeVol: 'સ્વયંસેવક બનો', donateFood: 'વધારાનું ભોજન દાન કરો',
+      heroLive: 'દરરોજ 200+ ભોજન બચાવાય છે',
+      heroTitle: 'વધારાનું ભોજન બચાવીએ, હૂંફ સાથે.',
+      heroSub: 'અમદાવાદભરમાં વધારાનું ભોજન જરૂરિયાતમંદ લોકો સુધી પહોંચાડીએ — દાતા આપે, સ્વયંસેવક પહોંચાડે.',
+      heroTrust: '2023થી કાર્યરત · અમદાવાદ', heroFloat: 'દરરોજ બચાવેલ ભોજન',
+      impactEyebrow: 'જીવંત અસર', impactTitle: 'દરેક ભોજન મહત્ત્વનું છે — એટલે અમે દરેકની ગણતરી કરીએ.',
+      impactSub: 'ક્ષેત્રમાંથી સાચા આંકડા, બચાવ થતાં જ અપડેટ થાય.', impactLive: 'જીવંત · હમણાં જ અપડેટ',
+      statMeals: 'પીરસેલ ભોજન', statMealsNote: 'જરૂરિયાતમંદ સુધી ગરમ ભોજન',
+      statKg: 'બચાવેલ કિલોગ્રામ', statKgNote: 'સારું ભોજન બગાડથી બચાવ્યું',
+      statDeliveries: 'પૂર્ણ વિતરણ', statDeliveriesNote: 'સ્વયંસેવકોએ પહોંચાડેલ પિકઅપ',
+      howEyebrow: 'કેવી રીતે કામ કરે', howTitle: 'બચાવનું ચક્ર, ત્રણ સરળ પગલાંમાં.',
+      howSub: 'દાતાના વધારાના ભોજનથી કોઈની થાળી સુધી — ઘણીવાર એ જ દિવસે.', stepLabel: 'પગલું',
+      step1Title: 'દાતા વધારાનું ભોજન મૂકે', step1Desc: 'રેસ્ટોરન્ટ, પરિવાર કે ઇવેન્ટ પ્લાનર વધેલું ભોજન અને પિકઅપનો સમય જણાવે.',
+      step2Title: 'સ્વયંસેવક દાવો કરી લઈ જાય', step2Desc: 'નજીકનો સ્વયંસેવક વિનંતી સ્વીકારી ભોજન તાજું હોય ત્યારે જ લઈ લે.',
+      step3Title: 'ભોજન જરૂરિયાતમંદ સુધી પહોંચે', step3Desc: 'ભોજન આશ્રય કે સામુદાયિક રસોડે પહોંચાડાય — ગરમ, સલામત અને સન્માન સાથે.',
+      helpEyebrow: 'મદદની બે રીત', helpTitle: 'ભોજન આપો, અથવા સમય આપો.',
+      helpSub: 'બંને બચાવનું ચક્ર ચાલુ રાખે. તમને અનુકૂળ હોય તે પસંદ કરો.',
+      donorTag: 'દાતાઓ માટે', donorTitle: 'તમારું વધારાનું વહેંચો',
+      donorDesc: 'રેસ્ટોરન્ટ, પરિવાર અને ઇવેન્ટ પ્લાનર — વધારાનું ભોજન બગાડવાને બદલે કોઈનું આગલું ભોજન બનાવો.',
+      donorP1: 'રેસ્ટોરન્ટ અને કેટરર્સ', donorP2: 'પરિવાર અને ઉજવણીઓ', donorP3: 'ઇવેન્ટ અને લગ્ન પ્લાનર',
+      volTag: 'સ્વયંસેવકો માટે', volTitle: 'એક બચાવ ચલાવો',
+      volDesc: 'થોડા કલાક અને વાહન છે? નજીકથી ભોજન લઈ શહેરભરમાં આશા પહોંચાડો.',
+      volP1: 'તમારી નજીકના પિકઅપ પસંદ કરો', volP2: 'તમારા સમય મુજબ, અનુકૂળ', volP3: 'તમારી અસર પર નજર રાખો',
+      fundsTitle: 'નાણાંથી સહયોગ', fundsDesc: 'નાણાકીય દાન ટૂંક સમયમાં — ઇમેઇલ મૂકો, ખૂલે ત્યારે જણાવીશું.',
+      fundsBadge: 'ટૂંક સમયમાં', fundsCta: 'મને જણાવો',
+      aboutEyebrow: 'અમારા વિશે', aboutTitle: 'રાજયશ ફાઉન્ડેશનનો એક ઉષ્માભર્યો વિચાર.',
+      aboutBody: 'રાજયશ ફાઉન્ડેશન એ રાજયશ ગ્રૂપની સામાજિક પાંખ છે, જે અમદાવાદમાં સ્થિત છે. 2023થી અમે રોજનું વધારાનું ભોજન સૌથી જરૂરિયાતમંદ લોકો સુધી પહોંચાડીએ — એક-એક ભોજનથી વિપુલતાને સન્માનમાં ફેરવીએ.',
+      aboutTrust: 'રાજયશ ગ્રૂપની નોંધાયેલ સામાજિક પહેલ',
+      quote: 'સારું ભોજન બગડે અને આપણા શહેરમાં કોઈ ભૂખ્યું સૂએ — એવું ન થવું જોઈએ.', quoteAttr: 'રાજયશ ફાઉન્ડેશન ટીમ',
+      aboutStat1: '200+', aboutStat1L: 'દરરોજ બચાવેલ ભોજન', aboutStat2: '2023', aboutStat2L: 'ત્યારથી સેવા', aboutStat3: 'અમદાવાદ', aboutStat3L: 'કાર્યક્ષેત્ર',
+      finalEyebrow: 'બચાવમાં જોડાઓ', finalTitle: 'સારું ભોજન, યોગ્ય હાથોમાં.',
+      finalSub: 'આપવા ભોજન હોય કે ચલાવવા થોડા કલાક — આ ચક્રમાં તમારા માટે જગ્યા છે.',
+      footTagline: 'વધારાનું ભોજન બચાવીએ, હૂંફ સાથે — અમદાવાદભરમાં.',
+      footExplore: 'શોધખોળ', footContact: 'સંપર્ક', footAddr: 'સેટેલાઇટ, અમદાવાદ 380015',
+      footRights: '© 2026 રાજયશ ફાઉન્ડેશન. રાજયશ ગ્રૂપની એક પહેલ.', footMade: 'અમદાવાદમાં કાળજીથી બનાવ્યું.'
+    },
+    hi: {
+      skip: 'मुख्य सामग्री पर जाएँ', themeLight: 'लाइट', themeDark: 'डार्क',
+      brandName: 'राजयश फ़ाउंडेशन', brandSub: 'फ़ूड रेस्क्यू',
+      nav: { how: 'यह कैसे काम करता है', impact: 'प्रभाव', about: 'हमारे बारे में', contact: 'संपर्क' },
+      signin: 'साइन इन', becomeVol: 'स्वयंसेवक बनें', donateFood: 'बचा हुआ भोजन दान करें',
+      heroLive: 'रोज़ाना 200+ भोजन बचाए जाते हैं',
+      heroTitle: 'बचा हुआ भोजन बचाते हैं, अपनेपन के साथ.',
+      heroSub: 'अहमदाबाद भर में बचा हुआ भोजन ज़रूरतमंदों तक पहुँचाते हैं — दाता देते हैं, स्वयंसेवक पहुँचाते हैं.',
+      heroTrust: '2023 से सक्रिय · अहमदाबाद', heroFloat: 'रोज़ बचाए गए भोजन',
+      impactEyebrow: 'सजीव प्रभाव', impactTitle: 'हर भोजन मायने रखता है — इसलिए हम हर एक को गिनते हैं.',
+      impactSub: 'मैदान से असली आंकड़े, बचाव होते ही अपडेट होते हैं.', impactLive: 'सजीव · अभी अपडेट हुआ',
+      statMeals: 'परोसे गए भोजन', statMealsNote: 'ज़रूरतमंदों तक गरम भोजन',
+      statKg: 'बचाए गए किलोग्राम', statKgNote: 'अच्छा भोजन बर्बादी से बचाया',
+      statDeliveries: 'पूरी हुई डिलीवरी', statDeliveriesNote: 'स्वयंसेवकों द्वारा पहुँचाए पिकअप',
+      howEyebrow: 'यह कैसे काम करता है', howTitle: 'बचाव का चक्र, तीन आसान चरणों में.',
+      howSub: 'दाता के बचे भोजन से किसी की थाली तक — अक्सर उसी दिन.', stepLabel: 'चरण',
+      step1Title: 'दाता बचा हुआ भोजन पोस्ट करता है', step1Desc: 'कोई रेस्तराँ, परिवार या इवेंट प्लानर बचा भोजन और पिकअप का समय दर्ज करता है.',
+      step2Title: 'स्वयंसेवक दावा कर उठाता है', step2Desc: 'पास का स्वयंसेवक अनुरोध स्वीकारता है और भोजन ताज़ा रहते ही ले लेता है.',
+      step3Title: 'भोजन ज़रूरतमंदों तक पहुँचता है', step3Desc: 'भोजन किसी आश्रय या सामुदायिक रसोई तक पहुँचता है — गरम, सुरक्षित और सम्मान के साथ.',
+      helpEyebrow: 'मदद के दो तरीके', helpTitle: 'भोजन दें, या समय दें.',
+      helpSub: 'दोनों बचाव-चक्र को चलाते रहते हैं. जो आपको सही लगे चुनें.',
+      donorTag: 'दाताओं के लिए', donorTitle: 'अपना बचा भोजन साझा करें',
+      donorDesc: 'रेस्तराँ, परिवार और इवेंट प्लानर — बचे भोजन को बर्बाद करने के बजाय किसी का अगला भोजन बनाएँ.',
+      donorP1: 'रेस्तराँ और कैटरर', donorP2: 'परिवार और उत्सव', donorP3: 'इवेंट और शादी प्लानर',
+      volTag: 'स्वयंसेवकों के लिए', volTitle: 'एक बचाव चलाएँ',
+      volDesc: 'कुछ घंटे और आने-जाने का साधन है? पास से उठाएँ और शहर भर में आशा पहुँचाएँ.',
+      volP1: 'अपने पास के पिकअप चुनें', volP2: 'आपके समय के अनुसार, लचीला', volP3: 'अपने प्रभाव पर नज़र रखें',
+      fundsTitle: 'धन से सहयोग दें', fundsDesc: 'आर्थिक दान जल्द आ रहा है — अपना ईमेल छोड़ें, खुलते ही बताएँगे.',
+      fundsBadge: 'जल्द आ रहा है', fundsCta: 'मुझे सूचित करें',
+      aboutEyebrow: 'हमारे बारे में', aboutTitle: 'राजयश फ़ाउंडेशन का एक गर्मजोशी भरा विचार.',
+      aboutBody: 'राजयश फ़ाउंडेशन, राजयश ग्रुप की सामाजिक इकाई है, जो अहमदाबाद में स्थित है. 2023 से हम रोज़मर्रा का बचा भोजन सबसे ज़रूरतमंद लोगों तक पहुँचाते हैं — एक-एक भोजन से बहुतायत को सम्मान में बदलते हैं.',
+      aboutTrust: 'राजयश ग्रुप की पंजीकृत सामाजिक पहल',
+      quote: 'अच्छा भोजन बर्बाद हो और हमारे शहर में कोई भूखा सोए — ऐसा नहीं होना चाहिए.', quoteAttr: 'राजयश फ़ाउंडेशन टीम',
+      aboutStat1: '200+', aboutStat1L: 'रोज़ बचाए भोजन', aboutStat2: '2023', aboutStat2L: 'तब से सेवा', aboutStat3: 'अहमदाबाद', aboutStat3L: 'जहाँ हम सेवा करते हैं',
+      finalEyebrow: 'बचाव में शामिल हों', finalTitle: 'अच्छा भोजन, सही हाथों में.',
+      finalSub: 'चाहे आपके पास देने को भोजन हो या चलाने को कुछ घंटे — इस चक्र में आपके लिए जगह है.',
+      footTagline: 'बचा हुआ भोजन बचाते हैं, अपनेपन के साथ — अहमदाबाद भर में.',
+      footExplore: 'जानें', footContact: 'संपर्क', footAddr: 'सैटेलाइट, अहमदाबाद 380015',
+      footRights: '© 2026 राजयश फ़ाउंडेशन. राजयश ग्रुप की एक पहल.', footMade: 'अहमदाबाद में जतन से बनाया.'
+    }
+  };
+
+  constructor(props) {
+    super(props);
+    let t = null, l = null;
+    try { t = localStorage.getItem('rj_theme'); l = localStorage.getItem('rj_lang'); } catch (e) {}
+    this.state = { theme: t, lang: l, menuOpen: false };
+  }
+
+  get effTheme() { return this.props.theme || this.state.theme || 'light'; }
+  get effLang() { const l = this.props.lang || this.state.lang || 'en'; return this.copy[l] ? l : 'en'; }
+
+  componentDidMount() { this.syncDom(); this.setupMotion(); }
+  componentDidUpdate() { this.syncDom(); }
+
+  syncDom() {
+    const r = this.rootRef.current; if (!r) return;
+    r.dataset.theme = this.effTheme; r.dataset.lang = this.effLang;
+    r.setAttribute('lang', this.effLang); // screen-reader pronunciation + Indic shaping
+  }
+
+  toggleTheme = () => {
+    const t = this.effTheme === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('rj_theme', t); } catch (e) {}
+    this.setState({ theme: t });
+  };
+  setLang = (l) => {
+    try { localStorage.setItem('rj_lang', l); } catch (e) {}
+    this.setState({ lang: l, menuOpen: false });
+  };
+  setEn = () => this.setLang('en');
+  setGu = () => this.setLang('gu');
+  setHi = () => this.setLang('hi');
+  toggleMenu = () => this.setState(s => ({ menuOpen: !s.menuOpen }));
+  closeMenu = () => this.setState({ menuOpen: false });
+  noop = (e) => { if (e && e.preventDefault) e.preventDefault(); };
+
+  setupMotion() {
+    const root = this.rootRef.current; if (!root) return;
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fmt = (n) => Math.round(n).toLocaleString('en-IN');
+    const counts = Array.from(root.querySelectorAll('[data-count]'));
+    const reveals = Array.from(root.querySelectorAll('[data-reveal]'));
+    const started = new Set();
+
+    const animateCount = (el) => {
+      if (started.has(el)) return; started.add(el);
+      const to = +el.getAttribute('data-count'); const dur = 1600; const st = performance.now();
+      const ease = (t) => 1 - Math.pow(1 - t, 3);
+      el.textContent = fmt(0);
+      const tick = (now) => { const t = Math.min(1, (now - st) / dur); el.textContent = fmt(to * ease(t)); if (t < 1) requestAnimationFrame(tick); };
+      requestAnimationFrame(tick);
+    };
+
+    // Reduced motion: leave everything in its final, visible state (counts already hold the real number).
+    if (reduce) return; // content stays visible; counts hold their literal final number
+
+    // Hide via opacity only; the reveal is a keyframe animation (fill:both) which reliably
+    // reaches AND holds its end state — a plain opacity transition gets stuck at the start
+    // value in this runtime.
+    reveals.forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity .5s var(--ease-out), transform .5s var(--ease-out)';
+      const d = el.getAttribute('data-delay'); if (d) el.style.transitionDelay = d + 'ms';
+    });
+
+    // In a live browser this animates; if the transition is frozen (some capture/export
+    // contexts pause CSS animation), the safety net below force-snaps it visible.
+    const revealEl = (el) => { if (el.dataset.shown) return; el.dataset.shown = '1'; el.style.opacity = '1'; el.style.transform = 'none'; };
+
+    // Scroll-driven reveal using layout position (IntersectionObserver's initial callback was
+    // unreliable here). getBoundingClientRect is always accurate.
+    const check = () => {
+      const vh = window.innerHeight || 800;
+      reveals.forEach(el => { if (el.dataset.shown) return; if (el.getBoundingClientRect().top < vh * 0.92) revealEl(el); });
+      counts.forEach(el => { if (started.has(el)) return; if (el.getBoundingClientRect().top < vh * 0.85) animateCount(el); });
+    };
+
+    requestAnimationFrame(check);
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check);
+    document.addEventListener('scroll', check, { passive: true, capture: true });
+
+    // Guarantee-visible safety net: removing the transition before setting opacity makes the
+    // value apply immediately even where CSS animation is frozen (export, PDF, screenshots,
+    // background tabs). Counts keep their literal final number until scrolled in, so a static
+    // capture never shows 0.
+    setTimeout(() => {
+      reveals.forEach(el => { el.dataset.shown = '1'; el.style.transition = 'none'; el.style.opacity = '1'; el.style.transform = 'none'; });
+    }, 1100);
+  }
+
+  renderVals() {
+    const lang = this.effLang;
+    const c = this.copy[lang];
+    const isDark = this.effTheme === 'dark';
+    const base = 'display:inline-flex; align-items:center; justify-content:center; padding:0 12px; border-radius:999px; border:none; background:transparent; color:var(--muted-foreground); font-family:var(--font-text); font-weight:700; font-size:13px; cursor:pointer; line-height:1; min-width:42px; min-height:38px; transition:background-color .14s var(--ease-standard), color .14s var(--ease-standard);';
+    const act = 'display:inline-flex; align-items:center; justify-content:center; padding:0 12px; border-radius:999px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:13px; cursor:pointer; line-height:1; min-width:42px; min-height:38px; box-shadow:var(--shadow-sm); transition:background-color .14s var(--ease-standard), color .14s var(--ease-standard);';
+    return {
+      rootRef: this.rootRef,
+      c, lang, isDark, notDark: !isDark,
+      menuOpen: this.state.menuOpen, menuClosed: !this.state.menuOpen,
+      toggleTheme: this.toggleTheme, toggleMenu: this.toggleMenu, closeMenu: this.closeMenu,
+      setEn: this.setEn, setGu: this.setGu, setHi: this.setHi, noop: this.noop,
+      langBtn: {
+        en: lang === 'en' ? act : base,
+        gu: lang === 'gu' ? act : base,
+        hi: lang === 'hi' ? act : base
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
