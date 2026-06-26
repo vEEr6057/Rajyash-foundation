@@ -16,6 +16,8 @@ Caps: 20 lessons/session (overflow → `INDEX-pending.md`); 200 lines in INDEX (
 
 ---
 
+- [2026-06-26 general/MEDIUM/verified] inngest-dev-flood-corrupts-next — inngest-cli dev probe flood (/api/inngest etc.) + stale .next → `Cannot find module vendor-chunks/@clerk` → server actions silently 200-fail (look like a hang); stop flood + `rm -rf .next` → general/inngest-dev-flood-corrupts-next.md
+- [2026-06-26 testing/LOW/verified] clerk-programmatic-test-signin — drive Clerk sign-in via `window.Clerk.client.signIn` + test code 424242 + setActive (not the fragile UI); signOut before switching accounts; grant geolocation per-origin → testing/clerk-programmatic-test-signin.md
 - [2026-06-26 auth/LOW/verified] clerk-redirect-env-vars-deprecated — AFTER_SIGN_UP_URL env ignored by Clerk v6+ (redirects to /); use `forceRedirectUrl` prop on <SignUp/>/<SignIn/> → auth/clerk-redirect-env-vars-deprecated.md
 - [2026-06-26 auth/HIGH/verified] clerk-no-india-phone-otp — Clerk can't OTP Indian numbers; no free India SMS exists; v1 = email + Google OAuth, phone optional/unverified; later use Fast2SMS (no DLT) not MSG91 → auth/clerk-no-india-phone-otp.md
 - [2026-06-26 general/MEDIUM/verified] stale-next-after-opennext-build — `pnpm dev` "Cannot find module vendor-chunks/..." after a deploy/build; dev+prod share .next → `rm -rf .next` then dev → general/stale-next-after-opennext-build.md

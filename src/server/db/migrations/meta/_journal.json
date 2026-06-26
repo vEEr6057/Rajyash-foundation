@@ -15,6 +15,13 @@
       "when": 1782426477825,
       "tag": "0001_chunky_lady_mastermind",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782432393249,
+      "tag": "0002_clumsy_speed_demon",
+      "breakpoints": true
     }
   ]
 }

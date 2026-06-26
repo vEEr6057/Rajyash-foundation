@@ -104,4 +104,14 @@ export const QUERY_KEYS = {
   pickup: (id: string) => ["pickups", id] as const,
   board: ["pickups", "board"] as const,
   myPickups: ["pickups", "mine"] as const,
+  pings: (id: string) => ["pings", id] as const,
 } as const;
+
+// ── Live tracking (Phase 3) ──────────────────────────────────────────
+// Volunteer GPS write cadence — one ping per ~30s (D-04, RESEARCH §D throttle).
+export const PING_INTERVAL_MS = 30_000;
+// Polling fallback when Realtime is down — latest-ping read every 10s (D-06).
+export const POLL_INTERVAL_MS = 10_000;
+// Stale threshold — newest ping older than this dims the marker + shows the
+// "location may be outdated" badge (~3 missed pings, D-07).
+export const STALE_THRESHOLD_MS = 90_000;

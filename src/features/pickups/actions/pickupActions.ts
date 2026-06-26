@@ -1,8 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { requireRole, AuthError } from "@/server/auth/session";
+import { requireRole, AuthError, getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
+import { pingsRepo } from "@/server/db/repositories/pings";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
 import { createSignedUpload } from "@/lib/storage";
 import { geocodeAddress } from "@/lib/geocoding";
@@ -152,6 +153,8 @@ export async function cancelPickup(id: string): Promise<Result> {
   }
   const row = await pickupsRepo.cancelIfRequested(id, userId);
   if (!row) return fail("CONFLICT", "Can't cancel — already claimed or not yours.");
+  // TRK-04 / D-08: cancellation ends tracking — purge any trail (no-op if none).
+  await pingsRepo.purgeForPickup(id);
   revalidatePickups(id);
   return { ok: true };
 }
@@ -233,6 +236,10 @@ export async function advancePickup(id: string): Promise<Result<{ status: Pickup
     fromStatus: from,
     toStatus: to,
   });
+  // TRK-04 / D-08: delivery ends tracking — purge the location trail immediately.
+  if (to === "delivered") {
+    await pingsRepo.purgeForPickup(id);
+  }
   revalidatePickups(id);
   return { ok: true, status: to };
 }
@@ -250,4 +257,100 @@ export async function setProofPhoto(id: string, path: string): Promise<Result> {
   if (!row) return fail("FORBIDDEN", "Not your pickup.");
   revalidatePickups(id);
   return { ok: true };
+}
+
+// ── Live tracking (Phase 3) ──────────────────────────────────────────
+
+/**
+ * TRK-01 / D-05: record one GPS ping. The volunteer's browser is read/subscribe
+ * only — it NEVER writes with the anon key; every ping comes through here so the
+ * write reuses the same guards as the rest of the rescue loop (no IDOR):
+ *   1) volunteer role, 2) assigned volunteer of THIS pickup, 3) status active.
+ * Coordinates are range-validated (V5) before the insert.
+ */
+export async function recordPing(
+  pickupId: string,
+  lat: number,
+  lng: number,
+  accuracy?: number,
+): Promise<Result> {
+  let userId: string;
+  try {
+    ({ userId } = await volunteer());
+  } catch {
+    return fail("FORBIDDEN", "Only volunteers can share location.");
+  }
+
+  // V5 — reject impossible coordinates before touching the DB. Number.isFinite
+  // also rejects NaN/Infinity (which are typeof "number" and would slip past < / >).
+  if (
+    !Number.isFinite(lat) ||
+    !Number.isFinite(lng) ||
+    lat < -90 ||
+    lat > 90 ||
+    lng < -180 ||
+    lng > 180 ||
+    (accuracy !== undefined && (!Number.isFinite(accuracy) || accuracy < 0))
+  ) {
+    return fail("VALIDATION", "Invalid coordinates.");
+  }
+
+  const pickup = await pickupsRepo.getById(pickupId);
+  if (!pickup) return fail("NOT_FOUND", "Pickup not found.");
+  if (pickup.volunteerId !== userId) return fail("FORBIDDEN", "Not your pickup.");
+  if (pickup.status !== "en_route" && pickup.status !== "picked_up") {
+    // Tracking only runs while active — signal the caller to stop pinging.
+    return fail("INACTIVE", "Tracking is only active during pickup.");
+  }
+
+  await pingsRepo.insert({
+    pickupId,
+    volunteerId: userId,
+    lat,
+    lng,
+    accuracy: accuracy ?? null,
+  });
+  // No revalidatePath — the viewer reads via Realtime/polling, not a server render.
+  return { ok: true };
+}
+
+/**
+ * TRK-02/03 polling fallback (D-06): newest ping for a pickup. Read is gated to
+ * the pickup's donor or an admin (no IDOR) — mirrors the SELECT RLS that gates the
+ * browser subscription, enforced again here server-side for the polling path.
+ */
+export async function getLatestPing(
+  pickupId: string,
+): Promise<
+  Result<{
+    ping: {
+      lat: number;
+      lng: number;
+      accuracy: number | null;
+      createdAt: string;
+    } | null;
+  }>
+> {
+  const session = await getSession();
+  if (!session) return fail("UNAUTHORIZED", "Sign in first.");
+
+  const pickup = await pickupsRepo.getById(pickupId);
+  if (!pickup) return fail("NOT_FOUND", "Pickup not found.");
+
+  const isDonorOwner = pickup.donorId === session.userId;
+  const isAdmin = session.role === "admin";
+  if (!isDonorOwner && !isAdmin) return fail("FORBIDDEN", "Not allowed.");
+
+  const latest = await pingsRepo.latestForPickup(pickupId);
+  return {
+    ok: true,
+    ping: latest
+      ? {
+          lat: latest.lat,
+          lng: latest.lng,
+          accuracy: latest.accuracy,
+          createdAt: latest.createdAt.toISOString(), // serialisable for the client
+        }
+      : null,
+  };
 }

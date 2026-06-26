@@ -73,7 +73,13 @@ Plans:
   2. Donor and admin see the volunteer's location update on a Leaflet map in near-real-time via Supabase Realtime; a 10-second polling fallback activates on disconnect
   3. When pings stop arriving (screen lock, background tab), the map shows a "last updated X minutes ago" stale indicator
   4. After a pickup is marked delivered, all associated location pings are purged from the database (ephemeral, privacy)
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 03-01-PLAN.md — Wave 0: location_pings schema + indexes + 0002 migration, client Supabase env vars, tracking constants, staleness helper (GREEN) + RED scaffolds (useLiveLocation, pings repo)
+- [ ] 03-02-PLAN.md — Wave 1: pingsRepo (insert/latest/list/purge) + recordPing/getLatestPing server actions + purge wired into advance(delivered)/cancel (turns purge tests GREEN)
+- [ ] 03-03-PLAN.md — Wave 1: browser Supabase client (Clerk accessToken + setAuth) + useLiveLocation GPS hook (watchPosition/throttle/permission) — turns useLiveLocation test GREEN
+- [ ] 03-04-PLAN.md — Wave 2: useLivePickupLocation (realtime + 10s polling fallback + stale), MapViewInner live mode, LiveTrackingMap + SharingLocationBanner + VolunteerTracker, detail-page wiring
+- [ ] 03-05-PLAN.md — Wave 3 (manual/deferred): apply migration + RLS + publication via Supabase MCP, Clerk↔Supabase third-party auth dashboard steps, client env in dev+Cloudflare, E2E verify
 **UI hint**: yes
 
 ### Phase 4: Notifications
@@ -137,7 +143,7 @@ Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and 
 |-------|----------------|--------|-----------|
 | 1. Foundation | 0/7 | Not started | - |
 | 2. Rescue Loop Core | 0/7 | Planned | - |
-| 3. Live Tracking | 0/? | Not started | - |
+| 3. Live Tracking | 0/5 | Planned | - |
 | 4. Notifications | 0/? | Not started | - |
 | 5. Payments | 0/? | Not started | - |
 | 6. Admin Portal + Reporting | 0/? | Not started | - |

@@ -18,6 +18,8 @@ import { MapView } from "@/features/pickups/components/MapView";
 import { ClaimButton } from "@/features/pickups/components/ClaimButton";
 import { StatusAdvanceSection } from "@/features/pickups/components/StatusAdvanceSection";
 import { DonorPickupActions } from "@/features/pickups/components/DonorPickupActions";
+import { LiveTrackingMap } from "@/features/pickups/components/LiveTrackingMap";
+import { VolunteerTracker } from "@/features/pickups/components/VolunteerTracker";
 
 export const dynamic = "force-dynamic";
 
@@ -45,10 +47,19 @@ export default async function PickupDetailPage({
   const isDonorOwner = pickup.donorId === session.userId;
   const isAssignedVolunteer = pickup.volunteerId === session.userId;
   const isVolunteer = session.role === "volunteer";
-  // Visibility: owner, the assigned volunteer, or any volunteer while it's open.
-  if (!isDonorOwner && !isAssignedVolunteer && !(isVolunteer && pickup.status === "requested")) {
+  const isAdmin = session.role === "admin";
+  // Visibility: owner, the assigned volunteer, an admin, or any volunteer while open.
+  if (
+    !isDonorOwner &&
+    !isAssignedVolunteer &&
+    !isAdmin &&
+    !(isVolunteer && pickup.status === "requested")
+  ) {
     notFound();
   }
+  // TRK: live tracking runs only while the pickup is in motion.
+  const isActive =
+    pickup.status === "en_route" || pickup.status === "picked_up";
 
   const [foodUrl, proofUrl, events] = await Promise.all([
     safeSignedUrl(pickup.foodPhotoPath),
@@ -82,7 +93,18 @@ export default async function PickupDetailPage({
             <MapPin className="size-4 text-muted-foreground" />
             {pickup.address}
           </p>
-          <MapView markers={[{ id: pickup.id, lat: pickup.lat, lng: pickup.lng }]} height={240} />
+          {(isDonorOwner || isAdmin) && isActive ? (
+            <LiveTrackingMap
+              pickupId={id}
+              active={isActive}
+              destination={{ lat: pickup.lat, lng: pickup.lng }}
+            />
+          ) : (
+            <MapView
+              markers={[{ id: pickup.id, lat: pickup.lat, lng: pickup.lng }]}
+              height={240}
+            />
+          )}
         </CardContent>
       </Card>
 
@@ -113,6 +135,9 @@ export default async function PickupDetailPage({
             status={pickup.status}
             hasProof={!!pickup.proofPhotoPath}
           />
+        )}
+        {isAssignedVolunteer && (
+          <VolunteerTracker pickupId={id} active={isActive} />
         )}
       </div>
 
