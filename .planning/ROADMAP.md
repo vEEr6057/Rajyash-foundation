@@ -144,7 +144,13 @@ Plans:
   3. All user-visible text in the portal, admin panel, and public site is available in English, Gujarati, and Hindi; Gujarati and Hindi scripts render correctly
   4. A user can switch language from any page and the choice persists across sessions
   5. The app passes PWA install criteria: users on mobile can add it to their home screen and launch it as a standalone app
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 07-00-PLAN.md — Wave 0 [BLOCKING]: install next-intl + Serwist, compose withSerwist(withNextIntl(nextConfig)), opennext build go/no-go gate, PWA icons generated
+- [ ] 07-01-PLAN.md — Wave 1: next-intl scaffold (request.ts + allowlist guard, setLocale action, EN message catalogs x4, LanguageSwitcher, NextIntlClientProvider in layout)
+- [ ] 07-02-PLAN.md — Wave 2: public landing scaffold (LandingPage, ImpactCounter, HowItWorks, PublicHeader, PublicFooter), cached impact repo, manifest.ts, volunteer signup wiring (?role=volunteer)
+- [ ] 07-03-PLAN.md — Wave 2 (parallel): i18n retrofit — portal feature components + pages (pickups, board, notifications)
+- [ ] 07-04-PLAN.md — Wave 3: GU/HI machine-drafted catalogs (all 4 namespaces, _review: pending), catalog parity test, app/sw.ts Serwist SW (push handlers merged), layout lang={locale}
 **UI hint**: yes
 
 ## Progress
@@ -162,4 +168,4 @@ Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and 
 | 4. Notifications | 6/6 | Done | 2026-06-26 |
 | 5. Payments | 0/? | Not started | - |
 | 6. Admin Portal + Reporting | 6/6 | Done | 2026-06-26 |
-| 7. Public Site + i18n + PWA | 0/? | Not started | - |
+| 7. Public Site + i18n + PWA | 0/5 | Planned | - |
