@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque, Mukta, Noto_Sans_Devanagari } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { NextIntlClientProvider } from "next-intl";
 import { Providers } from "./providers";
+import { LanguageSwitcher } from "@/features/public";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -58,7 +60,19 @@ export default function RootLayout({
         <body
           className={`${bricolage.variable} ${mukta.variable} ${notoDevanagari.variable} antialiased`}
         >
-          <Providers>{children}</Providers>
+          {/* PITFALL GUARD (RESEARCH §Pitfall 2): NextIntlClientProvider MUST be
+              outside <Providers> (which is 'use client'). As a Server Component
+              parent, it auto-inherits locale + messages from getRequestConfig.
+              Provider order: ClerkProvider > NextIntlClientProvider > Providers > children */}
+          <NextIntlClientProvider>
+            {/* Sticky language switcher — visible on every page (D-09).
+                Portal/admin shells render their own LanguageSwitcher in their
+                nav; this top-bar covers public pages and ensures D-09 compliance. */}
+            <header className="sticky top-0 z-50 flex justify-end border-b border-border bg-background/90 px-4 py-2 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+              <LanguageSwitcher />
+            </header>
+            <Providers>{children}</Providers>
+          </NextIntlClientProvider>
         </body>
       </html>
     </ClerkProvider>
