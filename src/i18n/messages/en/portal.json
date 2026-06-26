@@ -1,1 +1,63 @@
-{ "_stub": true }
+{
+  "pickup": {
+    "form": {
+      "title": "Post surplus food",
+      "category": "Food category",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "location": "Pickup location",
+      "windowStart": "Available from",
+      "windowEnd": "Available until",
+      "notes": "Notes (optional)",
+      "attestation": "I confirm this food is safe for consumption and correctly described.",
+      "submitCreate": "Post pickup",
+      "submitEdit": "Save changes"
+    },
+    "card": {
+      "postedBy": "Posted by {name}",
+      "window": "Available {start} – {end}",
+      "quantity": "{amount} {unit}",
+      "claimButton": "Claim pickup",
+      "claiming": "Claiming…"
+    },
+    "detail": {
+      "title": "Pickup details",
+      "advanceButton": "Mark as {nextStatus}",
+      "advancing": "Updating…",
+      "proofUpload": "Upload proof of delivery",
+      "editButton": "Edit",
+      "cancelButton": "Cancel pickup",
+      "quickRepost": "Repost this"
+    },
+    "board": {
+      "title": "Available pickups",
+      "emptyState": "No pickups available right now.",
+      "listTab": "List",
+      "mapTab": "Map"
+    },
+    "donor": {
+      "title": "My pickups",
+      "newButton": "Post food",
+      "emptyState": "You haven't posted any pickups yet."
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "markRead": "Mark as read",
+    "markAllRead": "Mark all as read"
+  },
+  "profile": {
+    "title": "Your profile",
+    "role": "Role",
+    "name": "Name",
+    "city": "City",
+    "phone": "Phone",
+    "saveButton": "Save profile"
+  },
+  "dashboard": {
+    "greeting": "Welcome back, {name}",
+    "donorTitle": "Donor dashboard",
+    "volunteerTitle": "Volunteer dashboard"
+  }
+}
