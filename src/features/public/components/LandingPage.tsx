@@ -270,7 +270,7 @@ async function FinalCtaSection() {
             className={buttonVariants({ size: "lg" })}
             style={{
               backgroundColor: "white",
-              color: "var(--color-primary, #C04E12)",
+              color: "var(--color-primary)",
             }}
           >
             {t("donateFood")}
