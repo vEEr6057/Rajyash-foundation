@@ -5,7 +5,6 @@ import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { Card, CardContent } from "@/components/ui/card";
-import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher";
 
 export const metadata = { title: "Admin — Rajyash Food Rescue" };
 
@@ -36,10 +35,7 @@ export default async function AdminDashboardPage() {
         <h1 className="font-display text-2xl font-bold tracking-tight">
           {t("dashboard.title")}
         </h1>
-        <div className="flex items-center gap-2">
-          <LanguageSwitcher />
-          <UserButton />
-        </div>
+        <UserButton />
       </header>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {SECTIONS.map((s) => (
