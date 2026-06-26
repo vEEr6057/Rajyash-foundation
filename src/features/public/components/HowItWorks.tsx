@@ -1,6 +1,9 @@
 // src/features/public/components/HowItWorks.tsx
 // Server component — static, i18n content. Uses landing.* flat keys.
+// RevealOnScroll (client) wraps server-rendered children for the design's
+// data-reveal fade + slide-up (generous public motion budget).
 import { getTranslations } from "next-intl/server";
+import { RevealOnScroll } from "./RevealOnScroll";
 
 export async function HowItWorks() {
   const t = await getTranslations("landing");
@@ -29,19 +32,26 @@ export async function HowItWorks() {
   return (
     <section id="how" className="py-20 px-6">
       <div className="mx-auto max-w-5xl">
-        <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-primary">
-          {t("howEyebrow")}
-        </p>
-        <h2 className="font-display mb-2 text-center text-2xl font-bold text-foreground sm:text-3xl">
-          {t("howTitle")}
-        </h2>
-        <p className="mb-12 text-center text-sm text-muted-foreground">
-          {t("howSub")}
-        </p>
+        <RevealOnScroll>
+          <p className="mb-2 text-center text-xs font-semibold uppercase tracking-widest text-primary">
+            {t("howEyebrow")}
+          </p>
+          <h2 className="font-display mb-2 text-center text-2xl font-bold text-foreground sm:text-3xl">
+            {t("howTitle")}
+          </h2>
+          <p className="mb-12 text-center text-sm text-muted-foreground">
+            {t("howSub")}
+          </p>
+        </RevealOnScroll>
 
         <ol className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-          {steps.map(({ num, title, body, icon }) => (
-            <li key={num} className="flex flex-col gap-3">
+          {steps.map(({ num, title, body, icon }, i) => (
+            <RevealOnScroll
+              key={num}
+              as="li"
+              delay={40 + i * 70}
+              className="flex flex-col gap-3"
+            >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-white font-bold font-display text-lg">
                   {num}
@@ -54,7 +64,7 @@ export async function HowItWorks() {
               <p className="text-muted-foreground text-sm leading-relaxed">
                 {body}
               </p>
-            </li>
+            </RevealOnScroll>
           ))}
         </ol>
       </div>
