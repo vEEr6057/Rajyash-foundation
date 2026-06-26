@@ -1,6 +1,7 @@
 {
   "pickups": {
-    "title": "All pickups",
+    "title": "Pickups",
+    "noMatch": "No pickups match these filters.",
     "filters": {
       "status": "Status",
       "allStatuses": "All statuses",
@@ -8,7 +9,7 @@
       "volunteer": "Volunteer",
       "dateFrom": "From",
       "dateTo": "To",
-      "applyButton": "Apply filters",
+      "applyButton": "Filter",
       "clearButton": "Clear"
     },
     "table": {
@@ -21,12 +22,15 @@
       "location": "Location",
       "createdAt": "Created",
       "deliveredAt": "Delivered",
-      "actions": "Actions"
+      "actions": "Actions",
+      "assigned": "assigned",
+      "unassigned": "unassigned"
     },
     "assign": {
       "button": "Assign volunteer",
       "label": "Assign to",
       "placeholder": "Select volunteer",
+      "noVolunteers": "No volunteers available",
       "submitButton": "Assign",
       "successMessage": "Pickup assigned.",
       "errorMessage": "Failed to assign pickup."
@@ -37,7 +41,11 @@
     }
   },
   "users": {
-    "title": "User management",
+    "title": "Users",
+    "you": "(you)",
+    "yourAccount": "Your account",
+    "appliesNextSignIn": "applies on next sign-in",
+    "noUsers": "No users yet.",
     "table": {
       "name": "Name",
       "email": "Email",
@@ -57,15 +65,25 @@
     "statusDeactivated": "Deactivated"
   },
   "partners": {
-    "title": "Partner organisations",
+    "title": "Partners",
     "newButton": "Add partner",
+    "allPartners": "All partners",
+    "noDonors": "No donor users yet.",
+    "noPartners": "No partners yet.",
+    "addPartner": "Add a partner",
+    "linkDonorTitle": "Link a donor to a partner",
+    "editClose": "Close",
+    "deleteButton": "Delete",
     "form": {
-      "name": "Organisation name",
+      "name": "Name*",
       "type": "Type",
       "contactName": "Contact name",
       "contactPhone": "Contact phone",
+      "contactEmail": "Contact email",
       "address": "Address",
-      "saveButton": "Save partner"
+      "city": "City",
+      "saveButton": "Save partner",
+      "addButton": "Add partner"
     },
     "linkDonor": {
       "button": "Link donor",
@@ -91,13 +109,18 @@
       "kg": "kg rescued",
       "deliveries": "Deliveries completed"
     },
-    "exportButton": "Export CSV"
+    "exportButton": "Download filtered pickups (CSV)",
+    "totalsNote": "Totals count delivered pickups by delivery date. Servings and kilograms are shown separately (no conversion)."
   },
   "dashboard": {
-    "title": "Admin dashboard",
-    "pickupsLink": "Manage pickups",
-    "usersLink": "Manage users",
-    "partnersLink": "Manage partners",
-    "reportsLink": "Impact reports"
+    "title": "Admin",
+    "pickupsLink": "Pickups",
+    "pickupsDesc": "View & assign pickups",
+    "usersLink": "Users",
+    "usersDesc": "Manage roles & access",
+    "partnersLink": "Partners",
+    "partnersDesc": "Donor organizations",
+    "reportsLink": "Reports",
+    "reportsDesc": "Impact & CSV export"
   }
 }

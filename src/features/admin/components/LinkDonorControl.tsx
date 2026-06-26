@@ -1,6 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { setUserPartner } from "@/features/admin";
 
@@ -15,13 +16,14 @@ export function LinkDonorControl({
   partners: { id: string; name: string }[];
 }) {
   const router = useRouter();
+  const t = useTranslations("admin");
   const [donorId, setDonorId] = useState("");
   const [partnerId, setPartnerId] = useState("");
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
 
   if (donors.length === 0) {
-    return <p className="text-sm text-muted-foreground">No donor users yet.</p>;
+    return <p className="text-sm text-muted-foreground">{t("partners.noDonors")}</p>;
   }
 
   return (
@@ -30,9 +32,9 @@ export function LinkDonorControl({
         className={SELECT}
         value={donorId}
         onChange={(e) => setDonorId(e.target.value)}
-        aria-label="Donor"
+        aria-label={t("partners.linkDonor.label")}
       >
-        <option value="">Choose a donor…</option>
+        <option value="">{t("partners.linkDonor.placeholder")}…</option>
         {donors.map((d) => (
           <option key={d.id} value={d.id}>
             {d.name}
@@ -65,7 +67,7 @@ export function LinkDonorControl({
           });
         }}
       >
-        Link
+        {t("partners.linkDonor.submitButton")}
       </Button>
       {err && <span className="text-xs text-destructive">{err}</span>}
     </div>

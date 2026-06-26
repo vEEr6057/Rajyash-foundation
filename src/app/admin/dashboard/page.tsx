@@ -1,18 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { UserButton } from "@clerk/nextjs";
+import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { Card, CardContent } from "@/components/ui/card";
+import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher";
 
 export const metadata = { title: "Admin — Rajyash Food Rescue" };
-
-const SECTIONS = [
-  { href: ROUTES.adminPickups, title: "Pickups", desc: "View & assign pickups" },
-  { href: ROUTES.adminUsers, title: "Users", desc: "Manage roles & access" },
-  { href: ROUTES.adminPartners, title: "Partners", desc: "Donor organizations" },
-  { href: ROUTES.adminReports, title: "Reports", desc: "Impact & CSV export" },
-];
 
 export default async function AdminDashboardPage() {
   // Defence in depth — admin-only, re-checked server-side (AUTH-05). Middleware
@@ -26,13 +21,25 @@ export default async function AdminDashboardPage() {
     throw e;
   }
 
+  const t = await getTranslations("admin");
+
+  const SECTIONS = [
+    { href: ROUTES.adminPickups, title: t("dashboard.pickupsLink"), desc: t("dashboard.pickupsDesc") },
+    { href: ROUTES.adminUsers, title: t("dashboard.usersLink"), desc: t("dashboard.usersDesc") },
+    { href: ROUTES.adminPartners, title: t("dashboard.partnersLink"), desc: t("dashboard.partnersDesc") },
+    { href: ROUTES.adminReports, title: t("dashboard.reportsLink"), desc: t("dashboard.reportsDesc") },
+  ];
+
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold tracking-tight">
-          Admin
+          {t("dashboard.title")}
         </h1>
-        <UserButton />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <UserButton />
+        </div>
       </header>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {SECTIONS.map((s) => (

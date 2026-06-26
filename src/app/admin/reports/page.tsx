@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
@@ -37,18 +38,21 @@ export default async function AdminReportsPage({
   const to = new Date(toStr);
   to.setHours(23, 59, 59, 999); // include the whole 'to' day
 
-  const report = await pickupsRepo.impactReport(from, to);
+  const [t, report] = await Promise.all([
+    getTranslations("admin"),
+    pickupsRepo.impactReport(from, to),
+  ]);
 
   const stats = [
-    { label: "Servings rescued", value: report.servings },
-    { label: "Kilograms rescued", value: report.kg },
-    { label: "Deliveries", value: report.count },
+    { label: t("reports.metrics.servings"), value: report.servings },
+    { label: t("reports.metrics.kg"), value: report.kg },
+    { label: t("reports.metrics.deliveries"), value: report.count },
   ];
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-4 font-display text-2xl font-bold tracking-tight">
-        Impact report
+        {t("reports.title")}
       </h1>
       <ImpactReport current={{ from: fromStr, to: toStr }} />
 
@@ -66,14 +70,13 @@ export default async function AdminReportsPage({
       </div>
 
       <p className="mt-4 text-xs text-muted-foreground">
-        Totals count delivered pickups by delivery date. Servings and kilograms
-        are shown separately (no conversion).
+        {t("reports.totalsNote")}
       </p>
       <a
         className={buttonVariants({ variant: "outline", size: "md" }) + " mt-4"}
         href={`/admin/pickups/export?from=${fromStr}&to=${toStr}`}
       >
-        Download filtered pickups (CSV)
+        {t("reports.exportButton")}
       </a>
     </main>
   );

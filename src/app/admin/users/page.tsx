@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { profilesRepo } from "@/server/db/repositories/profiles";
@@ -17,12 +18,15 @@ export default async function AdminUsersPage() {
     throw e;
   }
 
-  const users = await profilesRepo.listAll();
+  const [t, users] = await Promise.all([
+    getTranslations("admin"),
+    profilesRepo.listAll(),
+  ]);
 
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-4 font-display text-2xl font-bold tracking-tight">
-        Users
+        {t("users.title")}
       </h1>
       <div className="space-y-2">
         {users.map((u) => (

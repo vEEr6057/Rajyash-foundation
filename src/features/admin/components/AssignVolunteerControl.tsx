@@ -1,6 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { assignPickup } from "@/features/admin";
 
@@ -12,6 +13,7 @@ export function AssignVolunteerControl({
   volunteers: { id: string; name: string }[];
 }) {
   const router = useRouter();
+  const t = useTranslations("admin");
   const [vol, setVol] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -19,7 +21,7 @@ export function AssignVolunteerControl({
   if (volunteers.length === 0) {
     return (
       <span className="text-xs text-muted-foreground">
-        No volunteers available
+        {t("pickups.assign.noVolunteers")}
       </span>
     );
   }
@@ -29,9 +31,9 @@ export function AssignVolunteerControl({
         className="rj-field h-9 rounded-lg border border-input bg-surface px-2 text-sm"
         value={vol}
         onChange={(e) => setVol(e.target.value)}
-        aria-label="Assign volunteer"
+        aria-label={t("pickups.assign.label")}
       >
-        <option value="">Assign volunteer…</option>
+        <option value="">{t("pickups.assign.button")}…</option>
         {volunteers.map((v) => (
           <option key={v.id} value={v.id}>
             {v.name}
@@ -45,12 +47,12 @@ export function AssignVolunteerControl({
           setErr(null);
           start(async () => {
             const res = await assignPickup(pickupId, vol);
-            if (!res.ok) setErr(res.message);
+            if (!res.ok) setErr(res.message ?? t("pickups.assign.errorMessage"));
             else router.refresh();
           });
         }}
       >
-        {pending ? "Assigning…" : "Assign"}
+        {pending ? "…" : t("pickups.assign.submitButton")}
       </Button>
       {err && <span className="text-xs text-destructive">{err}</span>}
     </div>

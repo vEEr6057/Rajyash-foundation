@@ -1,6 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ROLES, type Role } from "@/config/constants";
 import {
@@ -21,6 +22,7 @@ export function UserRow({
   currentAdminId: string;
 }) {
   const router = useRouter();
+  const t = useTranslations("admin");
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
   const isSelf = user.id === currentAdminId;
@@ -41,18 +43,18 @@ export function UserRow({
         <span className="font-medium">
           {user.name}
           {isSelf && (
-            <span className="ml-1 text-xs text-muted-foreground">(you)</span>
+            <span className="ml-1 text-xs text-muted-foreground">{t("users.you")}</span>
           )}
         </span>
         <span className="text-xs text-muted-foreground">
           {user.email ?? "—"} · {user.role} ·{" "}
-          {deactivated ? "Deactivated" : "Active"}
+          {deactivated ? t("users.statusDeactivated") : t("users.statusActive")}
         </span>
         {err && <span className="text-xs text-destructive">{err}</span>}
       </div>
 
       {isSelf ? (
-        <span className="text-xs text-muted-foreground">Your account</span>
+        <span className="text-xs text-muted-foreground">{t("users.yourAccount")}</span>
       ) : (
         <div className="flex items-center gap-2">
           <div className="flex flex-col">
@@ -70,7 +72,7 @@ export function UserRow({
               ))}
             </select>
             <span className="text-[10px] text-muted-foreground">
-              applies on next sign-in
+              {t("users.appliesNextSignIn")}
             </span>
           </div>
           {deactivated ? (
@@ -80,7 +82,7 @@ export function UserRow({
               disabled={pending}
               onClick={() => run(() => reactivateUser(user.id))}
             >
-              Reactivate
+              {t("users.actions.reactivate")}
             </Button>
           ) : (
             <Button
@@ -89,7 +91,7 @@ export function UserRow({
               disabled={pending}
               onClick={() => run(() => deactivateUser(user.id))}
             >
-              Deactivate
+              {t("users.actions.deactivate")}
             </Button>
           )}
         </div>
