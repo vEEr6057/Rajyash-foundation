@@ -9,15 +9,18 @@ dependency_graph:
     - "07-02 (public site i18n + LanguageSwitcher component)"
   provides:
     - "All portal + admin user-visible strings externalized to next-intl"
-    - "LanguageSwitcher accessible from authed pages (portal + admin dashboards)"
+    - "LanguageSwitcher reachable from EVERY authed page via shared portal/admin layouts (I18N-02 / success criterion #4)"
+    - "AuthedHeader shared chrome component (brand + LanguageSwitcher + ThemeToggle) for portal/admin"
   affects:
     - "src/features/pickups/components/*"
     - "src/features/notifications/components/*"
     - "src/features/admin/components/*"
     - "src/app/portal/**"
     - "src/app/admin/**"
+    - "src/components/AuthedHeader.tsx"
     - "src/i18n/messages/en/portal.json"
     - "src/i18n/messages/en/admin.json"
+    - "src/i18n/messages/en/common.json"
 tech_stack:
   added: []
   patterns:
@@ -55,24 +58,31 @@ key_files:
     - src/app/admin/reports/page.tsx
     - src/i18n/messages/en/portal.json
     - src/i18n/messages/en/admin.json
+    - src/i18n/messages/en/common.json
     - src/features/notifications/components/NotificationBell.test.tsx
+  created:
+    - src/components/AuthedHeader.tsx
+    - src/app/portal/layout.tsx
+    - src/app/admin/layout.tsx
 decisions:
   - "PickupStatusPill converted to 'use client' (added directive + useTranslations) — the component is used in both server pages and client contexts; making it a client island is the clean path without prop-drilling a label string."
   - "PickupCard made async server component to call getTranslations — avoids making it a client island just for a single label."
   - "StatusAdvanceSection uses both portal and common namespaces (two useTranslations calls) to keep proofUpload/advanceButton in portal and status labels in common."
-  - "LanguageSwitcher added to portal/dashboard header and admin/dashboard header (no shared layout file exists; the dashboards are the natural entry points for authed users)."
+  - "LanguageSwitcher lifted into shared portal/admin layouts (src/app/portal/layout.tsx + src/app/admin/layout.tsx) via a new AuthedHeader component — reachable from EVERY authed route, not just the dashboards. Closes I18N-02 / success criterion #4. (Initial pass put it only on the dashboard pages; this follow-up fixed the gap.)"
+  - "Portal/admin layouts are PURE CHROME — no auth logic. Per-page getSession/redirect (portal) and requireRole(['admin']) (admin) guards stay in the pages to avoid duplicating/contradicting existing gating."
+  - "No double headers: root layout is providers-only (post-07-02); the public route group keeps its own PublicHeader; onboarding + sign-in/sign-up live outside the portal/admin layouts so they get no authed chrome."
   - "volunteer/ feature directory does not exist — ClaimButton and StatusAdvanceSection are in src/features/pickups/components/. Plan's assumed paths were wrong; actual paths used."
   - "NotificationBell.test.tsx updated to wrap renders with NextIntlClientProvider (Rule 1 auto-fix — useTranslations threw without context in tests)."
 metrics:
-  duration: "~45 minutes"
+  duration: "~55 minutes"
   completed: "2026-06-27"
   tasks: 3
-  files_modified: 28
+  files_modified: 32
 ---
 
 # Phase 7 Plan 03: Portal + Admin i18n Retrofit Summary
 
-Portal and admin authenticated UI fully retrofitted to next-intl: all hardcoded English strings replaced with `t()` keys, FOOD_CATEGORY_LABELS / PICKUP_STATUS_LABELS / PARTNER_TYPE_LABELS display lookups removed from components, LanguageSwitcher added to portal and admin dashboard headers.
+Portal and admin authenticated UI fully retrofitted to next-intl: all hardcoded English strings replaced with `t()` keys, FOOD_CATEGORY_LABELS / PICKUP_STATUS_LABELS / PARTNER_TYPE_LABELS display lookups removed from components, and the LanguageSwitcher (plus ThemeToggle) lifted into shared portal/admin layouts so the locale can be switched from **every** authed route (I18N-02 / success criterion #4).
 
 ## Tasks Completed
 
@@ -81,6 +91,19 @@ Portal and admin authenticated UI fully retrofitted to next-intl: all hardcoded 
 | 1 | Retrofit portal pickup + volunteer components | d0a8239 | PickupStatusPill, PickupCard, PickupForm, ClaimButton, StatusAdvanceSection, portal.json |
 | 2 | Retrofit portal pages + notifications + LanguageSwitcher | 29a133c | 5 portal pages, NotificationBell, NotificationFeed, portal.json |
 | 3 | Retrofit admin components + pages + LanguageSwitcher | 1d5a2da | 8 admin components, 5 admin pages, admin.json, NotificationBell.test.tsx |
+| 4 (follow-up) | Lift LanguageSwitcher into shared authed layouts | a2d7ef8 | AuthedHeader, portal/layout.tsx, admin/layout.tsx, portal+admin dashboard pages, common.json |
+
+## Follow-up: LanguageSwitcher reachable from ANY authed page (I18N-02)
+
+The initial Tasks 2 + 3 placed the LanguageSwitcher only on the portal and admin **dashboard** pages, leaving deep routes (`/portal/pickups`, `/portal/board`, pickup detail, `/admin/users`, `/admin/partners`, `/admin/reports`) with no switcher — a miss against success criterion #4 ("switch language from ANY page"). Closed by:
+
+- **`src/components/AuthedHeader.tsx`** — new shared server-component chrome: brand link + `LanguageSwitcher` + `ThemeToggle` (reuses the existing public-site components; nothing recreated).
+- **`src/app/portal/layout.tsx`** — wraps every `/portal/*` route with `AuthedHeader` (home → portal dashboard).
+- **`src/app/admin/layout.tsx`** — wraps every `/admin/*` route with `AuthedHeader` (home → admin dashboard).
+- Removed the now-duplicate inline `LanguageSwitcher` from both dashboard pages (no two switchers on the dashboard).
+- **`common.json`** gained an `appName` key for the header brand.
+
+Both layouts are **pure chrome** — they add no auth logic. Portal pages keep their `getSession`/`redirect` guards; admin pages keep `requireRole(["admin"])`; admin is also middleware-gated. No double headers: root layout is providers-only, the public route group keeps its own `PublicHeader`, and onboarding / sign-in / sign-up sit outside the portal+admin layouts.
 
 ## Deviations from Plan
 
@@ -104,9 +127,9 @@ Portal and admin authenticated UI fully retrofitted to next-intl: all hardcoded 
 **3. [Deviation] PickupStatusPill converted to 'use client'**
 - Plan suggested leaving it as a server component. Because the component is synchronous (no async) and is rendered in both server and client trees (PickupCard server, AdminPickupRow server, ClaimButton/status-advance client contexts), the simplest correct approach is to add `'use client'` and `useTranslations`. No prop-threading needed.
 
-**4. [Deviation] LanguageSwitcher placement — dashboard pages not shared layouts**
-- No `portal/layout.tsx` or `admin/layout.tsx` exists. The LanguageSwitcher was added to `portal/dashboard/page.tsx` and `admin/dashboard/page.tsx` headers, which are the natural entry points for authenticated users. All other authed pages (pickups, board, users, partners, reports) are navigated from the dashboard, and users return to the dashboard between flows.
-- Note: The switcher is not reachable from deep pages (e.g., pickup detail). Creating shared layouts is a follow-up (deferred-items below).
+**4. [Deviation → RESOLVED] LanguageSwitcher placement — shared layouts**
+- Initial pass: no `portal/layout.tsx` or `admin/layout.tsx` existed, so the switcher was added to the two dashboard pages only.
+- RESOLVED in follow-up commit a2d7ef8 (see "Follow-up" section above): created `src/app/portal/layout.tsx` + `src/app/admin/layout.tsx` wrapping every authed route with a shared `AuthedHeader` (LanguageSwitcher + ThemeToggle + brand link), and removed the duplicate inline switchers from the dashboards. The switcher is now reachable from deep pages (pickup detail, admin users/partners/reports, etc.) — success criterion #4 met.
 
 **5. [Deviation] portal.json and admin.json expanded with additional keys**
 - The plan's catalog already had most keys from 07-01. Additional keys were added during implementation to cover all actually-rendered strings found in components: `portal.dashboard.title`, `portal.pickup.detail.{foodPhoto,deliveredPhoto,history}`, `portal.pickup.board.mapButton`, `portal.pickup.donor.firstPickupCta`, `admin.pickups.{noMatch,table.assigned,table.unassigned,assign.noVolunteers}`, `admin.users.{you,yourAccount,appliesNextSignIn}`, `admin.partners.{noPartners,noDonors,allPartners,addPartner,linkDonorTitle,editClose,form.contactEmail,form.city,form.addButton}`, `admin.reports.{exportButton,totalsNote}`, `admin.dashboard.{pickupsDesc,usersDesc,partnersDesc,reportsDesc}`.
@@ -128,17 +151,22 @@ No new network endpoints, auth paths, or trust-boundary changes introduced. Retr
 Files exist:
 - src/i18n/messages/en/portal.json: FOUND
 - src/i18n/messages/en/admin.json: FOUND
+- src/i18n/messages/en/common.json: FOUND (has appName)
 - src/features/pickups/components/PickupStatusPill.tsx: FOUND (has useTranslations)
 - src/features/admin/components/ImpactReport.tsx: FOUND (has useTranslations)
-- src/app/portal/dashboard/page.tsx: FOUND (has LanguageSwitcher)
-- src/app/admin/dashboard/page.tsx: FOUND (has LanguageSwitcher)
+- src/components/AuthedHeader.tsx: FOUND (has LanguageSwitcher + ThemeToggle)
+- src/app/portal/layout.tsx: FOUND (renders AuthedHeader)
+- src/app/admin/layout.tsx: FOUND (renders AuthedHeader)
+- src/app/portal/dashboard/page.tsx: FOUND (inline LanguageSwitcher removed — now in layout)
+- src/app/admin/dashboard/page.tsx: FOUND (inline LanguageSwitcher removed — now in layout)
 
 Commits exist:
 - d0a8239: FOUND
 - 29a133c: FOUND
 - 1d5a2da: FOUND
+- a2d7ef8: FOUND (follow-up — shared authed layouts)
 
-Verification:
+Verification (after follow-up):
 - `SKIP_ENV_VALIDATION=1 pnpm typecheck`: 0 errors
-- `pnpm lint`: 0 errors, 1 pre-existing warning
+- `pnpm lint`: 0 errors, 1 pre-existing allowed warning (layout.tsx custom-font)
 - `pnpm test:run`: 111 tests pass, 2 pre-existing env-validation failures (unchanged from baseline)
