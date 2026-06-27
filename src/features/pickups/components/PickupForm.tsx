@@ -120,7 +120,7 @@ export function PickupForm({
           className="rj-field h-11 w-full rounded-lg border border-input bg-surface px-3 text-[15px]"
           {...register("category")}
         >
-          <option value="">Select…</option>
+          <option value="">{t("pickup.form.categoryPlaceholder")}</option>
           {FOOD_CATEGORIES.map((c) => (
             <option key={c} value={c}>
               {tCommon(`foodCategory.${c}`)}
@@ -158,13 +158,14 @@ export function PickupForm({
 
       <div>
         <Label htmlFor="description">
-          Description <span className="font-normal text-muted-foreground">(optional)</span>
+          {t("pickup.form.description")}{" "}
+          <span className="font-normal text-muted-foreground">{t("pickup.form.descriptionOptional")}</span>
         </Label>
         <textarea
           id="description"
           rows={2}
           className="rj-field w-full rounded-lg border border-input bg-surface px-3 py-2 text-[15px]"
-          placeholder="e.g. 40 veg thalis from a wedding"
+          placeholder={t("pickup.form.descriptionPlaceholder")}
           {...register("description")}
         />
       </div>
@@ -190,22 +191,28 @@ export function PickupForm({
         <Label htmlFor="address">{t("pickup.form.location")}</Label>
         <div className="flex gap-2">
           <Input id="address" placeholder="Area, landmark, Ahmedabad" {...register("address")} />
-          <Button type="button" variant="outline" onClick={findOnMap} disabled={geocoding}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={findOnMap}
+            disabled={geocoding}
+            aria-label={t("pickup.form.findButtonAriaLabel")}
+          >
             {geocoding ? <Loader2 className="size-4 animate-spin" /> : <MapPin className="size-4" />}
-            Find
+            {t("pickup.form.findButton")}
           </Button>
         </div>
         {errors.address && (
           <p className="mt-1.5 text-sm text-destructive">{errors.address.message}</p>
         )}
         {errors.lat && (
-          <p className="mt-1.5 text-sm text-destructive">Set the location on the map.</p>
+          <p className="mt-1.5 text-sm text-destructive">{t("pickup.form.setLocationHint")}</p>
         )}
       </div>
 
       {hasPin && (
         <div>
-          <p className="mb-1.5 text-sm text-muted-foreground">Drag the pin to fine-tune.</p>
+          <p className="mb-1.5 text-sm text-muted-foreground">{t("pickup.form.dragPinHint")}</p>
           <MapView
             draggable
             pin={{ lat: lat as number, lng: lng as number }}
@@ -218,13 +225,16 @@ export function PickupForm({
       )}
 
       <div>
-        <Label>Food photo <span className="font-normal text-muted-foreground">(optional)</span></Label>
+        <Label>
+          {t("pickup.form.foodPhoto")}{" "}
+          <span className="font-normal text-muted-foreground">{t("pickup.form.foodPhotoOptional")}</span>
+        </Label>
         <PhotoUploader
           kind="food"
-          label="Add a photo"
+          label={t("pickup.form.addPhoto")}
           onUploaded={(p) => setValue("foodPhotoPath", p)}
         />
-        {foodPhotoPath && <p className="mt-1 text-xs text-leaf">Photo attached.</p>}
+        {foodPhotoPath && <p className="mt-1 text-xs text-leaf">{t("pickup.form.photoAttached")}</p>}
       </div>
 
       <label className="flex items-start gap-2 text-sm">

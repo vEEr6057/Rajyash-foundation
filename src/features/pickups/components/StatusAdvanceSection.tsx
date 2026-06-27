@@ -64,7 +64,7 @@ export function StatusAdvanceSection({
         <div>
           <p className="mb-1.5 text-sm font-semibold">{t("pickup.detail.proofUpload")}</p>
           {proofDone ? (
-            <p className="text-sm text-leaf">Proof photo added ✓</p>
+            <p className="text-sm text-leaf">{t("pickup.detail.proofDone")}</p>
           ) : (
             <PhotoUploader kind="proof" label="Add proof photo" onUploaded={onProofUploaded} />
           )}
@@ -84,7 +84,7 @@ export function StatusAdvanceSection({
           : t("pickup.detail.advanceButton", { nextStatus: tCommon(`status.${next}`) })}
       </Button>
       {needsProof && (
-        <p className="text-xs text-muted-foreground">Add the proof photo to enable delivery.</p>
+        <p className="text-xs text-muted-foreground">{t("pickup.detail.needsProofHint")}</p>
       )}
       {error && (
         <p className="text-sm text-destructive" role="alert">
