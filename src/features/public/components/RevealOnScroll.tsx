@@ -76,7 +76,7 @@ export function RevealOnScroll({
         transform: hidden ? "translateY(20px)" : "none",
         transition:
           "opacity 500ms var(--ease-out, ease-out), transform 500ms var(--ease-out, ease-out)",
-        transitionDelay: hidden ? "0ms" : `${delay}ms`,
+        transitionDelay: hidden ? `${delay}ms` : "0ms",
       }}
     >
       {children}

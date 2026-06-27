@@ -13,7 +13,7 @@ const withSerwist = withSerwistInit({
   swDest: "public/sw.js",
   disable: process.env.NODE_ENV !== "production",
   // SECURITY (T-7-00-01): never precache authed routes — stale auth HTML served offline = security bug
-  exclude: [/\/api\//, /\/__clerk\//, /\/admin\//, /\/portal\//],
+  exclude: [/\/api\//, /\/__clerk\//, /\/admin\//, /\/portal\//, /\/onboarding\//],
 });
 
 const nextConfig: NextConfig = {

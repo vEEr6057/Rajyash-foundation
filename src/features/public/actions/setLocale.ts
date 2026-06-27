@@ -14,7 +14,7 @@ export async function setLocaleCookieAction(locale: Locale): Promise<void> {
   store.set("NEXT_LOCALE", locale, {
     path: "/",
     maxAge: 60 * 60 * 24 * 365, // 1 year — D-09: persists across sessions
-    httpOnly: false, // must NOT be httpOnly — readable by server; RESEARCH Anti-Patterns
+    httpOnly: false, // httpOnly: false — JS-readable in the browser for next-intl cookie mode; not a session secret
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
   });

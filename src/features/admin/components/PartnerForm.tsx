@@ -117,7 +117,7 @@ export function PartnerForm({
       {err && <p className="text-sm text-destructive">{err}</p>}
       <Button type="submit" size="lg" disabled={pending}>
         {pending
-          ? "…"
+          ? tCommon("buttons.loading")
           : mode === "create"
             ? t("partners.form.addButton")
             : t("partners.form.saveButton")}

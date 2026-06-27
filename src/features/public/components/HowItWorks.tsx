@@ -56,7 +56,7 @@ export async function HowItWorks() {
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-white font-bold font-display text-lg">
                   {num}
                 </div>
-                <span className="text-2xl">{icon}</span>
+                <span className="text-2xl" aria-hidden="true">{icon}</span>
               </div>
               <h3 className="font-display font-semibold text-foreground text-lg">
                 {title}
