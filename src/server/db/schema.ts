@@ -128,3 +128,41 @@ export const statusEvents = pgTable(
 
 export type StatusEvent = typeof statusEvents.$inferSelect;
 export type NewStatusEvent = typeof statusEvents.$inferInsert;
+
+// ── Location pings (Phase 3, Live Tracking) ──────────────────────────────────
+/**
+ * Ephemeral GPS breadcrumb trail for an ACTIVE pickup. The assigned volunteer's
+ * browser pings ~every 30s while the pickup is en_route|picked_up; the donor/admin
+ * subscribe via Supabase Realtime. Append-only (D-05) — purged on delivered/cancelled
+ * (TRK-04/D-08). FK cascade is hygiene only; pickups are never row-deleted, so the
+ * explicit purge in advancePickup/cancelPickup is what actually clears the trail.
+ */
+export const locationPings = pgTable(
+  "location_pings",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    pickupId: text("pickup_id")
+      .notNull()
+      .references(() => pickups.id, { onDelete: "cascade" }),
+    volunteerId: text("volunteer_id")
+      .notNull()
+      .references(() => profiles.id),
+    lat: doublePrecision("lat").notNull(),
+    lng: doublePrecision("lng").notNull(),
+    accuracy: doublePrecision("accuracy"), // metres; nullable (some fixes omit it)
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    // Subscription filter + purge key (RESEARCH §C step 0).
+    index("location_pings_pickup_idx").on(t.pickupId),
+    // Latest-ping read for the polling fallback (newest first).
+    index("location_pings_pickup_created_idx").on(t.pickupId, t.createdAt.desc()),
+  ],
+);
+
+export type LocationPing = typeof locationPings.$inferSelect;
+export type NewLocationPing = typeof locationPings.$inferInsert;

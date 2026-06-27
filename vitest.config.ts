@@ -10,6 +10,8 @@ export default defineConfig({
     globals: true,
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      // `server-only` throws outside an RSC; stub it so server repos/libs unit-test.
+      "server-only": path.resolve(__dirname, "./src/test/server-only.stub.ts"),
     },
   },
 });
