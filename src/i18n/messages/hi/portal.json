@@ -6,9 +6,21 @@
       "title": "बचा हुआ भोजन पोस्ट करें",
       "subtitle": "बताएँ क्या उपलब्ध है और कहाँ — एक स्वयंसेवक उठा लेगा.",
       "category": "भोजन का प्रकार",
+      "categoryPlaceholder": "चुनें…",
       "quantity": "मात्रा",
       "unit": "इकाई",
+      "description": "विवरण",
+      "descriptionOptional": "(वैकल्पिक)",
+      "descriptionPlaceholder": "जैसे शादी के 40 वेज थाली",
       "location": "पिकअप पता",
+      "findButton": "खोजें",
+      "findButtonAriaLabel": "नक्शे पर पता खोजें",
+      "setLocationHint": "नक्शे पर स्थान सेट करें.",
+      "dragPinHint": "सटीक स्थान के लिए पिन खींचें.",
+      "foodPhoto": "भोजन की फ़ोटो",
+      "foodPhotoOptional": "(वैकल्पिक)",
+      "addPhoto": "फ़ोटो जोड़ें",
+      "photoAttached": "फ़ोटो जुड़ी.",
       "windowStart": "पिकअप शुरू",
       "windowEnd": "पिकअप अंत",
       "notes": "नोट्स (वैकल्पिक)",
@@ -35,7 +47,9 @@
       "deliveredPhoto": "डिलीवर किया",
       "history": "इतिहास",
       "assigned": "सौंपा गया",
-      "unassigned": "सौंपा नहीं"
+      "unassigned": "सौंपा नहीं",
+      "proofDone": "प्रूफ फ़ोटो जोड़ी ✓",
+      "needsProofHint": "डिलीवरी सक्षम करने के लिए प्रूफ फ़ोटो जोड़ें."
     },
     "board": {
       "title": "उपलब्ध पिकअप",
@@ -55,7 +69,14 @@
     "title": "सूचनाएँ",
     "empty": "अभी तक कोई सूचना नहीं.",
     "markRead": "पढ़ा हुआ चिह्नित करें",
-    "markAllRead": "सभी पढ़ा हुआ चिह्नित करें"
+    "markAllRead": "सभी पढ़ा हुआ चिह्नित करें",
+    "push": {
+      "on": "सूचनाएँ चालू हैं",
+      "turnOff": "बंद करें",
+      "blocked": "सूचनाएँ ब्लॉक हैं। पिकअप अलर्ट पाने के लिए अपने ब्राउज़र सेटिंग में चालू करें.",
+      "prompt": "नए पिकअप और अपडेट के लिए अलर्ट पाएँ.",
+      "enable": "सूचनाएँ चालू करें"
+    }
   },
   "profile": {
     "title": "आपकी प्रोफ़ाइल",

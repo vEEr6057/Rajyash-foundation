@@ -6,9 +6,21 @@
       "title": "વધારાનું ભોજન પોસ્ટ કરો",
       "subtitle": "શું ઉપલબ્ધ છે અને ક્યાં છે તે જણાવો — સ્વયંસેવક ઉઠાવી જશે.",
       "category": "ભોજનનો પ્રકાર",
+      "categoryPlaceholder": "પસંદ કરો…",
       "quantity": "જથ્થો",
       "unit": "એકમ",
+      "description": "વિગત",
+      "descriptionOptional": "(વૈકલ્પિક)",
+      "descriptionPlaceholder": "દા.ત. 40 વેજ થાળી (લગ્ન)",
       "location": "પિકઅપ સરનામું",
+      "findButton": "શોધો",
+      "findButtonAriaLabel": "નકશા પર સરનામું શોધો",
+      "setLocationHint": "નકશા પર સ્થળ સેટ કરો.",
+      "dragPinHint": "ચોક્કસ સ્થળ માટે પિન ખેંચો.",
+      "foodPhoto": "ભોજનનો ફ઼ોટો",
+      "foodPhotoOptional": "(વૈકલ્પિક)",
+      "addPhoto": "ફ઼ોટો ઉમેરો",
+      "photoAttached": "ફ઼ોટો જોડ્યો.",
       "windowStart": "પિકઅપ આ સમયથી",
       "windowEnd": "પિકઅપ આ સમય સુધી",
       "notes": "નોંધ (વૈકલ્પિક)",
@@ -35,7 +47,9 @@
       "deliveredPhoto": "પહોંચાડ્યું",
       "history": "ઇતિહાસ",
       "assigned": "સોંપ્યું",
-      "unassigned": "સોંપ્યું નથી"
+      "unassigned": "સોંપ્યું નથી",
+      "proofDone": "પ્રૂફ ફ઼ોટો ઉમેર્યો ✓",
+      "needsProofHint": "ડિલિવરી ચાલુ કરવા પ્રૂફ ફ઼ોટો ઉમેરો."
     },
     "board": {
       "title": "ઉપલબ્ધ પિકઅપ",
@@ -55,7 +69,14 @@
     "title": "સૂચનાઓ",
     "empty": "હજી કોઈ સૂચના નથી.",
     "markRead": "વાંચ્યું ચિહ્નિત કરો",
-    "markAllRead": "બધું વાંચ્યું ચિહ્નિત કરો"
+    "markAllRead": "બધું વાંચ્યું ચિહ્નિત કરો",
+    "push": {
+      "on": "સૂચનાઓ ચાલુ",
+      "turnOff": "બંધ કરો",
+      "blocked": "સૂચનાઓ બ્લૉક છે. પિકઅપ એલર્ટ મેળવવા બ્રાઉઝર સેટિંગ્સમાં ચાલુ કરો.",
+      "prompt": "નવા પિકઅપ અને અપડેટ વિશે એલર્ટ મેળવો.",
+      "enable": "સૂચનાઓ ચાલુ કરો"
+    }
   },
   "profile": {
     "title": "તમારી પ્રોફ઼ાઇલ",

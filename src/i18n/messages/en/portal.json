@@ -4,9 +4,21 @@
       "title": "Post surplus food",
       "subtitle": "Tell us what's available and where — a volunteer will pick it up.",
       "category": "Food type",
+      "categoryPlaceholder": "Select…",
       "quantity": "Quantity",
       "unit": "Unit",
+      "description": "Description",
+      "descriptionOptional": "(optional)",
+      "descriptionPlaceholder": "e.g. 40 veg thalis from a wedding",
       "location": "Pickup address",
+      "findButton": "Find",
+      "findButtonAriaLabel": "Geocode address on map",
+      "setLocationHint": "Set the location on the map.",
+      "dragPinHint": "Drag the pin to fine-tune.",
+      "foodPhoto": "Food photo",
+      "foodPhotoOptional": "(optional)",
+      "addPhoto": "Add a photo",
+      "photoAttached": "Photo attached.",
       "windowStart": "Pickup from",
       "windowEnd": "Pickup until",
       "notes": "Notes (optional)",
@@ -33,7 +45,9 @@
       "deliveredPhoto": "Delivered",
       "history": "History",
       "assigned": "assigned",
-      "unassigned": "unassigned"
+      "unassigned": "unassigned",
+      "proofDone": "Proof photo added ✓",
+      "needsProofHint": "Add the proof photo to enable delivery."
     },
     "board": {
       "title": "Available pickups",
@@ -53,7 +67,14 @@
     "title": "Notifications",
     "empty": "No notifications yet.",
     "markRead": "Mark as read",
-    "markAllRead": "Mark all read"
+    "markAllRead": "Mark all read",
+    "push": {
+      "on": "Notifications on",
+      "turnOff": "Turn off",
+      "blocked": "Notifications are blocked. Enable them in your browser settings to get pickup alerts.",
+      "prompt": "Get alerted about new pickups and updates.",
+      "enable": "Enable notifications"
+    }
   },
   "profile": {
     "title": "Your profile",
