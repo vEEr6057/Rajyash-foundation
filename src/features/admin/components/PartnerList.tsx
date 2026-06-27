@@ -1,14 +1,17 @@
 "use client";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { PARTNER_TYPE_LABELS, type PartnerType } from "@/config/constants";
+import { type PartnerType } from "@/config/constants";
 import { deletePartner } from "@/features/admin";
 import type { Partner } from "@/server/db/schema";
 import { PartnerForm } from "./PartnerForm";
 
 function Row({ p }: { p: Partner }) {
   const router = useRouter();
+  const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const [editing, setEditing] = useState(false);
   const [delErr, setDelErr] = useState<string | null>(null);
   const [pending, start] = useTransition();
@@ -19,8 +22,8 @@ function Row({ p }: { p: Partner }) {
         <div className="flex flex-col gap-0.5">
           <span className="font-medium">{p.name}</span>
           <span className="text-xs text-muted-foreground">
-            {PARTNER_TYPE_LABELS[p.type as PartnerType]} ·{" "}
-            {p.contactName || p.contactEmail || p.contactPhone || "no contact"} ·{" "}
+            {tCommon(`partnerType.${p.type as PartnerType}`)} ·{" "}
+            {p.contactName || p.contactEmail || p.contactPhone || "—"} ·{" "}
             {p.city}
           </span>
         </div>
@@ -30,7 +33,7 @@ function Row({ p }: { p: Partner }) {
             variant="ghost"
             onClick={() => setEditing((v) => !v)}
           >
-            {editing ? "Close" : "Edit"}
+            {editing ? t("partners.editClose") : tCommon("buttons.edit")}
           </Button>
           <Button
             size="sm"
@@ -45,7 +48,7 @@ function Row({ p }: { p: Partner }) {
               });
             }}
           >
-            Delete
+            {tCommon("buttons.delete")}
           </Button>
         </div>
       </div>
@@ -73,9 +76,10 @@ function Row({ p }: { p: Partner }) {
 }
 
 export function PartnerList({ partners }: { partners: Partner[] }) {
+  const t = useTranslations("admin");
   if (partners.length === 0) {
     return (
-      <p className="text-sm text-muted-foreground">No partners yet.</p>
+      <p className="text-sm text-muted-foreground">{t("partners.noPartners")}</p>
     );
   }
   return (

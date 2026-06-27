@@ -1,0 +1,101 @@
+{
+  "pickup": {
+    "form": {
+      "title": "Post surplus food",
+      "subtitle": "Tell us what's available and where — a volunteer will pick it up.",
+      "category": "Food type",
+      "categoryPlaceholder": "Select…",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "description": "Description",
+      "descriptionOptional": "(optional)",
+      "descriptionPlaceholder": "e.g. 40 veg thalis from a wedding",
+      "location": "Pickup address",
+      "findButton": "Find",
+      "findButtonAriaLabel": "Geocode address on map",
+      "setLocationHint": "Set the location on the map.",
+      "dragPinHint": "Drag the pin to fine-tune.",
+      "foodPhoto": "Food photo",
+      "foodPhotoOptional": "(optional)",
+      "addPhoto": "Add a photo",
+      "photoAttached": "Photo attached.",
+      "windowStart": "Pickup from",
+      "windowEnd": "Pickup until",
+      "notes": "Notes (optional)",
+      "attestation": "I confirm this food is fresh, safely stored, and fit to share.",
+      "submitCreate": "Post pickup",
+      "submitEdit": "Save changes"
+    },
+    "card": {
+      "postedBy": "Posted by {name}",
+      "window": "Available {start} – {end}",
+      "quantity": "{amount} {unit}",
+      "claimButton": "Claim this pickup",
+      "claiming": "Claiming…"
+    },
+    "detail": {
+      "title": "Pickup details",
+      "advanceButton": "Mark {nextStatus}",
+      "advancing": "Updating…",
+      "proofUpload": "Proof of delivery",
+      "editButton": "Edit",
+      "cancelButton": "Cancel pickup",
+      "quickRepost": "Repost this",
+      "foodPhoto": "Food",
+      "deliveredPhoto": "Delivered",
+      "history": "History",
+      "assigned": "assigned",
+      "unassigned": "unassigned",
+      "proofDone": "Proof photo added ✓",
+      "needsProofHint": "Add the proof photo to enable delivery."
+    },
+    "board": {
+      "title": "Available pickups",
+      "emptyState": "No open pickups right now. Check back soon.",
+      "listTab": "List",
+      "mapTab": "Map",
+      "mapButton": "Map"
+    },
+    "donor": {
+      "title": "My pickups",
+      "newButton": "New",
+      "emptyState": "No pickups yet.",
+      "firstPickupCta": "Post your first pickup"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet.",
+    "markRead": "Mark as read",
+    "markAllRead": "Mark all read",
+    "push": {
+      "on": "Notifications on",
+      "turnOff": "Turn off",
+      "blocked": "Notifications are blocked. Enable them in your browser settings to get pickup alerts.",
+      "prompt": "Get alerted about new pickups and updates.",
+      "enable": "Enable notifications"
+    }
+  },
+  "profile": {
+    "title": "Your profile",
+    "role": "Role",
+    "name": "Name",
+    "city": "City",
+    "phone": "Phone",
+    "saveButton": "Save profile"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Welcome back, {name}",
+    "donorTitle": "Donor dashboard",
+    "volunteerTitle": "Volunteer dashboard",
+    "donorCta": "Got surplus food?",
+    "volunteerCta": "Ready to rescue?",
+    "welcomeFallback": "Welcome",
+    "postPickup": "Post a pickup",
+    "myPickups": "My pickups",
+    "browsePickups": "Browse pickups",
+    "mapView": "Map view",
+    "adminDashboard": "Admin dashboard"
+  }
+}

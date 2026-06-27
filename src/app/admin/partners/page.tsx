@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { partnersRepo } from "@/server/db/repositories/partners";
@@ -21,7 +22,8 @@ export default async function AdminPartnersPage() {
     throw e;
   }
 
-  const [partners, profiles] = await Promise.all([
+  const [t, partners, profiles] = await Promise.all([
+    getTranslations("admin"),
     partnersRepo.list(),
     profilesRepo.listAll(),
   ]);
@@ -32,11 +34,11 @@ export default async function AdminPartnersPage() {
 
   return (
     <main className="mx-auto max-w-4xl space-y-6 px-4 py-8">
-      <h1 className="font-display text-2xl font-bold tracking-tight">Partners</h1>
+      <h1 className="font-display text-2xl font-bold tracking-tight">{t("partners.title")}</h1>
 
       <Card>
         <CardHeader>
-          <CardTitle>Add a partner</CardTitle>
+          <CardTitle>{t("partners.addPartner")}</CardTitle>
         </CardHeader>
         <CardContent>
           <PartnerForm mode="create" />
@@ -45,14 +47,14 @@ export default async function AdminPartnersPage() {
 
       <section>
         <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
-          All partners
+          {t("partners.allPartners")}
         </h2>
         <PartnerList partners={partners} />
       </section>
 
       <Card>
         <CardHeader>
-          <CardTitle>Link a donor to a partner</CardTitle>
+          <CardTitle>{t("partners.linkDonorTitle")}</CardTitle>
         </CardHeader>
         <CardContent>
           <LinkDonorControl donors={donors} partners={partnerOpts} />

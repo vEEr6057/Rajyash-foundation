@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
@@ -30,7 +31,8 @@ export default async function AdminPickupsPage({
     if (typeof v === "string") params.set(k, v);
   }
   const filters = parseAdminFilters(params);
-  const [pickups, volunteers] = await Promise.all([
+  const [t, pickups, volunteers] = await Promise.all([
+    getTranslations("admin"),
     pickupsRepo.listForAdmin(filters),
     profilesRepo.listAssignableVolunteers(),
   ]);
@@ -38,7 +40,7 @@ export default async function AdminPickupsPage({
   return (
     <main className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="mb-4 font-display text-2xl font-bold tracking-tight">
-        Pickups
+        {t("pickups.title")}
       </h1>
       <AdminPickupFilters
         current={{
@@ -51,7 +53,7 @@ export default async function AdminPickupsPage({
       />
       {pickups.length === 0 ? (
         <p className="text-sm text-muted-foreground">
-          No pickups match these filters.
+          {t("pickups.noMatch")}
         </p>
       ) : (
         <div className="space-y-2">

@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: in_progress
-stopped_at: Phase 6 (Admin) built + Playwright-verified (branch feature/phase-6-admin, PR #5 stacked on phase-4)
-last_updated: "2026-06-26"
-last_activity: 2026-06-26 — Phase 6 Admin built, reviewed, E2E-verified; Phase 5 PARKED; only Phase 7 remains
+status: "Phase 7 shipped — all v1 phases done except Phase 5 (Payments) PARKED"
+stopped_at: Phase 7 built + reviewed + Playwright-E2E verified; preparing PR + merging the stacked chain
+last_updated: "2026-06-27"
+last_activity: 2026-06-27 — Phase 7 (Public Site + i18n + PWA) built from imported claude.ai/design, reviewed, E2E-verified
 progress:
   total_phases: 7
-  completed_phases: 5
-  total_plans: 31
-  completed_plans: 31
-  percent: 71
+  completed_phases: 6
+  total_plans: 36
+  completed_plans: 36
+  percent: 86
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-25)
 
 **Core value:** A donor can post surplus food and a volunteer can reliably claim, pick up, and deliver it to people in need — the rescue loop must work end to end.
-**Current focus:** Phase 7 — Public Site + i18n + PWA (Phase 5 Payments PARKED)
+**Current focus:** v1 feature-complete — merging the stacked PR chain to main (Phase 5 Payments PARKED)
 
 ## Current Position
 
-Phase: 6 of 7 (Admin) — complete; Phase 5 (Payments) PARKED; Phase 7 (Public/i18n/PWA) remains
-Plan: 6 of 6 in Phase 6
-Status: Phase 6 shipped (PR #5, stacked on phase-4); only Phase 7 remains
-Last activity: 2026-06-26 — Phase 6 built + reviewed + Playwright-E2E verified
+Phase: 7 of 7 (Public Site + i18n + PWA) — complete; Phase 5 (Payments) PARKED. All other v1 phases done.
+Plan: 5 of 5 in Phase 7
+Status: Phase 7 shipped (built from imported claude.ai/design); preparing PR #6 + merging chain to main
+Last activity: 2026-06-27 — Phase 7 built + reviewed + Playwright-E2E verified
 
-Progress: [███████░░░] 71%
+Progress: [█████████░] 86% (6/7 phases; Phase 5 parked)
 
 ## Performance Metrics
 
@@ -84,6 +84,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-06-26
-Stopped at: Phase 6 built + reviewed + Playwright-verified (branch feature/phase-6-admin, PR #5 stacked on phase-4). Phase 5 Payments PARKED.
-Resume file: .planning/phases/06-admin/06-SUMMARY.md — next: Phase 7 (Public Site + i18n + PWA) — the last v1 phase. Phase 5 (Payments) un-parks only if the foundation greenlights donations.
+Last session: 2026-06-26T20:04:21.507Z
+Stopped at: Phase 7 context gathered (discuss done); building
+Resume file: .planning/phases/07-public-site-i18n-pwa/07-CONTEXT.md

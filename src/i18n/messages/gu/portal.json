@@ -1,0 +1,103 @@
+{
+  "_review": "pending",
+  "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "pickup": {
+    "form": {
+      "title": "વધારાનું ભોજન પોસ્ટ કરો",
+      "subtitle": "શું ઉપલબ્ધ છે અને ક્યાં છે તે જણાવો — સ્વયંસેવક ઉઠાવી જશે.",
+      "category": "ભોજનનો પ્રકાર",
+      "categoryPlaceholder": "પસંદ કરો…",
+      "quantity": "જથ્થો",
+      "unit": "એકમ",
+      "description": "વિગત",
+      "descriptionOptional": "(વૈકલ્પિક)",
+      "descriptionPlaceholder": "દા.ત. 40 વેજ થાળી (લગ્ન)",
+      "location": "પિકઅપ સરનામું",
+      "findButton": "શોધો",
+      "findButtonAriaLabel": "નકશા પર સરનામું શોધો",
+      "setLocationHint": "નકશા પર સ્થળ સેટ કરો.",
+      "dragPinHint": "ચોક્કસ સ્થળ માટે પિન ખેંચો.",
+      "foodPhoto": "ભોજનનો ફ઼ોટો",
+      "foodPhotoOptional": "(વૈકલ્પિક)",
+      "addPhoto": "ફ઼ોટો ઉમેરો",
+      "photoAttached": "ફ઼ોટો જોડ્યો.",
+      "windowStart": "પિકઅપ આ સમયથી",
+      "windowEnd": "પિકઅપ આ સમય સુધી",
+      "notes": "નોંધ (વૈકલ્પિક)",
+      "attestation": "હું પુષ્ટિ કરું છું કે આ ભોજન તાજું, સુરક્ષિત સ્થિતિમાં અને વહેંચવા માટે યોગ્ય છે.",
+      "submitCreate": "પિકઅપ પોસ્ટ કરો",
+      "submitEdit": "ફેરફાર સાચવો"
+    },
+    "card": {
+      "postedBy": "{name} દ્વારા પોસ્ટ",
+      "window": "{start} – {end} ઉપલબ્ધ",
+      "quantity": "{amount} {unit}",
+      "claimButton": "આ પિકઅપ લો",
+      "claiming": "દાવો કરી રહ્યા છીએ…"
+    },
+    "detail": {
+      "title": "પિકઅપ વિગત",
+      "advanceButton": "{nextStatus} ચિહ્નિત કરો",
+      "advancing": "અપડેટ થઈ રહ્યું છે…",
+      "proofUpload": "ડિલિવરીનો પુરાવો",
+      "editButton": "ફેરફાર",
+      "cancelButton": "પિકઅપ રદ કરો",
+      "quickRepost": "ફરી પોસ્ટ કરો",
+      "foodPhoto": "ભોજન",
+      "deliveredPhoto": "પહોંચાડ્યું",
+      "history": "ઇતિહાસ",
+      "assigned": "સોંપ્યું",
+      "unassigned": "સોંપ્યું નથી",
+      "proofDone": "પ્રૂફ ફ઼ોટો ઉમેર્યો ✓",
+      "needsProofHint": "ડિલિવરી ચાલુ કરવા પ્રૂફ ફ઼ોટો ઉમેરો."
+    },
+    "board": {
+      "title": "ઉપલબ્ધ પિકઅપ",
+      "emptyState": "અત્યારે કોઈ ઓપન પિકઅપ નથી. થોડી વારમાં ફરી ચેક કરો.",
+      "listTab": "યાદી",
+      "mapTab": "નકશો",
+      "mapButton": "નકશો"
+    },
+    "donor": {
+      "title": "મારા પિકઅપ",
+      "newButton": "નવું",
+      "emptyState": "હજી કોઈ પિકઅપ નથી.",
+      "firstPickupCta": "તમારો પ્રથમ પિકઅપ પોસ્ટ કરો"
+    }
+  },
+  "notifications": {
+    "title": "સૂચનાઓ",
+    "empty": "હજી કોઈ સૂચના નથી.",
+    "markRead": "વાંચ્યું ચિહ્નિત કરો",
+    "markAllRead": "બધું વાંચ્યું ચિહ્નિત કરો",
+    "push": {
+      "on": "સૂચનાઓ ચાલુ",
+      "turnOff": "બંધ કરો",
+      "blocked": "સૂચનાઓ બ્લૉક છે. પિકઅપ એલર્ટ મેળવવા બ્રાઉઝર સેટિંગ્સમાં ચાલુ કરો.",
+      "prompt": "નવા પિકઅપ અને અપડેટ વિશે એલર્ટ મેળવો.",
+      "enable": "સૂચનાઓ ચાલુ કરો"
+    }
+  },
+  "profile": {
+    "title": "તમારી પ્રોફ઼ાઇલ",
+    "role": "ભૂમિકા",
+    "name": "નામ",
+    "city": "શહેર",
+    "phone": "ફ઼ોન",
+    "saveButton": "પ્રોફ઼ાઇલ સાચવો"
+  },
+  "dashboard": {
+    "title": "ડૅશબોર્ડ",
+    "greeting": "પાછા આવ્યા, {name}",
+    "donorTitle": "દાતા ડૅશબોર્ડ",
+    "volunteerTitle": "સ્વયંસેવક ડૅશબોર્ડ",
+    "donorCta": "વધારાનું ભોજન છે?",
+    "volunteerCta": "બચાવ માટે તૈયાર?",
+    "welcomeFallback": "સ્વાગત છે",
+    "postPickup": "પિકઅપ પોસ્ટ કરો",
+    "myPickups": "મારા પિકઅપ",
+    "browsePickups": "પિકઅપ જુઓ",
+    "mapView": "નકશો",
+    "adminDashboard": "એડ્મિન ડૅશબોર્ડ"
+  }
+}

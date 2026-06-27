@@ -1,0 +1,66 @@
+{
+  "_review": "pending",
+  "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "appName": "फ़ूड रेस्क्यू",
+  "nav": {
+    "home": "होम",
+    "signIn": "साइन इन",
+    "signUp": "शुरू करें",
+    "dashboard": "डैशबोर्ड",
+    "language": "भाषा"
+  },
+  "footer": {
+    "contact": "संपर्क",
+    "language": "भाषा",
+    "rights": "© {year} राजयश फ़ाउंडेशन. सर्वाधिकार सुरक्षित.",
+    "address": "सैटेलाइट, अहमदाबाद 380015",
+    "email": "rajyashfoundation@rajyashgroup.com",
+    "phone": "+91-9875041206"
+  },
+  "buttons": {
+    "save": "सहेजें",
+    "cancel": "रद्द करें",
+    "delete": "मिटाएँ",
+    "edit": "संपादित करें",
+    "submit": "सबमिट करें",
+    "back": "वापस",
+    "loading": "लोड हो रहा है…",
+    "retry": "पुनः प्रयास"
+  },
+  "status": {
+    "requested": "अनुरोधित",
+    "accepted": "स्वीकृत",
+    "en_route": "मार्ग पर",
+    "picked_up": "उठाया",
+    "delivered": "डिलीवर किया",
+    "cancelled": "रद्द"
+  },
+  "foodCategory": {
+    "cooked_meal": "पका हुआ भोजन",
+    "raw_produce": "कच्ची उपज",
+    "packaged": "पैकेज्ड",
+    "bakery": "बेकरी",
+    "other": "अन्य"
+  },
+  "partnerType": {
+    "restaurant": "रेस्तराँ",
+    "hall": "बैंक्वेट हॉल",
+    "event_planner": "इवेंट प्लानर",
+    "family": "परिवार",
+    "other": "अन्य"
+  },
+  "quantityUnit": {
+    "servings": "परोसे",
+    "kg": "कि.ग्रा."
+  },
+  "errors": {
+    "genericError": "कुछ गलत हो गया। कृपया पुनः प्रयास करें.",
+    "forbidden": "आपको यह करने की अनुमति नहीं है.",
+    "notFound": "नहीं मिला."
+  },
+  "role": {
+    "donor": "दाता",
+    "volunteer": "स्वयंसेवक",
+    "admin": "एडमिन"
+  }
+}

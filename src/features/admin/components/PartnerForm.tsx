@@ -3,10 +3,11 @@ import { useState, useTransition } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { PARTNER_TYPES, PARTNER_TYPE_LABELS } from "@/config/constants";
+import { PARTNER_TYPES } from "@/config/constants";
 import {
   partnerSchema,
   type PartnerInput,
@@ -29,6 +30,8 @@ export function PartnerForm({
   onDone?: () => void;
 }) {
   const router = useRouter();
+  const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
   const {
@@ -70,32 +73,32 @@ export function PartnerForm({
   return (
     <form onSubmit={onSubmit} className="space-y-3">
       <div>
-        <Label htmlFor="p-name">Name*</Label>
+        <Label htmlFor="p-name">{t("partners.form.name")}</Label>
         <Input id="p-name" {...register("name")} />
         {errors.name && (
           <p className="mt-1 text-xs text-destructive">{errors.name.message}</p>
         )}
       </div>
       <div>
-        <Label htmlFor="p-type">Type</Label>
+        <Label htmlFor="p-type">{t("partners.form.type")}</Label>
         <select id="p-type" className={SELECT} {...register("type")}>
-          {PARTNER_TYPES.map((t) => (
-            <option key={t} value={t}>
-              {PARTNER_TYPE_LABELS[t]}
+          {PARTNER_TYPES.map((pt) => (
+            <option key={pt} value={pt}>
+              {tCommon(`partnerType.${pt}`)}
             </option>
           ))}
         </select>
       </div>
       <div>
-        <Label htmlFor="p-cn">Contact name</Label>
+        <Label htmlFor="p-cn">{t("partners.form.contactName")}</Label>
         <Input id="p-cn" {...register("contactName")} />
       </div>
       <div>
-        <Label htmlFor="p-cp">Contact phone</Label>
+        <Label htmlFor="p-cp">{t("partners.form.contactPhone")}</Label>
         <Input id="p-cp" {...register("contactPhone")} />
       </div>
       <div>
-        <Label htmlFor="p-ce">Contact email</Label>
+        <Label htmlFor="p-ce">{t("partners.form.contactEmail")}</Label>
         <Input id="p-ce" {...register("contactEmail")} />
         {errors.contactEmail && (
           <p className="mt-1 text-xs text-destructive">
@@ -104,16 +107,20 @@ export function PartnerForm({
         )}
       </div>
       <div>
-        <Label htmlFor="p-addr">Address</Label>
+        <Label htmlFor="p-addr">{t("partners.form.address")}</Label>
         <Input id="p-addr" {...register("address")} />
       </div>
       <div>
-        <Label htmlFor="p-city">City</Label>
+        <Label htmlFor="p-city">{t("partners.form.city")}</Label>
         <Input id="p-city" {...register("city")} />
       </div>
       {err && <p className="text-sm text-destructive">{err}</p>}
       <Button type="submit" size="lg" disabled={pending}>
-        {pending ? "Saving…" : mode === "create" ? "Add partner" : "Save"}
+        {pending
+          ? tCommon("buttons.loading")
+          : mode === "create"
+            ? t("partners.form.addButton")
+            : t("partners.form.saveButton")}
       </Button>
     </form>
   );

@@ -29,6 +29,8 @@ export const ROUTES = {
   editPickup: (id: string) => `/portal/pickups/${id}/edit`,
   volunteerBoard: "/portal/board",
   volunteerBoardMap: "/portal/board/map",
+  // Public site (Phase 7 — D-04: volunteer CTA reuses Clerk sign-up with role prefill)
+  becomeVolunteer: "/sign-up?role=volunteer",
 } as const;
 
 // ── Pickups (Phase 2) ────────────────────────────────────────────────

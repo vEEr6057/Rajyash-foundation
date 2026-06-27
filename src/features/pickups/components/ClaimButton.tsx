@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { claimPickup } from "@/features/pickups/actions/pickupActions";
@@ -9,6 +10,8 @@ import { claimPickup } from "@/features/pickups/actions/pickupActions";
 /** VOL-03 / VOL-06: claim with loading + retry-on-failure (field networks). */
 export function ClaimButton({ pickupId }: { pickupId: string }) {
   const router = useRouter();
+  const t = useTranslations("portal");
+  const tCommon = useTranslations("common");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -29,14 +32,14 @@ export function ClaimButton({ pickupId }: { pickupId: string }) {
     <div>
       <Button variant="leaf" size="lg" className="w-full" onClick={claim} disabled={isPending}>
         {isPending ? <Loader2 className="size-4 animate-spin" /> : null}
-        {isPending ? "Claiming…" : "Claim this pickup"}
+        {isPending ? t("pickup.card.claiming") : t("pickup.card.claimButton")}
       </Button>
       {error && (
         <p className="mt-1.5 text-sm text-destructive" role="alert">
           {error}{" "}
           {!isPending && (
             <button type="button" className="underline" onClick={claim}>
-              Retry
+              {tCommon("buttons.retry")}
             </button>
           )}
         </p>

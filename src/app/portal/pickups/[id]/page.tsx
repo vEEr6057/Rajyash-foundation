@@ -1,6 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import { Clock, MapPin, Package } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
@@ -8,9 +9,7 @@ import { getSignedDownloadUrl } from "@/lib/storage";
 import { ROUTES } from "@/config/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  formatCategory,
   formatQuantity,
-  formatStatus,
   formatWindow,
 } from "@/features/pickups/lib/format";
 import { PickupStatusPill } from "@/features/pickups/components/PickupStatusPill";
@@ -40,6 +39,10 @@ export default async function PickupDetailPage({
   const { id } = await params;
   const session = await getSession();
   if (!session) redirect(ROUTES.signIn);
+  const [tPortal, tCommon] = await Promise.all([
+    getTranslations("portal"),
+    getTranslations("common"),
+  ]);
 
   const pickup = await pickupsRepo.getById(id);
   if (!pickup) notFound();
@@ -72,7 +75,7 @@ export default async function PickupDetailPage({
       <div className="mb-4 flex items-center justify-between gap-2">
         <h1 className="flex items-center gap-2 font-display text-2xl font-bold tracking-tight">
           <Package className="size-5 text-primary" />
-          {formatCategory(pickup.category)}
+          {tCommon(`foodCategory.${pickup.category}`)}
         </h1>
         <PickupStatusPill status={pickup.status} />
       </div>
@@ -112,14 +115,14 @@ export default async function PickupDetailPage({
         <div className="mt-4 grid grid-cols-2 gap-3">
           {foodUrl && (
             <figure>
-              <figcaption className="mb-1 text-xs font-semibold text-muted-foreground">Food</figcaption>
-              <Image src={foodUrl} alt="Food" width={400} height={300} className="rounded-lg" unoptimized />
+              <figcaption className="mb-1 text-xs font-semibold text-muted-foreground">{tPortal("pickup.detail.foodPhoto")}</figcaption>
+              <Image src={foodUrl} alt={tPortal("pickup.detail.foodPhoto")} width={400} height={300} className="rounded-lg" unoptimized />
             </figure>
           )}
           {proofUrl && (
             <figure>
-              <figcaption className="mb-1 text-xs font-semibold text-muted-foreground">Delivered</figcaption>
-              <Image src={proofUrl} alt="Proof of delivery" width={400} height={300} className="rounded-lg" unoptimized />
+              <figcaption className="mb-1 text-xs font-semibold text-muted-foreground">{tPortal("pickup.detail.deliveredPhoto")}</figcaption>
+              <Image src={proofUrl} alt={tPortal("pickup.detail.deliveredPhoto")} width={400} height={300} className="rounded-lg" unoptimized />
             </figure>
           )}
         </div>
@@ -144,12 +147,12 @@ export default async function PickupDetailPage({
       {events.length > 0 && (
         <div className="mt-8">
           <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
-            History
+            {tPortal("pickup.detail.history")}
           </h2>
           <ul className="space-y-1 text-sm text-muted-foreground">
             {events.map((e) => (
               <li key={e.id}>
-                → {formatStatus(e.toStatus)}{" "}
+                → {tCommon(`status.${e.toStatus}`)}{" "}
                 <span className="text-subtle-foreground">
                   {new Intl.DateTimeFormat("en-IN", {
                     day: "numeric",

@@ -1,0 +1,66 @@
+{
+  "_review": "pending",
+  "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "appName": "ફૂડ રેસ્ક્યૂ",
+  "nav": {
+    "home": "ઘર",
+    "signIn": "સાઇન ઇન",
+    "signUp": "શરૂ કરો",
+    "dashboard": "ડૅશબોર્ડ",
+    "language": "ભાષા"
+  },
+  "footer": {
+    "contact": "સંપર્ક",
+    "language": "ભાષા",
+    "rights": "© {year} રાજયશ ફાઉન્ડેશન. સર્વ હક્ક સુરક્ષિત.",
+    "address": "સેટેલાઇટ, અમદાવાદ 380015",
+    "email": "rajyashfoundation@rajyashgroup.com",
+    "phone": "+91-9875041206"
+  },
+  "buttons": {
+    "save": "સાચવો",
+    "cancel": "રદ કરો",
+    "delete": "ભૂંસો",
+    "edit": "ફેરફાર",
+    "submit": "સબમિટ",
+    "back": "પાછળ",
+    "loading": "લોડ થઈ રહ્યું છે…",
+    "retry": "ફરી પ્રયાસ"
+  },
+  "status": {
+    "requested": "વિનંતી",
+    "accepted": "સ્વીકૃત",
+    "en_route": "માર્ગ પર",
+    "picked_up": "ઉઠાવ્યું",
+    "delivered": "પહોંચાડ્યું",
+    "cancelled": "રદ"
+  },
+  "foodCategory": {
+    "cooked_meal": "રાંધેલ ભોજન",
+    "raw_produce": "કાચું ઉત્પાદન",
+    "packaged": "પૅકેજ્ડ",
+    "bakery": "બેકરી",
+    "other": "અન્ય"
+  },
+  "partnerType": {
+    "restaurant": "રેસ્ટોરન્ટ",
+    "hall": "બૅન્ક્વેટ હૉલ",
+    "event_planner": "ઇવેન્ટ પ્લાનર",
+    "family": "પરિવાર",
+    "other": "અન્ય"
+  },
+  "quantityUnit": {
+    "servings": "ભોજન",
+    "kg": "કિ.ગ્રા."
+  },
+  "errors": {
+    "genericError": "કંઈક ખોટું થયું. કૃપા કરી ફરી પ્રયાસ કરો.",
+    "forbidden": "તમને આ કરવાની પરવાનગી નથી.",
+    "notFound": "મળ્યું નહીં."
+  },
+  "role": {
+    "donor": "દાતા",
+    "volunteer": "સ્વયંસેવક",
+    "admin": "એડ્મિન"
+  }
+}

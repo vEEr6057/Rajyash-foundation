@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/config/constants";
 
@@ -14,13 +15,14 @@ export function ImpactReport({
   current: { from: string; to: string };
 }) {
   const router = useRouter();
+  const t = useTranslations("admin");
   const [from, setFrom] = useState(current.from);
   const [to, setTo] = useState(current.to);
 
   return (
     <div className="mb-6 flex flex-wrap items-end gap-2">
       <label className="flex flex-col gap-1 text-xs text-muted-foreground">
-        From
+        {t("reports.dateFrom")}
         <input
           type="date"
           className={FIELD}
@@ -29,7 +31,7 @@ export function ImpactReport({
         />
       </label>
       <label className="flex flex-col gap-1 text-xs text-muted-foreground">
-        To
+        {t("reports.dateTo")}
         <input
           type="date"
           className={FIELD}
@@ -43,7 +45,7 @@ export function ImpactReport({
           router.push(`${ROUTES.adminReports}?from=${from}&to=${to}`)
         }
       >
-        Update
+        {t("reports.updateButton")}
       </Button>
     </div>
   );

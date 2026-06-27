@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Bell } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNotifications } from "../hooks/useNotifications";
@@ -7,6 +8,7 @@ import { NotificationFeed } from "./NotificationFeed";
 
 export function NotificationBell() {
   const [open, setOpen] = useState(false);
+  const t = useTranslations("portal");
   const { items, unreadCount, markAll, markOne } = useNotifications();
 
   return (
@@ -14,7 +16,7 @@ export function NotificationBell() {
       <Button
         variant="ghost"
         size="sm"
-        aria-label={`Notifications${unreadCount ? ` (${unreadCount} unread)` : ""}`}
+        aria-label={`${t("notifications.title")}${unreadCount ? ` (${unreadCount} unread)` : ""}`}
         onClick={() => setOpen((o) => !o)}
       >
         <Bell className="size-5" />
@@ -28,14 +30,14 @@ export function NotificationBell() {
       {open && (
         <div className="absolute right-0 z-50 mt-2 w-80 overflow-hidden rounded-lg border border-border bg-popover shadow-lg">
           <div className="flex items-center justify-between border-b border-border px-4 py-2">
-            <span className="text-sm font-semibold">Notifications</span>
+            <span className="text-sm font-semibold">{t("notifications.title")}</span>
             <button
               type="button"
               className="text-xs text-primary hover:underline disabled:opacity-50"
               disabled={unreadCount === 0 || markAll.isPending}
               onClick={() => markAll.mutate()}
             >
-              Mark all read
+              {t("notifications.markAllRead")}
             </button>
           </div>
           <div className="max-h-96 overflow-y-auto">

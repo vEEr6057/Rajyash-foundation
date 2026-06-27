@@ -1,0 +1,129 @@
+{
+  "pickups": {
+    "title": "Pickups",
+    "noMatch": "No pickups match these filters.",
+    "filters": {
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "donor": "Donor",
+      "volunteer": "Volunteer",
+      "dateFrom": "From",
+      "dateTo": "To",
+      "applyButton": "Filter",
+      "clearButton": "Clear"
+    },
+    "table": {
+      "id": "ID",
+      "status": "Status",
+      "donor": "Donor",
+      "volunteer": "Volunteer",
+      "category": "Category",
+      "quantity": "Quantity",
+      "location": "Location",
+      "createdAt": "Created",
+      "deliveredAt": "Delivered",
+      "actions": "Actions",
+      "assigned": "assigned",
+      "unassigned": "unassigned"
+    },
+    "assign": {
+      "button": "Assign volunteer",
+      "label": "Assign to",
+      "placeholder": "Select volunteer",
+      "noVolunteers": "No volunteers available",
+      "submitButton": "Assign",
+      "successMessage": "Pickup assigned.",
+      "errorMessage": "Failed to assign pickup."
+    },
+    "export": {
+      "button": "Export CSV",
+      "filename": "pickups-export"
+    }
+  },
+  "users": {
+    "title": "Users",
+    "you": "(you)",
+    "yourAccount": "Your account",
+    "appliesNextSignIn": "applies on next sign-in",
+    "noUsers": "No users yet.",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "partner": "Partner",
+      "joinedAt": "Joined",
+      "actions": "Actions"
+    },
+    "actions": {
+      "changeRole": "Change role",
+      "deactivate": "Deactivate",
+      "reactivate": "Reactivate",
+      "linkPartner": "Link partner"
+    },
+    "statusActive": "Active",
+    "statusDeactivated": "Deactivated"
+  },
+  "partners": {
+    "title": "Partners",
+    "newButton": "Add partner",
+    "allPartners": "All partners",
+    "noDonors": "No donor users yet.",
+    "noPartners": "No partners yet.",
+    "addPartner": "Add a partner",
+    "linkDonorTitle": "Link a donor to a partner",
+    "editClose": "Close",
+    "deleteButton": "Delete",
+    "form": {
+      "name": "Name*",
+      "type": "Type",
+      "contactName": "Contact name",
+      "contactPhone": "Contact phone",
+      "contactEmail": "Contact email",
+      "address": "Address",
+      "city": "City",
+      "saveButton": "Save partner",
+      "addButton": "Add partner"
+    },
+    "linkDonor": {
+      "button": "Link donor",
+      "label": "Donor",
+      "placeholder": "Select donor",
+      "submitButton": "Link",
+      "linked": "(linked)",
+      "unlink": "— none (unlink) —",
+      "partnerLabel": "Partner"
+    },
+    "table": {
+      "name": "Name",
+      "type": "Type",
+      "contact": "Contact",
+      "donors": "Linked donors",
+      "actions": "Actions"
+    }
+  },
+  "reports": {
+    "title": "Impact report",
+    "dateFrom": "From",
+    "dateTo": "To",
+    "updateButton": "Update",
+    "metrics": {
+      "servings": "Servings rescued",
+      "kg": "kg rescued",
+      "deliveries": "Deliveries completed"
+    },
+    "exportButton": "Download filtered pickups (CSV)",
+    "totalsNote": "Totals count delivered pickups by delivery date. Servings and kilograms are shown separately (no conversion)."
+  },
+  "dashboard": {
+    "title": "Admin",
+    "pickupsLink": "Pickups",
+    "pickupsDesc": "View & assign pickups",
+    "usersLink": "Users",
+    "usersDesc": "Manage roles & access",
+    "partnersLink": "Partners",
+    "partnersDesc": "Donor organizations",
+    "reportsLink": "Reports",
+    "reportsDesc": "Impact & CSV export"
+  }
+}

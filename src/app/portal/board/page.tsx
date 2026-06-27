@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Map as MapIcon } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { ROUTES } from "@/config/constants";
@@ -15,20 +16,23 @@ export default async function VolunteerBoardPage() {
   if (!session) redirect(ROUTES.signIn);
   if (session.role !== "volunteer") redirect(ROUTES.portalDashboard);
 
-  const open = await pickupsRepo.listOpen();
+  const [t, open] = await Promise.all([
+    getTranslations("portal"),
+    pickupsRepo.listOpen(),
+  ]);
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
       <header className="mb-6 flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold tracking-tight">Available pickups</h1>
+        <h1 className="font-display text-2xl font-bold tracking-tight">{t("pickup.board.title")}</h1>
         <Link href={ROUTES.volunteerBoardMap} className={buttonVariants({ variant: "outline", size: "sm" })}>
-          <MapIcon className="size-4" /> Map
+          <MapIcon className="size-4" /> {t("pickup.board.mapButton")}
         </Link>
       </header>
 
       {open.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border-strong p-8 text-center text-muted-foreground">
-          No open pickups right now. Check back soon.
+          {t("pickup.board.emptyState")}
         </div>
       ) : (
         <div className="space-y-3">

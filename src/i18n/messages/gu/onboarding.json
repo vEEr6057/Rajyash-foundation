@@ -1,0 +1,23 @@
+{
+  "_review": "pending",
+  "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "title": "રાજયશ ફૂડ રેસ્ક્યૂમાં આપનું સ્વાગત છે",
+  "description": "થોડી વિગત અને તમે તૈયાર. આ પછી બદલી શકાય.",
+  "roleLabel": "તમે કઈ રીતે મદદ કરવા માંગો છો?",
+  "donor": {
+    "title": "ભોજન દાન",
+    "blurb": "મારી પાસે વધારાનું ભોજન છે — રેસ્ટોરન્ટ, ઇવેન્ટ કે ઘર."
+  },
+  "volunteer": {
+    "title": "સ્વયંસેવક / ડ્રાઇવ",
+    "blurb": "હું ભોજન ઉઠાવીને જરૂરિયાતમંદ સુધી પહોંચાડીશ."
+  },
+  "nameLabel": "તમારું નામ",
+  "namePlaceholder": "દા.ત. રાજેશભાઈ પટેલ",
+  "phoneLabel": "ફ઼ોન",
+  "phoneOptional": "(વૈકલ્પિક)",
+  "phonePlaceholder": "10-અંકનો મોબાઇલ",
+  "cityLabel": "શહેર",
+  "submitting": "સેટ કરી રહ્યા છે…",
+  "submit": "ચાલુ"
+}

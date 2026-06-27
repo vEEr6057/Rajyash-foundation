@@ -4,13 +4,13 @@ import { useState, useTransition } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   FOOD_CATEGORIES,
-  FOOD_CATEGORY_LABELS,
   QUANTITY_UNITS,
   ROUTES,
   type FoodCategory,
@@ -53,6 +53,8 @@ export function PickupForm({
   defaults?: Partial<FormValues>;
 }) {
   const router = useRouter();
+  const t = useTranslations("portal");
+  const tCommon = useTranslations("common");
   const [serverError, setServerError] = useState<string | null>(null);
   const [geocoding, setGeocoding] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -112,16 +114,16 @@ export function PickupForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
       <div>
-        <Label htmlFor="category">Food type</Label>
+        <Label htmlFor="category">{t("pickup.form.category")}</Label>
         <select
           id="category"
           className="rj-field h-11 w-full rounded-lg border border-input bg-surface px-3 text-[15px]"
           {...register("category")}
         >
-          <option value="">Select…</option>
+          <option value="">{t("pickup.form.categoryPlaceholder")}</option>
           {FOOD_CATEGORIES.map((c) => (
             <option key={c} value={c}>
-              {FOOD_CATEGORY_LABELS[c]}
+              {tCommon(`foodCategory.${c}`)}
             </option>
           ))}
         </select>
@@ -132,14 +134,14 @@ export function PickupForm({
 
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <Label htmlFor="quantity">Quantity</Label>
+          <Label htmlFor="quantity">{t("pickup.form.quantity")}</Label>
           <Input id="quantity" type="number" min={1} {...register("quantity")} />
           {errors.quantity && (
             <p className="mt-1.5 text-sm text-destructive">{errors.quantity.message}</p>
           )}
         </div>
         <div>
-          <Label htmlFor="quantityUnit">Unit</Label>
+          <Label htmlFor="quantityUnit">{t("pickup.form.unit")}</Label>
           <select
             id="quantityUnit"
             className="rj-field h-11 w-full rounded-lg border border-input bg-surface px-3 text-[15px]"
@@ -147,7 +149,7 @@ export function PickupForm({
           >
             {QUANTITY_UNITS.map((u) => (
               <option key={u} value={u}>
-                {u}
+                {tCommon(`quantityUnit.${u}`)}
               </option>
             ))}
           </select>
@@ -156,27 +158,28 @@ export function PickupForm({
 
       <div>
         <Label htmlFor="description">
-          Description <span className="font-normal text-muted-foreground">(optional)</span>
+          {t("pickup.form.description")}{" "}
+          <span className="font-normal text-muted-foreground">{t("pickup.form.descriptionOptional")}</span>
         </Label>
         <textarea
           id="description"
           rows={2}
           className="rj-field w-full rounded-lg border border-input bg-surface px-3 py-2 text-[15px]"
-          placeholder="e.g. 40 veg thalis from a wedding"
+          placeholder={t("pickup.form.descriptionPlaceholder")}
           {...register("description")}
         />
       </div>
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <Label htmlFor="windowStart">Pickup from</Label>
+          <Label htmlFor="windowStart">{t("pickup.form.windowStart")}</Label>
           <Input id="windowStart" type="datetime-local" {...register("windowStart")} />
           {errors.windowStart && (
             <p className="mt-1.5 text-sm text-destructive">{errors.windowStart.message}</p>
           )}
         </div>
         <div>
-          <Label htmlFor="windowEnd">Pickup until</Label>
+          <Label htmlFor="windowEnd">{t("pickup.form.windowEnd")}</Label>
           <Input id="windowEnd" type="datetime-local" {...register("windowEnd")} />
           {errors.windowEnd && (
             <p className="mt-1.5 text-sm text-destructive">{errors.windowEnd.message}</p>
@@ -185,25 +188,31 @@ export function PickupForm({
       </div>
 
       <div>
-        <Label htmlFor="address">Pickup address</Label>
+        <Label htmlFor="address">{t("pickup.form.location")}</Label>
         <div className="flex gap-2">
           <Input id="address" placeholder="Area, landmark, Ahmedabad" {...register("address")} />
-          <Button type="button" variant="outline" onClick={findOnMap} disabled={geocoding}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={findOnMap}
+            disabled={geocoding}
+            aria-label={t("pickup.form.findButtonAriaLabel")}
+          >
             {geocoding ? <Loader2 className="size-4 animate-spin" /> : <MapPin className="size-4" />}
-            Find
+            {t("pickup.form.findButton")}
           </Button>
         </div>
         {errors.address && (
           <p className="mt-1.5 text-sm text-destructive">{errors.address.message}</p>
         )}
         {errors.lat && (
-          <p className="mt-1.5 text-sm text-destructive">Set the location on the map.</p>
+          <p className="mt-1.5 text-sm text-destructive">{t("pickup.form.setLocationHint")}</p>
         )}
       </div>
 
       {hasPin && (
         <div>
-          <p className="mb-1.5 text-sm text-muted-foreground">Drag the pin to fine-tune.</p>
+          <p className="mb-1.5 text-sm text-muted-foreground">{t("pickup.form.dragPinHint")}</p>
           <MapView
             draggable
             pin={{ lat: lat as number, lng: lng as number }}
@@ -216,20 +225,21 @@ export function PickupForm({
       )}
 
       <div>
-        <Label>Food photo <span className="font-normal text-muted-foreground">(optional)</span></Label>
+        <Label>
+          {t("pickup.form.foodPhoto")}{" "}
+          <span className="font-normal text-muted-foreground">{t("pickup.form.foodPhotoOptional")}</span>
+        </Label>
         <PhotoUploader
           kind="food"
-          label="Add a photo"
+          label={t("pickup.form.addPhoto")}
           onUploaded={(p) => setValue("foodPhotoPath", p)}
         />
-        {foodPhotoPath && <p className="mt-1 text-xs text-leaf">Photo attached.</p>}
+        {foodPhotoPath && <p className="mt-1 text-xs text-leaf">{t("pickup.form.photoAttached")}</p>}
       </div>
 
       <label className="flex items-start gap-2 text-sm">
         <input type="checkbox" className="mt-1 size-4" {...register("safetyAttested")} />
-        <span>
-          I confirm this food is fresh, safely stored, and fit to share.
-        </span>
+        <span>{t("pickup.form.attestation")}</span>
       </label>
       {errors.safetyAttested && (
         <p className="-mt-3 text-sm text-destructive">{errors.safetyAttested.message}</p>
@@ -240,7 +250,11 @@ export function PickupForm({
       )}
 
       <Button type="submit" size="lg" className="w-full" disabled={isPending}>
-        {isPending ? "Saving…" : mode === "create" ? "Post pickup" : "Save changes"}
+        {isPending
+          ? tCommon("buttons.loading")
+          : mode === "create"
+            ? t("pickup.form.submitCreate")
+            : t("pickup.form.submitEdit")}
       </Button>
     </form>
   );

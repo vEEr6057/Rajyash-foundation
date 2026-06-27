@@ -1,11 +1,11 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   ROUTES,
   PICKUP_STATUSES,
-  PICKUP_STATUS_LABELS,
 } from "@/config/constants";
 
 type Filters = {
@@ -21,6 +21,8 @@ const SELECT =
 
 export function AdminPickupFilters({ current }: { current: Filters }) {
   const router = useRouter();
+  const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const [f, setF] = useState<Filters>(current);
 
   const queryString = () => {
@@ -37,12 +39,12 @@ export function AdminPickupFilters({ current }: { current: Filters }) {
         className={SELECT}
         value={f.status ?? ""}
         onChange={(e) => setF({ ...f, status: e.target.value })}
-        aria-label="Status"
+        aria-label={t("pickups.filters.status")}
       >
-        <option value="">All statuses</option>
+        <option value="">{t("pickups.filters.allStatuses")}</option>
         {PICKUP_STATUSES.map((s) => (
           <option key={s} value={s}>
-            {PICKUP_STATUS_LABELS[s]}
+            {tCommon(`status.${s}`)}
           </option>
         ))}
       </select>
@@ -51,26 +53,26 @@ export function AdminPickupFilters({ current }: { current: Filters }) {
         className={SELECT}
         value={f.from ?? ""}
         onChange={(e) => setF({ ...f, from: e.target.value })}
-        aria-label="From date"
+        aria-label={t("pickups.filters.dateFrom")}
       />
       <input
         type="date"
         className={SELECT}
         value={f.to ?? ""}
         onChange={(e) => setF({ ...f, to: e.target.value })}
-        aria-label="To date"
+        aria-label={t("pickups.filters.dateTo")}
       />
       <Button size="sm" onClick={() => router.push(`${ROUTES.adminPickups}?${queryString()}`)}>
-        Filter
+        {t("pickups.filters.applyButton")}
       </Button>
       <Button size="sm" variant="ghost" onClick={() => router.push(ROUTES.adminPickups)}>
-        Clear
+        {t("pickups.filters.clearButton")}
       </Button>
       <a
         className={buttonVariants({ size: "sm", variant: "outline" })}
         href={`/admin/pickups/export?${queryString()}`}
       >
-        Export CSV
+        {t("pickups.export.button")}
       </a>
     </div>
   );

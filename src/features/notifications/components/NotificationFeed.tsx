@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { ROUTES } from "@/config/constants";
 import type { Notification } from "@/server/db/schema";
 
@@ -10,10 +11,11 @@ export function NotificationFeed({
   items: Notification[];
   onItemClick: (n: Notification) => void;
 }) {
+  const t = useTranslations("portal");
   if (items.length === 0) {
     return (
       <p className="px-4 py-6 text-center text-sm text-muted-foreground">
-        No notifications yet.
+        {t("notifications.empty")}
       </p>
     );
   }

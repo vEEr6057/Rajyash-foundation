@@ -1,0 +1,64 @@
+{
+  "appName": "Food Rescue",
+  "nav": {
+    "home": "Home",
+    "signIn": "Sign in",
+    "signUp": "Get started",
+    "dashboard": "Dashboard",
+    "language": "Language"
+  },
+  "footer": {
+    "contact": "Contact us",
+    "language": "Language",
+    "rights": "© {year} Rajyash Foundation. All rights reserved.",
+    "address": "Satellite, Ahmedabad 380015",
+    "email": "rajyashfoundation@rajyashgroup.com",
+    "phone": "+91-9875041206"
+  },
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "submit": "Submit",
+    "back": "Back",
+    "loading": "Loading…",
+    "retry": "Retry"
+  },
+  "status": {
+    "requested": "Requested",
+    "accepted": "Accepted",
+    "en_route": "En route",
+    "picked_up": "Picked up",
+    "delivered": "Delivered",
+    "cancelled": "Cancelled"
+  },
+  "foodCategory": {
+    "cooked_meal": "Cooked meal",
+    "raw_produce": "Raw produce",
+    "packaged": "Packaged",
+    "bakery": "Bakery",
+    "other": "Other"
+  },
+  "partnerType": {
+    "restaurant": "Restaurant",
+    "hall": "Banquet hall",
+    "event_planner": "Event planner",
+    "family": "Family",
+    "other": "Other"
+  },
+  "quantityUnit": {
+    "servings": "servings",
+    "kg": "kg"
+  },
+  "errors": {
+    "genericError": "Something went wrong. Please try again.",
+    "forbidden": "You don’t have permission to do that.",
+    "notFound": "Not found."
+  },
+  "role": {
+    "donor": "Donor",
+    "volunteer": "Volunteer",
+    "admin": "Admin"
+  }
+}
