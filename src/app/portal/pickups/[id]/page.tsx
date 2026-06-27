@@ -134,7 +134,7 @@ export default async function PickupDetailPage({
         {isDonorOwner && <DonorPickupActions pickupId={id} status={pickup.status} />}
         {isVolunteer && pickup.status === "requested" && <ClaimButton pickupId={id} />}
         {isAssignedVolunteer &&
-          (pickup.status === "claimed" || isActive) && (
+          (pickup.status === "accepted" || isActive) && (
             <div className="mb-3">
               <NavigateButton lat={pickup.lat} lng={pickup.lng} />
             </div>
