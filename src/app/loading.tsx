@@ -8,7 +8,10 @@ import { HandHeart } from "lucide-react";
 export default function Loading() {
   return (
     <div
-      className="fixed inset-0 z-50 grid place-items-center"
+      // NOT position:fixed — the route-transition shell (template.tsx) sets a
+      // transform, which would scope `fixed` to that box. min-h-dvh fills the
+      // viewport via normal flow and centres regardless of ancestor transforms.
+      className="grid min-h-[100dvh] w-full place-items-center"
       style={{ background: "linear-gradient(160deg, var(--splash), var(--splash-2))" }}
       role="status"
       aria-label="Loading"
