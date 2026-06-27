@@ -52,6 +52,18 @@ export default async function RootLayout({
     >
       <html lang={locale} suppressHydrationWarning>
         <head>
+          {/* Polyfill esbuild's `__name` helper. opennext's esbuild (keepNames) injects
+              `__name(...)` calls into next-themes' no-flash function, which next-themes then
+              inlines via toString() — but `__name` isn't defined in that inline scope, so it
+              throws ("__name is not defined") and breaks the pre-paint theme set. Defining it
+              first (identity fn) makes the inlined script run cleanly. Must precede any inlined
+              theme script, hence first in <head>. */}
+          <script
+            dangerouslySetInnerHTML={{
+              __html:
+                "globalThis.__name||(globalThis.__name=function(f){return f})",
+            }}
+          />
           {/* Gujarati script fallback (next/font coverage is inconsistent) */}
           <link
             rel="stylesheet"
