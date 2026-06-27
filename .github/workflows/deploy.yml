@@ -1,15 +1,15 @@
 name: Deploy
 
-# Build on Linux + deploy to Cloudflare Workers.
-# WHY Linux: the Windows opennext build leaves Next's middleware require unpatched -> the live
-# Worker 500s ("Dynamic require of middleware-manifest.json"). See
-# .claude/lessons/general/opennext-windows-build-middleware-500.md. GitHub-hosted ubuntu runners
-# are free + unlimited for public repos.
+# Triggers ONLY on merge to main (push to main) — plus manual re-run.
+# Validates (typecheck + lint + tests) then builds + deploys to Cloudflare Workers.
+# WHY build on Linux: a Windows opennext build leaves Next's middleware require unpatched -> the
+# live Worker 500s. See .claude/lessons/general/opennext-windows-build-middleware-500.md.
+# GitHub-hosted ubuntu runners are free + unlimited for public repos.
 
 on:
   push:
-    branches: [main]
-  workflow_dispatch: {}
+    branches: [main] # fires when a PR is merged into main
+  workflow_dispatch: {} # manual re-deploy (not an automatic trigger)
 
 permissions:
   contents: read
@@ -20,8 +20,24 @@ concurrency:
 
 jobs:
   deploy:
-    name: Build (Linux) + deploy
+    name: Validate + deploy
     runs-on: ubuntu-latest
+    env:
+      # Server env vars are real Worker secrets (set once via `wrangler secret put`, persist across
+      # deploys) — validated at runtime, not build. Skip boot validation during build/checks.
+      SKIP_ENV_VALIDATION: "1"
+      # Public vars: Next inlines NEXT_PUBLIC_* into the client bundle at BUILD time (public by design).
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
+      NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /portal/dashboard
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /onboarding
+      # Cloudflare deploy auth.
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: "23a2b1c11f499225ec43f734cba12e60"
     steps:
       - uses: actions/checkout@v4
 
@@ -37,25 +53,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # --- validate before deploying; any failure stops the deploy ---
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Tests
+        run: pnpm test:run
+
+      # --- build (Linux) + deploy ---
       - name: Build + deploy to Cloudflare
         run: pnpm run deploy
-        env:
-          # Server env vars are real Worker secrets (set once via `wrangler secret put`, persist
-          # across deploys) — validated at runtime, not build. Skip boot validation during build.
-          SKIP_ENV_VALIDATION: "1"
-
-          # Public vars: Next inlines NEXT_PUBLIC_* into the client bundle at BUILD time, so they
-          # must be present here. These keys are public-by-design (shipped to the browser).
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}
-          # Non-secret route paths.
-          NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
-          NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
-          NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /portal/dashboard
-          NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /onboarding
-
-          # Cloudflare deploy auth.
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: "23a2b1c11f499225ec43f734cba12e60"
