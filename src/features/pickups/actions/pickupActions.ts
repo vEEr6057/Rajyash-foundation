@@ -15,6 +15,8 @@ import {
   isGoogleMapsUrl,
   isShortGoogleMapsUrl,
 } from "@/lib/maps-link";
+import { haversineMeters, estimateEtaMinutes, straightLineRoute } from "@/lib/routing";
+import { fetchOsrmRoute } from "@/lib/routing.server";
 import { logger } from "@/lib/logger";
 import { ROUTES, type PickupStatus } from "@/config/constants";
 import {
@@ -468,5 +470,53 @@ export async function getLatestPing(
           createdAt: latest.createdAt.toISOString(), // serialisable for the client
         }
       : null,
+  };
+}
+
+/**
+ * Watcher route + ETA (bridge §5). Driver's current pos comes from the client
+ * (it already has it via the realtime/polling subscription); the destination is
+ * read server-side from the pickup row (never trust a client-supplied dest).
+ * OSRM road route when available, else a straight line + haversine ETA. Auth:
+ * pickup owner, the assigned volunteer, or an admin (no IDOR).
+ */
+export async function getPickupRoute(
+  pickupId: string,
+  fromLat: number,
+  fromLng: number,
+): Promise<
+  Result<{ coords: [number, number][]; etaMinutes: number; source: "osrm" | "line" }>
+> {
+  const session = await getSession();
+  if (!session) return fail("UNAUTHORIZED", "Sign in first.");
+  if (!Number.isFinite(fromLat) || !Number.isFinite(fromLng)) {
+    return fail("VALIDATION", "Invalid coordinates.");
+  }
+  const pickup = await pickupsRepo.getById(pickupId);
+  if (!pickup) return fail("NOT_FOUND", "Pickup not found.");
+
+  const allowed =
+    pickup.donorId === session.userId ||
+    pickup.volunteerId === session.userId ||
+    session.role === "admin";
+  if (!allowed) return fail("FORBIDDEN", "Not allowed to view this route.");
+
+  const from = { lat: fromLat, lng: fromLng };
+  const to = { lat: pickup.lat, lng: pickup.lng };
+
+  const osrm = await fetchOsrmRoute(from, to);
+  if (osrm) {
+    return {
+      ok: true,
+      coords: osrm.coords,
+      etaMinutes: Math.max(1, Math.round(osrm.durationSec / 60)),
+      source: "osrm",
+    };
+  }
+  return {
+    ok: true,
+    coords: straightLineRoute(from, to),
+    etaMinutes: estimateEtaMinutes(haversineMeters(from, to)),
+    source: "line",
   };
 }
