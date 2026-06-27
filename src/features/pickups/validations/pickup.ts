@@ -21,6 +21,7 @@ export const pickupFormSchema = z
       error: "Please confirm the food is safe to share",
     }),
     foodPhotoPath: z.string().optional().or(z.literal("")),
+    googleMapsUrl: z.string().url().optional().or(z.literal("")),
   })
   .refine((d) => d.windowEnd > d.windowStart, {
     message: "End time must be after the start time",

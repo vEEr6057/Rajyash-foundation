@@ -9,7 +9,14 @@ import { buildEventId } from "@/server/notifications/events";
 import { NOTIFICATION_EVENTS } from "@/config/constants";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
 import { createSignedUpload } from "@/lib/storage";
-import { geocodeAddress } from "@/lib/geocoding";
+import { geocodeAddress, resolveShortMapsUrl } from "@/lib/geocoding";
+import {
+  parseLatLngFromGoogleMapsUrl,
+  isGoogleMapsUrl,
+  isShortGoogleMapsUrl,
+} from "@/lib/maps-link";
+import { haversineMeters, estimateEtaMinutes, straightLineRoute } from "@/lib/routing";
+import { fetchOsrmRoute } from "@/lib/routing.server";
 import { logger } from "@/lib/logger";
 import { ROUTES, type PickupStatus } from "@/config/constants";
 import {
@@ -58,6 +65,51 @@ export async function geocodePickupAddress(
   return { ok: true, ...r };
 }
 
+/**
+ * DON-01 (bridge): resolve a pasted Google Maps link OR a typed address to a
+ * lat/lng for the confirm-pin. Order: direct URL parse → short-link redirect +
+ * parse → Nominatim geocode. Keeps the ORIGINAL pasted link (not the expanded
+ * one) so the stored link stays human-friendly. Auth-gated like geocodePickupAddress.
+ */
+export async function resolvePickupLocation(
+  input: string,
+): Promise<
+  Result<{ lat: number; lng: number; displayName: string; googleMapsUrl: string | null }>
+> {
+  try {
+    await requireRole(["donor", "volunteer", "admin"]);
+  } catch {
+    return fail("UNAUTHORIZED", "Sign in first.");
+  }
+  const raw = input.trim();
+  if (!raw) return fail("VALIDATION", "Enter an address or Google Maps link.");
+
+  if (isGoogleMapsUrl(raw)) {
+    let coords = parseLatLngFromGoogleMapsUrl(raw);
+    if (!coords && isShortGoogleMapsUrl(raw)) {
+      const resolved = await resolveShortMapsUrl(raw);
+      if (resolved) coords = parseLatLngFromGoogleMapsUrl(resolved);
+    }
+    if (coords) {
+      return {
+        ok: true,
+        lat: coords.lat,
+        lng: coords.lng,
+        displayName: "Pinned from Google Maps",
+        googleMapsUrl: raw,
+      };
+    }
+    return fail(
+      "NOT_FOUND",
+      "Couldn't read coordinates from that link — type the address or drag the pin.",
+    );
+  }
+
+  const r = await geocodeAddress(raw);
+  if (!r) return fail("NOT_FOUND", "Couldn't find that address — drag the pin instead.");
+  return { ok: true, lat: r.lat, lng: r.lng, displayName: r.displayName, googleMapsUrl: null };
+}
+
 /** Mint a signed upload URL for a food (donor) or proof (volunteer) photo. */
 export async function requestPhotoUpload(
   kind: "food" | "proof",
@@ -103,6 +155,7 @@ export async function createPickup(
       lng: d.lng,
       safetyAttested: true,
       foodPhotoPath: d.foodPhotoPath || null,
+      googleMapsUrl: d.googleMapsUrl || null,
       status: "requested",
     });
     // NOT-01/02: alert volunteers a new pickup is up (after-commit, best-effort).
@@ -152,6 +205,7 @@ export async function updatePickup(
     lat: d.lat,
     lng: d.lng,
     foodPhotoPath: d.foodPhotoPath || null,
+    googleMapsUrl: d.googleMapsUrl || null,
   });
   if (!row) return fail("CONFLICT", "Can't edit — it's already claimed or not yours.");
   revalidatePickups(id);
@@ -416,5 +470,53 @@ export async function getLatestPing(
           createdAt: latest.createdAt.toISOString(), // serialisable for the client
         }
       : null,
+  };
+}
+
+/**
+ * Watcher route + ETA (bridge §5). Driver's current pos comes from the client
+ * (it already has it via the realtime/polling subscription); the destination is
+ * read server-side from the pickup row (never trust a client-supplied dest).
+ * OSRM road route when available, else a straight line + haversine ETA. Auth:
+ * pickup owner, the assigned volunteer, or an admin (no IDOR).
+ */
+export async function getPickupRoute(
+  pickupId: string,
+  fromLat: number,
+  fromLng: number,
+): Promise<
+  Result<{ coords: [number, number][]; etaMinutes: number; source: "osrm" | "line" }>
+> {
+  const session = await getSession();
+  if (!session) return fail("UNAUTHORIZED", "Sign in first.");
+  if (!Number.isFinite(fromLat) || !Number.isFinite(fromLng)) {
+    return fail("VALIDATION", "Invalid coordinates.");
+  }
+  const pickup = await pickupsRepo.getById(pickupId);
+  if (!pickup) return fail("NOT_FOUND", "Pickup not found.");
+
+  const allowed =
+    pickup.donorId === session.userId ||
+    pickup.volunteerId === session.userId ||
+    session.role === "admin";
+  if (!allowed) return fail("FORBIDDEN", "Not allowed to view this route.");
+
+  const from = { lat: fromLat, lng: fromLng };
+  const to = { lat: pickup.lat, lng: pickup.lng };
+
+  const osrm = await fetchOsrmRoute(from, to);
+  if (osrm) {
+    return {
+      ok: true,
+      coords: osrm.coords,
+      etaMinutes: Math.max(1, Math.round(osrm.durationSec / 60)),
+      source: "osrm",
+    };
+  }
+  return {
+    ok: true,
+    coords: straightLineRoute(from, to),
+    etaMinutes: estimateEtaMinutes(haversineMeters(from, to)),
+    source: "line",
   };
 }

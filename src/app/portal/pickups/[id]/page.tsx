@@ -19,6 +19,7 @@ import { StatusAdvanceSection } from "@/features/pickups/components/StatusAdvanc
 import { DonorPickupActions } from "@/features/pickups/components/DonorPickupActions";
 import { LiveTrackingMap } from "@/features/pickups/components/LiveTrackingMap";
 import { VolunteerTracker } from "@/features/pickups/components/VolunteerTracker";
+import { NavigateButton } from "@/features/pickups/components/NavigateButton";
 
 export const dynamic = "force-dynamic";
 
@@ -132,6 +133,12 @@ export default async function PickupDetailPage({
       <div className="mt-6">
         {isDonorOwner && <DonorPickupActions pickupId={id} status={pickup.status} />}
         {isVolunteer && pickup.status === "requested" && <ClaimButton pickupId={id} />}
+        {isAssignedVolunteer &&
+          (pickup.status === "accepted" || isActive) && (
+            <div className="mb-3">
+              <NavigateButton lat={pickup.lat} lng={pickup.lng} />
+            </div>
+          )}
         {isAssignedVolunteer && (
           <StatusAdvanceSection
             pickupId={id}

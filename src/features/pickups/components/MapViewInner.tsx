@@ -1,9 +1,17 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { MapContainer, TileLayer, Marker, useMap, useMapEvents } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Polyline,
+  useMap,
+  useMapEvents,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { interpolateLatLng } from "@/features/pickups/lib/interpolate";
 
 // Fix default marker icons (Leaflet can't resolve them through the bundler).
 L.Icon.Default.mergeOptions({
@@ -43,14 +51,37 @@ function LiveMarker({
 }) {
   const map = useMap();
   const ref = useRef<L.Marker | null>(null);
+  const rafRef = useRef<number | null>(null);
+  const fromRef = useRef<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     if (!pos) return;
-    const ll: [number, number] = [pos.lat, pos.lng];
-    if (ref.current) ref.current.setLatLng(ll); // move existing marker — no remount
-    map.panTo(ll, { animate: true }); // gentle recenter
-    // Deps intentionally narrowed to the coords (not the `pos` object) so a new
-    // object identity each render doesn't re-pan; lat/lng cover every real move.
+    const start = fromRef.current ?? pos; // first fix: no tween, snap into place
+    const target = pos;
+    const startTs = performance.now();
+    const DURATION = 1200; // ms — smooth glide between 30s pings (TRK-02)
+
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+
+    const step = (now: number) => {
+      const t = Math.min(1, (now - startTs) / DURATION);
+      const cur = interpolateLatLng(start, target, t);
+      if (ref.current) ref.current.setLatLng([cur.lat, cur.lng]);
+      if (t < 1) {
+        rafRef.current = requestAnimationFrame(step);
+      } else {
+        fromRef.current = target;
+      }
+    };
+
+    map.panTo([target.lat, target.lng], { animate: true }); // gentle recenter
+    rafRef.current = requestAnimationFrame(step);
+
+    return () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+    // Deps narrowed to coords (not the `pos` object) so a new object identity
+    // each render doesn't restart the tween; lat/lng cover every real move.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pos?.lat, pos?.lng, map]);
 
@@ -75,6 +106,7 @@ export default function MapViewInner({
   live = null,
   liveStale = false,
   destination = null,
+  route = null,
 }: {
   markers?: MapMarker[];
   draggable?: boolean;
@@ -86,6 +118,8 @@ export default function MapViewInner({
   liveStale?: boolean;
   /** Live mode: the pickup destination marker (donor's stored lat/lng). */
   destination?: { lat: number; lng: number } | null;
+  /** Live mode: the road/straight route from the volunteer to the destination. */
+  route?: [number, number][] | null;
 }) {
   const center: [number, number] = live
     ? [live.lat, live.lng]
@@ -129,6 +163,12 @@ export default function MapViewInner({
           </>
         ) : (
           <>
+            {route && route.length > 1 && (
+              <Polyline
+                positions={route}
+                pathOptions={{ color: "#C04E12", weight: 4, opacity: 0.7 }}
+              />
+            )}
             {destination && (
               <Marker position={[destination.lat, destination.lng]} />
             )}

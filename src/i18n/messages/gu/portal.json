@@ -13,6 +13,7 @@
       "descriptionOptional": "(વૈકલ્પિક)",
       "descriptionPlaceholder": "દા.ત. 40 વેજ થાળી (લગ્ન)",
       "location": "પિકઅપ સરનામું",
+      "locationLinkHint": "Google Maps લિંક પેસ્ટ કરો અથવા સરનામું લખો",
       "findButton": "શોધો",
       "findButtonAriaLabel": "નકશા પર સરનામું શોધો",
       "setLocationHint": "નકશા પર સ્થળ સેટ કરો.",
@@ -49,7 +50,10 @@
       "assigned": "સોંપ્યું",
       "unassigned": "સોંપ્યું નથી",
       "proofDone": "પ્રૂફ ફ઼ોટો ઉમેર્યો ✓",
-      "needsProofHint": "ડિલિવરી ચાલુ કરવા પ્રૂફ ફ઼ોટો ઉમેરો."
+      "needsProofHint": "ડિલિવરી ચાલુ કરવા પ્રૂફ ફ઼ોટો ઉમેરો.",
+      "navigate": "દિશા બતાવો",
+      "etaAway": "~{minutes} મિનિટ દૂર",
+      "etaEstimate": "અંદાજ"
     },
     "board": {
       "title": "ઉપલબ્ધ પિકઅપ",

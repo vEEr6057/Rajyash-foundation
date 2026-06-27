@@ -46,3 +46,22 @@ export async function geocodeAddress(
 
   return { lat, lng, displayName: hit.display_name };
 }
+
+/**
+ * Resolve a Google Maps short link (maps.app.goo.gl / goo.gl/maps) to its full
+ * URL by following the redirect server-side, so the pure parser can read the
+ * embedded coords. Returns the final URL, or null on any failure. The body is
+ * never read — we only need res.url after redirects (Workers fetch follows them).
+ */
+export async function resolveShortMapsUrl(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url, {
+      redirect: "follow",
+      headers: { "User-Agent": USER_AGENT },
+      cache: "no-store",
+    });
+    return res.url || null;
+  } catch {
+    return null;
+  }
+}
