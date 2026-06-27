@@ -23,6 +23,13 @@ export const env = createEnv({
     INNGEST_EVENT_KEY: z.string().min(1),
     INNGEST_SIGNING_KEY: z.string().min(1),
     RESEND_API_KEY: z.string().min(1),
+    // Email sender. Defaults to Resend's free test sender (only delivers to your own
+    // Resend-account email). To go live, set this to a verified-domain address, e.g.
+    // "Rajyash Food Rescue <rescue@notify.rajyashgroup.com>" — no code change/redeploy needed.
+    RESEND_FROM: z
+      .string()
+      .min(1)
+      .default("Rajyash Food Rescue <onboarding@resend.dev>"),
     VAPID_PUBLIC_KEY: z.string().min(1),
     VAPID_PRIVATE_KEY: z.string().min(1),
     VAPID_SUBJECT: z.string().min(1), // e.g. "mailto:rajyashfoundation@rajyashgroup.com"

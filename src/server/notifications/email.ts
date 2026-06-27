@@ -14,7 +14,7 @@ export async function sendEmail(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: "Rajyash Food Rescue <onboarding@resend.dev>", // until domain verified (deferred)
+      from: env.RESEND_FROM, // default = Resend free test sender; override via RESEND_FROM to go live
       to: [to],
       subject,
       html,
