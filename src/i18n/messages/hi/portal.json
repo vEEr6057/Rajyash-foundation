@@ -13,6 +13,7 @@
       "descriptionOptional": "(वैकल्पिक)",
       "descriptionPlaceholder": "जैसे शादी के 40 वेज थाली",
       "location": "पिकअप पता",
+      "locationLinkHint": "Google Maps लिंक पेस्ट करें या पता लिखें",
       "findButton": "खोजें",
       "findButtonAriaLabel": "नक्शे पर पता खोजें",
       "setLocationHint": "नक्शे पर स्थान सेट करें.",
@@ -49,7 +50,10 @@
       "assigned": "सौंपा गया",
       "unassigned": "सौंपा नहीं",
       "proofDone": "प्रूफ फ़ोटो जोड़ी ✓",
-      "needsProofHint": "डिलीवरी सक्षम करने के लिए प्रूफ फ़ोटो जोड़ें."
+      "needsProofHint": "डिलीवरी सक्षम करने के लिए प्रूफ फ़ोटो जोड़ें.",
+      "navigate": "रास्ता दिखाओ",
+      "etaAway": "~{minutes} मिनट दूर",
+      "etaEstimate": "अनुमान"
     },
     "board": {
       "title": "उपलब्ध पिकअप",

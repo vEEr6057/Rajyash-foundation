@@ -23,7 +23,7 @@ import {
 import {
   createPickup,
   updatePickup,
-  geocodePickupAddress,
+  resolvePickupLocation,
 } from "@/features/pickups/actions/pickupActions";
 import { PhotoUploader } from "./PhotoUploader";
 import { MapView } from "./MapView";
@@ -39,6 +39,7 @@ interface FormValues {
   address: string;
   lat: number;
   lng: number;
+  googleMapsUrl?: string;
   safetyAttested: boolean;
   foodPhotoPath?: string;
 }
@@ -80,11 +81,12 @@ export function PickupForm({
   async function findOnMap() {
     if (!address) return;
     setGeocoding(true);
-    const r = await geocodePickupAddress(address);
+    const r = await resolvePickupLocation(address);
     setGeocoding(false);
     if (r.ok) {
       setValue("lat", r.lat, { shouldValidate: true });
       setValue("lng", r.lng, { shouldValidate: true });
+      setValue("googleMapsUrl", r.googleMapsUrl ?? "");
     } else {
       setServerError(r.message);
     }
@@ -189,8 +191,10 @@ export function PickupForm({
 
       <div>
         <Label htmlFor="address">{t("pickup.form.location")}</Label>
+        <p className="mb-1.5 text-xs text-muted-foreground">{t("pickup.form.locationLinkHint")}</p>
+        <input type="hidden" {...register("googleMapsUrl")} />
         <div className="flex gap-2">
-          <Input id="address" placeholder="Area, landmark, Ahmedabad" {...register("address")} />
+          <Input id="address" placeholder="Area, landmark, or Google Maps link" {...register("address")} />
           <Button
             type="button"
             variant="outline"

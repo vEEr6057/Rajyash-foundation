@@ -11,6 +11,7 @@
       "descriptionOptional": "(optional)",
       "descriptionPlaceholder": "e.g. 40 veg thalis from a wedding",
       "location": "Pickup address",
+      "locationLinkHint": "Paste a Google Maps link or type an address",
       "findButton": "Find",
       "findButtonAriaLabel": "Geocode address on map",
       "setLocationHint": "Set the location on the map.",
@@ -47,7 +48,10 @@
       "assigned": "assigned",
       "unassigned": "unassigned",
       "proofDone": "Proof photo added ✓",
-      "needsProofHint": "Add the proof photo to enable delivery."
+      "needsProofHint": "Add the proof photo to enable delivery.",
+      "navigate": "Navigate",
+      "etaAway": "~{minutes} min away",
+      "etaEstimate": "estimate"
     },
     "board": {
       "title": "Available pickups",
