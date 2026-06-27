@@ -7,6 +7,8 @@ import {
   integer,
   doublePrecision,
   index,
+  jsonb,
+  unique,
 } from "drizzle-orm/pg-core";
 import {
   ROLES,
@@ -166,3 +168,92 @@ export const locationPings = pgTable(
 
 export type LocationPing = typeof locationPings.$inferSelect;
 export type NewLocationPing = typeof locationPings.$inferInsert;
+
+// ── Notifications (Phase 4) ──────────────────────────────────────────
+/**
+ * In-app notification feed item (NOT-01 / D-06). One row per (recipient, event,
+ * in_app delivery). `data` carries client routing context; `pickupId` cascades so
+ * a deleted pickup tidies its notifications (pickups are never row-deleted today).
+ */
+export const notifications = pgTable(
+  "notifications",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => profiles.id),
+    type: text("type").notNull(), // event type, e.g. "pickup/claimed"
+    title: text("title").notNull(),
+    body: text("body").notNull(),
+    data: jsonb("data"),
+    pickupId: text("pickup_id").references(() => pickups.id, {
+      onDelete: "cascade",
+    }),
+    readAt: timestamp("read_at", { withTimezone: true }),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("notifications_user_idx").on(t.userId),
+    // Unread-bell count: WHERE user_id = ? AND read_at IS NULL, newest first.
+    index("notifications_user_unread_idx").on(t.userId, t.readAt),
+  ],
+);
+export type Notification = typeof notifications.$inferSelect;
+export type NewNotification = typeof notifications.$inferInsert;
+
+/**
+ * Web push subscription (NOT-02 / D-07). `endpoint` is UNIQUE — the same browser
+ * re-subscribing upserts rather than duplicates; dead endpoints (404/410) are pruned
+ * server-side on send.
+ */
+export const pushSubscriptions = pgTable(
+  "push_subscriptions",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => profiles.id),
+    endpoint: text("endpoint").notNull().unique(),
+    p256dh: text("p256dh").notNull(),
+    auth: text("auth").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("push_subscriptions_user_idx").on(t.userId)],
+);
+export type PushSubscriptionRow = typeof pushSubscriptions.$inferSelect;
+export type NewPushSubscription = typeof pushSubscriptions.$inferInsert;
+
+/**
+ * Exactly-once ledger (NOT-05 / D-09). One row per (event, recipient, channel); the
+ * UNIQUE constraint is the hard dedup guarantee. The dispatcher inserts
+ * on-conflict-do-nothing BEFORE sending — a returned row means "fresh, send"; empty
+ * means "already sent, skip". recipient_id is intentionally NOT a FK (keeps the claim
+ * insert cheap + atomic and lets us record deliveries for any recipient string).
+ */
+export const notificationDeliveries = pgTable(
+  "notification_deliveries",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    eventId: text("event_id").notNull(), // `${pickupId}:created` | `${pickupId}:${toStatus}`
+    recipientId: text("recipient_id").notNull(), // profiles.id (not FK'd by design)
+    channel: text("channel").notNull(), // "in_app" | "web_push" | "email"
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    unique("notif_delivery_unique").on(t.eventId, t.recipientId, t.channel),
+  ],
+);
+export type NotificationDelivery = typeof notificationDeliveries.$inferSelect;
+export type NewNotificationDelivery = typeof notificationDeliveries.$inferInsert;

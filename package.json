@@ -17,6 +17,7 @@
     "test:run": "vitest --run"
   },
   "dependencies": {
+    "@block65/webcrypto-web-push": "^1.0.2",
     "@clerk/nextjs": "^7.5.8",
     "@hookform/resolvers": "^5.4.0",
     "@opennextjs/cloudflare": "^1.20.0",
@@ -27,6 +28,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.2",
+    "inngest": "^4.11.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.21.0",
     "motion": "^12.42.0",

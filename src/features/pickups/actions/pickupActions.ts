@@ -4,6 +4,9 @@ import { revalidatePath } from "next/cache";
 import { requireRole, AuthError, getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { pingsRepo } from "@/server/db/repositories/pings";
+import { inngest } from "@/server/inngest/client";
+import { buildEventId } from "@/server/notifications/events";
+import { NOTIFICATION_EVENTS } from "@/config/constants";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
 import { createSignedUpload } from "@/lib/storage";
 import { geocodeAddress } from "@/lib/geocoding";
@@ -102,6 +105,18 @@ export async function createPickup(
       foodPhotoPath: d.foodPhotoPath || null,
       status: "requested",
     });
+    // NOT-01/02: alert volunteers a new pickup is up (after-commit, best-effort).
+    try {
+      await inngest.send({
+        name: NOTIFICATION_EVENTS.pickupCreated,
+        data: { pickupId: row.id, eventId: buildEventId("created", row.id) },
+      });
+    } catch (e) {
+      logger.error("inngest emit pickup/created failed", {
+        pickupId: row.id,
+        err: String(e),
+      });
+    }
     revalidatePickups(row.id);
     return { ok: true, id: row.id };
   } catch (e) {
@@ -155,6 +170,18 @@ export async function cancelPickup(id: string): Promise<Result> {
   if (!row) return fail("CONFLICT", "Can't cancel — already claimed or not yours.");
   // TRK-04 / D-08: cancellation ends tracking — purge any trail (no-op if none).
   await pingsRepo.purgeForPickup(id);
+  // NOT-01: tell the donor their pickup was cancelled (after-commit, best-effort).
+  try {
+    await inngest.send({
+      name: NOTIFICATION_EVENTS.pickupCancelled,
+      data: { pickupId: id, eventId: buildEventId("cancelled", id) },
+    });
+  } catch (e) {
+    logger.error("inngest emit pickup/cancelled failed", {
+      pickupId: id,
+      err: String(e),
+    });
+  }
   revalidatePickups(id);
   return { ok: true };
 }
@@ -183,6 +210,18 @@ export async function repostPickup(id: string): Promise<Result<{ id: string }>> 
     safetyAttested: src.safetyAttested,
     status: "requested",
   });
+  // NOT-01/02: a reposted pickup is newly available — alert volunteers (best-effort).
+  try {
+    await inngest.send({
+      name: NOTIFICATION_EVENTS.pickupCreated,
+      data: { pickupId: row.id, eventId: buildEventId("created", row.id) },
+    });
+  } catch (e) {
+    logger.error("inngest emit pickup/created (repost) failed", {
+      pickupId: row.id,
+      err: String(e),
+    });
+  }
   revalidatePickups(row.id);
   return { ok: true, id: row.id };
 }
@@ -203,6 +242,18 @@ export async function claimPickup(id: string): Promise<Result> {
     fromStatus: "requested",
     toStatus: "accepted",
   });
+  // NOT-01/02/03: tell the donor their pickup was claimed (after-commit, best-effort).
+  try {
+    await inngest.send({
+      name: NOTIFICATION_EVENTS.pickupClaimed,
+      data: { pickupId: id, eventId: buildEventId("claimed", id) },
+    });
+  } catch (e) {
+    logger.error("inngest emit pickup/claimed failed", {
+      pickupId: id,
+      err: String(e),
+    });
+  }
   revalidatePickups(id);
   return { ok: true };
 }
@@ -239,6 +290,19 @@ export async function advancePickup(id: string): Promise<Result<{ status: Pickup
   // TRK-04 / D-08: delivery ends tracking — purge the location trail immediately.
   if (to === "delivered") {
     await pingsRepo.purgeForPickup(id);
+  }
+  // NOT-01/02/03: notify the donor of the status change (after-commit, best-effort).
+  try {
+    await inngest.send({
+      name: NOTIFICATION_EVENTS.pickupStatusChanged,
+      data: { pickupId: id, eventId: buildEventId(to, id), toStatus: to },
+    });
+  } catch (e) {
+    logger.error("inngest emit pickup/status_changed failed", {
+      pickupId: id,
+      toStatus: to,
+      err: String(e),
+    });
   }
   revalidatePickups(id);
   return { ok: true, status: to };

@@ -105,6 +105,8 @@ export const QUERY_KEYS = {
   board: ["pickups", "board"] as const,
   myPickups: ["pickups", "mine"] as const,
   pings: (id: string) => ["pings", id] as const,
+  notifications: ["notifications"] as const,
+  unreadCount: ["notifications", "unread-count"] as const,
 } as const;
 
 // ── Live tracking (Phase 3) ──────────────────────────────────────────
@@ -115,3 +117,17 @@ export const POLL_INTERVAL_MS = 10_000;
 // Stale threshold — newest ping older than this dims the marker + shows the
 // "location may be outdated" badge (~3 missed pings, D-07).
 export const STALE_THRESHOLD_MS = 90_000;
+
+// ── Notifications (Phase 4) ──────────────────────────────────────────
+// Inngest event names (D-03) — emitted from the pickup actions, consumed by the
+// fan-out function. The single source of truth for the event strings.
+export const NOTIFICATION_EVENTS = {
+  pickupCreated: "pickup/created",
+  pickupClaimed: "pickup/claimed",
+  pickupStatusChanged: "pickup/status_changed",
+  pickupCancelled: "pickup/cancelled",
+} as const;
+
+// Channel keys (NOT-04 registry keys + notification_deliveries.channel values).
+export const NOTIFICATION_CHANNELS = ["in_app", "web_push", "email"] as const;
+export type NotificationChannelKey = (typeof NOTIFICATION_CHANNELS)[number];

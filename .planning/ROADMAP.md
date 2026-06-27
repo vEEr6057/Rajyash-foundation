@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 1: Foundation** - Project scaffold, Drizzle schema, Clerk auth + RBAC, Cloudflare/Supabase wiring, env validation
 - [ ] **Phase 2: Rescue Loop Core** - Donor post, volunteer claim, status machine, proof of delivery — the product
 - [ ] **Phase 3: Live Tracking** - Volunteer location pings, Supabase Realtime, Leaflet map, stale indicator, privacy purge
-- [ ] **Phase 4: Notifications** - In-app, web push, and email dispatcher; channel-abstracted, Inngest fan-out, retry/dedup
+- [x] **Phase 4: Notifications** - In-app, web push, and email dispatcher; channel-abstracted, Inngest fan-out, retry/dedup
 - [ ] **Phase 5: Payments** - Razorpay webhook-first donation flow, idempotency, 80G receipt email
 - [ ] **Phase 6: Admin Portal + Reporting** - Pickup management, user/partner management, impact reporting, CSV export
 - [ ] **Phase 7: Public Site + i18n + PWA** - Landing page, public impact counter, volunteer signup, EN/Gujarati/Hindi, PWA
@@ -92,7 +92,14 @@ Plans:
   3. When a pickup status changes, an email is sent via Resend to the relevant party with the status details
   4. All three channels dispatch through a single channel-abstracted layer; disabling or replacing one channel has no effect on the others
   5. A notification that fails to deliver is retried automatically; the system never sends the same notification twice to the same recipient for the same event
-**Plans**: TBD
+**Plans**: 6 plans
+Plans:
+- [ ] 04-01-PLAN.md — Wave 0: deps (inngest, @block65/webcrypto-web-push), 3 tables (notifications/push_subscriptions/notification_deliveries + UNIQUE dedup) + 0003 migration, env (Inngest/Resend/VAPID) + constants, pure core GREEN (buildEventId/resolveRecipients/buildCopy) + RED scaffolds (dispatch, push)
+- [ ] 04-02-PLAN.md — Wave 1: channel layer — types/interface (NOT-04), 3 repos (notifications/pushSubs/deliveries claim), push.ts (@block65+fetch+prune) + email.ts (Resend REST), 3 channels, CHANNELS registry, dispatchToChannel (dedup-then-send) — turns dispatch + push tests GREEN
+- [ ] 04-03-PLAN.md — Wave 2: Inngest — typed client (explicit keys), public /api/inngest serve route + middleware allowlist, fan-out function (idempotency + per-(recipient,channel) step.run), async recipient resolver, emit inngest.send from the 4 pickup actions after commit
+- [ ] 04-04-PLAN.md — Wave 2: in-app UI (NOT-01) — user-scoped notification + push-subscription server actions, NotificationBell + NotificationFeed + useNotifications hook + barrel, bell mounted in the dashboard header — turns NotificationBell test GREEN
+- [ ] 04-05-PLAN.md — Wave 3: web push client (NOT-02) — public/sw.js (push + notificationclick), urlBase64ToUint8Array helper, usePushSubscription hook + PushOptIn control, mounted on the dashboard
+- [ ] 04-06-PLAN.md — Wave 4 (manual/deferred): apply 3 tables + RLS (deny anon) via Supabase MCP, generate VAPID + set env (dev+Cloudflare), Resend key, Inngest prod sync, run inngest-cli dev + Playwright E2E (in-app fully; push subscribe; dedup-on-replay)
 **UI hint**: yes
 
 ### Phase 5: Payments
@@ -144,7 +151,7 @@ Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and 
 | 1. Foundation | 0/7 | Not started | - |
 | 2. Rescue Loop Core | 0/7 | Planned | - |
 | 3. Live Tracking | 0/5 | Planned | - |
-| 4. Notifications | 0/? | Not started | - |
+| 4. Notifications | 6/6 | Done | 2026-06-26 |
 | 5. Payments | 0/? | Not started | - |
 | 6. Admin Portal + Reporting | 0/? | Not started | - |
 | 7. Public Site + i18n + PWA | 0/? | Not started | - |

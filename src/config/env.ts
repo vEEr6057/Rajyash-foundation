@@ -17,6 +17,15 @@ export const env = createEnv({
     SUPABASE_URL: z.string().url(),
     SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
     SUPABASE_STORAGE_BUCKET: z.string().min(1).default("pickups"),
+    // Notifications (Phase 4) — async jobs (Inngest), email (Resend), web push (VAPID).
+    // All server-only; boot-validated so the app fails fast rather than silently
+    // dropping notifications. Inngest keys already live in .env.local.
+    INNGEST_EVENT_KEY: z.string().min(1),
+    INNGEST_SIGNING_KEY: z.string().min(1),
+    RESEND_API_KEY: z.string().min(1),
+    VAPID_PUBLIC_KEY: z.string().min(1),
+    VAPID_PRIVATE_KEY: z.string().min(1),
+    VAPID_SUBJECT: z.string().min(1), // e.g. "mailto:rajyashfoundation@rajyashgroup.com"
   },
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).startsWith("pk_"),
@@ -29,6 +38,9 @@ export const env = createEnv({
     // gate every read. Same project URL as the server-only SUPABASE_URL.
     NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
     NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+    // VAPID *public* key (Phase 4) — safe in the browser; it's the applicationServerKey
+    // the service worker's pushManager.subscribe() needs. Private key stays server-only.
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string().min(1),
   },
   // Next.js inlines NEXT_PUBLIC_* at build time, so they must be listed explicitly.
   experimental__runtimeEnv: {
@@ -42,6 +54,7 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL,
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+    NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,

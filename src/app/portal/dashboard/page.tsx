@@ -6,6 +6,7 @@ import { getSession } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { NotificationBell, PushOptIn } from "@/features/notifications";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Dashboard — Rajyash Food Rescue" };
@@ -23,7 +24,10 @@ export default async function PortalDashboardPage() {
     <main className="mx-auto max-w-3xl px-4 py-8">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold tracking-tight">Dashboard</h1>
-        <UserButton />
+        <div className="flex items-center gap-2">
+          <NotificationBell />
+          <UserButton />
+        </div>
       </header>
 
       <Card>
@@ -33,6 +37,7 @@ export default async function PortalDashboardPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <PushOptIn />
           {isDonor && (
             <div className="flex flex-wrap gap-3">
               <Link href={ROUTES.newPickup} className={buttonVariants({ size: "lg" })}>
