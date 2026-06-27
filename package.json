@@ -8,6 +8,7 @@
     "start": "next start",
     "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
     "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "deploy:wsl": "bash scripts/deploy-wsl.sh",
     "typecheck": "tsc --noEmit",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
