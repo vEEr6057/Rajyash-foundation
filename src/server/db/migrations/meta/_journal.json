@@ -8,6 +8,13 @@
       "when": 1782403701422,
       "tag": "0000_productive_kree",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1782426477825,
+      "tag": "0001_chunky_lady_mastermind",
+      "breakpoints": true
     }
   ]
 }
