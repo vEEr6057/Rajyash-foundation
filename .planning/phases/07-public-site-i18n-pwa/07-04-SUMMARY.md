@@ -148,3 +148,28 @@ Files exist:
 Commits:
 - FOUND: 4b75062 feat(07-04): add GU/HI message catalogs
 - FOUND: 1741fae feat(07-04): real Serwist SW with Phase-4 push handlers
+
+---
+
+## Review Fixes (react-review pass — 2026-06-27)
+
+Applied all findings from the Phase 7 react-review. Commits c627ba4 through 31cbe48 on branch `feature/phase-7-public-site-i18n-pwa`.
+
+| Finding | Fix | Commit |
+|---------|-----|--------|
+| CRIT-001: hardcoded "Join" in PublicHeader mobile CTA | Add `becomeVolShort` key (en/gu/hi); use `t()` | c627ba4 |
+| CRIT-002: PushOptIn all-EN | Add `notifications.push.*` to portal ns (en/gu/hi); wire `useTranslations` | 969f647 |
+| HIGH-001: entire onboarding flow hardcoded EN | New `onboarding` namespace (en/gu/hi); wired in `request.ts`; `OnboardingForm` + `onboarding/page.tsx` use `t()` | 6eeb669 |
+| HIGH-002: `user.role` raw DB enum in UserRow | Add `role.{donor,volunteer,admin}` to common.json (en/gu/hi); use `tCommon()` | bd5ca4b |
+| HIGH-003: AdminPickupRow hardcoded `"en-IN"` locale | Use `getLocale()` from next-intl/server | bd5ca4b |
+| HIGH-004: LinkDonorControl `"(linked)"`, `"— none (unlink) —"`, `aria-label="Partner"` | Add `linkDonor.{linked,unlink,partnerLabel}` to admin.json (en/gu/hi) | bd5ca4b |
+| HIGH-005: 6 hardcoded strings in PickupForm | Add `pickup.form.*` keys to portal ns (en/gu/hi); replace all literals incl. Find button aria-label | a81cfbb |
+| HIGH-006: StatusAdvanceSection proof photo strings | Add `pickup.detail.{proofDone,needsProofHint}` to portal ns (en/gu/hi) | a81cfbb |
+| MED-001: /onboarding not excluded from SW | Add `/\/onboarding\//` to Serwist `exclude` in `next.config.ts` | c36c19f |
+| MED-002: RevealOnScroll `transitionDelay` inverted | Swap: `hidden ? \`${delay}ms\` : "0ms"` so stagger applies on entrance | c36c19f |
+| MED-003: catalog-parity test only top-level | Rewrite to recursive `collectKeyPaths()`; add `onboarding` namespace | 31cbe48 |
+| MED-006: setLocale.ts httpOnly comment backwards | Fix comment to accurately describe JS-readable cookie | c36c19f |
+| LOW-002: PartnerForm pending `"…"` bare text | Use `tCommon("buttons.loading")` | c36c19f |
+| LOW-004: HowItWorks emoji decorative | Add `aria-hidden="true"` to icon spans | c36c19f |
+
+**Post-fix verification:** `SKIP_ENV_VALIDATION=1 pnpm typecheck` — 0 errors; `pnpm lint` — 0 errors (1 pre-existing warning); `pnpm test:run` — 139/139 passed.
