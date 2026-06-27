@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 3: Live Tracking** - Volunteer location pings, Supabase Realtime, Leaflet map, stale indicator, privacy purge
 - [x] **Phase 4: Notifications** - In-app, web push, and email dispatcher; channel-abstracted, Inngest fan-out, retry/dedup
 - [ ] **Phase 5: Payments** - Razorpay webhook-first donation flow, idempotency, 80G receipt email
-- [ ] **Phase 6: Admin Portal + Reporting** - Pickup management, user/partner management, impact reporting, CSV export
+- [x] **Phase 6: Admin Portal + Reporting** - Pickup management, user/partner management, impact reporting, CSV export
 - [ ] **Phase 7: Public Site + i18n + PWA** - Landing page, public impact counter, volunteer signup, EN/Gujarati/Hindi, PWA
 
 ## Phase Details
@@ -117,13 +117,21 @@ Plans:
 ### Phase 6: Admin Portal + Reporting
 **Goal**: Foundation staff can view and manage all pickups, users, and partners from an admin portal; they can pull impact reports and export data to CSV
 **Depends on**: Phase 2, Phase 5
+> **Note:** Phase 5 (Payments) is PARKED. The Phase-6 plans depend only on Phase 2 (pickups/status machine) + Phase 4 (the `pickup/claimed` emit reused by admin-assign); donation/revenue reporting is explicitly DEFERRED (CONTEXT). The Phase-6 branch therefore stacks on the latest shipped phase branch — confirm the PR base at PR time (git-workflow.md).
 **Requirements**: ADM-01, ADM-02, ADM-03, ADM-04, ADM-05, ADM-06
 **Success Criteria** (what must be TRUE):
   1. Admin can view all pickups with filters (status, date, donor, volunteer) and manually assign an unassigned pickup to a specific volunteer
   2. Admin can manage users: view list, change a user's role, and deactivate an account
   3. Admin can manage donor/partner records (create, view, edit)
   4. Admin can view an impact report (total meals rescued, kg rescued) filtered by date range, and export the results as a CSV file
-**Plans**: TBD
+**Plans**: 6 plans
+Plans:
+- [ ] 06-01-PLAN.md — Wave 0: schema/infra — partners table + partner_type enum + profiles.partnerId/deactivatedAt + 0004 migration, admin constants (PARTNER_TYPES/labels, admin ROUTES, admin QUERY_KEYS), hardened CSV serializer toCsv/csvCell (formula-injection guard, GREEN)
+- [ ] 06-02-PLAN.md — Wave 1: repos + getSession deactivated-block — pickupsRepo listForAdmin/assignToVolunteer/impactReport, profilesRepo listAll/setRole/deactivate/reactivate/setPartner/listAssignableVolunteers, new partnersRepo CRUD, getSession blocks deactivated users
+- [ ] 06-03-PLAN.md — Wave 2: admin server actions + Zod validations — partnerSchema/filtersSchema (GREEN), adminActions (assignPickup/setUserRole/deactivate/reactivate/setUserPartner/partner CRUD) each requireRole(admin) first line + self-guards + Clerk write-then-mirror + best-effort banUser + pickup/claimed emit; self-guard + Clerk-call+mirror + assign-guard tests GREEN
+- [ ] 06-04-PLAN.md — Wave 3: admin UI (pickups + users) — /admin/pickups list+filters+inline assign (reuse PickupStatusPill), /admin/users role-change + deactivate/reactivate with the acting admin's own controls self-guarded; claim-lag copy
+- [ ] 06-05-PLAN.md — Wave 4: admin UI (partners + reports) + CSV route + dashboard — /admin/partners CRUD (RHF+Zod) + link-donor, /admin/reports impact (servings/kg/count, date range), /admin/pickups/export Route Handler (requireRole admin + toCsv + Content-Disposition), dashboard section links
+- [ ] 06-06-PLAN.md — Wave 5 (manual/deferred): apply 0004 + RLS-deny-anon on partners via Supabase MCP (get_advisors), full admin-loop Playwright E2E (filter/assign+donor-notify/role/deactivate-reactivate/self-guard/partner-CRUD+link/impact-report/CSV formula-safe + export 403 + partners-RLS-deny), optional Cloudflare redeploy
 **UI hint**: yes
 
 ### Phase 7: Public Site + i18n + PWA
@@ -153,5 +161,5 @@ Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and 
 | 3. Live Tracking | 0/5 | Planned | - |
 | 4. Notifications | 6/6 | Done | 2026-06-26 |
 | 5. Payments | 0/? | Not started | - |
-| 6. Admin Portal + Reporting | 0/? | Not started | - |
+| 6. Admin Portal + Reporting | 6/6 | Done | 2026-06-26 |
 | 7. Public Site + i18n + PWA | 0/? | Not started | - |

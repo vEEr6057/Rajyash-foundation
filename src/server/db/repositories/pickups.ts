@@ -1,8 +1,17 @@
 import "server-only";
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { pickups, type NewPickup, type Pickup } from "@/server/db/schema";
 import type { PickupStatus } from "@/config/constants";
+
+/** Admin pickups filter (D-03). All optional; and() drops undefined natively. */
+export interface AdminPickupFilters {
+  status?: PickupStatus;
+  donorId?: string;
+  volunteerId?: string;
+  from?: Date; // by createdAt
+  to?: Date;
+}
 
 /** Thin data-access for pickups. Business rules (status machine, ownership) live in the service. */
 export const pickupsRepo = {
@@ -138,5 +147,79 @@ export const pickupsRepo = {
       .where(and(eq(pickups.id, id), eq(pickups.volunteerId, volunteerId)))
       .returning();
     return rows[0] ?? null;
+  },
+
+  // ── Admin (Phase 6) ──────────────────────────────────────────────
+  /** ADM-01: admin-wide list (NOT owner-scoped), server-side filtered, newest first. */
+  async listForAdmin(f: AdminPickupFilters): Promise<Pickup[]> {
+    const db = getDb();
+    return db
+      .select()
+      .from(pickups)
+      .where(
+        and(
+          f.status ? eq(pickups.status, f.status) : undefined,
+          f.donorId ? eq(pickups.donorId, f.donorId) : undefined,
+          f.volunteerId ? eq(pickups.volunteerId, f.volunteerId) : undefined,
+          f.from ? gte(pickups.createdAt, f.from) : undefined,
+          f.to ? lte(pickups.createdAt, f.to) : undefined,
+        ),
+      )
+      .orderBy(desc(pickups.createdAt));
+  },
+
+  /**
+   * ADM-02: admin assigns a REQUESTED pickup to a chosen volunteer. Mirrors
+   * claimIfAvailable's atomic guard — only succeeds while still 'requested'
+   * (0 rows = already claimed/assigned/cancelled). No read-then-write.
+   */
+  async assignToVolunteer(
+    id: string,
+    volunteerId: string,
+  ): Promise<Pickup | null> {
+    const db = getDb();
+    const rows = await db
+      .update(pickups)
+      .set({
+        status: "accepted",
+        volunteerId,
+        claimedAt: sql`now()`,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(pickups.id, id), eq(pickups.status, "requested")))
+      .returning();
+    return rows[0] ?? null;
+  },
+
+  /**
+   * ADM-05: impact aggregate over DELIVERED pickups in [from, to] by delivered_at.
+   * servings + kg summed SEPARATELY (D-07). SUM() FILTER = one round-trip;
+   * .mapWith(Number) because postgres-js returns numeric as a string; coalesce(…,0).
+   */
+  async impactReport(
+    from: Date,
+    to: Date,
+  ): Promise<{ servings: number; kg: number; count: number }> {
+    const db = getDb();
+    const [row] = await db
+      .select({
+        servings:
+          sql<number>`coalesce(sum(${pickups.quantity}) filter (where ${pickups.quantityUnit} = 'servings'), 0)`.mapWith(
+            Number,
+          ),
+        kg: sql<number>`coalesce(sum(${pickups.quantity}) filter (where ${pickups.quantityUnit} = 'kg'), 0)`.mapWith(
+          Number,
+        ),
+        count: sql<number>`count(*)`.mapWith(Number),
+      })
+      .from(pickups)
+      .where(
+        and(
+          eq(pickups.status, "delivered"),
+          gte(pickups.deliveredAt, from),
+          lte(pickups.deliveredAt, to),
+        ),
+      );
+    return row;
   },
 };

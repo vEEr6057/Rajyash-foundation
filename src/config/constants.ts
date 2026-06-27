@@ -19,6 +19,10 @@ export const ROUTES = {
   onboarding: "/onboarding",
   portalDashboard: "/portal/dashboard",
   adminDashboard: "/admin/dashboard",
+  adminPickups: "/admin/pickups",
+  adminUsers: "/admin/users",
+  adminPartners: "/admin/partners",
+  adminReports: "/admin/reports",
   donorPickups: "/portal/pickups",
   newPickup: "/portal/pickups/new",
   pickup: (id: string) => `/portal/pickups/${id}`,
@@ -107,6 +111,9 @@ export const QUERY_KEYS = {
   pings: (id: string) => ["pings", id] as const,
   notifications: ["notifications"] as const,
   unreadCount: ["notifications", "unread-count"] as const,
+  partners: ["partners"] as const,
+  adminPickups: (filters: Record<string, string | undefined>) =>
+    ["admin", "pickups", filters] as const,
 } as const;
 
 // ── Live tracking (Phase 3) ──────────────────────────────────────────
@@ -131,3 +138,22 @@ export const NOTIFICATION_EVENTS = {
 // Channel keys (NOT-04 registry keys + notification_deliveries.channel values).
 export const NOTIFICATION_CHANNELS = ["in_app", "web_push", "email"] as const;
 export type NotificationChannelKey = (typeof NOTIFICATION_CHANNELS)[number];
+
+// ── Admin / Partners (Phase 6) ───────────────────────────────────────
+// Partner org types (D-06). Mirrors partnerTypeEnum in schema.ts — keep in sync.
+export const PARTNER_TYPES = [
+  "restaurant",
+  "hall",
+  "event_planner",
+  "family",
+  "other",
+] as const;
+export type PartnerType = (typeof PARTNER_TYPES)[number];
+
+export const PARTNER_TYPE_LABELS: Record<PartnerType, string> = {
+  restaurant: "Restaurant",
+  hall: "Banquet hall",
+  event_planner: "Event planner",
+  family: "Family",
+  other: "Other",
+};
