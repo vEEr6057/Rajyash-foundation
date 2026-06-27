@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, isNull, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { profiles, type NewProfile, type Profile } from "@/server/db/schema";
 import type { Role } from "@/config/constants";
@@ -114,5 +114,15 @@ export const profilesRepo = {
       .where(eq(profiles.id, id))
       .returning();
     return rows[0] ?? null;
+  },
+
+  /** Last-admin guard: count active (non-deactivated) admin profiles. */
+  async countActiveAdmins(): Promise<number> {
+    const db = getDb();
+    const rows = await db
+      .select({ n: count() })
+      .from(profiles)
+      .where(and(eq(profiles.role, "admin"), isNull(profiles.deactivatedAt)));
+    return rows[0]?.n ?? 0;
   },
 };

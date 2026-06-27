@@ -22,6 +22,8 @@ vi.mock("@clerk/nextjs/server", () => ({
 
 const setRole = vi.fn().mockResolvedValue({ id: "u2" });
 const deactivate = vi.fn().mockResolvedValue({ id: "u2" });
+const getById = vi.fn();
+const countActiveAdmins = vi.fn();
 const listAssignableVolunteers = vi
   .fn()
   .mockResolvedValue([{ id: "v1", name: "V" }]);
@@ -29,6 +31,8 @@ vi.mock("@/server/db/repositories/profiles", () => ({
   profilesRepo: {
     setRole: (...a: unknown[]) => setRole(...a),
     deactivate: (...a: unknown[]) => deactivate(...a),
+    getById: (...a: unknown[]) => getById(...a),
+    countActiveAdmins: (...a: unknown[]) => countActiveAdmins(...a),
     reactivate: vi.fn().mockResolvedValue({ id: "u2" }),
     setPartner: vi.fn().mockResolvedValue({ id: "u2" }),
     listAssignableVolunteers: (...a: unknown[]) => listAssignableVolunteers(...a),
@@ -70,6 +74,8 @@ beforeEach(() => {
   banUser.mockClear();
   setRole.mockClear();
   deactivate.mockClear();
+  getById.mockResolvedValue({ id: "u2", role: "volunteer", deactivatedAt: null });
+  countActiveAdmins.mockResolvedValue(2); // default: 2 admins → not the last one
   assignToVolunteer.mockReset();
   record.mockClear();
   send.mockClear();
@@ -96,6 +102,25 @@ describe("setUserRole (ADM-03)", () => {
     expect(r.ok).toBe(false);
     expect(updateUserMetadata).not.toHaveBeenCalled();
   });
+
+  // Last-admin guard
+  it("blocks demoting the last active admin to a non-admin role (CONFLICT)", async () => {
+    getById.mockResolvedValueOnce({ id: "u2", role: "admin", deactivatedAt: null });
+    countActiveAdmins.mockResolvedValueOnce(1); // only one active admin left
+    const r = await setUserRole("u2", "volunteer");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("CONFLICT");
+    expect(setRole).not.toHaveBeenCalled();
+    expect(updateUserMetadata).not.toHaveBeenCalled();
+  });
+
+  it("allows demoting an admin when there are multiple active admins", async () => {
+    getById.mockResolvedValueOnce({ id: "u2", role: "admin", deactivatedAt: null });
+    countActiveAdmins.mockResolvedValueOnce(2); // two active admins
+    const r = await setUserRole("u2", "volunteer");
+    expect(r.ok).toBe(true);
+    expect(setRole).toHaveBeenCalledWith("u2", "volunteer");
+  });
 });
 
 describe("deactivateUser (ADM-03)", () => {
@@ -106,6 +131,24 @@ describe("deactivateUser (ADM-03)", () => {
   });
   it("soft-deactivates then best-effort bans; a banUser throw does not fail the action", async () => {
     banUser.mockRejectedValueOnce(new Error("not on this version"));
+    const r = await deactivateUser("u2");
+    expect(r.ok).toBe(true);
+    expect(deactivate).toHaveBeenCalledWith("u2");
+  });
+
+  // Last-admin guard
+  it("blocks deactivating the last active admin (CONFLICT)", async () => {
+    getById.mockResolvedValueOnce({ id: "u2", role: "admin", deactivatedAt: null });
+    countActiveAdmins.mockResolvedValueOnce(1); // only one active admin
+    const r = await deactivateUser("u2");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("CONFLICT");
+    expect(deactivate).not.toHaveBeenCalled();
+  });
+
+  it("allows deactivating an admin when other active admins exist", async () => {
+    getById.mockResolvedValueOnce({ id: "u2", role: "admin", deactivatedAt: null });
+    countActiveAdmins.mockResolvedValueOnce(2); // two active admins
     const r = await deactivateUser("u2");
     expect(r.ok).toBe(true);
     expect(deactivate).toHaveBeenCalledWith("u2");

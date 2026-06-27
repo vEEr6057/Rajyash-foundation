@@ -89,6 +89,19 @@ export async function setUserRole(
     return fail("FORBIDDEN", "You can't change your own admin access.");
   if (!ROLES.includes(role)) return fail("VALIDATION", "Invalid role.");
   try {
+    // Last-admin guard: block demoting the last active admin to a non-admin role.
+    if (role !== "admin") {
+      const target = await profilesRepo.getById(targetUserId);
+      if (target?.role === "admin") {
+        const activeAdmins = await profilesRepo.countActiveAdmins();
+        if (activeAdmins <= 1) {
+          return fail(
+            "CONFLICT",
+            "Cannot demote the last active admin. Promote another admin first.",
+          );
+        }
+      }
+    }
     // DB mirror FIRST (local, fails fast), then Clerk. If Clerk throws after the DB
     // write the admin gets an error + can retry — no silent role drift (review HIGH-02).
     await profilesRepo.setRole(targetUserId, role);
@@ -116,6 +129,17 @@ export async function deactivateUser(targetUserId: string): Promise<Result> {
   if (adminId === targetUserId)
     return fail("FORBIDDEN", "You can't deactivate your own account.");
   try {
+    // Last-admin guard: block deactivating the last active admin.
+    const target = await profilesRepo.getById(targetUserId);
+    if (target?.role === "admin") {
+      const activeAdmins = await profilesRepo.countActiveAdmins();
+      if (activeAdmins <= 1) {
+        return fail(
+          "CONFLICT",
+          "Cannot deactivate the last active admin. Promote another admin first.",
+        );
+      }
+    }
     await profilesRepo.deactivate(targetUserId);
     try {
       const client = await clerkClient();
