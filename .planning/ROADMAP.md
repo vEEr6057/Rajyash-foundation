@@ -12,13 +12,13 @@ Seven phases build from nothing to a live food-rescue platform. Phase 1 lays the
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Project scaffold, Drizzle schema, Clerk auth + RBAC, Cloudflare/Supabase wiring, env validation
-- [ ] **Phase 2: Rescue Loop Core** - Donor post, volunteer claim, status machine, proof of delivery — the product
-- [ ] **Phase 3: Live Tracking** - Volunteer location pings, Supabase Realtime, Leaflet map, stale indicator, privacy purge
+- [x] **Phase 1: Foundation** - Project scaffold, Drizzle schema, Clerk auth + RBAC, Cloudflare/Supabase wiring, env validation
+- [x] **Phase 2: Rescue Loop Core** - Donor post, volunteer claim, status machine, proof of delivery — the product
+- [x] **Phase 3: Live Tracking** - Volunteer location pings, Supabase Realtime, Leaflet map, stale indicator, privacy purge
 - [x] **Phase 4: Notifications** - In-app, web push, and email dispatcher; channel-abstracted, Inngest fan-out, retry/dedup
-- [ ] **Phase 5: Payments** - Razorpay webhook-first donation flow, idempotency, 80G receipt email
+- [ ] **Phase 5: Payments** - Razorpay webhook-first donation flow, idempotency, 80G receipt email **(PARKED)**
 - [x] **Phase 6: Admin Portal + Reporting** - Pickup management, user/partner management, impact reporting, CSV export
-- [ ] **Phase 7: Public Site + i18n + PWA** - Landing page, public impact counter, volunteer signup, EN/Gujarati/Hindi, PWA
+- [x] **Phase 7: Public Site + i18n + PWA** - Landing page, public impact counter, volunteer signup, EN/Gujarati/Hindi, PWA
 
 ## Phase Details
 
@@ -166,6 +166,6 @@ Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and 
 | 2. Rescue Loop Core | 0/7 | Planned | - |
 | 3. Live Tracking | 0/5 | Planned | - |
 | 4. Notifications | 6/6 | Done | 2026-06-26 |
-| 5. Payments | 0/? | Not started | - |
+| 5. Payments | 0/? | PARKED | - |
 | 6. Admin Portal + Reporting | 6/6 | Done | 2026-06-26 |
-| 7. Public Site + i18n + PWA | 0/5 | Planned | - |
+| 7. Public Site + i18n + PWA | 5/5 | Done | 2026-06-27 |
