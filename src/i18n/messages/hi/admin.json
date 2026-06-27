@@ -91,7 +91,10 @@
       "button": "दाता जोड़ें",
       "label": "दाता",
       "placeholder": "दाता चुनें",
-      "submitButton": "जोड़ें"
+      "submitButton": "जोड़ें",
+      "linked": "(जुड़ा हुआ)",
+      "unlink": "— कोई नहीं (अनलिंक) —",
+      "partnerLabel": "भागीदार"
     },
     "table": {
       "name": "नाम",

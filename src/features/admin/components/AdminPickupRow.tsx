@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { PickupStatusPill } from "@/features/pickups/components/PickupStatusPill";
 import { formatQuantity } from "@/features/pickups/lib/format";
 import type { Pickup } from "@/server/db/schema";
@@ -12,9 +12,10 @@ export async function AdminPickupRow({
   pickup: Pickup;
   volunteers: { id: string; name: string }[];
 }) {
-  const [tCommon, tAdmin] = await Promise.all([
+  const [tCommon, tAdmin, locale] = await Promise.all([
     getTranslations("common"),
     getTranslations("admin"),
+    getLocale(),
   ]);
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border px-4 py-3 text-sm">
@@ -29,7 +30,7 @@ export async function AdminPickupRow({
         <span className="text-xs text-muted-foreground">
           {pickup.address} ·{" "}
           {pickup.volunteerId ? tAdmin("pickups.table.assigned") : tAdmin("pickups.table.unassigned")} ·{" "}
-          {new Intl.DateTimeFormat("en-IN", {
+          {new Intl.DateTimeFormat(locale, {
             day: "numeric",
             month: "short",
           }).format(pickup.createdAt)}

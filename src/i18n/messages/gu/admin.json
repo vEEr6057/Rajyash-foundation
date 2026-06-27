@@ -91,7 +91,10 @@
       "button": "દાતા જોડો",
       "label": "દાતા",
       "placeholder": "દાતા પસંદ કરો",
-      "submitButton": "જોડો"
+      "submitButton": "જોડો",
+      "linked": "(જોડ્યું)",
+      "unlink": "— કોઈ નહીં (અળગું) —",
+      "partnerLabel": "ભાગીદાર"
     },
     "table": {
       "name": "નામ",

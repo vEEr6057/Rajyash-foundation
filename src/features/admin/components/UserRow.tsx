@@ -23,6 +23,7 @@ export function UserRow({
 }) {
   const router = useRouter();
   const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
   const isSelf = user.id === currentAdminId;
@@ -47,7 +48,7 @@ export function UserRow({
           )}
         </span>
         <span className="text-xs text-muted-foreground">
-          {user.email ?? "—"} · {user.role} ·{" "}
+          {user.email ?? "—"} · {tCommon(`role.${user.role}`)} ·{" "}
           {deactivated ? t("users.statusDeactivated") : t("users.statusActive")}
         </span>
         {err && <span className="text-xs text-destructive">{err}</span>}

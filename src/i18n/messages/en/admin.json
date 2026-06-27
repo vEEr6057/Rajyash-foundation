@@ -89,7 +89,10 @@
       "button": "Link donor",
       "label": "Donor",
       "placeholder": "Select donor",
-      "submitButton": "Link"
+      "submitButton": "Link",
+      "linked": "(linked)",
+      "unlink": "— none (unlink) —",
+      "partnerLabel": "Partner"
     },
     "table": {
       "name": "Name",

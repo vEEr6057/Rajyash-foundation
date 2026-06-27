@@ -55,5 +55,10 @@
     "genericError": "Something went wrong. Please try again.",
     "forbidden": "You don’t have permission to do that.",
     "notFound": "Not found."
+  },
+  "role": {
+    "donor": "Donor",
+    "volunteer": "Volunteer",
+    "admin": "Admin"
   }
 }

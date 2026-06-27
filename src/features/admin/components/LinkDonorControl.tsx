@@ -38,7 +38,7 @@ export function LinkDonorControl({
         {donors.map((d) => (
           <option key={d.id} value={d.id}>
             {d.name}
-            {d.partnerId ? " (linked)" : ""}
+            {d.partnerId ? ` ${t("partners.linkDonor.linked")}` : ""}
           </option>
         ))}
       </select>
@@ -46,9 +46,9 @@ export function LinkDonorControl({
         className={SELECT}
         value={partnerId}
         onChange={(e) => setPartnerId(e.target.value)}
-        aria-label="Partner"
+        aria-label={t("partners.linkDonor.partnerLabel")}
       >
-        <option value="">— none (unlink) —</option>
+        <option value="">{t("partners.linkDonor.unlink")}</option>
         {partners.map((p) => (
           <option key={p.id} value={p.id}>
             {p.name}
