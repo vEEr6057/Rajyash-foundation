@@ -105,19 +105,20 @@ describe("getRequestConfig (I18N-01 — cookie-based locale detection)", () => {
     expect(result.locale).toBe("en");
   });
 
-  it("test 6: messages object has nested top-level keys common/landing/portal/admin (not flat-spread)", async () => {
+  it("test 6: messages object has nested top-level keys common/landing/portal/admin/onboarding (not flat-spread)", async () => {
     cookieGet.mockReturnValue({ value: "en" });
     const result = await callConfig();
-    // Must have exactly these 4 top-level namespace keys.
+    // Must have exactly these 5 top-level namespace keys.
     // Guards against flat-spread regression where portal.dashboard and
     // admin.dashboard would collide at the top level.
     expect(Object.keys(result.messages).sort()).toEqual(
-      ["admin", "common", "landing", "portal"].sort(),
+      ["admin", "common", "landing", "onboarding", "portal"].sort(),
     );
     // Each namespace value is a truthy object (not a string or undefined)
     expect(result.messages.common).toBeTruthy();
     expect(result.messages.landing).toBeTruthy();
     expect(result.messages.portal).toBeTruthy();
     expect(result.messages.admin).toBeTruthy();
+    expect(result.messages.onboarding).toBeTruthy();
   });
 });

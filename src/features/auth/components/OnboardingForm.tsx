@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { HeartHandshake, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,20 +18,9 @@ import {
 } from "@/features/auth/validations/onboarding";
 import { completeOnboarding } from "@/features/auth/actions/onboardingActions";
 
-const ROLE_CARDS: Record<
-  (typeof SELECTABLE_ROLES)[number],
-  { title: string; blurb: string; icon: typeof Truck }
-> = {
-  donor: {
-    title: "Donate food",
-    blurb: "I have surplus food to give — restaurant, event, or home.",
-    icon: HeartHandshake,
-  },
-  volunteer: {
-    title: "Volunteer / drive",
-    blurb: "I'll pick up food and deliver it to people in need.",
-    icon: Truck,
-  },
+const ROLE_ICONS: Record<(typeof SELECTABLE_ROLES)[number], typeof Truck> = {
+  donor: HeartHandshake,
+  volunteer: Truck,
 };
 
 // PUB-03: defaultRole pre-selects volunteer role when "Become a volunteer" CTA is clicked.
@@ -42,6 +32,7 @@ export function OnboardingForm({
   defaultRole?: "donor" | "volunteer";
 }) {
   const router = useRouter();
+  const t = useTranslations("onboarding");
   const { user } = useUser();
   const [serverError, setServerError] = useState<string | null>(null);
 
@@ -76,11 +67,10 @@ export function OnboardingForm({
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
       <div>
-        <Label>How would you like to help?</Label>
+        <Label>{t("roleLabel")}</Label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {SELECTABLE_ROLES.map((key) => {
-            const card = ROLE_CARDS[key];
-            const Icon = card.icon;
+            const Icon = ROLE_ICONS[key];
             const selected = role === key;
             return (
               <button
@@ -104,10 +94,10 @@ export function OnboardingForm({
                   )}
                 />
                 <span className="font-semibold text-foreground">
-                  {card.title}
+                  {t(`${key}.title`)}
                 </span>
                 <span className="text-sm text-muted-foreground">
-                  {card.blurb}
+                  {t(`${key}.blurb`)}
                 </span>
               </button>
             );
@@ -119,11 +109,11 @@ export function OnboardingForm({
       </div>
 
       <div>
-        <Label htmlFor="name">Your name</Label>
+        <Label htmlFor="name">{t("nameLabel")}</Label>
         <Input
           id="name"
           autoComplete="name"
-          placeholder="e.g. Rajeshbhai Patel"
+          placeholder={t("namePlaceholder")}
           aria-invalid={!!errors.name}
           className={cn(errors.name && "rj-field--error border-destructive")}
           {...register("name")}
@@ -135,14 +125,15 @@ export function OnboardingForm({
 
       <div>
         <Label htmlFor="phone">
-          Phone <span className="font-normal text-muted-foreground">(optional)</span>
+          {t("phoneLabel")}{" "}
+          <span className="font-normal text-muted-foreground">{t("phoneOptional")}</span>
         </Label>
         <Input
           id="phone"
           type="tel"
           inputMode="numeric"
           autoComplete="tel"
-          placeholder="10-digit mobile"
+          placeholder={t("phonePlaceholder")}
           aria-invalid={!!errors.phone}
           className={cn(errors.phone && "rj-field--error border-destructive")}
           {...register("phone")}
@@ -153,7 +144,7 @@ export function OnboardingForm({
       </div>
 
       <div>
-        <Label htmlFor="city">City</Label>
+        <Label htmlFor="city">{t("cityLabel")}</Label>
         <Input id="city" {...register("city")} />
       </div>
 
@@ -164,7 +155,7 @@ export function OnboardingForm({
       )}
 
       <Button type="submit" size="lg" className="w-full" disabled={isSubmitting}>
-        {isSubmitting ? "Setting up…" : "Continue"}
+        {isSubmitting ? t("submitting") : t("submit")}
       </Button>
     </form>
   );

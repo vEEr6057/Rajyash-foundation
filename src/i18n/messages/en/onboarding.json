@@ -1,0 +1,21 @@
+{
+  "title": "Welcome to Rajyash Food Rescue",
+  "description": "A couple of details and you're in. You can change these later.",
+  "roleLabel": "How would you like to help?",
+  "donor": {
+    "title": "Donate food",
+    "blurb": "I have surplus food to give — restaurant, event, or home."
+  },
+  "volunteer": {
+    "title": "Volunteer / drive",
+    "blurb": "I'll pick up food and deliver it to people in need."
+  },
+  "nameLabel": "Your name",
+  "namePlaceholder": "e.g. Rajeshbhai Patel",
+  "phoneLabel": "Phone",
+  "phoneOptional": "(optional)",
+  "phonePlaceholder": "10-digit mobile",
+  "cityLabel": "City",
+  "submitting": "Setting up…",
+  "submit": "Continue"
+}
