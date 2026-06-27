@@ -78,7 +78,7 @@ export async function PublicHeader() {
             className={buttonVariants({ size: "sm" })}
           >
             <span className="hidden sm:inline">{t("becomeVol")}</span>
-            <span className="sm:hidden">Join</span>
+            <span className="sm:hidden">{t("becomeVolShort")}</span>
           </Link>
         </div>
       </div>
