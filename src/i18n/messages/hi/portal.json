@@ -1,1 +1,82 @@
-{ "_stub": true }
+{
+  "_review": "pending",
+  "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "pickup": {
+    "form": {
+      "title": "बचा हुआ भोजन पोस्ट करें",
+      "subtitle": "बताएँ क्या उपलब्ध है और कहाँ — एक स्वयंसेवक उठा लेगा.",
+      "category": "भोजन का प्रकार",
+      "quantity": "मात्रा",
+      "unit": "इकाई",
+      "location": "पिकअप पता",
+      "windowStart": "पिकअप शुरू",
+      "windowEnd": "पिकअप अंत",
+      "notes": "नोट्स (वैकल्पिक)",
+      "attestation": "मैं पुष्टि करता/करती हूँ कि यह भोजन ताज़ा, सुरक्षित और साझा करने योग्य है.",
+      "submitCreate": "पिकअप पोस्ट करें",
+      "submitEdit": "बदलाव सहेजें"
+    },
+    "card": {
+      "postedBy": "{name} द्वारा पोस्ट",
+      "window": "{start} – {end} उपलब्ध",
+      "quantity": "{amount} {unit}",
+      "claimButton": "यह पिकअप लें",
+      "claiming": "दावा हो रहा है…"
+    },
+    "detail": {
+      "title": "पिकअप विवरण",
+      "advanceButton": "{nextStatus} चिह्नित करें",
+      "advancing": "अपडेट हो रहा है…",
+      "proofUpload": "डिलीवरी का प्रमाण",
+      "editButton": "संपादित करें",
+      "cancelButton": "पिकअप रद्द करें",
+      "quickRepost": "फिर से पोस्ट करें",
+      "foodPhoto": "भोजन",
+      "deliveredPhoto": "डिलीवर किया",
+      "history": "इतिहास",
+      "assigned": "सौंपा गया",
+      "unassigned": "सौंपा नहीं"
+    },
+    "board": {
+      "title": "उपलब्ध पिकअप",
+      "emptyState": "अभी कोई खुला पिकअप नहीं. जल्द वापस जाँचें.",
+      "listTab": "सूची",
+      "mapTab": "नक्शा",
+      "mapButton": "नक्शा"
+    },
+    "donor": {
+      "title": "मेरे पिकअप",
+      "newButton": "नया",
+      "emptyState": "अभी तक कोई पिकअप नहीं.",
+      "firstPickupCta": "अपना पहला पिकअप पोस्ट करें"
+    }
+  },
+  "notifications": {
+    "title": "सूचनाएँ",
+    "empty": "अभी तक कोई सूचना नहीं.",
+    "markRead": "पढ़ा हुआ चिह्नित करें",
+    "markAllRead": "सभी पढ़ा हुआ चिह्नित करें"
+  },
+  "profile": {
+    "title": "आपकी प्रोफ़ाइल",
+    "role": "भूमिका",
+    "name": "नाम",
+    "city": "शहर",
+    "phone": "फ़ोन",
+    "saveButton": "प्रोफ़ाइल सहेजें"
+  },
+  "dashboard": {
+    "title": "डैशबोर्ड",
+    "greeting": "वापस आए, {name}",
+    "donorTitle": "दाता डैशबोर्ड",
+    "volunteerTitle": "स्वयंसेवक डैशबोर्ड",
+    "donorCta": "बचा हुआ भोजन है?",
+    "volunteerCta": "बचाव के लिए तैयार?",
+    "welcomeFallback": "स्वागत है",
+    "postPickup": "पिकअप पोस्ट करें",
+    "myPickups": "मेरे पिकअप",
+    "browsePickups": "पिकअप देखें",
+    "mapView": "नक्शा",
+    "adminDashboard": "एडमिन डैशबोर्ड"
+  }
+}

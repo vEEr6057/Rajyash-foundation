@@ -1,1 +1,128 @@
-{ "_stub": true }
+{
+  "_review": "pending",
+  "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "pickups": {
+    "title": "પિકઅપ",
+    "noMatch": "આ ફ઼િલ્ટર સાથે કોઈ પિકઅપ મળ્યું નથી.",
+    "filters": {
+      "status": "સ્ટેટસ",
+      "allStatuses": "બધા સ્ટેટસ",
+      "donor": "દાતા",
+      "volunteer": "સ્વયંસેવક",
+      "dateFrom": "થી",
+      "dateTo": "સુધી",
+      "applyButton": "ફ઼િલ્ટર",
+      "clearButton": "સાફ"
+    },
+    "table": {
+      "id": "ID",
+      "status": "સ્ટેટસ",
+      "donor": "દાતા",
+      "volunteer": "સ્વયંસેવક",
+      "category": "શ્રેણી",
+      "quantity": "જથ્થો",
+      "location": "સ્થળ",
+      "createdAt": "બન્યું",
+      "deliveredAt": "પહોંચ્યું",
+      "actions": "ક્રિયાઓ",
+      "assigned": "સોંપ્યું",
+      "unassigned": "સોંપ્યું નથી"
+    },
+    "assign": {
+      "button": "સ્વયંસેવક સોંપો",
+      "label": "ને સોંપો",
+      "placeholder": "સ્વયંસેવક પસંદ કરો",
+      "noVolunteers": "કોઈ સ્વયંસેવક ઉપલબ્ધ નથી",
+      "submitButton": "સોંપો",
+      "successMessage": "પિકઅપ સોંપ્યું.",
+      "errorMessage": "પિકઅપ સોંપવામાં નિષ્ફ઼ળ."
+    },
+    "export": {
+      "button": "CSV નિકાસ",
+      "filename": "pickups-export"
+    }
+  },
+  "users": {
+    "title": "વપરાશકર્તાઓ",
+    "you": "(તમે)",
+    "yourAccount": "તમારું ખાતું",
+    "appliesNextSignIn": "આગળ સાઇન-ઇન વખતે લાગુ",
+    "noUsers": "હજી કોઈ વપરાશકર્તા નથી.",
+    "table": {
+      "name": "નામ",
+      "email": "ઇ-મેઇલ",
+      "role": "ભૂમિકા",
+      "status": "સ્ટેટસ",
+      "partner": "ભાગીદાર",
+      "joinedAt": "જોડાયા",
+      "actions": "ક્રિયાઓ"
+    },
+    "actions": {
+      "changeRole": "ભૂમિકા બદલો",
+      "deactivate": "નિષ્ક્રિય કરો",
+      "reactivate": "ફ઼રી સક્રિય કરો",
+      "linkPartner": "ભાગીદાર જોડો"
+    },
+    "statusActive": "સક્રિય",
+    "statusDeactivated": "નિષ્ક્રિય"
+  },
+  "partners": {
+    "title": "ભાગીદારો",
+    "newButton": "ભાગીદાર ઉમેરો",
+    "allPartners": "બધા ભાગીદારો",
+    "noDonors": "હજી કોઈ દાતા વપરાશકર્તા નથી.",
+    "noPartners": "હજી કોઈ ભાગીદાર નથી.",
+    "addPartner": "ભાગીદાર ઉમેરો",
+    "linkDonorTitle": "દાતાને ભાગીદાર સાથે જોડો",
+    "editClose": "બંધ",
+    "deleteButton": "ભૂંસો",
+    "form": {
+      "name": "નામ*",
+      "type": "પ્રકાર",
+      "contactName": "સંપર્ક નામ",
+      "contactPhone": "સંપર્ક ફ઼ોન",
+      "contactEmail": "સંપર્ક ઇ-મેઇલ",
+      "address": "સરનામું",
+      "city": "શહેર",
+      "saveButton": "ભાગીદાર સાચવો",
+      "addButton": "ભાગીદાર ઉમેરો"
+    },
+    "linkDonor": {
+      "button": "દાતા જોડો",
+      "label": "દાતા",
+      "placeholder": "દાતા પસંદ કરો",
+      "submitButton": "જોડો"
+    },
+    "table": {
+      "name": "નામ",
+      "type": "પ્રકાર",
+      "contact": "સંપર્ક",
+      "donors": "જોડાયેલ દાતા",
+      "actions": "ક્રિયાઓ"
+    }
+  },
+  "reports": {
+    "title": "અસર અહેવાલ",
+    "dateFrom": "થી",
+    "dateTo": "સુધી",
+    "updateButton": "અપડેટ",
+    "metrics": {
+      "servings": "બચાવેલ ભોજન",
+      "kg": "બચાવ્યા કિ.ગ્રા.",
+      "deliveries": "પૂર્ણ ડિલિવરી"
+    },
+    "exportButton": "ફ઼િલ્ટર કરેલ પિકઅપ ડાઉનલોડ (CSV)",
+    "totalsNote": "ડિલિવરી તારીખ મુજબ ડિલિવર થયેલ પિકઅપ ગણાય. ભોજન અને કિ.ગ્રા. અલગ દર્શાવ્યા (કોઈ રૂપાંતર નહીં)."
+  },
+  "dashboard": {
+    "title": "એડ્મિન",
+    "pickupsLink": "પિકઅપ",
+    "pickupsDesc": "પિકઅપ જુઓ અને સોંપો",
+    "usersLink": "વપરાશકર્તા",
+    "usersDesc": "ભૂમિકા અને ઍક્સેસ મેનેજ",
+    "partnersLink": "ભાગીદારો",
+    "partnersDesc": "દાતા સંસ્થાઓ",
+    "reportsLink": "અહેવાલ",
+    "reportsDesc": "અસર અને CSV નિકાસ"
+  }
+}

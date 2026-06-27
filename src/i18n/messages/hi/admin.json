@@ -1,1 +1,128 @@
-{ "_stub": true }
+{
+  "_review": "pending",
+  "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "pickups": {
+    "title": "पिकअप",
+    "noMatch": "इन फ़िल्टर से कोई पिकअप नहीं मिला.",
+    "filters": {
+      "status": "स्थिति",
+      "allStatuses": "सभी स्थितियाँ",
+      "donor": "दाता",
+      "volunteer": "स्वयंसेवक",
+      "dateFrom": "से",
+      "dateTo": "तक",
+      "applyButton": "फ़िल्टर",
+      "clearButton": "साफ़"
+    },
+    "table": {
+      "id": "ID",
+      "status": "स्थिति",
+      "donor": "दाता",
+      "volunteer": "स्वयंसेवक",
+      "category": "श्रेणी",
+      "quantity": "मात्रा",
+      "location": "स्थान",
+      "createdAt": "बनाया",
+      "deliveredAt": "डिलीवर किया",
+      "actions": "क्रियाएँ",
+      "assigned": "सौंपा गया",
+      "unassigned": "सौंपा नहीं"
+    },
+    "assign": {
+      "button": "स्वयंसेवक सौंपें",
+      "label": "को सौंपें",
+      "placeholder": "स्वयंसेवक चुनें",
+      "noVolunteers": "कोई स्वयंसेवक उपलब्ध नहीं",
+      "submitButton": "सौंपें",
+      "successMessage": "पिकअप सौंपा गया.",
+      "errorMessage": "पिकअप सौंपने में विफल."
+    },
+    "export": {
+      "button": "CSV निर्यात",
+      "filename": "pickups-export"
+    }
+  },
+  "users": {
+    "title": "उपयोगकर्ता",
+    "you": "(आप)",
+    "yourAccount": "आपका खाता",
+    "appliesNextSignIn": "अगले साइन-इन पर लागू होगा",
+    "noUsers": "अभी तक कोई उपयोगकर्ता नहीं.",
+    "table": {
+      "name": "नाम",
+      "email": "ईमेल",
+      "role": "भूमिका",
+      "status": "स्थिति",
+      "partner": "भागीदार",
+      "joinedAt": "जुड़े",
+      "actions": "क्रियाएँ"
+    },
+    "actions": {
+      "changeRole": "भूमिका बदलें",
+      "deactivate": "निष्क्रिय करें",
+      "reactivate": "पुनः सक्रिय करें",
+      "linkPartner": "भागीदार जोड़ें"
+    },
+    "statusActive": "सक्रिय",
+    "statusDeactivated": "निष्क्रिय"
+  },
+  "partners": {
+    "title": "भागीदार",
+    "newButton": "भागीदार जोड़ें",
+    "allPartners": "सभी भागीदार",
+    "noDonors": "अभी तक कोई दाता उपयोगकर्ता नहीं.",
+    "noPartners": "अभी तक कोई भागीदार नहीं.",
+    "addPartner": "भागीदार जोड़ें",
+    "linkDonorTitle": "दाता को भागीदार से जोड़ें",
+    "editClose": "बंद करें",
+    "deleteButton": "मिटाएँ",
+    "form": {
+      "name": "नाम*",
+      "type": "प्रकार",
+      "contactName": "संपर्क नाम",
+      "contactPhone": "संपर्क फ़ोन",
+      "contactEmail": "संपर्क ईमेल",
+      "address": "पता",
+      "city": "शहर",
+      "saveButton": "भागीदार सहेजें",
+      "addButton": "भागीदार जोड़ें"
+    },
+    "linkDonor": {
+      "button": "दाता जोड़ें",
+      "label": "दाता",
+      "placeholder": "दाता चुनें",
+      "submitButton": "जोड़ें"
+    },
+    "table": {
+      "name": "नाम",
+      "type": "प्रकार",
+      "contact": "संपर्क",
+      "donors": "जुड़े दाता",
+      "actions": "क्रियाएँ"
+    }
+  },
+  "reports": {
+    "title": "प्रभाव रिपोर्ट",
+    "dateFrom": "से",
+    "dateTo": "तक",
+    "updateButton": "अपडेट",
+    "metrics": {
+      "servings": "बचाए गए परोसे",
+      "kg": "बचाए गए कि.ग्रा.",
+      "deliveries": "पूरी हुई डिलीवरी"
+    },
+    "exportButton": "फ़िल्टर किए पिकअप डाउनलोड (CSV)",
+    "totalsNote": "कुल डिलीवरी तारीख के अनुसार डिलीवर किए पिकअप गिने जाते हैं. परोसे और किलोग्राम अलग दिखाए जाते हैं (कोई रूपांतरण नहीं)."
+  },
+  "dashboard": {
+    "title": "एडमिन",
+    "pickupsLink": "पिकअप",
+    "pickupsDesc": "पिकअप देखें और सौंपें",
+    "usersLink": "उपयोगकर्ता",
+    "usersDesc": "भूमिका और पहुँच प्रबंधित करें",
+    "partnersLink": "भागीदार",
+    "partnersDesc": "दाता संगठन",
+    "reportsLink": "रिपोर्ट",
+    "reportsDesc": "प्रभाव और CSV निर्यात"
+  }
+}
