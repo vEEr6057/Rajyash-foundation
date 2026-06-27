@@ -29,6 +29,14 @@ export interface MapMarker {
 // Ahmedabad default center.
 const DEFAULT_CENTER: [number, number] = [23.0225, 72.5714];
 
+// Read a CSS custom property (theme-aware) for Leaflet, which needs a literal
+// colour string, not a var(). Client-only component, so document is available.
+function cssVar(name: string, fallback: string): string {
+  if (typeof window === "undefined") return fallback;
+  const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return v || fallback;
+}
+
 function ClickToPlace({ onPick }: { onPick: (lat: number, lng: number) => void }) {
   useMapEvents({
     click(e) {
@@ -131,6 +139,10 @@ export default function MapViewInner({
           ? [markers[0].lat, markers[0].lng]
           : DEFAULT_CENTER;
 
+  // Route colours from the design tokens (theme-aware via getComputedStyle).
+  const routeColor = cssVar("--route", "#C04E12");
+  const routeCap = cssVar("--route-cap", "rgba(255,255,255,.92)");
+
   return (
     <div
       style={{ height }}
@@ -164,10 +176,17 @@ export default function MapViewInner({
         ) : (
           <>
             {route && route.length > 1 && (
-              <Polyline
-                positions={route}
-                pathOptions={{ color: "#C04E12", weight: 4, opacity: 0.7 }}
-              />
+              <>
+                {/* casing/halo under the route for contrast on the basemap */}
+                <Polyline
+                  positions={route}
+                  pathOptions={{ color: routeCap, weight: 8, opacity: 1 }}
+                />
+                <Polyline
+                  positions={route}
+                  pathOptions={{ color: routeColor, weight: 4, opacity: 0.95 }}
+                />
+              </>
             )}
             {destination && (
               <Marker position={[destination.lat, destination.lng]} />
