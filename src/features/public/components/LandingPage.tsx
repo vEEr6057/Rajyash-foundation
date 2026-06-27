@@ -24,7 +24,7 @@ export async function LandingPage() {
         {/* Live badge */}
         <RevealOnScroll>
           <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-sm font-semibold text-foreground shadow-sm">
-            <span className="inline-block size-2 animate-pulse rounded-full bg-green-500" />
+            <span className="inline-block size-2 animate-pulse rounded-full bg-green-500" aria-hidden="true" />
             {t("heroLive")}
           </span>
         </RevealOnScroll>

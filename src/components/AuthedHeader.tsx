@@ -14,9 +14,13 @@ export async function AuthedHeader({ homeHref }: { homeHref: string }) {
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-2.5">
         <Link
           href={homeHref}
-          className="font-display text-base font-bold text-primary"
+          className="flex flex-col leading-tight"
+          aria-label={t("appName")}
         >
-          {t("appName")}
+          <span className="font-display text-base font-bold text-primary">
+            {t("appName")}
+          </span>
+          <span className="text-xs text-muted-foreground">{t("appTagline")}</span>
         </Link>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />

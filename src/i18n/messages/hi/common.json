@@ -1,7 +1,8 @@
 {
   "_review": "pending",
   "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
-  "appName": "फ़ूड रेस्क्यू",
+  "appName": "राजयश फ़ाउंडेशन",
+  "appTagline": "फ़ूड रेस्क्यू",
   "nav": {
     "home": "होम",
     "signIn": "साइन इन",

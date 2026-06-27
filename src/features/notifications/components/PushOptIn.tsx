@@ -14,7 +14,7 @@ export function PushOptIn() {
     return (
       <div className="flex items-center justify-between rounded-lg border border-leaf/30 bg-leaf/10 px-3 py-2 text-sm">
         <span className="flex items-center gap-2 font-medium text-leaf">
-          <Bell className="size-4" /> {t("notifications.push.on")}
+          <Bell className="size-4" aria-hidden="true" /> {t("notifications.push.on")}
         </span>
         <Button
           variant="ghost"
@@ -22,7 +22,7 @@ export function PushOptIn() {
           disabled={busy}
           onClick={() => void disable()}
         >
-          <BellOff className="size-4" /> {t("notifications.push.turnOff")}
+          <BellOff className="size-4" aria-hidden="true" /> {t("notifications.push.turnOff")}
         </Button>
       </div>
     );
@@ -43,7 +43,7 @@ export function PushOptIn() {
         {t("notifications.push.prompt")}
       </span>
       <Button size="sm" disabled={busy} onClick={() => void enable()}>
-        <Bell className="size-4" /> {t("notifications.push.enable")}
+        <Bell className="size-4" aria-hidden="true" /> {t("notifications.push.enable")}
       </Button>
     </div>
   );

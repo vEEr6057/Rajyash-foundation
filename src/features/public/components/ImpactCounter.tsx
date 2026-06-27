@@ -90,7 +90,7 @@ export function ImpactCounter({
         </div>
 
         <p className="mt-6 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-          <span className="inline-block size-2 animate-pulse rounded-full bg-green-500" />
+          <span className="inline-block size-2 animate-pulse rounded-full bg-green-500" aria-hidden="true" />
           {t("impactLive")}
         </p>
       </div>

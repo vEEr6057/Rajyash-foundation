@@ -13,7 +13,7 @@ export function SharingLocationBanner({ perm }: { perm: GeoPermission }) {
       <div className="flex items-center gap-2 rounded-lg border border-leaf-soft bg-leaf-soft px-3 py-2 text-sm text-leaf-soft-foreground">
         <span
           className="rj-dot-live inline-block size-2 rounded-full bg-leaf-bright"
-          aria-hidden
+          aria-hidden="true"
         />
         <span className="font-medium">Sharing your location</span>
         <span className="opacity-80">· deleted when you mark delivered</span>
