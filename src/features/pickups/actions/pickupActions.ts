@@ -153,6 +153,7 @@ export async function createPickup(
       lng: d.lng,
       safetyAttested: true,
       foodPhotoPath: d.foodPhotoPath || null,
+      googleMapsUrl: d.googleMapsUrl || null,
       status: "requested",
     });
     // NOT-01/02: alert volunteers a new pickup is up (after-commit, best-effort).
@@ -202,6 +203,7 @@ export async function updatePickup(
     lat: d.lat,
     lng: d.lng,
     foodPhotoPath: d.foodPhotoPath || null,
+    googleMapsUrl: d.googleMapsUrl || null,
   });
   if (!row) return fail("CONFLICT", "Can't edit — it's already claimed or not yours.");
   revalidatePickups(id);

@@ -117,6 +117,8 @@ export const pickups = pgTable(
     address: text("address").notNull(),
     lat: doublePrecision("lat").notNull(),
     lng: doublePrecision("lng").notNull(),
+    // Bridge: the original pasted Google Maps link, when location came from one.
+    googleMapsUrl: text("google_maps_url"),
 
     // Safety (DON-03) + photos (Storage object paths)
     safetyAttested: boolean("safety_attested").notNull().default(false),
