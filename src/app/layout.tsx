@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bricolage_Grotesque, Mukta, Noto_Sans_Devanagari } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 import { Providers } from "./providers";
 import "./globals.css";
 
@@ -34,9 +35,10 @@ export const metadata: Metadata = {
     "Rescue surplus food and get it to people in need across Ahmedabad — Rajyash Foundation.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const locale = await getLocale();
   return (
     <ClerkProvider
       appearance={{
@@ -48,7 +50,7 @@ export default function RootLayout({
         },
       }}
     >
-      <html lang="en" suppressHydrationWarning>
+      <html lang={locale} suppressHydrationWarning>
         <head>
           {/* Gujarati script fallback (next/font coverage is inconsistent) */}
           <link
