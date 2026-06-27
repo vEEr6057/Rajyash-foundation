@@ -287,7 +287,14 @@ async function FinalCtaSection() {
               variant: "outline",
               size: "lg",
             })}
-            style={{ color: "inherit", borderColor: "white" }}
+            // On the orange band the `outline` variant's bg-surface (white) + inherited
+            // white text made this button white-on-white. Force a transparent bg so it
+            // reads as a white-outlined button (white border + white text) on the band.
+            style={{
+              color: "inherit",
+              borderColor: "white",
+              backgroundColor: "transparent",
+            }}
           >
             {t("becomeVol")}
           </Link>
