@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Mukta:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FBF7F0; color: #22271F; font-family: 'Mukta','Noto Sans Devanagari','Noto Sans Gujarati', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  :root {
+    --font-display: 'Bricolage Grotesque','Mukta', system-ui, sans-serif;
+    --font-text: 'Mukta','Noto Sans Devanagari','Noto Sans Gujarati', system-ui, sans-serif;
+    --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 22px; --radius-pill: 999px;
+    --motion-instant: 90ms; --motion-fast: 140ms; --motion-snappy: 200ms; --motion-base: 280ms; --motion-slow: 420ms; --motion-deliberate: 640ms;
+    --ease-standard: cubic-bezier(.2,.8,.3,1); --ease-out: cubic-bezier(.16,1,.3,1); --ease-in: cubic-bezier(.4,0,1,1); --ease-in-out: cubic-bezier(.65,0,.35,1); --ease-back: cubic-bezier(.34,1.56,.64,1);
+    --motion-rise-sm: 8px; --motion-rise-md: 16px; --motion-rise-lg: 24px; --motion-press: .97;
+  }
+  [data-theme="light"] {
+    --background:#FBF7F0; --surface:#FFFFFF; --surface-2:#F6F1E7; --muted:#F1EBDF;
+    --foreground:#22271F; --muted-foreground:#6E665A; --subtle-foreground:#938A7B;
+    --border:#E8E0CF; --border-strong:#D9CFBA; --input:#D9CFBA; --ring:#E0651B;
+    --primary:#C04E12; --primary-foreground:#FFFFFF; --primary-hover:#A8420E; --primary-soft:#FBE7D2; --primary-soft-foreground:#8A3D10;
+    --brand-saffron:#F2711C;
+    --leaf:#2E7D46; --leaf-foreground:#FFFFFF; --leaf-hover:#266A3B; --leaf-soft:#DEF0E2; --leaf-soft-foreground:#1E6B36; --leaf-bright:#46A35E;
+    --success:#2E7D46; --warning:#B26A07; --danger:#BE3B2E; --danger-foreground:#FFFFFF; --danger-soft:#F7E0DC; --danger-soft-foreground:#9A271C;
+    --info:#0E6F9E; --info-soft:#DBEBF4; --info-soft-foreground:#125C7E;
+    --st-requested-bg:#FCEBD4; --st-requested-fg:#8A4E12; --st-requested-dot:#E8842B;
+    --st-enroute-bg:#D7EEF0; --st-enroute-fg:#125C68; --st-enroute-dot:#1E9AA8;
+    --st-delivered-bg:#DCF0DF; --st-delivered-fg:#1E6B36; --st-delivered-dot:#34A853;
+    --shadow-sm: 0 1px 2px rgba(50,38,20,.06), 0 1px 1px rgba(50,38,20,.04);
+    --shadow-md: 0 4px 14px rgba(50,38,20,.08), 0 1px 3px rgba(50,38,20,.05);
+    --shadow-lg: 0 14px 38px rgba(50,38,20,.13), 0 3px 8px rgba(50,38,20,.06);
+    --overlay: rgba(34,28,18,.42); --code-bg:#1b1a14; --code-fg:#e7e2d4;
+  }
+  [data-theme="dark"] {
+    --background:#15140F; --surface:#1F1D16; --surface-2:#28241A; --muted:#2A2619;
+    --foreground:#F3ECDD; --muted-foreground:#A99F8C; --subtle-foreground:#827963;
+    --border:#37321F; --border-strong:#4A442E; --input:#4A442E; --ring:#F2842F;
+    --primary:#C8531A; --primary-foreground:#FFFFFF; --primary-hover:#DA5F22; --primary-soft:#3A2412; --primary-soft-foreground:#F4B07C;
+    --brand-saffron:#F8924A;
+    --leaf:#2E7D46; --leaf-foreground:#FFFFFF; --leaf-hover:#358A50; --leaf-soft:#16301F; --leaf-soft-foreground:#7FCB92; --leaf-bright:#56B36E;
+    --success:#2E7D46; --warning:#C98A2E; --danger:#C0392C; --danger-foreground:#FFFFFF; --danger-soft:#3A1C17; --danger-soft-foreground:#F0A79C;
+    --info:#1E89B8; --info-soft:#10303D; --info-soft-foreground:#86C7E2;
+    --st-requested-bg:#3A2A12; --st-requested-fg:#F2C079; --st-requested-dot:#E8842B;
+    --st-enroute-bg:#0F3138; --st-enroute-fg:#79CAD6; --st-enroute-dot:#26B3C2;
+    --st-delivered-bg:#15311E; --st-delivered-fg:#84D196; --st-delivered-dot:#3FBF5E;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.34); --shadow-md: 0 4px 16px rgba(0,0,0,.42); --shadow-lg: 0 16px 40px rgba(0,0,0,.55);
+    --overlay: rgba(0,0,0,.6); --code-bg:#100f0b; --code-fg:#e7e2d4;
+  }
+  ::placeholder { color: var(--subtle-foreground); opacity: 1; }
+  ::selection { background: var(--primary-soft); color: var(--primary-soft-foreground); }
+  *:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 5px; }
+  a { color: inherit; }
+  @keyframes rj-spin { to { transform: rotate(360deg); } }
+  @keyframes rj-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes rj-shimmer { 0% { background-position: -420px 0; } 100% { background-position: 420px 0; } }
+  @keyframes rj-live { 0% { box-shadow: 0 0 0 0 rgba(46,125,70,.5); } 70% { box-shadow: 0 0 0 9px rgba(46,125,70,0); } 100% { box-shadow: 0 0 0 0 rgba(46,125,70,0); } }
+  @keyframes rj-toast-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+  @keyframes rj-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @keyframes rj-route-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes rj-reveal { from { opacity: 0; transform: translateY(var(--motion-rise-lg)); } to { opacity: 1; transform: none; } }
+  @keyframes rj-content-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  @keyframes rj-pop { 0% { transform: scale(1); } 40% { transform: scale(1.08); } 100% { transform: scale(1); } }
+  @keyframes rj-badge-bump { 0% { transform: scale(1); } 30% { transform: scale(1.22); } 100% { transform: scale(1); } }
+  @keyframes rj-shake { 10%,90% { transform: translateX(-1px); } 20%,80% { transform: translateX(2px); } 30%,50%,70% { transform: translateX(-5px); } 40%,60% { transform: translateX(5px); } }
+  @keyframes rj-drift { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; } }
+  [data-rm="on"] *, [data-rm="on"] *::before, [data-rm="on"] *::after { animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+  [data-rm="on"] [data-live] { animation: none !important; }
+</style>
+</helmet>
+<div ref="{{ rootRef }}" data-theme="light" data-rm="off" style="background:var(--background); color:var(--foreground); font-family:var(--font-text); min-height:100vh; line-height:1.55;">
+
+  <header style="position:sticky; top:0; z-index:40; background:color-mix(in srgb, var(--background) 86%, transparent); backdrop-filter:blur(12px); border-bottom:1px solid var(--border);">
+    <div style="max-width:1180px; margin:0 auto; padding:11px 24px; display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:11px; margin-right:auto;">
+        <div style="width:38px; height:38px; border-radius:11px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:var(--shadow-sm);">
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2.5 6.5L22 12l-6.5 2.5L13 21l-2.5-6.5L4 12l6.5-2.5z"></path></svg>
+        </div>
+        <div style="line-height:1.15;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:16px; letter-spacing:-.01em;">Rajyash Motion</div>
+          <div style="font-size:11.5px; color:var(--muted-foreground); font-weight:500;">Animation language</div>
+        </div>
+      </div>
+      <nav style="display:flex; gap:2px; flex-wrap:wrap;">
+        <a href="#principles" style="padding:7px 11px; border-radius:var(--radius-pill); font-size:13px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Principles</a>
+        <a href="#tokens" style="padding:7px 11px; border-radius:var(--radius-pill); font-size:13px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Tokens</a>
+        <a href="#budget" style="padding:7px 11px; border-radius:var(--radius-pill); font-size:13px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Budget</a>
+        <a href="#micro" style="padding:7px 11px; border-radius:var(--radius-pill); font-size:13px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Micro</a>
+        <a href="#counter" style="padding:7px 11px; border-radius:var(--radius-pill); font-size:13px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Counter</a>
+      </nav>
+      <button onClick="{{ toggleRM }}" aria-label="Preview reduced motion" style="display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 13px; border-radius:var(--radius-pill); border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:13px; font-weight:600; cursor:pointer;" style-hover="background:var(--surface-2);">
+        <sc-if value="{{ rmOn }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:50%;background:var(--leaf);"></span>Reduced: On</sc-if>
+        <sc-if value="{{ rmOff }}" hint-placeholder-val="{{ true }}"><span style="width:8px;height:8px;border-radius:50%;background:var(--border-strong);"></span>Reduced: Off</sc-if>
+      </button>
+      <button onClick="{{ toggleTheme }}" aria-label="Toggle theme" style="display:inline-flex; align-items:center; justify-content:center; width:38px; height:38px; border-radius:var(--radius-pill); border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); cursor:pointer;" style-hover="background:var(--surface-2);">
+        <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg></sc-if>
+        <sc-if value="{{ notDark }}" hint-placeholder-val="{{ true }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg></sc-if>
+      </button>
+    </div>
+  </header>
+
+  <main style="max-width:1180px; margin:0 auto; padding:0 24px;">
+
+    <section style="padding:clamp(40px,7vw,72px) 0 clamp(28px,4vw,44px);">
+      <div style="display:inline-flex; align-items:center; gap:9px; padding:6px 14px 6px 8px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-sm); font-size:13px; font-weight:600; color:var(--muted-foreground); margin-bottom:24px;">
+        <span style="display:inline-flex; padding:3px 9px; border-radius:var(--radius-pill); background:var(--primary-soft); color:var(--primary-soft-foreground); font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;">Motion v1</span>
+        <span>Extends the Rajyash design system</span>
+      </div>
+      <h1 style="font-family:var(--font-display); font-weight:800; font-size:clamp(34px,6.2vw,58px); line-height:1.04; letter-spacing:-.025em; margin:0 0 18px; max-width:18ch; text-wrap:balance;">Motion that tells you what just happened.</h1>
+      <p style="font-size:clamp(16px,2.2vw,20px); line-height:1.55; color:var(--muted-foreground); max-width:60ch; margin:0 0 26px;">A documented animation language with two budgets — frugal and functional in the field app, warm and generous on the public site. Built on transform &amp; opacity, springs where they earn it, and a reduced-motion path for everything. Hit <strong style="color:var(--foreground); font-weight:600;">Reduced: Off</strong> in the header to preview the accessible fallback live.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);"><span data-live style="width:11px; height:11px; border-radius:50%; background:var(--leaf); animation:rj-live 2s var(--ease-out) infinite;"></span>Functional first</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);">Transform &amp; opacity only</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);">App vs public budgets</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);">Motion + View Transitions</div>
+      </div>
+    </section>
+
+    <section id="principles" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Principles</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 28px;">Five rules</h2>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px,1fr)); gap:16px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--primary-soft);color:var(--primary-soft-foreground);display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div><div style="font-weight:700; font-size:16px; margin-bottom:6px;">Feedback, not decoration</div><p style="margin:0; font-size:14px; color:var(--muted-foreground); line-height:1.55;">Every animation answers <em>what happened</em> or <em>what's next</em>. If it doesn't, cut it.</p></div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--leaf-soft);color:var(--leaf-soft-foreground);display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7M19 12H5"></path></svg></div><div style="font-weight:700; font-size:16px; margin-bottom:6px;">Transform &amp; opacity only</div><p style="margin:0; font-size:14px; color:var(--muted-foreground); line-height:1.55;">GPU-composited. Never animate width, top, box-shadow or filter — they trigger layout &amp; hurt INP.</p></div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--info-soft);color:var(--info-soft-foreground);display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h12"></path></svg></div><div style="font-weight:700; font-size:16px; margin-bottom:6px;">Two budgets</div><p style="margin:0; font-size:14px; color:var(--muted-foreground); line-height:1.55;">App is frugal (≤200ms, functional). Public is generous (reveals, springs, count-ups).</p></div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--surface-2);color:var(--brand-saffron);display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg></div><div style="font-weight:700; font-size:16px; margin-bottom:6px;">Reduced motion is a state</div><p style="margin:0; font-size:14px; color:var(--muted-foreground); line-height:1.55;">Moves become fades, loops stop, content always lands. Never gate info behind motion.</p></div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;"><div style="width:40px;height:40px;border-radius:12px;background:var(--primary-soft);color:var(--primary-soft-foreground);display:flex;align-items:center;justify-content:center;margin-bottom:14px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11V6a3 3 0 0 1 6 0v5M5 11h14l-1 10H6z"></path></svg></div><div style="font-weight:700; font-size:16px; margin-bottom:6px;">Touch, not hover</div><p style="margin:0; font-size:14px; color:var(--muted-foreground); line-height:1.55;">Drivers tap one-handed. Design <code style="font-family:var(--font-mono);font-size:12.5px;">:active</code> states; reserve hover for desktop/public.</p></div>
+      </div>
+    </section>
+
+    <section id="tokens" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Foundations</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Motion tokens</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 28px;">Durations, easings and distances ship as CSS variables in <code style="font-family:var(--font-mono); font-size:14px; background:var(--surface-2); padding:1px 6px; border-radius:6px;">motion.css</code> and as <code style="font-family:var(--font-mono); font-size:14px; background:var(--surface-2); padding:1px 6px; border-radius:6px;">DUR / EASE / SPRING</code> in <code style="font-family:var(--font-mono); font-size:14px; background:var(--surface-2); padding:1px 6px; border-radius:6px;">motion.ts</code>.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:18px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 18px;">Durations</h3>
+          <div style="display:grid; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:74px; color:var(--muted-foreground); flex:none;">instant</code><span style="height:12px; width:34px; background:var(--primary); border-radius:4px;"></span><span style="font-size:12.5px; color:var(--muted-foreground);">90ms</span></div>
+            <div style="display:flex; align-items:center; gap:12px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:74px; color:var(--muted-foreground); flex:none;">fast</code><span style="height:12px; width:53px; background:var(--primary); border-radius:4px;"></span><span style="font-size:12.5px; color:var(--muted-foreground);">140ms</span></div>
+            <div style="display:flex; align-items:center; gap:12px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:74px; color:var(--muted-foreground); flex:none;">snappy</code><span style="height:12px; width:75px; background:var(--primary); border-radius:4px;"></span><span style="font-size:12.5px; color:var(--muted-foreground);">200ms</span></div>
+            <div style="display:flex; align-items:center; gap:12px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:74px; color:var(--muted-foreground); flex:none;">base</code><span style="height:12px; width:105px; background:var(--primary); border-radius:4px;"></span><span style="font-size:12.5px; color:var(--muted-foreground);">280ms</span></div>
+            <div style="display:flex; align-items:center; gap:12px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:74px; color:var(--brand-saffron); flex:none;">slow</code><span style="height:12px; width:158px; background:var(--brand-saffron); border-radius:4px;"></span><span style="font-size:12.5px; color:var(--muted-foreground);">420ms</span></div>
+            <div style="display:flex; align-items:center; gap:12px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:74px; color:var(--brand-saffron); flex:none;">deliberate</code><span style="height:12px; width:228px; max-width:100%; background:var(--brand-saffron); border-radius:4px;"></span><span style="font-size:12.5px; color:var(--muted-foreground);">640ms</span></div>
+          </div>
+          <p style="margin:16px 0 0; font-size:12.5px; color:var(--subtle-foreground);"><span style="color:var(--brand-saffron); font-weight:700;">Saffron = public-only.</span> Count-up runs 1400ms.</p>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 18px;">Easing curves</h3>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(110px,1fr)); gap:14px;">
+            <div style="text-align:center;"><svg viewBox="0 -16 100 132" style="width:100%; height:84px; background:var(--surface-2); border-radius:10px;"><rect x="0" y="0" width="100" height="100" fill="none" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="3 4"></rect><path d="M0,100 C20,20 30,0 100,0" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"></path></svg><div style="font-family:var(--font-mono); font-size:10.5px; color:var(--muted-foreground); margin-top:7px;">standard</div></div>
+            <div style="text-align:center;"><svg viewBox="0 -16 100 132" style="width:100%; height:84px; background:var(--surface-2); border-radius:10px;"><rect x="0" y="0" width="100" height="100" fill="none" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="3 4"></rect><path d="M0,100 C16,0 30,0 100,0" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"></path></svg><div style="font-family:var(--font-mono); font-size:10.5px; color:var(--muted-foreground); margin-top:7px;">out</div></div>
+            <div style="text-align:center;"><svg viewBox="0 -16 100 132" style="width:100%; height:84px; background:var(--surface-2); border-radius:10px;"><rect x="0" y="0" width="100" height="100" fill="none" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="3 4"></rect><path d="M0,100 C40,100 100,0 100,0" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"></path></svg><div style="font-family:var(--font-mono); font-size:10.5px; color:var(--muted-foreground); margin-top:7px;">in</div></div>
+            <div style="text-align:center;"><svg viewBox="0 -16 100 132" style="width:100%; height:84px; background:var(--surface-2); border-radius:10px;"><rect x="0" y="0" width="100" height="100" fill="none" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="3 4"></rect><path d="M0,100 C65,100 35,0 100,0" fill="none" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"></path></svg><div style="font-family:var(--font-mono); font-size:10.5px; color:var(--muted-foreground); margin-top:7px;">in-out</div></div>
+            <div style="text-align:center;"><svg viewBox="0 -16 100 132" style="width:100%; height:84px; background:var(--surface-2); border-radius:10px;"><rect x="0" y="0" width="100" height="100" fill="none" stroke="var(--border-strong)" stroke-width="1" stroke-dasharray="3 4"></rect><path d="M0,100 C34,-56 64,0 100,0" fill="none" stroke="var(--leaf-bright)" stroke-width="3" stroke-linecap="round"></path></svg><div style="font-family:var(--font-mono); font-size:10.5px; color:var(--muted-foreground); margin-top:7px;">back</div></div>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 18px;">Distances &amp; scales</h3>
+          <div style="display:grid; gap:14px;">
+            <div style="display:flex; align-items:center; gap:14px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:96px; color:var(--muted-foreground); flex:none;">rise-sm</code><div style="display:flex; flex-direction:column; align-items:center; gap:4px;"><span style="width:2px; height:8px; background:var(--leaf);"></span><span style="font-size:11px; color:var(--muted-foreground);">8px</span></div></div>
+            <div style="display:flex; align-items:center; gap:14px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:96px; color:var(--muted-foreground); flex:none;">rise-md</code><div style="display:flex; flex-direction:column; align-items:center; gap:4px;"><span style="width:2px; height:16px; background:var(--leaf);"></span><span style="font-size:11px; color:var(--muted-foreground);">16px</span></div></div>
+            <div style="display:flex; align-items:center; gap:14px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:96px; color:var(--muted-foreground); flex:none;">rise-lg</code><div style="display:flex; flex-direction:column; align-items:center; gap:4px;"><span style="width:2px; height:24px; background:var(--brand-saffron);"></span><span style="font-size:11px; color:var(--muted-foreground);">24px · public</span></div></div>
+            <div style="display:flex; align-items:center; gap:14px; padding-top:6px; border-top:1px dashed var(--border);"><code style="font-family:var(--font-mono); font-size:11.5px; width:96px; color:var(--muted-foreground); flex:none;">press</code><span style="font-size:13px; color:var(--muted-foreground);">scale .97 · pills .96</span></div>
+            <div style="display:flex; align-items:center; gap:14px;"><code style="font-family:var(--font-mono); font-size:11.5px; width:96px; color:var(--muted-foreground); flex:none;">pop</code><span style="font-size:13px; color:var(--muted-foreground);">scale 1 → 1.08 → 1</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="budget" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Performance</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">App vs public budget</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 26px;">The same language, two volumes. The field app protects INP and battery on mid-range Android over 3G; the marketing site can breathe.</p>
+      <div style="overflow-x:auto; border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow-sm);">
+        <table style="width:100%; border-collapse:collapse; min-width:640px; font-size:14px; background:var(--surface);">
+          <thead><tr style="background:var(--surface-2); text-align:left;">
+            <th style="padding:13px 18px; font-weight:600; font-size:12.5px; letter-spacing:.03em; text-transform:uppercase; color:var(--muted-foreground);"></th>
+            <th style="padding:13px 18px; font-weight:700;"><span style="display:inline-flex; align-items:center; gap:7px;"><span style="width:9px;height:9px;border-radius:3px;background:var(--primary);"></span>App / Portal / Admin</span></th>
+            <th style="padding:13px 18px; font-weight:700;"><span style="display:inline-flex; align-items:center; gap:7px;"><span style="width:9px;height:9px;border-radius:3px;background:var(--leaf-bright);"></span>Public marketing</span></th>
+          </tr></thead>
+          <tbody>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Target</td><td style="padding:12px 18px;">mid-range Android · 3G</td><td style="padding:12px 18px;">desktop · wifi</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Micro max</td><td style="padding:12px 18px;">200ms</td><td style="padding:12px 18px;">280ms</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Reveal max</td><td style="padding:12px 18px;">280ms</td><td style="padding:12px 18px;">640ms</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Springs</td><td style="padding:12px 18px;">success moments only</td><td style="padding:12px 18px;"><span style="color:var(--leaf-soft-foreground); font-weight:700;">Yes</span></td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Scroll reveals</td><td style="padding:12px 18px; color:var(--danger-soft-foreground);">✗ instant</td><td style="padding:12px 18px; color:var(--leaf-soft-foreground); font-weight:700;">✓ stagger</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Count-ups</td><td style="padding:12px 18px; color:var(--danger-soft-foreground);">✗</td><td style="padding:12px 18px; color:var(--leaf-soft-foreground); font-weight:700;">✓</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Continuous loops</td><td style="padding:12px 18px;">live dot + skeleton</td><td style="padding:12px 18px;">tasteful, contained</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Parallax / scroll-linked</td><td style="padding:12px 18px; color:var(--danger-soft-foreground);">✗</td><td style="padding:12px 18px;">desktop ≥768px</td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Trigger</td><td style="padding:12px 18px;"><code style="font-family:var(--font-mono); font-size:12.5px;">:active</code> / state</td><td style="padding:12px 18px;">hover + <code style="font-family:var(--font-mono); font-size:12.5px;">whileInView</code></td></tr>
+            <tr style="border-top:1px solid var(--border);"><td style="padding:12px 18px; color:var(--muted-foreground); font-weight:600;">Reduced motion</td><td style="padding:12px 18px;">instant fade</td><td style="padding:12px 18px;">instant fade</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section id="transitions" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Navigation</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Page transitions</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 26px;">In-app: a cheap CSS enter, no exit (exits cost layout on low-end). Public: the View Transitions API for crossfades and shared-element morphs.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(330px,1fr)); gap:18px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <div style="display:flex; align-items:center; gap:9px; margin-bottom:6px;"><span style="width:9px;height:9px;border-radius:3px;background:var(--primary);"></span><h3 style="font-size:16px; font-weight:700; margin:0;">In-app · cheap</h3></div>
+          <p style="margin:0 0 16px; font-size:14px; color:var(--muted-foreground);">200ms <code style="font-family:var(--font-mono);font-size:12.5px;">translateY(6px)+fade</code>, enter only. Zero JS — pure CSS class on <code style="font-family:var(--font-mono);font-size:12.5px;">template.tsx</code>.</p>
+          <div style="border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:7px; padding:9px 14px; background:var(--surface-2); border-bottom:1px solid var(--border);"><span style="width:10px;height:10px;border-radius:50%;background:#E8705B;"></span><span style="width:10px;height:10px;border-radius:50%;background:#E6B95C;"></span><span style="width:10px;height:10px;border-radius:50%;background:#6FBF73;"></span><span style="margin-left:6px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);">app/template.tsx</span></div>
+            <pre style="margin:0; padding:16px; background:var(--code-bg); color:var(--code-fg); font-family:var(--font-mono); font-size:12.5px; line-height:1.65; overflow-x:auto;">export default function Template({ children }) {
+  return &lt;div className="rj-route-shell"&gt;
+    {children}
+  &lt;/div&gt;;
+}
+<span style="color:#8a8472;">/* .rj-route-shell {
+   animation: rj-route-in 200ms
+     var(--ease-standard) both } */</span></pre>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <div style="display:flex; align-items:center; gap:9px; margin-bottom:6px;"><span style="width:9px;height:9px;border-radius:3px;background:var(--leaf-bright);"></span><h3 style="font-size:16px; font-weight:700; margin:0;">Public · View Transitions</h3></div>
+          <p style="margin:0 0 16px; font-size:14px; color:var(--muted-foreground);">Crossfade + rise on route change; name shared elements to morph the hero into the detail page.</p>
+          <div style="border-radius:12px; overflow:hidden; border:1px solid var(--border);">
+            <div style="display:flex; align-items:center; gap:7px; padding:9px 14px; background:var(--surface-2); border-bottom:1px solid var(--border);"><span style="width:10px;height:10px;border-radius:50%;background:#E8705B;"></span><span style="width:10px;height:10px;border-radius:50%;background:#E6B95C;"></span><span style="width:10px;height:10px;border-radius:50%;background:#6FBF73;"></span><span style="margin-left:6px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);">motion.css</span></div>
+            <pre style="margin:0; padding:16px; background:var(--code-bg); color:var(--code-fg); font-family:var(--font-mono); font-size:12.5px; line-height:1.65; overflow-x:auto;">@view-transition { navigation: auto; }
+
+::view-transition-new(root) {
+  animation: rj-route-in 420ms
+    var(--ease-out) both;
+}
+<span style="color:#8a8472;">/* shared morph — add to both pages */</span>
+.hero-img { view-transition-name: hero; }</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="reveals" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--leaf-bright);">Public only</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Scroll reveals</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 24px;">Impact sections rise &amp; fade in a 80ms stagger, triggered at 30% in-view, <code style="font-family:var(--font-mono);font-size:14px; background:var(--surface-2); padding:1px 6px; border-radius:6px;">once: true</code>. Reduced motion flattens to an instant opacity fade — content never waits on scroll.</p>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px); margin-bottom:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px;"><h3 style="font-size:15px; font-weight:700; margin:0;">Live — stagger</h3>
+          <button onClick="{{ replayReveal }}" class="rj-press" style="display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 15px; border-radius:11px; border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:13.5px; cursor:pointer; transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.96);" style-hover="background:var(--surface-2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"></path><path d="M3 3v5h5"></path></svg>Replay</button>
+        </div>
+        <sc-if value="{{ revealOn }}" hint-placeholder-val="{{ true }}">
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:14px;">
+            <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:18px; animation:rj-reveal var(--motion-slow) var(--ease-out) both; animation-delay:0ms;"><div style="font-family:var(--font-display); font-weight:800; font-size:28px; color:var(--primary);">2.1M+</div><div style="font-size:13px; color:var(--muted-foreground); margin-top:3px;">Meals rescued</div></div>
+            <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:18px; animation:rj-reveal var(--motion-slow) var(--ease-out) both; animation-delay:80ms;"><div style="font-family:var(--font-display); font-weight:800; font-size:28px; color:var(--primary);">540</div><div style="font-size:13px; color:var(--muted-foreground); margin-top:3px;">Volunteer drivers</div></div>
+            <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:18px; animation:rj-reveal var(--motion-slow) var(--ease-out) both; animation-delay:160ms;"><div style="font-family:var(--font-display); font-weight:800; font-size:28px; color:var(--primary);">380</div><div style="font-size:13px; color:var(--muted-foreground); margin-top:3px;">Partner donors</div></div>
+            <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:18px; animation:rj-reveal var(--motion-slow) var(--ease-out) both; animation-delay:240ms;"><div style="font-family:var(--font-display); font-weight:800; font-size:28px; color:var(--primary);">11</div><div style="font-size:13px; color:var(--muted-foreground); margin-top:3px;">Years</div></div>
+          </div>
+        </sc-if>
+      </div>
+
+      <div style="border-radius:12px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+        <div style="display:flex; align-items:center; gap:7px; padding:9px 14px; background:var(--surface-2); border-bottom:1px solid var(--border);"><span style="width:10px;height:10px;border-radius:50%;background:#E8705B;"></span><span style="width:10px;height:10px;border-radius:50%;background:#E6B95C;"></span><span style="width:10px;height:10px;border-radius:50%;background:#6FBF73;"></span><span style="margin-left:6px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);">motion.ts + JSX</span></div>
+        <pre style="margin:0; padding:16px; background:var(--code-bg); color:var(--code-fg); font-family:var(--font-mono); font-size:12.5px; line-height:1.65; overflow-x:auto;">const item = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0,
+    transition: { duration: 0.42, ease: [.16,1,.3,1] } }
+};
+<span style="color:#8a8472;">// container staggers children by 0.08s</span>
+&lt;motion.div variants={item} initial="hidden"
+  whileInView="show"
+  viewport={ { once: true, amount: 0.3, margin: "-10% 0px" } } /&gt;
+<span style="color:#8a8472;">// reduced motion → safe(reduced, item) drops y, 1ms fade</span></pre>
+      </div>
+    </section>
+
+    <section id="micro" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Live</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Micro-interactions</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 26px;">Tap anything below — it's all running on the tokens above. Each is tagged with the tech and why. Flip <strong style="color:var(--foreground); font-weight:600;">Reduced</strong> in the header to watch them collapse to accessible fades.</p>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:clamp(18px,3vw,26px); margin-bottom:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px;"><h3 style="font-size:16px; font-weight:700; margin:0;">Claim &amp; accept — the hero moment</h3><span style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); display:inline-flex; align-items:center; gap:7px;"><span style="padding:2px 8px; border-radius:999px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); border:1px solid var(--border); font-weight:700;">Motion</span>spring pop + check draw</span></div>
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:16px; background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:16px 18px;">
+          <span style="width:46px; height:46px; flex:none; border-radius:13px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px;">AR</span>
+          <div style="margin-right:auto; min-width:160px;"><div style="font-weight:700; font-size:16px;">Annapurna Restaurant</div><div style="font-size:13px; color:var(--muted-foreground);">Navrangpura · 40 meals · 2.4 km</div></div>
+          <sc-if value="{{ claimIdle }}" hint-placeholder-val="{{ true }}">
+            <span style="display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px 0 9px; border-radius:999px; background:var(--st-requested-bg); color:var(--st-requested-fg); font-size:13px; font-weight:700;"><span style="width:8px; height:8px; border-radius:50%; background:var(--st-requested-dot);"></span>Requested</span>
+            <button onClick="{{ doClaim }}" style="height:48px; padding:0 22px; border-radius:13px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:15.5px; cursor:pointer; box-shadow:var(--shadow-sm); transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.97);" style-hover="background:var(--primary-hover);">Accept pickup</button>
+          </sc-if>
+          <sc-if value="{{ claimLoading }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px 0 9px; border-radius:999px; background:var(--st-requested-bg); color:var(--st-requested-fg); font-size:13px; font-weight:700;"><span style="width:8px; height:8px; border-radius:50%; background:var(--st-requested-dot);"></span>Requested</span>
+            <button disabled style="height:48px; padding:0 22px; border-radius:13px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:15.5px; opacity:.9; cursor:default; display:inline-flex; align-items:center; gap:9px;"><span style="width:17px; height:17px; border-radius:50%; border:2px solid rgba(255,255,255,.45); border-top-color:#fff; display:inline-block; animation:rj-spin .7s linear infinite;"></span>Accepting…</button>
+          </sc-if>
+          <sc-if value="{{ claimDone }}" hint-placeholder-val="{{ false }}">
+            <span style="display:inline-flex; align-items:center; gap:6px; height:30px; padding:0 12px 0 9px; border-radius:999px; background:var(--st-enroute-bg); color:var(--st-enroute-fg); font-size:13px; font-weight:700; animation:rj-pop 340ms var(--ease-back);"><span data-live style="width:8px; height:8px; border-radius:50%; background:var(--st-enroute-dot); animation:rj-live 2s var(--ease-out) infinite;"></span>En route</span>
+            <button style="height:48px; padding:0 22px; border-radius:13px; border:none; background:var(--leaf); color:#fff; font-family:var(--font-text); font-weight:700; font-size:15.5px; cursor:default; display:inline-flex; align-items:center; gap:9px; animation:rj-pop 340ms var(--ease-back); box-shadow:var(--shadow-sm);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5" style="stroke-dasharray:30; stroke-dashoffset:30; animation:rj-check-draw 320ms var(--ease-out) 130ms forwards;"></path></svg>Accepted</button>
+            <button onClick="{{ resetClaim }}" style="height:40px; padding:0 14px; border-radius:11px; border:none; background:transparent; color:var(--muted-foreground); font-family:var(--font-text); font-weight:600; font-size:13.5px; cursor:pointer;" style-hover="background:var(--surface);">Reset</button>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(290px,1fr)); gap:18px;">
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:15px; font-weight:700; margin:0 0 16px;">Buttons · press</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:11px;">
+            <button style="height:46px; padding:0 18px; border-radius:12px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer; box-shadow:var(--shadow-sm); transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.97);" style-hover="background:var(--primary-hover);">Primary</button>
+            <button style="height:46px; padding:0 18px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer; transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.97);" style-hover="background:var(--muted);">Secondary</button>
+            <button style="height:46px; padding:0 18px; border-radius:12px; border:none; background:transparent; color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer; transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.97);" style-hover="background:var(--surface-2);">Ghost</button>
+          </div>
+          <div style="margin-top:16px; display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);"><span style="padding:2px 8px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); font-weight:700;">CSS</span>:active scale .97 · 90ms · no JS, offline-safe</div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:15px; font-weight:700; margin:0 0 16px;">Form fields · focus &amp; error</h3>
+          <div style="display:grid; gap:14px;">
+            <input placeholder="Tap to focus — the ring grows" style="width:100%; height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--input); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; outline:none; transition:border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);" style-focus="border-color:var(--ring); box-shadow:0 0 0 3px color-mix(in srgb, var(--ring) 28%, transparent);">
+            <div>
+              <sc-if value="{{ shaking }}" hint-placeholder-val="{{ false }}">
+                <input value="98xx" style="width:100%; height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--danger); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; outline:none; box-shadow:0 0 0 3px var(--danger-soft); animation:rj-shake 360ms var(--ease-in-out) both;">
+              </sc-if>
+              <sc-if value="{{ notShaking }}" hint-placeholder-val="{{ true }}">
+                <input value="98xx" style="width:100%; height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--danger); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; outline:none; box-shadow:0 0 0 3px var(--danger-soft);">
+              </sc-if>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:8px;">
+                <span style="display:flex; align-items:center; gap:6px; font-size:13px; color:var(--danger-soft-foreground);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4M12 16h.01"></path></svg>Enter 10 digits.</span>
+                <button onClick="{{ doShake }}" style="height:34px; padding:0 12px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:12.5px; cursor:pointer; transition:transform var(--motion-instant) var(--ease-out);" style-active="transform:scale(.95);">Replay shake</button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top:16px; display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);"><span style="padding:2px 8px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); font-weight:700;">CSS</span>shake once · reduced → colour only</div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:15px; font-weight:700; margin:0 0 16px;">Toast &amp; sheet</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:11px;">
+            <button onClick="{{ fireToast }}" style="height:46px; padding:0 18px; border-radius:12px; border:none; background:var(--leaf); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer; transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.97);" style-hover="background:var(--leaf-hover);">Show toast</button>
+            <button onClick="{{ openSheet }}" style="height:46px; padding:0 18px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer; transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.97);" style-hover="background:var(--muted);">Open sheet</button>
+          </div>
+          <div style="margin-top:16px; display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);"><span style="padding:2px 8px; border-radius:999px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); border:1px solid var(--border); font-weight:700;">Motion</span>toast: AnimatePresence · sheet: spring + drag</div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px;"><h3 style="font-size:15px; font-weight:700; margin:0;">Skeleton → content</h3><button onClick="{{ replaySkeleton }}" style="height:34px; padding:0 12px; border-radius:9px; border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:12.5px; cursor:pointer; transition:transform var(--motion-instant) var(--ease-out);" style-active="transform:scale(.95);">Reload</button></div>
+          <sc-if value="{{ loading }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="width:44px; height:44px; flex:none; border-radius:12px; background:linear-gradient(90deg,var(--surface-2) 25%,var(--muted) 37%,var(--surface-2) 63%); background-size:420px 100%; animation:rj-shimmer 1.3s linear infinite;"></span>
+              <div style="flex:1; display:grid; gap:8px;"><span style="height:13px; width:70%; border-radius:7px; background:linear-gradient(90deg,var(--surface-2) 25%,var(--muted) 37%,var(--surface-2) 63%); background-size:420px 100%; animation:rj-shimmer 1.3s linear infinite;"></span><span style="height:11px; width:45%; border-radius:7px; background:linear-gradient(90deg,var(--surface-2) 25%,var(--muted) 37%,var(--surface-2) 63%); background-size:420px 100%; animation:rj-shimmer 1.3s linear infinite;"></span></div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ notLoading }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex; align-items:center; gap:12px; animation:rj-content-in var(--motion-base) var(--ease-standard) both;">
+              <span style="width:44px; height:44px; flex:none; border-radius:12px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"></path><path d="M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></span>
+              <div style="flex:1;"><div style="font-weight:700; font-size:15px; animation:rj-content-in var(--motion-base) var(--ease-standard) 40ms both;">Hotel Surya · 65 meals</div><div style="font-size:13px; color:var(--muted-foreground); animation:rj-content-in var(--motion-base) var(--ease-standard) 90ms both;">Paldi · ready now</div></div>
+            </div>
+          </sc-if>
+          <div style="margin-top:16px; display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);"><span style="padding:2px 8px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); font-weight:700;">CSS</span>shimmer loop → crossfade in</div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:15px; font-weight:700; margin:0 0 16px;">Live tracking dot</h3>
+          <div style="display:flex; align-items:center; gap:14px;">
+            <span style="display:inline-flex; align-items:center; gap:9px; height:38px; padding:0 16px 0 13px; border-radius:999px; background:var(--st-enroute-bg); color:var(--st-enroute-fg); font-size:14px; font-weight:700;"><span data-live style="width:10px; height:10px; border-radius:50%; background:var(--st-enroute-dot); animation:rj-live 2s var(--ease-out) infinite;"></span>En route</span>
+            <span style="font-size:13px; color:var(--muted-foreground);">2s pulse · functional</span>
+          </div>
+          <div style="margin-top:16px; display:inline-flex; align-items:center; gap:7px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);"><span style="padding:2px 8px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); font-weight:700;">CSS</span>the only app loop · off in reduced</div>
+        </div>
+
+      </div>
+    </section>
+
+    <section id="counter" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--leaf-bright);">Public only</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Impact counter</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 24px;">Numbers count up once when they scroll into view — 1.4s, ease-out, <code style="font-family:var(--font-mono);font-size:14px; background:var(--surface-2); padding:1px 6px; border-radius:6px;">tabular-nums</code> so width never reflows. Reduced motion shows the final figure immediately.</p>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px); margin-bottom:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px;"><h3 style="font-size:15px; font-weight:700; margin:0;">Live — count-up</h3>
+          <button onClick="{{ runCounter }}" style="display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 15px; border-radius:11px; border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:13.5px; cursor:pointer; transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.96);" style-hover="background:var(--surface-2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"></path><path d="M3 3v5h5"></path></svg>Replay</button>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px,1fr)); gap:14px;">
+          <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:20px;"><div style="font-family:var(--font-display); font-weight:800; font-size:clamp(30px,4vw,40px); color:var(--primary); font-variant-numeric:tabular-nums; line-height:1;">{{ c1 }}</div><div style="font-size:13px; color:var(--muted-foreground); margin-top:6px;">Meals rescued</div></div>
+          <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:20px;"><div style="font-family:var(--font-display); font-weight:800; font-size:clamp(30px,4vw,40px); color:var(--primary); font-variant-numeric:tabular-nums; line-height:1;">{{ c2 }}</div><div style="font-size:13px; color:var(--muted-foreground); margin-top:6px;">Volunteer drivers</div></div>
+          <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:20px;"><div style="font-family:var(--font-display); font-weight:800; font-size:clamp(30px,4vw,40px); color:var(--primary); font-variant-numeric:tabular-nums; line-height:1;">{{ c3 }}</div><div style="font-size:13px; color:var(--muted-foreground); margin-top:6px;">Partner donors</div></div>
+          <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:14px; padding:20px;"><div style="font-family:var(--font-display); font-weight:800; font-size:clamp(30px,4vw,40px); color:var(--primary); font-variant-numeric:tabular-nums; line-height:1;">{{ c4 }}</div><div style="font-size:13px; color:var(--muted-foreground); margin-top:6px;">Years feeding hope</div></div>
+        </div>
+      </div>
+
+      <div style="border-radius:12px; overflow:hidden; border:1px solid var(--border); box-shadow:var(--shadow-sm);">
+        <div style="display:flex; align-items:center; gap:7px; padding:9px 14px; background:var(--surface-2); border-bottom:1px solid var(--border);"><span style="width:10px;height:10px;border-radius:50%;background:#E8705B;"></span><span style="width:10px;height:10px;border-radius:50%;background:#E6B95C;"></span><span style="width:10px;height:10px;border-radius:50%;background:#6FBF73;"></span><span style="margin-left:6px; font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground);">motion.ts · useCountUp</span></div>
+        <pre style="margin:0; padding:16px; background:var(--code-bg); color:var(--code-fg); font-family:var(--font-mono); font-size:12.5px; line-height:1.65; overflow-x:auto;">const ref = useRef(null);
+useCountUp(ref, 12480);   <span style="color:#8a8472;">// 1.4s ease-out, once in view</span>
+
+&lt;span ref={ref} className="tabular-nums"&gt;0&lt;/span&gt;
+<span style="color:#8a8472;">// inside the hook: if (reduced) ref.textContent = format(to)</span>
+<span style="color:#8a8472;">// else animate(0, to, { ease: EASE.out, onUpdate }) </span></pre>
+      </div>
+    </section>
+
+    <section id="extras" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Extras &amp; guardrails</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 26px;">Tasteful additions — and what to avoid</h2>
+      <div style="display:grid; gap:11px;">
+        <div style="display:flex; align-items:flex-start; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:13px; box-shadow:var(--shadow-sm); padding:16px 18px;"><span style="flex:none; padding:4px 10px; border-radius:999px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;">Public</span><div style="flex:1;"><div style="font-weight:700; font-size:15px;">Hero gradient drift</div><div style="font-size:14px; color:var(--muted-foreground);">Slow 12s <code style="font-family:var(--font-mono);font-size:12.5px;">background-position</code> shimmer on the CTA band. <span style="color:var(--danger-soft-foreground); font-weight:600;">⚠ not GPU-composited — keep the element small, never full-bleed.</span></div></div></div>
+        <div style="display:flex; align-items:flex-start; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:13px; box-shadow:var(--shadow-sm); padding:16px 18px;"><span style="flex:none; padding:4px 10px; border-radius:999px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;">Public</span><div style="flex:1;"><div style="font-weight:700; font-size:15px;">Image parallax on scroll</div><div style="font-size:14px; color:var(--muted-foreground);">Motion <code style="font-family:var(--font-mono);font-size:12.5px;">useScroll</code> → ≤24px translate. <span style="color:var(--danger-soft-foreground); font-weight:600;">⚠ scroll-linked → disable below 768px.</span></div></div></div>
+        <div style="display:flex; align-items:flex-start; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:13px; box-shadow:var(--shadow-sm); padding:16px 18px;"><span style="flex:none; padding:4px 10px; border-radius:999px; background:var(--primary-soft); color:var(--primary-soft-foreground); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;">App</span><div style="flex:1;"><div style="font-weight:700; font-size:15px;">Status timeline fill</div><div style="font-size:14px; color:var(--muted-foreground);">Progress bar via <code style="font-family:var(--font-mono);font-size:12.5px;">transform: scaleX()</code>, 200ms. ✓ cheap &amp; composited.</div></div></div>
+        <div style="display:flex; align-items:flex-start; gap:14px; background:var(--surface); border:1px solid var(--border); border-radius:13px; box-shadow:var(--shadow-sm); padding:16px 18px;"><span style="flex:none; padding:4px 10px; border-radius:999px; background:var(--primary-soft); color:var(--primary-soft-foreground); font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;">App</span><div style="flex:1;"><div style="font-weight:700; font-size:15px;">New-pickup badge bump</div><div style="font-size:14px; color:var(--muted-foreground);"><code style="font-family:var(--font-mono);font-size:12.5px;">rj-badge-bump</code> scale 1→1.22→1, 180ms when a count increments. ✓ cheap.</div></div></div>
+        <div style="display:flex; align-items:flex-start; gap:14px; background:var(--danger-soft); border:1px solid var(--danger); border-radius:13px; padding:16px 18px;"><span style="flex:none; padding:4px 10px; border-radius:999px; background:var(--danger); color:#fff; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;">Avoid</span><div style="flex:1;"><div style="font-weight:700; font-size:15px; color:var(--danger-soft-foreground);">Animating layout properties</div><div style="font-size:14px; color:var(--danger-soft-foreground);">Never animate <code style="font-family:var(--font-mono);font-size:12.5px;">width / height / top / left / box-shadow / filter / blur</code> — they trigger layout &amp; paint and wreck INP/CLS on the drivers' phones. Use transform/opacity proxies.</div></div></div>
+      </div>
+
+      <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:30px 0 14px;">Paste-ready files · /tokens</h3>
+      <div style="display:flex; flex-wrap:wrap; gap:12px;">
+        <div style="display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:13px; box-shadow:var(--shadow-sm); min-width:230px; flex:1;"><span style="width:40px; height:40px; flex:none; border-radius:11px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg></span><div><div style="font-weight:700; font-size:14.5px;">motion.css</div><div style="font-size:12.5px; color:var(--muted-foreground);">Tokens · keyframes · CSS-only</div></div></div>
+        <div style="display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:13px; box-shadow:var(--shadow-sm); min-width:230px; flex:1;"><span style="width:40px; height:40px; flex:none; border-radius:11px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg></span><div><div style="font-weight:700; font-size:14.5px;">motion.ts</div><div style="font-size:12.5px; color:var(--muted-foreground);">Variants · springs · hooks</div></div></div>
+        <div style="display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--surface); border:1px solid var(--border); border-radius:13px; box-shadow:var(--shadow-sm); min-width:230px; flex:1;"><span style="width:40px; height:40px; flex:none; border-radius:11px; background:var(--surface-2); color:var(--muted-foreground); display:flex; align-items:center; justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6"></path></svg></span><div><div style="font-weight:700; font-size:14.5px;">MOTION.md</div><div style="font-size:12.5px; color:var(--muted-foreground);">Principles · budget · specs</div></div></div>
+      </div>
+    </section>
+
+    <footer style="margin-top:40px; border-top:1px solid var(--border); padding:30px 0 64px; display:flex; flex-wrap:wrap; gap:14px; align-items:center; color:var(--muted-foreground); font-size:13.5px;">
+      <span style="font-weight:600; color:var(--foreground);">Rajyash Motion Language</span>
+      <span style="margin-left:auto;">Transform &amp; opacity · Two budgets · Reduced-motion safe · Motion + View Transitions</span>
+    </footer>
+  </main>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; left:0; right:0; bottom:26px; display:flex; justify-content:center; z-index:90; pointer-events:none; padding:0 16px;">
+      <div style="display:flex; align-items:center; gap:12px; max-width:420px; width:100%; padding:14px 16px; border-radius:14px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-lg); animation:rj-toast-in var(--motion-snappy) var(--ease-standard); pointer-events:auto;">
+        <span style="width:34px; height:34px; flex:none; border-radius:10px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></span>
+        <div style="flex:1;"><div style="font-weight:700; font-size:14.5px;">Pickup confirmed</div><div style="font-size:13px; color:var(--muted-foreground);">Volunteer Meera is on the way.</div></div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeSheet }}" style="position:fixed; inset:0; z-index:80; background:var(--overlay); display:flex; align-items:flex-end; justify-content:center; animation:rj-fade-in var(--motion-snappy) ease;">
+      <div onClick="{{ stop }}" style="width:100%; max-width:460px; background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:24px 24px 0 0; box-shadow:var(--shadow-lg); padding:10px 22px 26px; animation:rj-sheet-up var(--motion-base) var(--ease-out);">
+        <div style="width:44px; height:5px; border-radius:999px; background:var(--border-strong); margin:0 auto 18px;"></div>
+        <h3 style="font-family:var(--font-display); font-weight:700; font-size:20px; margin:0 0 4px;">Update pickup status</h3>
+        <p style="margin:0 0 16px; font-size:14px; color:var(--muted-foreground);">Spring in, drag-to-dismiss · <code style="font-family:var(--font-mono);font-size:12.5px;">SPRING.gentle</code></p>
+        <button onClick="{{ closeSheet }}" class="rj-press" style="width:100%; height:52px; border-radius:14px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:16px; cursor:pointer; box-shadow:var(--shadow-sm); transition:transform var(--motion-instant) var(--ease-out), background-color var(--motion-fast);" style-active="transform:scale(.97);" style-hover="background:var(--primary-hover);">Confirm update</button>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;reducedMotionPreview&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  state = { theme: 'light', rmPreview: false, ct: 1, revealOn: true, loading: false, claim: 'idle', shaking: false, toast: false, sheetOpen: false };
+
+  componentDidMount() {
+    var initial = this.props.theme || 'light';
+    var rm = !!this.props.reducedMotionPreview;
+    if (this.rootRef.current) { this.rootRef.current.setAttribute('data-theme', initial); this.rootRef.current.setAttribute('data-rm', rm ? 'on' : 'off'); }
+    this.setState({ theme: initial, rmPreview: rm });
+    this.runCounter();
+  }
+  componentDidUpdate() { if (this.rootRef.current) this.rootRef.current.setAttribute('data-rm', this.state.rmPreview ? 'on' : 'off'); }
+  componentWillUnmount() { cancelAnimationFrame(this._raf); clearTimeout(this._t1); clearTimeout(this._t2); clearTimeout(this._t3); clearTimeout(this._t4); clearTimeout(this._tt); }
+
+  reduced() { if (this.state.rmPreview) return true; try { return window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) { return false; } }
+
+  toggleTheme = () => { var el = this.rootRef.current; var n = (el && el.getAttribute('data-theme') === 'dark') ? 'light' : 'dark'; if (el) el.setAttribute('data-theme', n); this.setState({ theme: n }); };
+  toggleRM = () => { var self = this; this.setState(function (s) { return { rmPreview: !s.rmPreview }; }, function () { if (self.rootRef.current) self.rootRef.current.setAttribute('data-rm', self.state.rmPreview ? 'on' : 'off'); if (self.state.rmPreview) self.setState({ ct: 1 }); }); };
+
+  runCounter = () => {
+    cancelAnimationFrame(this._raf);
+    if (this.reduced()) { this.setState({ ct: 1 }); return; }
+    var self = this, start = null, dur = 1400;
+    var ease = function (t) { return 1 - Math.pow(1 - t, 4); };
+    this.setState({ ct: 0 });
+    var frame = function (ts) { if (start === null) start = ts; var p = Math.min(1, (ts - start) / dur); self.setState({ ct: ease(p) }); if (p < 1) self._raf = requestAnimationFrame(frame); };
+    this._raf = requestAnimationFrame(frame);
+  };
+
+  replayReveal = () => { var self = this; this.setState({ revealOn: false }); clearTimeout(this._t1); this._t1 = setTimeout(function () { self.setState({ revealOn: true }); }, 40); };
+  replaySkeleton = () => { var self = this; this.setState({ loading: true }); clearTimeout(this._t2); this._t2 = setTimeout(function () { self.setState({ loading: false }); }, 1500); };
+  doClaim = () => { if (this.state.claim !== 'idle') return; var self = this; this.setState({ claim: 'loading' }); clearTimeout(this._t3); this._t3 = setTimeout(function () { self.setState({ claim: 'done' }); }, this.reduced() ? 150 : 1000); };
+  resetClaim = () => { clearTimeout(this._t3); this.setState({ claim: 'idle' }); };
+  doShake = () => { var self = this; this.setState({ shaking: false }); clearTimeout(this._t4); this._t4 = setTimeout(function () { self.setState({ shaking: true }); setTimeout(function () { self.setState({ shaking: false }); }, 460); }, 20); };
+  fireToast = () => { var self = this; this.setState({ toast: true }); clearTimeout(this._tt); this._tt = setTimeout(function () { self.setState({ toast: false }); }, 3200); };
+
+  fmt(n) { try { return Math.round(n).toLocaleString('en-IN'); } catch (e) { return '' + Math.round(n); } }
+
+  renderVals() {
+    var ct = this.state.ct, isDark = this.state.theme === 'dark';
+    return {
+      rootRef: this.rootRef, isDark: isDark, notDark: !isDark, toggleTheme: this.toggleTheme,
+      rmOn: this.state.rmPreview, rmOff: !this.state.rmPreview, toggleRM: this.toggleRM,
+      stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
+      c1: this.fmt(12480 * ct), c2: this.fmt(540 * ct), c3: this.fmt(380 * ct), c4: this.fmt(11 * ct), runCounter: this.runCounter,
+      revealOn: this.state.revealOn, replayReveal: this.replayReveal,
+      loading: this.state.loading, notLoading: !this.state.loading, replaySkeleton: this.replaySkeleton,
+      claimIdle: this.state.claim === 'idle', claimLoading: this.state.claim === 'loading', claimDone: this.state.claim === 'done', doClaim: this.doClaim, resetClaim: this.resetClaim,
+      shaking: this.state.shaking, notShaking: !this.state.shaking, doShake: this.doShake,
+      toast: this.state.toast, fireToast: this.fireToast,
+      sheetOpen: this.state.sheetOpen, openSheet: () => this.setState({ sheetOpen: true }), closeSheet: () => this.setState({ sheetOpen: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

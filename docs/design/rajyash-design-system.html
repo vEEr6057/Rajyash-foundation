@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=Mukta:wght@400;500;600;700&family=Noto+Sans+Gujarati:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #FBF7F0; color: #22271F; font-family: 'Mukta','Noto Sans Devanagari','Noto Sans Gujarati', system-ui, sans-serif; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  :root {
+    --font-display: 'Bricolage Grotesque','Mukta', system-ui, sans-serif;
+    --font-text: 'Mukta','Noto Sans Devanagari','Noto Sans Gujarati', system-ui, -apple-system, sans-serif;
+    --font-mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    --radius-sm: 8px; --radius: 12px; --radius-lg: 16px; --radius-xl: 22px; --radius-pill: 999px;
+  }
+  [data-theme="light"] {
+    --background:#FBF7F0; --surface:#FFFFFF; --surface-2:#F6F1E7; --muted:#F1EBDF;
+    --foreground:#22271F; --muted-foreground:#6E665A; --subtle-foreground:#938A7B;
+    --border:#E8E0CF; --border-strong:#D9CFBA; --input:#D9CFBA; --ring:#E0651B;
+    --primary:#C04E12; --primary-foreground:#FFFFFF; --primary-hover:#A8420E; --primary-soft:#FBE7D2; --primary-soft-foreground:#8A3D10;
+    --brand-saffron:#F2711C;
+    --leaf:#2E7D46; --leaf-foreground:#FFFFFF; --leaf-hover:#266A3B; --leaf-soft:#DEF0E2; --leaf-soft-foreground:#1E6B36; --leaf-bright:#46A35E;
+    --success:#2E7D46; --success-foreground:#FFFFFF; --success-soft:#DEF0E2; --success-soft-foreground:#1E6B36;
+    --warning:#B26A07; --warning-foreground:#FFFFFF; --warning-soft:#FBEAD0; --warning-soft-foreground:#8A5208;
+    --danger:#BE3B2E; --danger-foreground:#FFFFFF; --danger-soft:#F7E0DC; --danger-soft-foreground:#9A271C;
+    --info:#0E6F9E; --info-foreground:#FFFFFF; --info-soft:#DBEBF4; --info-soft-foreground:#125C7E;
+    --st-requested-bg:#FCEBD4; --st-requested-fg:#8A4E12; --st-requested-dot:#E8842B;
+    --st-accepted-bg:#DCEBF4; --st-accepted-fg:#1C5A78; --st-accepted-dot:#2E8BBE;
+    --st-enroute-bg:#D7EEF0; --st-enroute-fg:#125C68; --st-enroute-dot:#1E9AA8;
+    --st-pickedup-bg:#E9E1F6; --st-pickedup-fg:#5B3A8A; --st-pickedup-dot:#8155C6;
+    --st-delivered-bg:#DCF0DF; --st-delivered-fg:#1E6B36; --st-delivered-dot:#34A853;
+    --st-cancelled-bg:#F4DEDB; --st-cancelled-fg:#8C2F27; --st-cancelled-dot:#C0392C;
+    --shadow-sm: 0 1px 2px rgba(50,38,20,.06), 0 1px 1px rgba(50,38,20,.04);
+    --shadow-md: 0 4px 14px rgba(50,38,20,.08), 0 1px 3px rgba(50,38,20,.05);
+    --shadow-lg: 0 14px 38px rgba(50,38,20,.13), 0 3px 8px rgba(50,38,20,.06);
+    --overlay: rgba(34,28,18,.42);
+  }
+  [data-theme="dark"] {
+    --background:#15140F; --surface:#1F1D16; --surface-2:#28241A; --muted:#2A2619;
+    --foreground:#F3ECDD; --muted-foreground:#A99F8C; --subtle-foreground:#827963;
+    --border:#37321F; --border-strong:#4A442E; --input:#4A442E; --ring:#F2842F;
+    --primary:#C8531A; --primary-foreground:#FFFFFF; --primary-hover:#DA5F22; --primary-soft:#3A2412; --primary-soft-foreground:#F4B07C;
+    --brand-saffron:#F8924A;
+    --leaf:#2E7D46; --leaf-foreground:#FFFFFF; --leaf-hover:#358A50; --leaf-soft:#16301F; --leaf-soft-foreground:#7FCB92; --leaf-bright:#56B36E;
+    --success:#2E7D46; --success-foreground:#FFFFFF; --success-soft:#16301F; --success-soft-foreground:#7FCB92;
+    --warning:#C98A2E; --warning-foreground:#1A1206; --warning-soft:#3A2D12; --warning-soft-foreground:#F0C277;
+    --danger:#C0392C; --danger-foreground:#FFFFFF; --danger-soft:#3A1C17; --danger-soft-foreground:#F0A79C;
+    --info:#1E89B8; --info-foreground:#FFFFFF; --info-soft:#10303D; --info-soft-foreground:#86C7E2;
+    --st-requested-bg:#3A2A12; --st-requested-fg:#F2C079; --st-requested-dot:#E8842B;
+    --st-accepted-bg:#142E3D; --st-accepted-fg:#86C2E2; --st-accepted-dot:#2E8BBE;
+    --st-enroute-bg:#0F3138; --st-enroute-fg:#79CAD6; --st-enroute-dot:#26B3C2;
+    --st-pickedup-bg:#241A3A; --st-pickedup-fg:#BCA0E8; --st-pickedup-dot:#9B72D6;
+    --st-delivered-bg:#15311E; --st-delivered-fg:#84D196; --st-delivered-dot:#3FBF5E;
+    --st-cancelled-bg:#391A17; --st-cancelled-fg:#F0A79C; --st-cancelled-dot:#D2503F;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.34);
+    --shadow-md: 0 4px 16px rgba(0,0,0,.42);
+    --shadow-lg: 0 16px 40px rgba(0,0,0,.55);
+    --overlay: rgba(0,0,0,.6);
+  }
+  ::placeholder { color: var(--subtle-foreground); opacity: 1; }
+  ::selection { background: var(--primary-soft); color: var(--primary-soft-foreground); }
+  *:focus-visible { outline: 3px solid var(--ring); outline-offset: 2px; border-radius: 5px; }
+  a { color: inherit; }
+  @keyframes rj-spin { to { transform: rotate(360deg); } }
+  @keyframes rj-toast-in { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+  @keyframes rj-live { 0% { box-shadow: 0 0 0 0 rgba(46,125,70,.5); } 70% { box-shadow: 0 0 0 9px rgba(46,125,70,0); } 100% { box-shadow: 0 0 0 0 rgba(46,125,70,0); } }
+  @keyframes rj-shimmer { 0% { background-position: -420px 0; } 100% { background-position: 420px 0; } }
+  @keyframes rj-fade-in { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes rj-sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: .001ms !important; transition-duration: .001ms !important; } }
+</style>
+</helmet>
+<div ref="{{ rootRef }}" data-theme="light" style="background:var(--background); color:var(--foreground); font-family:var(--font-text); min-height:100vh; line-height:1.55;">
+
+  <header style="position:sticky; top:0; z-index:40; background:color-mix(in srgb, var(--background) 86%, transparent); backdrop-filter:blur(12px); border-bottom:1px solid var(--border);">
+    <div style="max-width:1180px; margin:0 auto; padding:11px 24px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:11px; margin-right:auto;">
+        <div style="width:38px; height:38px; border-radius:11px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff; box-shadow:var(--shadow-sm);">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg>
+        </div>
+        <div style="line-height:1.15;">
+          <div style="font-family:var(--font-display); font-weight:800; font-size:16px; letter-spacing:-.01em;">Rajyash</div>
+          <div style="font-size:11.5px; color:var(--muted-foreground); font-weight:500;">Food-Rescue System</div>
+        </div>
+      </div>
+      <nav style="display:flex; gap:4px; flex-wrap:wrap;">
+        <a href="#foundations" style="padding:7px 12px; border-radius:var(--radius-pill); font-size:13.5px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Foundations</a>
+        <a href="#components" style="padding:7px 12px; border-radius:var(--radius-pill); font-size:13.5px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Components</a>
+        <a href="#states" style="padding:7px 12px; border-radius:var(--radius-pill); font-size:13.5px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Status</a>
+        <a href="#screens" style="padding:7px 12px; border-radius:var(--radius-pill); font-size:13.5px; font-weight:600; color:var(--muted-foreground); text-decoration:none;" style-hover="background:var(--surface-2); color:var(--foreground);">Screens</a>
+      </nav>
+      <button onClick="{{ toggleTheme }}" aria-label="Toggle colour theme" style="display:inline-flex; align-items:center; gap:7px; height:38px; padding:0 14px; border-radius:var(--radius-pill); border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:13.5px; font-weight:600; cursor:pointer;" style-hover="background:var(--surface-2);">
+        <sc-if value="{{ isDark }}" hint-placeholder-val="{{ false }}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+          <span>Light</span>
+        </sc-if>
+        <sc-if value="{{ notDark }}" hint-placeholder-val="{{ true }}">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+          <span>Dark</span>
+        </sc-if>
+      </button>
+    </div>
+  </header>
+
+  <main style="max-width:1180px; margin:0 auto; padding:0 24px;">
+
+    <section style="padding:clamp(40px,7vw,76px) 0 clamp(32px,5vw,52px);">
+      <div style="display:inline-flex; align-items:center; gap:9px; padding:6px 14px 6px 8px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-sm); font-size:13px; font-weight:600; color:var(--muted-foreground); margin-bottom:24px;">
+        <span style="display:inline-flex; padding:3px 9px; border-radius:var(--radius-pill); background:var(--primary-soft); color:var(--primary-soft-foreground); font-size:11.5px; font-weight:700; letter-spacing:.04em; text-transform:uppercase;">Design System v1</span>
+        <span>Rajyash Foundation · Ahmedabad</span>
+      </div>
+      <h1 style="font-family:var(--font-display); font-weight:800; font-size:clamp(34px,6.2vw,60px); line-height:1.04; letter-spacing:-.025em; margin:0 0 18px; max-width:16ch; text-wrap:balance;">Rescuing surplus food, with warmth.</h1>
+      <p style="font-size:clamp(16px,2.2vw,20px); line-height:1.55; color:var(--muted-foreground); max-width:60ch; margin:0 0 30px;">A cohesive, accessible design system for connecting food donors with volunteer drivers and the people they feed — built mobile-first for the field, and ready for English, ગુજરાતી and हिन्दी.</p>
+      <div style="display:flex; flex-wrap:wrap; gap:10px;">
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);"><span style="width:13px; height:13px; border-radius:4px; background:var(--primary);"></span>Saffron + Leaf palette</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);"><span style="font-family:var(--font-display); font-weight:800;">Aa</span>Bricolage · Mukta</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);">WCAG-AA contrast</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);">Tailwind + shadcn tokens</div>
+        <div style="display:flex; align-items:center; gap:8px; padding:9px 15px; border-radius:var(--radius-pill); background:var(--surface); border:1px solid var(--border); font-size:13.5px; font-weight:600; box-shadow:var(--shadow-sm);">Light + dark</div>
+      </div>
+    </section>
+
+    <section id="foundations" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Foundations</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Colour palette</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 28px;">Every colour is a named token exposed as a CSS variable, mapping 1:1 to a Tailwind / shadcn theme. Saffron leads action, leaf signals success and growth, and warm neutrals keep the canvas human. Swatches preview the <em>live</em> theme — toggle dark mode in the header.</p>
+
+      <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 14px;">Brand</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(168px,1fr)); gap:14px; margin-bottom:34px;">
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--primary); display:flex; align-items:flex-end; padding:9px 12px;"><span style="color:#fff; font-weight:700; font-size:13px; opacity:.92;">Aa · 4.8:1</span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Primary</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--primary · #C04E12</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--brand-saffron); display:flex; align-items:flex-end; padding:9px 12px;"><span style="color:#3a1c05; font-weight:700; font-size:13px;">accent</span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Saffron (vivid)</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--brand-saffron · #F2711C</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--primary-soft);"></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Primary soft</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--primary-soft · #FBE7D2</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--leaf); display:flex; align-items:flex-end; padding:9px 12px;"><span style="color:#fff; font-weight:700; font-size:13px; opacity:.92;">Aa · 5.1:1</span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Leaf</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--leaf · #2E7D46</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--leaf-bright);"></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Leaf bright</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--leaf-bright · #46A35E</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--leaf-soft);"></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Leaf soft</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--leaf-soft · #DEF0E2</div></div></div>
+      </div>
+
+      <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 14px;">Semantic</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(168px,1fr)); gap:14px; margin-bottom:34px;">
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--success); display:flex; align-items:flex-end; padding:9px 12px;"><span style="color:#fff; font-weight:700; font-size:13px; opacity:.92;">Aa</span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Success</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--success · #2E7D46</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--warning); display:flex; align-items:flex-end; padding:9px 12px;"><span style="color:#fff; font-weight:700; font-size:13px; opacity:.92;">Aa</span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Warning</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--warning · #B26A07</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--danger); display:flex; align-items:flex-end; padding:9px 12px;"><span style="color:#fff; font-weight:700; font-size:13px; opacity:.92;">Aa · 5.4:1</span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Danger</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--danger · #BE3B2E</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--info); display:flex; align-items:flex-end; padding:9px 12px;"><span style="color:#fff; font-weight:700; font-size:13px; opacity:.92;">Aa</span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Info</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--info · #0E6F9E</div></div></div>
+      </div>
+
+      <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 14px;">Neutrals &amp; surface</h3>
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(168px,1fr)); gap:14px;">
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--background); border-bottom:1px solid var(--border);"></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Background</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--background · #FBF7F0</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--surface); border-bottom:1px solid var(--border);"></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Surface</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--surface · #FFFFFF</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--surface-2);"></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Surface-2 / muted</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--surface-2 · #F6F1E7</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--foreground);"></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Foreground</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--foreground · #22271F</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--muted-foreground);"></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Muted foreground</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--muted-foreground · #6E665A</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--surface); border-bottom:1px solid var(--border); position:relative;"><span style="position:absolute; left:12px; right:12px; bottom:12px; height:0; border-bottom:2px solid var(--border-strong);"></span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Border</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--border · #E8E0CF</div></div></div>
+        <div style="border:1px solid var(--border); border-radius:var(--radius-lg); overflow:hidden; background:var(--surface); box-shadow:var(--shadow-sm);"><div style="height:84px; background:var(--surface); display:flex; align-items:center; justify-content:center;"><span style="width:46px; height:46px; border-radius:10px; background:var(--surface); border:3px solid var(--ring);"></span></div><div style="padding:11px 13px;"><div style="font-weight:600; font-size:14.5px;">Focus ring</div><div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); margin-top:2px;">--ring · #E0651B</div></div></div>
+      </div>
+    </section>
+
+    <section style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Foundations</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Typography</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 28px;"><strong style="color:var(--foreground); font-weight:600;">Bricolage Grotesque</strong> gives headlines warmth and character; <strong style="color:var(--foreground); font-weight:600;">Mukta</strong> — drawn for Devanagari &amp; Latin by an Indian foundry — carries every UI string and stays crisp on mid-range Android. Gujarati &amp; Hindi fall back to Noto Sans, so layouts never break on longer strings.</p>
+
+      <div style="display:grid; gap:12px;">
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">Display<br>48 / 800<br>Bricolage</div>
+          <div style="font-family:var(--font-display); font-weight:800; font-size:clamp(30px,5vw,48px); line-height:1.05; letter-spacing:-.025em;">Feeding hope, daily</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">H1<br>34 / 700<br>Bricolage</div>
+          <div style="font-family:var(--font-display); font-weight:700; font-size:clamp(24px,3.6vw,34px); line-height:1.12; letter-spacing:-.02em;">Surplus food, rescued in time</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">H2<br>26 / 700<br>Bricolage</div>
+          <div style="font-family:var(--font-display); font-weight:700; font-size:26px; line-height:1.18; letter-spacing:-.015em;">Today's pickups near you</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">H3<br>20 / 600<br>Mukta</div>
+          <div style="font-weight:600; font-size:20px; line-height:1.3;">Annapurna Restaurant · 40 meals</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">H4<br>17 / 600<br>Mukta</div>
+          <div style="font-weight:600; font-size:17px; line-height:1.35;">Pickup window &amp; address</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">Body L<br>18 / 400<br>Mukta</div>
+          <div style="font-size:18px; line-height:1.6; color:var(--foreground);">Cooked rice and dal, packed and ready for about forty people — kindly collect before 8:30 PM.</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">Body<br>16 / 400<br>Mukta</div>
+          <div style="font-size:16px; line-height:1.6; color:var(--foreground);">The default reading size for body copy, list rows, and form fields across the app.</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">Small<br>14 / 500<br>Mukta</div>
+          <div style="font-size:14px; line-height:1.5; font-weight:500; color:var(--muted-foreground);">Helper text, metadata, and secondary labels.</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">Caption<br>13 / 500</div>
+          <div style="font-size:13px; line-height:1.45; color:var(--muted-foreground);">2.4 km away · updated 1 min ago</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">Overline<br>12 / 700</div>
+          <div style="font-size:12px; line-height:1.4; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Live pickup</div>
+        </div>
+        <div style="display:grid; grid-template-columns:148px 1fr; gap:18px; align-items:center; padding:18px 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm);">
+          <div style="font-family:var(--font-mono); font-size:11.5px; color:var(--muted-foreground); line-height:1.5;">Indic<br>Mukta /<br>Noto</div>
+          <div style="line-height:1.4;"><div style="font-weight:600; font-size:19px;">ગુજરાતી — સરપ્લસ ભોજન બચાવો</div><div style="font-weight:600; font-size:19px;">हिन्दी — अतिरिक्त भोजन बचाएँ</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Foundations</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Spacing, radius &amp; elevation</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 28px;">A 4px base scale keeps rhythm consistent and Tailwind-aligned. Corners are friendly but not bubbly (12px base). Shadows are warm-tinted and soft — never harsh — to keep the interface calm and trustworthy.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:18px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 16px;">Spacing scale · base 4</h3>
+          <div style="display:grid; gap:9px;">
+            <div style="display:flex; align-items:center; gap:14px;"><span style="font-family:var(--font-mono); font-size:12px; width:74px; color:var(--muted-foreground);">1 · 4px</span><span style="height:14px; width:4px; background:var(--primary); border-radius:3px;"></span></div>
+            <div style="display:flex; align-items:center; gap:14px;"><span style="font-family:var(--font-mono); font-size:12px; width:74px; color:var(--muted-foreground);">2 · 8px</span><span style="height:14px; width:8px; background:var(--primary); border-radius:3px;"></span></div>
+            <div style="display:flex; align-items:center; gap:14px;"><span style="font-family:var(--font-mono); font-size:12px; width:74px; color:var(--muted-foreground);">3 · 12px</span><span style="height:14px; width:12px; background:var(--primary); border-radius:3px;"></span></div>
+            <div style="display:flex; align-items:center; gap:14px;"><span style="font-family:var(--font-mono); font-size:12px; width:74px; color:var(--muted-foreground);">4 · 16px</span><span style="height:14px; width:16px; background:var(--primary); border-radius:3px;"></span></div>
+            <div style="display:flex; align-items:center; gap:14px;"><span style="font-family:var(--font-mono); font-size:12px; width:74px; color:var(--muted-foreground);">6 · 24px</span><span style="height:14px; width:24px; background:var(--primary); border-radius:3px;"></span></div>
+            <div style="display:flex; align-items:center; gap:14px;"><span style="font-family:var(--font-mono); font-size:12px; width:74px; color:var(--muted-foreground);">8 · 32px</span><span style="height:14px; width:32px; background:var(--primary); border-radius:3px;"></span></div>
+            <div style="display:flex; align-items:center; gap:14px;"><span style="font-family:var(--font-mono); font-size:12px; width:74px; color:var(--muted-foreground);">12 · 48px</span><span style="height:14px; width:48px; background:var(--primary); border-radius:3px;"></span></div>
+            <div style="display:flex; align-items:center; gap:14px;"><span style="font-family:var(--font-mono); font-size:12px; width:74px; color:var(--muted-foreground);">16 · 64px</span><span style="height:14px; width:64px; background:var(--primary); border-radius:3px;"></span></div>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 16px;">Border radius</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:18px;">
+            <div style="text-align:center;"><div style="width:62px; height:62px; background:var(--primary-soft); border:2px solid var(--primary); border-radius:8px;"></div><div style="font-family:var(--font-mono); font-size:11px; color:var(--muted-foreground); margin-top:7px;">sm · 8</div></div>
+            <div style="text-align:center;"><div style="width:62px; height:62px; background:var(--primary-soft); border:2px solid var(--primary); border-radius:12px;"></div><div style="font-family:var(--font-mono); font-size:11px; color:var(--muted-foreground); margin-top:7px;">base · 12</div></div>
+            <div style="text-align:center;"><div style="width:62px; height:62px; background:var(--primary-soft); border:2px solid var(--primary); border-radius:16px;"></div><div style="font-family:var(--font-mono); font-size:11px; color:var(--muted-foreground); margin-top:7px;">lg · 16</div></div>
+            <div style="text-align:center;"><div style="width:62px; height:62px; background:var(--primary-soft); border:2px solid var(--primary); border-radius:22px;"></div><div style="font-family:var(--font-mono); font-size:11px; color:var(--muted-foreground); margin-top:7px;">xl · 22</div></div>
+            <div style="text-align:center;"><div style="width:62px; height:62px; background:var(--primary-soft); border:2px solid var(--primary); border-radius:999px;"></div><div style="font-family:var(--font-mono); font-size:11px; color:var(--muted-foreground); margin-top:7px;">pill</div></div>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:22px;">
+          <h3 style="font-size:13px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-foreground); margin:0 0 20px;">Elevation</h3>
+          <div style="display:flex; flex-wrap:wrap; gap:22px; align-items:center;">
+            <div style="text-align:center;"><div style="width:78px; height:62px; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow-sm);"></div><div style="font-family:var(--font-mono); font-size:11px; color:var(--muted-foreground); margin-top:10px;">shadow-sm</div></div>
+            <div style="text-align:center;"><div style="width:78px; height:62px; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow-md);"></div><div style="font-family:var(--font-mono); font-size:11px; color:var(--muted-foreground); margin-top:10px;">shadow-md</div></div>
+            <div style="text-align:center;"><div style="width:78px; height:62px; background:var(--surface); border:1px solid var(--border); border-radius:12px; box-shadow:var(--shadow-lg);"></div><div style="font-family:var(--font-mono); font-size:11px; color:var(--muted-foreground); margin-top:10px;">shadow-lg</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="components" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Library</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Core components</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 28px;">Each maps directly to a shadcn/ui primitive, restyled with Rajyash tokens. Tap targets are never smaller than 44px, every interactive element has a visible focus ring, and states are unmistakable in bright outdoor light.</p>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px); margin-bottom:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px;"><h3 style="font-size:17px; font-weight:700; margin:0;">Buttons</h3><code style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground);">&lt;Button variant /&gt;</code></div>
+        <div style="display:flex; flex-wrap:wrap; gap:11px; margin-bottom:18px;">
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; background:var(--primary); color:var(--primary-foreground); font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:pointer; box-shadow:var(--shadow-sm);" style-hover="background:var(--primary-hover);">Primary</button>
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:pointer;" style-hover="background:var(--muted);">Secondary</button>
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; background:var(--leaf); color:var(--leaf-foreground); font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:pointer; box-shadow:var(--shadow-sm);" style-hover="background:var(--leaf-hover);">Accept</button>
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid var(--border-strong); background:transparent; color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:pointer;" style-hover="background:var(--surface-2);">Outline</button>
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; background:transparent; color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:pointer;" style-hover="background:var(--surface-2);">Ghost</button>
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; background:var(--danger); color:var(--danger-foreground); font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:pointer; box-shadow:var(--shadow-sm);" style-hover="filter:brightness(.94);">Cancel pickup</button>
+        </div>
+        <div style="display:flex; flex-wrap:wrap; gap:11px; align-items:center; padding-top:16px; border-top:1px dashed var(--border);">
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:6px; height:36px; padding:0 14px; border-radius:10px; border:1px solid transparent; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:600; font-size:13.5px; line-height:1; cursor:pointer;">Small · 36</button>
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:pointer;">Medium · 44</button>
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:9px; height:52px; padding:0 24px; border-radius:14px; border:1px solid transparent; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:16.5px; line-height:1; cursor:pointer; box-shadow:var(--shadow-sm);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>Large · 52</button>
+          <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:default; opacity:.85;"><span style="width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,.45); border-top-color:#fff; display:inline-block; animation:rj-spin .7s linear infinite;"></span>Saving…</button>
+          <button disabled style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:44px; padding:0 18px; border-radius:12px; border:1px solid var(--border); background:var(--muted); color:var(--subtle-foreground); font-family:var(--font-text); font-weight:600; font-size:15px; line-height:1; cursor:not-allowed;">Disabled</button>
+          <button aria-label="Add" style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:12px; border:1px solid transparent; background:var(--primary); color:#fff; cursor:pointer; box-shadow:var(--shadow-sm);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"></path></svg></button>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(330px,1fr)); gap:18px; margin-bottom:18px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px);">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px;"><h3 style="font-size:17px; font-weight:700; margin:0;">Inputs &amp; select</h3><code style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground);">&lt;Input/&gt; &lt;Select/&gt;</code></div>
+          <div style="display:grid; gap:16px;">
+            <div>
+              <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:7px;">Donor name</label>
+              <input value="Annapurna Restaurant" style="width:100%; height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--input); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; outline:none;" style-focus="border-color:var(--ring); box-shadow:0 0 0 3px color-mix(in srgb, var(--ring) 28%, transparent);">
+            </div>
+            <div>
+              <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:7px;">Pickup address</label>
+              <div style="position:relative;">
+                <span style="position:absolute; left:13px; top:50%; transform:translateY(-50%); color:var(--muted-foreground); display:flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg></span>
+                <input placeholder="Search area in Ahmedabad…" style="width:100%; height:46px; padding:0 14px 0 40px; border-radius:10px; border:1px solid var(--input); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; outline:none;" style-focus="border-color:var(--ring); box-shadow:0 0 0 3px color-mix(in srgb, var(--ring) 28%, transparent);">
+              </div>
+            </div>
+            <div>
+              <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:7px;">Food type</label>
+              <button style="width:100%; height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--input); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;" style-hover="border-color:var(--border-strong);"><span>Cooked meals (veg)</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+            </div>
+            <div>
+              <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:7px; color:var(--danger-soft-foreground);">Contact number</label>
+              <input value="98xx" style="width:100%; height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--danger); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; outline:none; box-shadow:0 0 0 3px var(--danger-soft);">
+              <div style="display:flex; align-items:center; gap:6px; margin-top:7px; font-size:13px; color:var(--danger-soft-foreground);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4M12 16h.01"></path></svg>Enter a valid 10-digit mobile number.</div>
+            </div>
+            <div>
+              <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:7px; color:var(--subtle-foreground);">Volunteer (assigned)</label>
+              <input value="Meera P." disabled style="width:100%; height:46px; padding:0 14px; border-radius:10px; border:1px solid var(--border); background:var(--muted); color:var(--subtle-foreground); font-family:var(--font-text); font-size:15px; outline:none; cursor:not-allowed;">
+            </div>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px);">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:20px;"><h3 style="font-size:17px; font-weight:700; margin:0;">Controls &amp; badges</h3><code style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground);">&lt;Switch/&gt; &lt;Badge/&gt;</code></div>
+          <div style="display:grid; gap:18px;">
+            <div>
+              <div style="font-size:13.5px; font-weight:600; margin-bottom:10px;">Select menu (open)</div>
+              <div style="border:1px solid var(--border); border-radius:12px; background:var(--surface); box-shadow:var(--shadow-md); overflow:hidden;">
+                <div style="padding:11px 14px; font-size:15px; display:flex; align-items:center; justify-content:space-between; background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-weight:600;">Cooked meals (veg)<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+                <div style="padding:11px 14px; font-size:15px;" style-hover="background:var(--surface-2);">Cooked meals (non-veg)</div>
+                <div style="padding:11px 14px; font-size:15px;" style-hover="background:var(--surface-2);">Packaged / dry goods</div>
+                <div style="padding:11px 14px; font-size:15px;" style-hover="background:var(--surface-2);">Fruits &amp; vegetables</div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+              <div><div style="font-size:14.5px; font-weight:600;">Available to drive</div><div style="font-size:13px; color:var(--muted-foreground);">Receive nearby pickup alerts</div></div>
+              <span style="width:50px; height:30px; border-radius:999px; background:var(--leaf); position:relative; flex:none; cursor:pointer;"><span style="position:absolute; top:3px; left:23px; width:24px; height:24px; border-radius:50%; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.3);"></span></span>
+            </div>
+            <div>
+              <div style="font-size:13.5px; font-weight:600; margin-bottom:10px;">Badges</div>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;">
+                <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border-strong); font-size:12.5px; font-weight:600; color:var(--muted-foreground);">Neutral</span>
+                <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:var(--primary-soft); font-size:12.5px; font-weight:700; color:var(--primary-soft-foreground);">Urgent</span>
+                <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:var(--leaf-soft); font-size:12.5px; font-weight:700; color:var(--leaf-soft-foreground);">Veg</span>
+                <span style="display:inline-flex; align-items:center; height:24px; padding:0 10px; border-radius:999px; background:var(--info-soft); font-size:12.5px; font-weight:700; color:var(--info-soft-foreground);">New donor</span>
+                <span style="display:inline-flex; align-items:center; gap:5px; height:24px; padding:0 10px; border-radius:999px; background:var(--danger); font-size:12.5px; font-weight:700; color:#fff;">3 unread</span>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:13.5px; font-weight:600; margin-bottom:10px;">Checkbox &amp; radio</div>
+              <div style="display:flex; flex-wrap:wrap; gap:18px;">
+                <span style="display:inline-flex; align-items:center; gap:9px; font-size:14.5px;"><span style="width:22px; height:22px; border-radius:6px; background:var(--primary); display:inline-flex; align-items:center; justify-content:center; color:#fff;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>Veg only</span>
+                <span style="display:inline-flex; align-items:center; gap:9px; font-size:14.5px;"><span style="width:22px; height:22px; border-radius:6px; border:2px solid var(--border-strong);"></span>Refrigerated</span>
+                <span style="display:inline-flex; align-items:center; gap:9px; font-size:14.5px;"><span style="width:22px; height:22px; border-radius:50%; border:2px solid var(--primary); display:inline-flex; align-items:center; justify-content:center;"><span style="width:11px; height:11px; border-radius:50%; background:var(--primary);"></span></span>Now</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:18px; margin-bottom:18px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); padding:20px;">
+          <div style="display:flex; align-items:flex-start; gap:13px; margin-bottom:15px;">
+            <span style="width:46px; height:46px; flex:none; border-radius:13px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:16px;">AR</span>
+            <div style="flex:1; min-width:0;"><div style="font-weight:700; font-size:16.5px;">Annapurna Restaurant</div><div style="font-size:13px; color:var(--muted-foreground);">Navrangpura · 2.4 km away</div></div>
+            <span style="display:inline-flex; align-items:center; gap:6px; height:26px; padding:0 11px 0 9px; border-radius:999px; background:var(--st-enroute-bg); color:var(--st-enroute-fg); font-size:12.5px; font-weight:700;"><span style="width:8px; height:8px; border-radius:50%; background:var(--st-enroute-dot);"></span>En route</span>
+          </div>
+          <p style="margin:0 0 15px; font-size:14.5px; color:var(--foreground);">Cooked rice &amp; dal — approx. <strong>40 servings</strong>. Pick up before 8:30 PM.</p>
+          <div style="display:flex; gap:10px;">
+            <button style="flex:1; display:inline-flex; align-items:center; justify-content:center; gap:7px; height:44px; border-radius:11px; border:1px solid var(--border-strong); background:transparent; color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:14.5px; cursor:pointer;" style-hover="background:var(--surface-2);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"></path></svg>Call</button>
+            <button style="flex:1.4; display:inline-flex; align-items:center; justify-content:center; gap:7px; height:44px; border-radius:11px; border:1px solid transparent; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:600; font-size:14.5px; cursor:pointer; box-shadow:var(--shadow-sm);" style-hover="background:var(--primary-hover);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>Navigate</button>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:20px; display:flex; flex-direction:column; justify-content:space-between;">
+          <div style="display:flex; align-items:center; justify-content:space-between;"><span style="font-size:13.5px; font-weight:600; color:var(--muted-foreground);">Meals rescued · June</span><span style="width:34px; height:34px; border-radius:10px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"></path><path d="M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></span></div>
+          <div style="font-family:var(--font-display); font-weight:800; font-size:42px; line-height:1.05; margin:14px 0 4px; letter-spacing:-.02em;">12,480</div>
+          <div style="display:inline-flex; align-items:center; gap:6px; font-size:13.5px; font-weight:600; color:var(--leaf-soft-foreground);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>18% vs. May</div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:20px; display:flex; flex-direction:column;">
+          <div style="font-size:13.5px; font-weight:600; color:var(--muted-foreground); margin-bottom:14px;">Banner card</div>
+          <div style="border-radius:14px; background:linear-gradient(135deg, var(--primary), #E0651B); padding:18px; color:#fff; flex:1; display:flex; flex-direction:column; justify-content:space-between; min-height:120px;">
+            <div style="font-family:var(--font-display); font-weight:700; font-size:19px; line-height:1.2;">3 donors are waiting for a driver nearby</div>
+            <button style="align-self:flex-start; margin-top:14px; height:38px; padding:0 15px; border-radius:10px; border:none; background:#fff; color:var(--primary); font-family:var(--font-text); font-weight:700; font-size:14px; cursor:pointer;">View pickups</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px,1fr)); gap:18px; margin-bottom:18px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px);">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px;"><h3 style="font-size:17px; font-weight:700; margin:0;">Top navigation</h3><code style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground);">app bar</code></div>
+          <div style="border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm);">
+            <div style="display:flex; align-items:center; gap:12px; padding:11px 14px; background:var(--surface); border-bottom:1px solid var(--border);">
+              <button aria-label="Menu" style="width:40px; height:40px; border-radius:11px; border:none; background:transparent; color:var(--foreground); display:flex; align-items:center; justify-content:center; cursor:pointer;" style-hover="background:var(--surface-2);"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+              <div style="font-family:var(--font-display); font-weight:700; font-size:17px; margin-right:auto;">Today's pickups</div>
+              <div style="display:flex; padding:3px; background:var(--surface-2); border-radius:999px; font-size:12px; font-weight:700;">
+                <span style="padding:4px 9px; border-radius:999px; background:var(--primary); color:#fff;">EN</span>
+                <span style="padding:4px 9px; border-radius:999px; color:var(--muted-foreground);">ગુ</span>
+                <span style="padding:4px 9px; border-radius:999px; color:var(--muted-foreground);">हि</span>
+              </div>
+              <button aria-label="Notifications" style="position:relative; width:40px; height:40px; border-radius:11px; border:none; background:transparent; color:var(--foreground); display:flex; align-items:center; justify-content:center; cursor:pointer;" style-hover="background:var(--surface-2);"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path><path d="M3.26 15.33A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.67C19.41 13.96 18 12.5 18 8A6 6 0 0 0 6 8c0 4.5-1.41 5.96-2.74 7.33"></path></svg><span style="position:absolute; top:7px; right:8px; width:8px; height:8px; border-radius:50%; background:var(--danger); border:2px solid var(--surface);"></span></button>
+            </div>
+            <div style="padding:14px; background:var(--surface-2); color:var(--muted-foreground); font-size:13.5px;">Page content area</div>
+          </div>
+
+          <div style="margin-top:18px; border:1px solid var(--border); border-radius:14px; overflow:hidden; box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:16px; padding:11px 16px; background:var(--surface);">
+            <div style="display:flex; align-items:center; gap:9px; margin-right:auto;"><span style="width:30px; height:30px; border-radius:9px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg></span><span style="font-family:var(--font-display); font-weight:800; font-size:15px;">Rajyash</span></div>
+            <span style="font-size:13.5px; font-weight:600; color:var(--primary); display:none;">Dashboard</span>
+            <span style="font-size:13.5px; font-weight:600; color:var(--muted-foreground);">Pickups</span>
+            <span style="font-size:13.5px; font-weight:600; color:var(--muted-foreground);">Donors</span>
+            <span style="width:32px; height:32px; border-radius:50%; background:var(--leaf-soft); color:var(--leaf-soft-foreground); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px;">RA</span>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px);">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px;"><h3 style="font-size:17px; font-weight:700; margin:0;">Bottom navigation</h3><code style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground);">mobile tab bar</code></div>
+          <div style="border:1px solid var(--border); border-radius:18px; box-shadow:var(--shadow-md); padding:8px 8px 10px; display:flex; align-items:flex-end; justify-content:space-between; background:var(--surface);">
+            <button style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 0; border:none; background:transparent; color:var(--primary); font-family:var(--font-text); font-weight:700; font-size:11px; cursor:pointer;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .71-1.53l7-5.99a2 2 0 0 1 2.58 0l7 5.99A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>Home</button>
+            <button style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 0; border:none; background:transparent; color:var(--muted-foreground); font-family:var(--font-text); font-weight:600; font-size:11px; cursor:pointer;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>Pickups</button>
+            <button aria-label="Donate" style="flex:none; width:56px; height:56px; margin:0 4px; border-radius:50%; border:none; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow-md); cursor:pointer; transform:translateY(-8px);"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"></path></svg></button>
+            <button style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 0; border:none; background:transparent; color:var(--muted-foreground); font-family:var(--font-text); font-weight:600; font-size:11px; cursor:pointer;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.1 5.5a2 2 0 0 0 1.8 0l3.6-1.8A1 1 0 0 1 21 4.6v12.8a1 1 0 0 1-.55.9l-4.55 2.27a2 2 0 0 1-1.8 0l-4.2-2.1a2 2 0 0 0-1.8 0l-3.6 1.8A1 1 0 0 1 3 19.4V6.6a1 1 0 0 1 .55-.9L8.1 3.44a2 2 0 0 1 1.8 0z"></path><path d="M15 5.8v15M9 3.2v15"></path></svg>Map</button>
+            <button style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; padding:8px 0; border:none; background:transparent; color:var(--muted-foreground); font-family:var(--font-text); font-weight:600; font-size:11px; cursor:pointer;"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"></circle><path d="M20 21a8 8 0 0 0-16 0"></path></svg>Profile</button>
+          </div>
+          <p style="margin:14px 0 0; font-size:13px; color:var(--muted-foreground);">Five zones, 56px+ targets, raised primary action. Labels stay visible for low-literacy &amp; multilingual clarity.</p>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:18px; margin-bottom:18px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px);">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px;"><h3 style="font-size:17px; font-weight:700; margin:0;">Overlays &amp; toast</h3><code style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground);">live</code></div>
+          <div style="display:flex; flex-wrap:wrap; gap:11px;">
+            <button onClick="{{ openModal }}" style="display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 18px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;" style-hover="background:var(--muted);">Open dialog</button>
+            <button onClick="{{ openSheet }}" style="display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 18px; border-radius:12px; border:1px solid var(--border-strong); background:var(--surface-2); color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;" style-hover="background:var(--muted);">Open bottom sheet</button>
+            <button onClick="{{ showSuccessToast }}" style="display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; background:var(--leaf); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;" style-hover="background:var(--leaf-hover);">Success toast</button>
+            <button onClick="{{ showErrorToast }}" style="display:inline-flex; align-items:center; justify-content:center; height:44px; padding:0 18px; border-radius:12px; border:1px solid transparent; background:var(--danger); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;" style-hover="filter:brightness(.94);">Error toast</button>
+          </div>
+          <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:flex; align-items:center; gap:11px; padding:12px 14px; border-radius:13px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-sm);"><span style="width:30px; height:30px; flex:none; border-radius:9px; background:var(--success-soft); color:var(--success-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></span><span style="font-size:14px; font-weight:600;">Pickup marked delivered</span></div>
+            <div style="display:flex; align-items:center; gap:11px; padding:12px 14px; border-radius:13px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-sm);"><span style="width:30px; height:30px; flex:none; border-radius:9px; background:var(--info-soft); color:var(--info-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 16v-4M12 8h.01"></path></svg></span><span style="font-size:14px; font-weight:600;">Working offline — will sync</span></div>
+          </div>
+        </div>
+
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px); display:flex; flex-direction:column;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px;"><h3 style="font-size:17px; font-weight:700; margin:0;">Empty state</h3><code style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground);">&lt;EmptyState/&gt;</code></div>
+          <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:18px 10px;">
+            <span style="width:72px; height:72px; border-radius:22px; background:var(--surface-2); color:var(--brand-saffron); display:flex; align-items:center; justify-content:center; margin-bottom:16px;"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path><path d="M12 22V12"></path><polyline points="3.29 7 12 12 20.71 7"></polyline></svg></span>
+            <div style="font-family:var(--font-display); font-weight:700; font-size:19px; margin-bottom:6px;">No pickups yet today</div>
+            <p style="margin:0 0 18px; font-size:14.5px; color:var(--muted-foreground); max-width:32ch;">When a donor nearby offers food, it will appear here. You're all caught up.</p>
+            <button style="display:inline-flex; align-items:center; justify-content:center; gap:8px; height:46px; padding:0 20px; border-radius:12px; border:1px solid transparent; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer; box-shadow:var(--shadow-sm);" style-hover="background:var(--primary-hover);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>Browse donations</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(18px,3vw,26px); margin-bottom:18px;">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px;"><h3 style="font-size:17px; font-weight:700; margin:0;">Table rows</h3><code style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground);">admin &lt;Table/&gt;</code></div>
+        <div style="overflow-x:auto; border:1px solid var(--border); border-radius:13px;">
+          <table style="width:100%; border-collapse:collapse; min-width:640px; font-size:14px;">
+            <thead><tr style="background:var(--surface-2); text-align:left;">
+              <th style="padding:12px 16px; font-weight:600; color:var(--muted-foreground); font-size:12.5px; letter-spacing:.03em; text-transform:uppercase;">Donor</th>
+              <th style="padding:12px 16px; font-weight:600; color:var(--muted-foreground); font-size:12.5px; letter-spacing:.03em; text-transform:uppercase;">Area</th>
+              <th style="padding:12px 16px; font-weight:600; color:var(--muted-foreground); font-size:12.5px; letter-spacing:.03em; text-transform:uppercase;">Meals</th>
+              <th style="padding:12px 16px; font-weight:600; color:var(--muted-foreground); font-size:12.5px; letter-spacing:.03em; text-transform:uppercase;">Volunteer</th>
+              <th style="padding:12px 16px; font-weight:600; color:var(--muted-foreground); font-size:12.5px; letter-spacing:.03em; text-transform:uppercase;">Status</th>
+              <th style="padding:12px 16px;"></th>
+            </tr></thead>
+            <tbody>
+              <tr style="border-top:1px solid var(--border);" style-hover="background:var(--surface-2);"><td style="padding:13px 16px; font-weight:600;">Annapurna Restaurant</td><td style="padding:13px 16px; color:var(--muted-foreground);">Navrangpura</td><td style="padding:13px 16px;">40</td><td style="padding:13px 16px; color:var(--muted-foreground);">Meera P.</td><td style="padding:13px 16px;"><span style="display:inline-flex; align-items:center; gap:6px; height:25px; padding:0 10px 0 8px; border-radius:999px; background:var(--st-enroute-bg); color:var(--st-enroute-fg); font-size:12px; font-weight:700;"><span style="width:7px; height:7px; border-radius:50%; background:var(--st-enroute-dot);"></span>En route</span></td><td style="padding:13px 16px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></td></tr>
+              <tr style="border-top:1px solid var(--border);" style-hover="background:var(--surface-2);"><td style="padding:13px 16px; font-weight:600;">Sharma Wedding Hall</td><td style="padding:13px 16px; color:var(--muted-foreground);">Bodakdev</td><td style="padding:13px 16px;">120</td><td style="padding:13px 16px; color:var(--subtle-foreground);">—</td><td style="padding:13px 16px;"><span style="display:inline-flex; align-items:center; gap:6px; height:25px; padding:0 10px 0 8px; border-radius:999px; background:var(--st-requested-bg); color:var(--st-requested-fg); font-size:12px; font-weight:700;"><span style="width:7px; height:7px; border-radius:50%; background:var(--st-requested-dot);"></span>Requested</span></td><td style="padding:13px 16px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></td></tr>
+              <tr style="border-top:1px solid var(--border);" style-hover="background:var(--surface-2);"><td style="padding:13px 16px; font-weight:600;">Patel Family</td><td style="padding:13px 16px; color:var(--muted-foreground);">Maninagar</td><td style="padding:13px 16px;">15</td><td style="padding:13px 16px; color:var(--muted-foreground);">Arjun S.</td><td style="padding:13px 16px;"><span style="display:inline-flex; align-items:center; gap:6px; height:25px; padding:0 10px 0 8px; border-radius:999px; background:var(--st-delivered-bg); color:var(--st-delivered-fg); font-size:12px; font-weight:700;"><span style="width:7px; height:7px; border-radius:50%; background:var(--st-delivered-dot);"></span>Delivered</span></td><td style="padding:13px 16px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"></path></svg></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <sc-if value="{{ modalOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeModal }}" style="position:fixed; inset:0; z-index:80; background:var(--overlay); display:flex; align-items:center; justify-content:center; padding:20px; animation:rj-fade-in .18s ease;">
+        <div onClick="{{ stop }}" style="width:100%; max-width:430px; background:var(--surface); border:1px solid var(--border); border-radius:20px; box-shadow:var(--shadow-lg); overflow:hidden; animation:rj-toast-in .24s cubic-bezier(.2,.8,.3,1);">
+          <div style="padding:24px 24px 0;">
+            <span style="width:50px; height:50px; border-radius:14px; background:var(--danger-soft); color:var(--danger-soft-foreground); display:flex; align-items:center; justify-content:center; margin-bottom:16px;"><svg width="25" height="25" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path><path d="M12 9v4M12 17h.01"></path></svg></span>
+            <h3 style="font-family:var(--font-display); font-weight:700; font-size:21px; margin:0 0 8px;">Cancel this pickup?</h3>
+            <p style="margin:0; font-size:15px; line-height:1.55; color:var(--muted-foreground);">Annapurna Restaurant is expecting a volunteer. Cancelling will notify them and return the food to the queue.</p>
+          </div>
+          <div style="display:flex; gap:11px; padding:22px 24px 24px;">
+            <button onClick="{{ closeModal }}" style="flex:1; height:46px; border-radius:12px; border:1px solid var(--border-strong); background:transparent; color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;" style-hover="background:var(--surface-2);">Keep pickup</button>
+            <button onClick="{{ closeModal }}" style="flex:1; height:46px; border-radius:12px; border:none; background:var(--danger); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;" style-hover="filter:brightness(.94);">Yes, cancel</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+      <div onClick="{{ closeSheet }}" style="position:fixed; inset:0; z-index:80; background:var(--overlay); display:flex; align-items:flex-end; justify-content:center; animation:rj-fade-in .18s ease;">
+        <div onClick="{{ stop }}" style="width:100%; max-width:480px; background:var(--surface); border:1px solid var(--border); border-bottom:none; border-radius:24px 24px 0 0; box-shadow:var(--shadow-lg); padding:10px 22px 26px; animation:rj-sheet-up .28s cubic-bezier(.2,.8,.3,1);">
+          <div style="width:44px; height:5px; border-radius:999px; background:var(--border-strong); margin:0 auto 18px;"></div>
+          <h3 style="font-family:var(--font-display); font-weight:700; font-size:20px; margin:0 0 4px;">Update pickup status</h3>
+          <p style="margin:0 0 16px; font-size:14px; color:var(--muted-foreground);">Annapurna Restaurant · 40 meals</p>
+          <div style="display:grid; gap:9px; margin-bottom:18px;">
+            <div style="display:flex; align-items:center; gap:12px; padding:13px 15px; border-radius:13px; border:1px solid var(--border); background:var(--surface);"><span style="width:10px; height:10px; border-radius:50%; background:var(--st-accepted-dot);"></span><span style="font-weight:600; font-size:15px;">Accepted</span></div>
+            <div style="display:flex; align-items:center; gap:12px; padding:13px 15px; border-radius:13px; border:2px solid var(--leaf); background:var(--leaf-soft);"><span style="width:10px; height:10px; border-radius:50%; background:var(--st-enroute-dot);"></span><span style="font-weight:700; font-size:15px; color:var(--leaf-soft-foreground);">En route</span><svg style="margin-left:auto;" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="var(--leaf)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></div>
+            <div style="display:flex; align-items:center; gap:12px; padding:13px 15px; border-radius:13px; border:1px solid var(--border); background:var(--surface);"><span style="width:10px; height:10px; border-radius:50%; background:var(--st-pickedup-dot);"></span><span style="font-weight:600; font-size:15px;">Picked up</span></div>
+            <div style="display:flex; align-items:center; gap:12px; padding:13px 15px; border-radius:13px; border:1px solid var(--border); background:var(--surface);"><span style="width:10px; height:10px; border-radius:50%; background:var(--st-delivered-dot);"></span><span style="font-weight:600; font-size:15px;">Delivered</span></div>
+          </div>
+          <button onClick="{{ closeSheet }}" style="width:100%; height:52px; border-radius:14px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:16px; cursor:pointer; box-shadow:var(--shadow-sm);" style-hover="background:var(--primary-hover);">Confirm update</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <section id="states" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Status system</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Pickup status pills</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 28px;">Each state pairs a distinct hue, a coloured dot, and a label — never colour alone — so status is legible for colour-blind users and in sunlight. The same tokens drive cards, tables, timelines and toasts.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(232px,1fr)); gap:14px; margin-bottom:28px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:18px;">
+          <span style="display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px 0 11px; border-radius:999px; background:var(--st-requested-bg); color:var(--st-requested-fg); font-size:14px; font-weight:700;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Requested</span>
+          <p style="margin:13px 0 8px; font-size:13.5px; color:var(--muted-foreground);">Donor submitted; awaiting a volunteer.</p>
+          <code style="font-family:var(--font-mono); font-size:11px; color:var(--subtle-foreground);">--st-requested-*</code>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:18px;">
+          <span style="display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px 0 11px; border-radius:999px; background:var(--st-accepted-bg); color:var(--st-accepted-fg); font-size:14px; font-weight:700;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Accepted</span>
+          <p style="margin:13px 0 8px; font-size:13.5px; color:var(--muted-foreground);">A driver claimed the pickup.</p>
+          <code style="font-family:var(--font-mono); font-size:11px; color:var(--subtle-foreground);">--st-accepted-*</code>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:18px;">
+          <span style="display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px 0 11px; border-radius:999px; background:var(--st-enroute-bg); color:var(--st-enroute-fg); font-size:14px; font-weight:700;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path><path d="M15 18H9"></path><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>En route</span>
+          <p style="margin:13px 0 8px; font-size:13.5px; color:var(--muted-foreground);">Driving to the donor — live tracking on.</p>
+          <code style="font-family:var(--font-mono); font-size:11px; color:var(--subtle-foreground);">--st-enroute-*</code>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:18px;">
+          <span style="display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px 0 11px; border-radius:999px; background:var(--st-pickedup-bg); color:var(--st-pickedup-fg); font-size:14px; font-weight:700;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path><path d="M12 22V12"></path><polyline points="3.29 7 12 12 20.71 7"></polyline></svg>Picked up</span>
+          <p style="margin:13px 0 8px; font-size:13.5px; color:var(--muted-foreground);">Food collected, heading to delivery.</p>
+          <code style="font-family:var(--font-mono); font-size:11px; color:var(--subtle-foreground);">--st-pickedup-*</code>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:18px;">
+          <span style="display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px 0 11px; border-radius:999px; background:var(--st-delivered-bg); color:var(--st-delivered-fg); font-size:14px; font-weight:700;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5"></path><path d="m22 10-7.5 7.5L13 16"></path></svg>Delivered</span>
+          <p style="margin:13px 0 8px; font-size:13.5px; color:var(--muted-foreground);">Meals reached the community. 🎉</p>
+          <code style="font-family:var(--font-mono); font-size:11px; color:var(--subtle-foreground);">--st-delivered-*</code>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:18px;">
+          <span style="display:inline-flex; align-items:center; gap:7px; height:32px; padding:0 13px 0 11px; border-radius:999px; background:var(--st-cancelled-bg); color:var(--st-cancelled-fg); font-size:14px; font-weight:700;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg>Cancelled</span>
+          <p style="margin:13px 0 8px; font-size:13.5px; color:var(--muted-foreground);">Returned to queue or closed.</p>
+          <code style="font-family:var(--font-mono); font-size:11px; color:var(--subtle-foreground);">--st-cancelled-*</code>
+        </div>
+      </div>
+
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-sm); padding:clamp(20px,3vw,28px);">
+        <h3 style="font-size:15px; font-weight:700; margin:0 0 22px;">Pickup lifecycle</h3>
+        <div style="display:flex; align-items:flex-start; gap:0; overflow-x:auto; padding-bottom:6px;">
+          <div style="display:flex; flex-direction:column; align-items:center; min-width:96px; flex:1;"><span style="width:38px; height:38px; border-radius:50%; background:var(--leaf); color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span style="font-size:12.5px; font-weight:600; margin-top:9px; text-align:center;">Requested</span></div>
+          <div style="flex:none; width:34px; height:38px; display:flex; align-items:center;"><span style="height:3px; width:100%; background:var(--leaf); border-radius:2px;"></span></div>
+          <div style="display:flex; flex-direction:column; align-items:center; min-width:96px; flex:1;"><span style="width:38px; height:38px; border-radius:50%; background:var(--leaf); color:#fff; display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span style="font-size:12.5px; font-weight:600; margin-top:9px; text-align:center;">Accepted</span></div>
+          <div style="flex:none; width:34px; height:38px; display:flex; align-items:center;"><span style="height:3px; width:100%; background:var(--leaf); border-radius:2px;"></span></div>
+          <div style="display:flex; flex-direction:column; align-items:center; min-width:96px; flex:1;"><span style="width:38px; height:38px; border-radius:50%; background:var(--primary); color:#fff; display:flex; align-items:center; justify-content:center; animation:rj-live 2s ease-out infinite;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg></span><span style="font-size:12.5px; font-weight:700; margin-top:9px; text-align:center; color:var(--primary);">En route</span></div>
+          <div style="flex:none; width:34px; height:38px; display:flex; align-items:center;"><span style="height:3px; width:100%; background:var(--border-strong); border-radius:2px;"></span></div>
+          <div style="display:flex; flex-direction:column; align-items:center; min-width:96px; flex:1;"><span style="width:38px; height:38px; border-radius:50%; background:var(--surface-2); border:2px solid var(--border-strong); color:var(--muted-foreground); display:flex; align-items:center; justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path><path d="M12 22V12"></path><polyline points="3.29 7 12 12 20.71 7"></polyline></svg></span><span style="font-size:12.5px; font-weight:600; margin-top:9px; text-align:center; color:var(--muted-foreground);">Picked up</span></div>
+          <div style="flex:none; width:34px; height:38px; display:flex; align-items:center;"><span style="height:3px; width:100%; background:var(--border-strong); border-radius:2px;"></span></div>
+          <div style="display:flex; flex-direction:column; align-items:center; min-width:96px; flex:1;"><span style="width:38px; height:38px; border-radius:50%; background:var(--surface-2); border:2px solid var(--border-strong); color:var(--muted-foreground); display:flex; align-items:center; justify-content:center;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 7 17l-5-5"></path><path d="m22 10-7.5 7.5L13 16"></path></svg></span><span style="font-size:12.5px; font-weight:600; margin-top:9px; text-align:center; color:var(--muted-foreground);">Delivered</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">Inclusive by default</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">Multilingual-ready</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 22px;">The same component renders in English, ગુજરાતી and हिन्दी. Strings live in data — never baked into images — and layouts flex for text that can grow 30–40% longer. Generous line-height keeps Indic scripts readable.</p>
+
+      <div style="display:flex; flex-wrap:wrap; gap:9px; margin-bottom:22px;">
+        <span style="display:inline-flex; align-items:center; gap:7px; padding:7px 13px; border-radius:999px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-size:13px; font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>No text in images</span>
+        <span style="display:inline-flex; align-items:center; gap:7px; padding:7px 13px; border-radius:999px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-size:13px; font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Strings can grow ~40%</span>
+        <span style="display:inline-flex; align-items:center; gap:7px; padding:7px 13px; border-radius:999px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-size:13px; font-weight:600;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg>Line-height ≥ 1.5 for Indic</span>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(266px,1fr)); gap:16px;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); overflow:hidden;">
+          <div style="padding:9px 16px; background:var(--surface-2); font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted-foreground);">English</div>
+          <div style="padding:18px;">
+            <div style="font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--brand-saffron); margin-bottom:6px;">New pickup nearby</div>
+            <div style="font-weight:700; font-size:17px; margin-bottom:4px;">Annapurna Restaurant</div>
+            <p style="margin:0 0 14px; font-size:14.5px; color:var(--muted-foreground); line-height:1.55;">Cooked rice &amp; dal — approx. 40 servings. Pick up by 8:30 PM.</p>
+            <button style="width:100%; height:46px; border-radius:12px; border:none; background:var(--leaf); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;">Accept pickup</button>
+          </div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); overflow:hidden;">
+          <div style="padding:9px 16px; background:var(--surface-2); font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted-foreground);">ગુજરાતી</div>
+          <div style="padding:18px;">
+            <div style="font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--brand-saffron); margin-bottom:6px;">નજીકમાં નવું પિકઅપ</div>
+            <div style="font-weight:700; font-size:17px; margin-bottom:4px;">અન્નપૂર્ણા રેસ્ટોરન્ટ</div>
+            <p style="margin:0 0 14px; font-size:14.5px; color:var(--muted-foreground); line-height:1.6;">રાંધેલા ભાત અને દાળ — આશરે 40 ભોજન. 8:30 વાગ્યા સુધીમાં લો.</p>
+            <button style="width:100%; height:46px; border-radius:12px; border:none; background:var(--leaf); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;">પિકઅપ સ્વીકારો</button>
+          </div>
+        </div>
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); box-shadow:var(--shadow-md); overflow:hidden;">
+          <div style="padding:9px 16px; background:var(--surface-2); font-size:12px; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--muted-foreground);">हिन्दी</div>
+          <div style="padding:18px;">
+            <div style="font-size:12px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--brand-saffron); margin-bottom:6px;">नज़दीक नया पिकअप</div>
+            <div style="font-weight:700; font-size:17px; margin-bottom:4px;">अन्नपूर्णा रेस्टोरेंट</div>
+            <p style="margin:0 0 14px; font-size:14.5px; color:var(--muted-foreground); line-height:1.6;">पके चावल और दाल — लगभग 40 लोगों का भोजन। 8:30 बजे तक उठाएँ।</p>
+            <button style="width:100%; height:46px; border-radius:12px; border:none; background:var(--leaf); color:#fff; font-family:var(--font-text); font-weight:600; font-size:15px; cursor:pointer;">पिकअप स्वीकार करें</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="screens" style="padding:clamp(28px,4vw,44px) 0; border-top:1px solid var(--border);">
+      <div style="display:flex; align-items:baseline; gap:14px; margin-bottom:6px;">
+        <span style="font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--brand-saffron);">In action</span>
+        <span style="height:1px; flex:1; background:var(--border);"></span>
+      </div>
+      <h2 style="font-family:var(--font-display); font-weight:700; font-size:clamp(26px,4vw,36px); letter-spacing:-.02em; margin:0 0 8px;">The system, applied</h2>
+      <p style="font-size:16px; color:var(--muted-foreground); max-width:64ch; margin:0 0 30px;">Four real surfaces built only from the tokens and components above. The driver screen even responds to the <strong style="color:var(--foreground); font-weight:600;">driverState</strong> &amp; <strong style="color:var(--foreground); font-weight:600;">language</strong> tweaks — try them in the panel.</p>
+
+      <div style="display:flex; flex-wrap:wrap; gap:30px; justify-content:center;">
+
+        <div style="width:384px; max-width:100%;">
+          <div style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground); margin-bottom:12px; display:flex; align-items:center; gap:7px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--primary);"></span>Driver · Live pickup tracking</div>
+          <div style="border:11px solid #15120d; border-radius:42px; background:#15120d; box-shadow:var(--shadow-lg);">
+            <div style="border-radius:31px; overflow:hidden; background:var(--background); height:768px; display:flex; flex-direction:column;">
+              <div style="height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 20px; font-size:12.5px; font-weight:700; color:var(--foreground);"><span>8:24</span><span style="display:flex; align-items:center; gap:6px;"><span style="display:flex; gap:2px; align-items:flex-end;"><span style="width:3px;height:7px;background:currentColor;border-radius:1px;"></span><span style="width:3px;height:10px;background:currentColor;border-radius:1px;"></span><span style="width:3px;height:13px;background:currentColor;border-radius:1px;"></span></span><span style="width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative;"><span style="position:absolute;inset:1.5px;width:60%;background:currentColor;border-radius:1px;"></span></span></span></div>
+
+              <div style="flex:none; display:flex; align-items:center; gap:12px; padding:8px 14px 12px;">
+                <button aria-label="Back" style="width:40px;height:40px;border-radius:11px;border:none;background:var(--surface);box-shadow:var(--shadow-sm);color:var(--foreground);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"></path></svg></button>
+                <div style="margin-right:auto;"><div style="font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-saffron);">{{ t.eyebrow }}</div><div style="font-family:var(--font-display);font-weight:700;font-size:17px;">{{ t.donor }}</div></div>
+                <span style="display:inline-flex; align-items:center; gap:6px; height:28px; padding:0 11px 0 9px; border-radius:999px; background:var(--st-enroute-bg); color:var(--st-enroute-fg); font-size:12.5px; font-weight:700;"><span style="width:8px; height:8px; border-radius:50%; background:var(--st-enroute-dot); animation:rj-live 2s ease-out infinite;"></span>En route</span>
+              </div>
+
+              <sc-if value="{{ driverEnroute }}" hint-placeholder-val="{{ true }}">
+                <div style="flex:1; position:relative; background-color:var(--surface-2); background-image:repeating-linear-gradient(0deg, color-mix(in srgb,var(--foreground) 6%,transparent) 0 1px, transparent 1px 40px), repeating-linear-gradient(90deg, color-mix(in srgb,var(--foreground) 6%,transparent) 0 1px, transparent 1px 40px); overflow:hidden;">
+                  <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute; inset:0; width:100%; height:100%;"><path d="M16 86 C 30 64, 38 60, 52 50 S 76 30, 84 18" fill="none" stroke="var(--primary)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="0.1 5" style="opacity:.85;"></path></svg>
+                  <span style="position:absolute; left:11%; bottom:12%; width:18px; height:18px; border-radius:50%; background:var(--primary); border:3px solid var(--surface); box-shadow:var(--shadow-md); animation:rj-live 2s ease-out infinite;"></span>
+                  <span style="position:absolute; right:12%; top:11%; color:var(--danger); filter:drop-shadow(0 3px 4px rgba(0,0,0,.25));"><svg width="34" height="34" viewBox="0 0 24 24" fill="var(--danger)" stroke="var(--surface)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3" fill="var(--surface)" stroke="none"></circle></svg></span>
+                  <div style="position:absolute; top:12px; left:12px; display:inline-flex; align-items:center; gap:6px; padding:5px 11px; border-radius:999px; background:var(--surface); box-shadow:var(--shadow-sm); font-size:12px; font-weight:700;"><span style="width:7px;height:7px;border-radius:50%;background:var(--leaf);"></span>Live</div>
+                  <div style="position:absolute; bottom:10px; right:12px; font-family:var(--font-mono); font-size:10.5px; color:var(--muted-foreground); background:color-mix(in srgb,var(--surface) 80%,transparent); padding:3px 7px; border-radius:6px;">MAP · live route</div>
+                </div>
+                <div style="flex:none; background:var(--surface); border-top:1px solid var(--border); border-radius:22px 22px 0 0; margin-top:-22px; box-shadow:0 -8px 24px rgba(50,38,20,.10); padding:16px 18px 20px; position:relative; z-index:2;">
+                  <div style="width:40px;height:5px;border-radius:999px;background:var(--border-strong);margin:0 auto 14px;"></div>
+                  <div style="display:flex; align-items:center; gap:12px; margin-bottom:13px;">
+                    <span style="display:inline-flex; align-items:center; gap:7px; padding:8px 13px; border-radius:13px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-weight:700; font-size:15px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>{{ t.eta }}</span>
+                    <span style="font-size:14px; color:var(--muted-foreground); font-weight:600;">{{ t.dist }}</span>
+                  </div>
+                  <p style="margin:0 0 8px; font-size:15px; line-height:1.5;">{{ t.food }}</p>
+                  <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; color:var(--muted-foreground); margin-bottom:18px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>{{ t.addr }}</div>
+                  <button style="width:100%; height:54px; border-radius:15px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:17px; cursor:pointer; box-shadow:var(--shadow-sm); display:flex; align-items:center; justify-content:center; gap:9px; margin-bottom:10px;" style-hover="background:var(--primary-hover);"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"></path><path d="M12 22V12"></path><polyline points="3.29 7 12 12 20.71 7"></polyline></svg>{{ t.pick }}</button>
+                  <div style="display:flex; gap:10px;">
+                    <button style="flex:1; height:46px; border-radius:12px; border:1px solid var(--border-strong); background:transparent; color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:14.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;" style-hover="background:var(--surface-2);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92Z"></path></svg>{{ t.call }}</button>
+                    <button style="flex:1; height:46px; border-radius:12px; border:1px solid var(--border-strong); background:transparent; color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:14.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;" style-hover="background:var(--surface-2);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>{{ t.nav }}</button>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ driverLoading }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px; gap:18px;">
+                  <span style="width:46px; height:46px; border-radius:50%; border:4px solid var(--surface-2); border-top-color:var(--primary); animation:rj-spin .8s linear infinite;"></span>
+                  <div style="text-align:center;"><div style="font-family:var(--font-display); font-weight:700; font-size:19px; margin-bottom:5px;">{{ t.loadingTitle }}</div><div style="font-size:14px; color:var(--muted-foreground);">{{ t.loadingBody }}</div></div>
+                </div>
+                <div style="flex:none; background:var(--surface); border-top:1px solid var(--border); border-radius:22px 22px 0 0; padding:20px 18px; display:flex; flex-direction:column; gap:12px;">
+                  <span style="height:16px; width:60%; border-radius:8px; background:linear-gradient(90deg,var(--surface-2) 25%,var(--muted) 37%,var(--surface-2) 63%); background-size:420px 100%; animation:rj-shimmer 1.3s linear infinite;"></span>
+                  <span style="height:14px; width:85%; border-radius:8px; background:linear-gradient(90deg,var(--surface-2) 25%,var(--muted) 37%,var(--surface-2) 63%); background-size:420px 100%; animation:rj-shimmer 1.3s linear infinite;"></span>
+                  <span style="height:52px; width:100%; border-radius:14px; background:linear-gradient(90deg,var(--surface-2) 25%,var(--muted) 37%,var(--surface-2) 63%); background-size:420px 100%; animation:rj-shimmer 1.3s linear infinite; margin-top:6px;"></span>
+                </div>
+              </sc-if>
+
+              <sc-if value="{{ driverError }}" hint-placeholder-val="{{ false }}">
+                <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:34px 28px;">
+                  <span style="width:74px; height:74px; border-radius:22px; background:var(--danger-soft); color:var(--danger-soft-foreground); display:flex; align-items:center; justify-content:center; margin-bottom:18px;"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2M5.6 5.6 7 7M2 12h2M5.6 18.4 7 17M12 22v-2M18.4 18.4 17 17M22 12h-2M18.4 5.6 17 7"></path><circle cx="12" cy="12" r="3.5"></circle></svg></span>
+                  <div style="font-family:var(--font-display); font-weight:700; font-size:21px; margin-bottom:8px;">{{ t.errorTitle }}</div>
+                  <p style="margin:0 0 22px; font-size:14.5px; color:var(--muted-foreground); line-height:1.55; max-width:30ch;">{{ t.errorBody }}</p>
+                  <button style="width:100%; max-width:260px; height:52px; border-radius:14px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px; box-shadow:var(--shadow-sm);" style-hover="background:var(--primary-hover);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9 9 0 0 0-6.36 2.64L3 8"></path><path d="M3 3v5h5"></path></svg>{{ t.retry }}</button>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:384px; max-width:100%;">
+          <div style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground); margin-bottom:12px; display:flex; align-items:center; gap:7px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--leaf);"></span>Donor · Donate surplus food</div>
+          <div style="border:11px solid #15120d; border-radius:42px; background:#15120d; box-shadow:var(--shadow-lg);">
+            <div style="border-radius:31px; overflow:hidden; background:var(--background); height:768px; display:flex; flex-direction:column;">
+              <div style="height:34px; flex:none; display:flex; align-items:center; justify-content:space-between; padding:0 20px; font-size:12.5px; font-weight:700;"><span>8:24</span><span style="display:flex; align-items:center; gap:6px;"><span style="display:flex; gap:2px; align-items:flex-end;"><span style="width:3px;height:7px;background:currentColor;border-radius:1px;"></span><span style="width:3px;height:10px;background:currentColor;border-radius:1px;"></span><span style="width:3px;height:13px;background:currentColor;border-radius:1px;"></span></span><span style="width:22px;height:11px;border:1.5px solid currentColor;border-radius:3px;position:relative;"><span style="position:absolute;inset:1.5px;width:60%;background:currentColor;border-radius:1px;"></span></span></span></div>
+
+              <div style="flex:none; display:flex; align-items:center; gap:12px; padding:8px 16px 14px;">
+                <div style="margin-right:auto;"><div style="font-family:var(--font-display); font-weight:800; font-size:21px; letter-spacing:-.01em;">Donate food</div><div style="font-size:13px; color:var(--muted-foreground);">Step 1 of 3 · What &amp; how much</div></div>
+                <button aria-label="Close" style="width:40px;height:40px;border-radius:11px;border:none;background:var(--surface);box-shadow:var(--shadow-sm);color:var(--foreground);display:flex;align-items:center;justify-content:center;cursor:pointer;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"></path></svg></button>
+              </div>
+              <div style="flex:none; padding:0 16px 10px; display:flex; gap:6px;"><span style="flex:1; height:5px; border-radius:999px; background:var(--primary);"></span><span style="flex:1; height:5px; border-radius:999px; background:var(--border-strong);"></span><span style="flex:1; height:5px; border-radius:999px; background:var(--border-strong);"></span></div>
+
+              <div style="flex:1; overflow-y:auto; padding:6px 16px 18px;">
+                <div style="margin-bottom:18px;">
+                  <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:8px;">What are you donating?</label>
+                  <button style="width:100%; height:48px; padding:0 14px; border-radius:12px; border:1px solid var(--input); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-size:15px; display:flex; align-items:center; justify-content:space-between; cursor:pointer;"><span style="display:flex;align-items:center;gap:9px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--leaf)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"></path><path d="M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>Cooked meals</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted-foreground)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"></path></svg></button>
+                </div>
+                <div style="margin-bottom:18px;">
+                  <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:8px;">Diet</label>
+                  <div style="display:flex; gap:8px;">
+                    <button style="flex:1; height:46px; border-radius:12px; border:2px solid var(--leaf); background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-family:var(--font-text); font-weight:700; font-size:14.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px;"><span style="width:14px;height:14px;border:2px solid var(--leaf);border-radius:3px;display:inline-flex;align-items:center;justify-content:center;"><span style="width:7px;height:7px;border-radius:50%;background:var(--leaf);"></span></span>Veg</button>
+                    <button style="flex:1; height:46px; border-radius:12px; border:1px solid var(--border-strong); background:transparent; color:var(--foreground); font-family:var(--font-text); font-weight:600; font-size:14.5px; cursor:pointer;">Non-veg</button>
+                  </div>
+                </div>
+                <div style="margin-bottom:18px;">
+                  <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:8px;">Approx. servings</label>
+                  <div style="display:flex; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--input); border-radius:12px; padding:7px;">
+                    <button aria-label="Less" style="width:42px;height:42px;border-radius:10px;border:none;background:var(--surface-2);color:var(--foreground);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"></path></svg></button>
+                    <div style="flex:1; text-align:center;"><span style="font-family:var(--font-display); font-weight:800; font-size:26px;">40</span><span style="font-size:13px; color:var(--muted-foreground); margin-left:5px;">people</span></div>
+                    <button aria-label="More" style="width:42px;height:42px;border-radius:10px;border:none;background:var(--primary);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></button>
+                  </div>
+                </div>
+                <div style="margin-bottom:18px;">
+                  <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:8px;">Pickup window</label>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <span style="height:40px; padding:0 16px; border-radius:999px; background:var(--primary); color:#fff; font-weight:700; font-size:14px; display:inline-flex; align-items:center;">Now</span>
+                    <span style="height:40px; padding:0 16px; border-radius:999px; background:var(--surface); border:1px solid var(--border-strong); color:var(--foreground); font-weight:600; font-size:14px; display:inline-flex; align-items:center;">Within 1 hr</span>
+                    <span style="height:40px; padding:0 16px; border-radius:999px; background:var(--surface); border:1px solid var(--border-strong); color:var(--foreground); font-weight:600; font-size:14px; display:inline-flex; align-items:center;">Tonight</span>
+                  </div>
+                </div>
+                <div style="margin-bottom:18px;">
+                  <label style="display:block; font-size:13.5px; font-weight:600; margin-bottom:8px;">Photo (optional)</label>
+                  <div style="height:96px; border:2px dashed var(--border-strong); border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; color:var(--muted-foreground); background:var(--surface-2);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"></path><circle cx="12" cy="13" r="3"></circle></svg><span style="font-size:13px; font-weight:600;">Add a photo of the food</span></div>
+                </div>
+              </div>
+
+              <div style="flex:none; padding:14px 16px 18px; background:var(--surface); border-top:1px solid var(--border); box-shadow:0 -6px 18px rgba(50,38,20,.07);">
+                <button style="width:100%; height:54px; border-radius:15px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:17px; cursor:pointer; box-shadow:var(--shadow-sm); display:flex; align-items:center; justify-content:center; gap:9px;" style-hover="background:var(--primary-hover);">Continue<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"></path></svg></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="margin-top:34px;">
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground); margin-bottom:12px; display:flex; align-items:center; gap:7px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--info);"></span>Admin · Dashboard &amp; pickups</div>
+        <div style="border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-lg); background:var(--surface);">
+          <div style="height:44px; display:flex; align-items:center; gap:8px; padding:0 16px; background:var(--surface-2); border-bottom:1px solid var(--border);">
+            <span style="width:12px;height:12px;border-radius:50%;background:#E8705B;"></span><span style="width:12px;height:12px;border-radius:50%;background:#E6B95C;"></span><span style="width:12px;height:12px;border-radius:50%;background:#6FBF73;"></span>
+            <div style="margin-left:12px; max-width:340px; flex:1; height:27px; border-radius:999px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; gap:7px; padding:0 13px; font-size:12.5px; color:var(--muted-foreground);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>rajyash.org/admin</div>
+          </div>
+          <div style="overflow-x:auto;">
+            <div style="min-width:940px; display:flex; background:var(--background);">
+              <aside style="width:222px; flex:none; border-right:1px solid var(--border); background:var(--surface); padding:18px 14px; display:flex; flex-direction:column; gap:3px;">
+                <div style="display:flex; align-items:center; gap:10px; padding:4px 8px 16px;"><span style="width:34px; height:34px; border-radius:10px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg></span><div><div style="font-family:var(--font-display);font-weight:800;font-size:15px;">Rajyash</div><div style="font-size:11px;color:var(--muted-foreground);">Admin</div></div></div>
+                <div style="display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:11px; background:var(--primary-soft); color:var(--primary-soft-foreground); font-weight:700; font-size:14px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"></rect><rect width="7" height="5" x="14" y="3" rx="1"></rect><rect width="7" height="9" x="14" y="12" rx="1"></rect><rect width="7" height="5" x="3" y="16" rx="1"></rect></svg>Dashboard</div>
+                <div style="display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:11px; color:var(--muted-foreground); font-weight:600; font-size:14px;" style-hover="background:var(--surface-2);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"></path></svg>Pickups</div>
+                <div style="display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:11px; color:var(--muted-foreground); font-weight:600; font-size:14px;" style-hover="background:var(--surface-2);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"></path><path d="M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg>Donors</div>
+                <div style="display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:11px; color:var(--muted-foreground); font-weight:600; font-size:14px;" style-hover="background:var(--surface-2);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"></path></svg>Volunteers</div>
+                <div style="display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:11px; color:var(--muted-foreground); font-weight:600; font-size:14px;" style-hover="background:var(--surface-2);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"></path><path d="m19 9-5 5-4-4-3 3"></path></svg>Reports</div>
+              </aside>
+              <main style="flex:1; min-width:0; padding:22px 24px 28px;">
+                <div style="display:flex; align-items:center; gap:14px; margin-bottom:22px;">
+                  <div style="margin-right:auto;"><h3 style="font-family:var(--font-display); font-weight:700; font-size:24px; margin:0;">Good evening, Rajeshbhai</h3><div style="font-size:13.5px; color:var(--muted-foreground);">Wednesday, 25 June · Ahmedabad</div></div>
+                  <div style="width:240px; height:40px; border-radius:11px; border:1px solid var(--input); background:var(--surface); display:flex; align-items:center; gap:8px; padding:0 13px; color:var(--subtle-foreground); font-size:14px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>Search pickups…</div>
+                  <button style="height:40px; padding:0 16px; border-radius:11px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:600; font-size:14px; cursor:pointer; display:flex; align-items:center; gap:7px;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5v14"></path></svg>New pickup</button>
+                </div>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:14px; margin-bottom:22px;">
+                  <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; box-shadow:var(--shadow-sm);"><div style="font-size:13px; color:var(--muted-foreground); font-weight:600; margin-bottom:8px;">Meals rescued today</div><div style="font-family:var(--font-display); font-weight:800; font-size:30px; line-height:1;">1,240</div><div style="margin-top:8px; display:inline-flex; align-items:center; gap:5px; font-size:12.5px; font-weight:700; color:var(--leaf-soft-foreground);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>+12%</div></div>
+                  <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; box-shadow:var(--shadow-sm);"><div style="font-size:13px; color:var(--muted-foreground); font-weight:600; margin-bottom:8px;">Active pickups</div><div style="font-family:var(--font-display); font-weight:800; font-size:30px; line-height:1;">7</div><div style="margin-top:8px; display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--st-enroute-fg);"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-enroute-dot);"></span>3 en route</div></div>
+                  <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; box-shadow:var(--shadow-sm);"><div style="font-size:13px; color:var(--muted-foreground); font-weight:600; margin-bottom:8px;">Volunteers online</div><div style="font-family:var(--font-display); font-weight:800; font-size:30px; line-height:1;">18</div><div style="margin-top:8px; font-size:12.5px; font-weight:600; color:var(--muted-foreground);">of 54 active</div></div>
+                  <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:16px; box-shadow:var(--shadow-sm);"><div style="font-size:13px; color:var(--muted-foreground); font-weight:600; margin-bottom:8px;">New donors · week</div><div style="font-family:var(--font-display); font-weight:800; font-size:30px; line-height:1;">9</div><div style="margin-top:8px; display:inline-flex; align-items:center; gap:5px; font-size:12.5px; font-weight:700; color:var(--leaf-soft-foreground);"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>+3</div></div>
+                </div>
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow-sm); overflow:hidden;">
+                  <div style="display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid var(--border); flex-wrap:wrap;">
+                    <h4 style="font-size:15px; font-weight:700; margin:0; margin-right:auto;">Live pickups</h4>
+                    <span style="height:30px; padding:0 13px; border-radius:999px; background:var(--primary); color:#fff; font-size:12.5px; font-weight:700; display:inline-flex; align-items:center;">All</span>
+                    <span style="height:30px; padding:0 13px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); color:var(--muted-foreground); font-size:12.5px; font-weight:600; display:inline-flex; align-items:center;">Requested</span>
+                    <span style="height:30px; padding:0 13px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); color:var(--muted-foreground); font-size:12.5px; font-weight:600; display:inline-flex; align-items:center;">En route</span>
+                    <span style="height:30px; padding:0 13px; border-radius:999px; background:var(--surface-2); border:1px solid var(--border); color:var(--muted-foreground); font-size:12.5px; font-weight:600; display:inline-flex; align-items:center;">Delivered</span>
+                  </div>
+                  <table style="width:100%; border-collapse:collapse; font-size:13.5px;">
+                    <thead><tr style="text-align:left; color:var(--muted-foreground);"><th style="padding:11px 16px; font-weight:600; font-size:12px; letter-spacing:.03em; text-transform:uppercase;">Donor</th><th style="padding:11px 16px; font-weight:600; font-size:12px; letter-spacing:.03em; text-transform:uppercase;">Area</th><th style="padding:11px 16px; font-weight:600; font-size:12px; letter-spacing:.03em; text-transform:uppercase;">Meals</th><th style="padding:11px 16px; font-weight:600; font-size:12px; letter-spacing:.03em; text-transform:uppercase;">Volunteer</th><th style="padding:11px 16px; font-weight:600; font-size:12px; letter-spacing:.03em; text-transform:uppercase;">Status</th><th style="padding:11px 16px; font-weight:600; font-size:12px; letter-spacing:.03em; text-transform:uppercase;">ETA</th></tr></thead>
+                    <tbody>
+                      <tr style="border-top:1px solid var(--border);" style-hover="background:var(--surface-2);"><td style="padding:13px 16px; font-weight:600;">Annapurna Restaurant</td><td style="padding:13px 16px; color:var(--muted-foreground);">Navrangpura</td><td style="padding:13px 16px;">40</td><td style="padding:13px 16px; color:var(--muted-foreground);">Meera P.</td><td style="padding:13px 16px;"><span style="display:inline-flex; align-items:center; gap:6px; height:25px; padding:0 10px 0 8px; border-radius:999px; background:var(--st-enroute-bg); color:var(--st-enroute-fg); font-size:12px; font-weight:700;"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-enroute-dot);"></span>En route</span></td><td style="padding:13px 16px; color:var(--muted-foreground);">6 min</td></tr>
+                      <tr style="border-top:1px solid var(--border);" style-hover="background:var(--surface-2);"><td style="padding:13px 16px; font-weight:600;">Sharma Wedding Hall</td><td style="padding:13px 16px; color:var(--muted-foreground);">Bodakdev</td><td style="padding:13px 16px;">120</td><td style="padding:13px 16px; color:var(--subtle-foreground);">Unassigned</td><td style="padding:13px 16px;"><span style="display:inline-flex; align-items:center; gap:6px; height:25px; padding:0 10px 0 8px; border-radius:999px; background:var(--st-requested-bg); color:var(--st-requested-fg); font-size:12px; font-weight:700;"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-requested-dot);"></span>Requested</span></td><td style="padding:13px 16px; color:var(--muted-foreground);">—</td></tr>
+                      <tr style="border-top:1px solid var(--border);" style-hover="background:var(--surface-2);"><td style="padding:13px 16px; font-weight:600;">Hotel Surya</td><td style="padding:13px 16px; color:var(--muted-foreground);">Paldi</td><td style="padding:13px 16px;">65</td><td style="padding:13px 16px; color:var(--muted-foreground);">Imran K.</td><td style="padding:13px 16px;"><span style="display:inline-flex; align-items:center; gap:6px; height:25px; padding:0 10px 0 8px; border-radius:999px; background:var(--st-pickedup-bg); color:var(--st-pickedup-fg); font-size:12px; font-weight:700;"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-pickedup-dot);"></span>Picked up</span></td><td style="padding:13px 16px; color:var(--muted-foreground);">12 min</td></tr>
+                      <tr style="border-top:1px solid var(--border);" style-hover="background:var(--surface-2);"><td style="padding:13px 16px; font-weight:600;">Patel Family</td><td style="padding:13px 16px; color:var(--muted-foreground);">Maninagar</td><td style="padding:13px 16px;">15</td><td style="padding:13px 16px; color:var(--muted-foreground);">Arjun S.</td><td style="padding:13px 16px;"><span style="display:inline-flex; align-items:center; gap:6px; height:25px; padding:0 10px 0 8px; border-radius:999px; background:var(--st-delivered-bg); color:var(--st-delivered-fg); font-size:12px; font-weight:700;"><span style="width:7px;height:7px;border-radius:50%;background:var(--st-delivered-dot);"></span>Delivered</span></td><td style="padding:13px 16px; color:var(--muted-foreground);">Done</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </main>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:34px;">
+        <div style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground); margin-bottom:12px; display:flex; align-items:center; gap:7px;"><span style="width:7px;height:7px;border-radius:50%;background:var(--brand-saffron);"></span>Public · Support &amp; donate</div>
+        <div style="border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow-lg); background:var(--surface);">
+          <div style="height:44px; display:flex; align-items:center; gap:8px; padding:0 16px; background:var(--surface-2); border-bottom:1px solid var(--border);">
+            <span style="width:12px;height:12px;border-radius:50%;background:#E8705B;"></span><span style="width:12px;height:12px;border-radius:50%;background:#E6B95C;"></span><span style="width:12px;height:12px;border-radius:50%;background:#6FBF73;"></span>
+            <div style="margin-left:12px; max-width:300px; flex:1; height:27px; border-radius:999px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; gap:7px; padding:0 13px; font-size:12.5px; color:var(--muted-foreground);"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>rajyash.org</div>
+          </div>
+          <div style="background:var(--background);">
+            <div style="display:flex; align-items:center; gap:16px; padding:16px 28px; border-bottom:1px solid var(--border); background:color-mix(in srgb,var(--background) 80%, transparent); flex-wrap:wrap;">
+              <div style="display:flex; align-items:center; gap:10px; margin-right:auto;"><span style="width:34px; height:34px; border-radius:10px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg></span><span style="font-family:var(--font-display); font-weight:800; font-size:18px;">Rajyash Foundation</span></div>
+              <span style="font-size:14px; font-weight:600; color:var(--muted-foreground);">Our work</span>
+              <span style="font-size:14px; font-weight:600; color:var(--muted-foreground);">Volunteer</span>
+              <span style="font-size:14px; font-weight:600; color:var(--muted-foreground);">Impact</span>
+              <button style="height:42px; padding:0 20px; border-radius:12px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:14.5px; cursor:pointer; box-shadow:var(--shadow-sm);">Donate</button>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:34px; align-items:center; padding:clamp(28px,5vw,56px) 28px;">
+              <div>
+                <div style="display:inline-flex; align-items:center; gap:8px; padding:6px 13px; border-radius:999px; background:var(--leaf-soft); color:var(--leaf-soft-foreground); font-size:13px; font-weight:700; margin-bottom:18px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg>Ahmedabad · since 2014</div>
+                <h2 style="font-family:var(--font-display); font-weight:800; font-size:clamp(30px,5vw,46px); line-height:1.05; letter-spacing:-.025em; margin:0 0 16px; text-wrap:balance;">Good food should feed people, not bins.</h2>
+                <p style="font-size:17px; line-height:1.6; color:var(--muted-foreground); max-width:48ch; margin:0 0 26px;">We rescue surplus food from restaurants, weddings and homes across Ahmedabad — and our volunteer drivers deliver it, warm, to families who need it most.</p>
+                <div style="display:flex; flex-wrap:wrap; gap:12px;">
+                  <button style="height:52px; padding:0 26px; border-radius:14px; border:none; background:var(--primary); color:#fff; font-family:var(--font-text); font-weight:700; font-size:16px; cursor:pointer; box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:9px;" style-hover="background:var(--primary-hover);"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg>Donate now</button>
+                  <button style="height:52px; padding:0 24px; border-radius:14px; border:1px solid var(--border-strong); background:var(--surface); color:var(--foreground); font-family:var(--font-text); font-weight:700; font-size:16px; cursor:pointer;" style-hover="background:var(--surface-2);">Become a driver</button>
+                </div>
+              </div>
+              <div style="position:relative; aspect-ratio:4/3; border-radius:20px; overflow:hidden; background-color:var(--surface-2); background-image:repeating-linear-gradient(135deg, color-mix(in srgb,var(--primary) 9%,transparent) 0 12px, transparent 12px 24px); border:1px solid var(--border); display:flex; align-items:flex-end; justify-content:flex-start; min-height:230px;">
+                <div style="position:absolute; top:14px; left:14px; display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; background:var(--surface); box-shadow:var(--shadow-sm); font-size:12.5px; font-weight:700;"><span style="width:7px;height:7px;border-radius:50%;background:var(--leaf);"></span>2.1M meals served</div>
+                <div style="font-family:var(--font-mono); font-size:12px; color:var(--muted-foreground); background:color-mix(in srgb,var(--surface) 82%,transparent); padding:5px 10px; border-radius:8px; margin:14px;">PHOTO · volunteers serving a community meal</div>
+              </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:1px; background:var(--border); border-top:1px solid var(--border); border-bottom:1px solid var(--border);">
+              <div style="background:var(--background); padding:24px 20px; text-align:center;"><div style="font-family:var(--font-display); font-weight:800; font-size:30px; color:var(--primary);">2.1M+</div><div style="font-size:13.5px; color:var(--muted-foreground); margin-top:4px;">Meals rescued</div></div>
+              <div style="background:var(--background); padding:24px 20px; text-align:center;"><div style="font-family:var(--font-display); font-weight:800; font-size:30px; color:var(--primary);">540</div><div style="font-size:13.5px; color:var(--muted-foreground); margin-top:4px;">Volunteer drivers</div></div>
+              <div style="background:var(--background); padding:24px 20px; text-align:center;"><div style="font-family:var(--font-display); font-weight:800; font-size:30px; color:var(--primary);">380</div><div style="font-size:13.5px; color:var(--muted-foreground); margin-top:4px;">Partner donors</div></div>
+              <div style="background:var(--background); padding:24px 20px; text-align:center;"><div style="font-family:var(--font-display); font-weight:800; font-size:30px; color:var(--primary);">11</div><div style="font-size:13.5px; color:var(--muted-foreground); margin-top:4px;">Years feeding hope</div></div>
+            </div>
+
+            <div style="padding:clamp(28px,4vw,48px) 28px;">
+              <h3 style="font-family:var(--font-display); font-weight:700; font-size:clamp(22px,3vw,30px); text-align:center; margin:0 0 30px; letter-spacing:-.02em;">How it works</h3>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(230px,1fr)); gap:18px;">
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:var(--shadow-sm);"><span style="width:48px; height:48px; border-radius:14px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center; margin-bottom:16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2a2 2 0 0 0 2-2V2"></path><path d="M7 2v20M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"></path></svg></span><div style="font-weight:700; font-size:18px; margin-bottom:6px;">1 · You offer food</div><p style="margin:0; font-size:14.5px; color:var(--muted-foreground); line-height:1.55;">Restaurants, hosts and families post surplus food in under a minute.</p></div>
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:var(--shadow-sm);"><span style="width:48px; height:48px; border-radius:14px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center; margin-bottom:16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"></path><path d="M15 18H9"></path><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.62l-3.48-4.35A1 1 0 0 0 17.52 8H14"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg></span><div style="font-weight:700; font-size:18px; margin-bottom:6px;">2 · A driver picks up</div><p style="margin:0; font-size:14.5px; color:var(--muted-foreground); line-height:1.55;">A nearby volunteer accepts and collects it, tracked live end to end.</p></div>
+                <div style="background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:24px; box-shadow:var(--shadow-sm);"><span style="width:48px; height:48px; border-radius:14px; background:var(--primary-soft); color:var(--primary-soft-foreground); display:flex; align-items:center; justify-content:center; margin-bottom:16px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path></svg></span><div style="font-weight:700; font-size:18px; margin-bottom:6px;">3 · Families eat</div><p style="margin:0; font-size:14.5px; color:var(--muted-foreground); line-height:1.55;">Warm meals reach shelters and communities the same evening.</p></div>
+              </div>
+            </div>
+
+            <div style="margin:0 28px 36px; border-radius:20px; background:linear-gradient(135deg, var(--primary), #E0651B); padding:clamp(24px,4vw,40px); color:#fff; display:grid; grid-template-columns:repeat(auto-fit, minmax(260px,1fr)); gap:24px; align-items:center;">
+              <div>
+                <h3 style="font-family:var(--font-display); font-weight:800; font-size:clamp(22px,3vw,30px); margin:0 0 8px; line-height:1.15;">₹500 feeds a family of four for three days.</h3>
+                <p style="margin:0; font-size:15.5px; line-height:1.55; opacity:.92;">Your gift covers fuel and packaging so rescued food keeps moving.</p>
+              </div>
+              <div style="background:rgba(255,255,255,.14); border:1px solid rgba(255,255,255,.25); border-radius:16px; padding:18px;">
+                <div style="display:flex; gap:9px; margin-bottom:14px;">
+                  <span style="flex:1; text-align:center; height:46px; border-radius:11px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px;">₹250</span>
+                  <span style="flex:1; text-align:center; height:46px; border-radius:11px; background:#fff; color:var(--primary); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px;">₹500</span>
+                  <span style="flex:1; text-align:center; height:46px; border-radius:11px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:15px;">₹1,000</span>
+                </div>
+                <button style="width:100%; height:50px; border-radius:13px; border:none; background:#fff; color:var(--primary); font-family:var(--font-text); font-weight:800; font-size:16px; cursor:pointer;">Donate ₹500</button>
+              </div>
+            </div>
+
+            <div style="border-top:1px solid var(--border); padding:22px 28px; display:flex; flex-wrap:wrap; gap:12px; align-items:center; color:var(--muted-foreground); font-size:13px;">
+              <span style="font-weight:600; color:var(--foreground);">Rajyash Foundation</span>
+              <span>·  80G tax-exempt  ·  Ahmedabad, Gujarat</span>
+              <span style="margin-left:auto; display:flex; gap:6px;"><span style="display:inline-flex;align-items:center;padding:5px 11px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-weight:700;font-size:12px;">EN</span><span style="display:inline-flex;align-items:center;padding:5px 11px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-weight:700;font-size:12px;">ગુ</span><span style="display:inline-flex;align-items:center;padding:5px 11px;border-radius:999px;background:var(--surface-2);border:1px solid var(--border);font-weight:700;font-size:12px;">हि</span></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!--SECTIONS-->
+
+    <footer style="margin-top:40px; border-top:1px solid var(--border); padding:34px 0 64px; display:flex; flex-wrap:wrap; gap:18px; align-items:center; color:var(--muted-foreground); font-size:13.5px;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:30px; height:30px; border-radius:9px; background:var(--primary); display:flex; align-items:center; justify-content:center; color:#fff;"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path><path d="M2 21c0-3 1.85-5.36 5.08-6"></path></svg></div>
+        <span style="font-weight:600; color:var(--foreground);">Rajyash Food-Rescue Design System</span>
+      </div>
+      <span style="margin-left:auto;">Saffron + Leaf · Light &amp; dark · WCAG-AA · Mapped to Tailwind + shadcn/ui</span>
+    </footer>
+  </main>
+
+  <sc-if value="{{ anyToast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed; left:0; right:0; bottom:26px; display:flex; justify-content:center; z-index:90; pointer-events:none; padding:0 16px;">
+      <div style="display:flex; align-items:center; gap:12px; max-width:440px; width:100%; padding:14px 16px; border-radius:14px; background:var(--surface); border:1px solid var(--border); box-shadow:var(--shadow-lg); animation:rj-toast-in .26s cubic-bezier(.2,.8,.3,1); pointer-events:auto;">
+        <sc-if value="{{ toastIsSuccess }}" hint-placeholder-val="{{ true }}">
+          <span style="width:34px; height:34px; flex:none; border-radius:10px; background:var(--success-soft); color:var(--success-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg></span>
+          <div style="flex:1;"><div style="font-weight:700; font-size:14.5px;">Pickup confirmed</div><div style="font-size:13px; color:var(--muted-foreground);">Volunteer Meera is on the way.</div></div>
+        </sc-if>
+        <sc-if value="{{ toastIsError }}" hint-placeholder-val="{{ false }}">
+          <span style="width:34px; height:34px; flex:none; border-radius:10px; background:var(--danger-soft); color:var(--danger-soft-foreground); display:flex; align-items:center; justify-content:center;"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 8v4M12 16h.01"></path></svg></span>
+          <div style="flex:1;"><div style="font-weight:700; font-size:14.5px;">Couldn't reach the server</div><div style="font-size:13px; color:var(--muted-foreground);">Check your connection and retry.</div></div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;,&quot;tsType&quot;:&quot;'light'|'dark'&quot;},&quot;language&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;English&quot;,&quot;Gujarati&quot;,&quot;Hindi&quot;],&quot;default&quot;:&quot;English&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;driverState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;En route&quot;,&quot;Loading&quot;,&quot;Error&quot;],&quot;default&quot;:&quot;En route&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  rootRef = React.createRef();
+  state = { theme: 'light', toastKind: null, modalOpen: false, sheetOpen: false };
+
+  componentDidMount() {
+    var initial = this.props.theme || 'light';
+    if (this.rootRef.current) this.rootRef.current.setAttribute('data-theme', initial);
+    if (initial !== this.state.theme) this.setState({ theme: initial });
+  }
+
+  toggleTheme = () => {
+    var el = this.rootRef.current;
+    var next = (el && el.getAttribute('data-theme') === 'dark') ? 'light' : 'dark';
+    if (el) el.setAttribute('data-theme', next);
+    this.setState({ theme: next });
+  };
+
+  fireToast = (kind) => {
+    var self = this;
+    this.setState({ toastKind: kind });
+    clearTimeout(this._t);
+    this._t = setTimeout(function () { self.setState({ toastKind: null }); }, 3400);
+  };
+
+  renderVals() {
+    var isDark = this.state.theme === 'dark';
+    var lang = this.props.language || 'English';
+    var ds = this.props.driverState || 'En route';
+    var dict = {
+      English: { eyebrow:'Active pickup', enrouteTitle:'You are on the way', loadingTitle:'Finding your pickup…', loadingBody:'Connecting to live tracking', errorTitle:'Connection lost', errorBody:'We could not load live tracking. Check your signal and try again.', retry:'Retry', nav:'Start navigation', pick:'Mark as picked up', call:'Call donor', eta:'ETA 6 min', dist:'2.4 km away', addr:'12 Navrangpura Road, Ahmedabad', food:'Cooked rice & dal — approx. 40 servings', by:'Pick up by 8:30 PM', donor:'Annapurna Restaurant' },
+      Gujarati: { eyebrow:'સક્રિય પિકઅપ', enrouteTitle:'તમે રસ્તામાં છો', loadingTitle:'તમારું પિકઅપ શોધી રહ્યું છે…', loadingBody:'લાઇવ ટ્રેકિંગ સાથે જોડાઈ રહ્યું છે', errorTitle:'કનેક્શન ગયું', errorBody:'લાઇવ ટ્રેકિંગ લોડ ન થયું. તમારું સિગ્નલ તપાસો અને ફરી પ્રયાસ કરો.', retry:'ફરી પ્રયાસ કરો', nav:'નેવિગેશન શરૂ કરો', pick:'પિકઅપ થયું ચિહ્નિત કરો', call:'દાતાને કૉલ કરો', eta:'ETA 6 મિનિટ', dist:'2.4 કિમી દૂર', addr:'12 નવરંગપુરા રોડ, અમદાવાદ', food:'રાંધેલા ભાત અને દાળ — આશરે 40 ભોજન', by:'8:30 વાગ્યા સુધીમાં લો', donor:'અન્નપૂર્ણા રેસ્ટોરન્ટ' },
+      Hindi: { eyebrow:'सक्रिय पिकअप', enrouteTitle:'आप रास्ते में हैं', loadingTitle:'आपका पिकअप ढूँढ रहे हैं…', loadingBody:'लाइव ट्रैकिंग से जुड़ रहे हैं', errorTitle:'कनेक्शन टूट गया', errorBody:'लाइव ट्रैकिंग लोड नहीं हुई। अपना सिग्नल जाँचें और पुनः प्रयास करें।', retry:'पुनः प्रयास करें', nav:'नेविगेशन शुरू करें', pick:'पिकअप पूरा हुआ चिह्नित करें', call:'दाता को कॉल करें', eta:'ETA 6 मिनट', dist:'2.4 किमी दूर', addr:'12 नवरंगपुरा रोड, अहमदाबाद', food:'पके चावल और दाल — लगभग 40 लोगों का भोजन', by:'8:30 बजे तक उठाएँ', donor:'अन्नपूर्णा रेस्टोरेंट' }
+    };
+    var t = dict[lang] || dict.English;
+    return {
+      rootRef: this.rootRef,
+      stop: (e) => { if (e && e.stopPropagation) e.stopPropagation(); },
+      t: t,
+      driverEnroute: ds === 'En route',
+      driverLoading: ds === 'Loading',
+      driverError: ds === 'Error',
+      isDark: isDark,
+      notDark: !isDark,
+      toggleTheme: this.toggleTheme,
+      showSuccessToast: () => this.fireToast('success'),
+      showErrorToast: () => this.fireToast('error'),
+      anyToast: !!this.state.toastKind,
+      toastIsSuccess: this.state.toastKind === 'success',
+      toastIsError: this.state.toastKind === 'error',
+      modalOpen: this.state.modalOpen,
+      openModal: () => this.setState({ modalOpen: true }),
+      closeModal: () => this.setState({ modalOpen: false }),
+      sheetOpen: this.state.sheetOpen,
+      openSheet: () => this.setState({ sheetOpen: true }),
+      closeSheet: () => this.setState({ sheetOpen: false })
+    };
+  }
+}
+</script>
+</body>
+</html>
