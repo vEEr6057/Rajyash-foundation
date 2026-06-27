@@ -9,7 +9,12 @@ import { buildEventId } from "@/server/notifications/events";
 import { NOTIFICATION_EVENTS } from "@/config/constants";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
 import { createSignedUpload } from "@/lib/storage";
-import { geocodeAddress } from "@/lib/geocoding";
+import { geocodeAddress, resolveShortMapsUrl } from "@/lib/geocoding";
+import {
+  parseLatLngFromGoogleMapsUrl,
+  isGoogleMapsUrl,
+  isShortGoogleMapsUrl,
+} from "@/lib/maps-link";
 import { logger } from "@/lib/logger";
 import { ROUTES, type PickupStatus } from "@/config/constants";
 import {
@@ -56,6 +61,51 @@ export async function geocodePickupAddress(
   const r = await geocodeAddress(address);
   if (!r) return fail("NOT_FOUND", "Couldn't find that address — drag the pin instead.");
   return { ok: true, ...r };
+}
+
+/**
+ * DON-01 (bridge): resolve a pasted Google Maps link OR a typed address to a
+ * lat/lng for the confirm-pin. Order: direct URL parse → short-link redirect +
+ * parse → Nominatim geocode. Keeps the ORIGINAL pasted link (not the expanded
+ * one) so the stored link stays human-friendly. Auth-gated like geocodePickupAddress.
+ */
+export async function resolvePickupLocation(
+  input: string,
+): Promise<
+  Result<{ lat: number; lng: number; displayName: string; googleMapsUrl: string | null }>
+> {
+  try {
+    await requireRole(["donor", "volunteer", "admin"]);
+  } catch {
+    return fail("UNAUTHORIZED", "Sign in first.");
+  }
+  const raw = input.trim();
+  if (!raw) return fail("VALIDATION", "Enter an address or Google Maps link.");
+
+  if (isGoogleMapsUrl(raw)) {
+    let coords = parseLatLngFromGoogleMapsUrl(raw);
+    if (!coords && isShortGoogleMapsUrl(raw)) {
+      const resolved = await resolveShortMapsUrl(raw);
+      if (resolved) coords = parseLatLngFromGoogleMapsUrl(resolved);
+    }
+    if (coords) {
+      return {
+        ok: true,
+        lat: coords.lat,
+        lng: coords.lng,
+        displayName: "Pinned from Google Maps",
+        googleMapsUrl: raw,
+      };
+    }
+    return fail(
+      "NOT_FOUND",
+      "Couldn't read coordinates from that link — type the address or drag the pin.",
+    );
+  }
+
+  const r = await geocodeAddress(raw);
+  if (!r) return fail("NOT_FOUND", "Couldn't find that address — drag the pin instead.");
+  return { ok: true, lat: r.lat, lng: r.lng, displayName: r.displayName, googleMapsUrl: null };
 }
 
 /** Mint a signed upload URL for a food (donor) or proof (volunteer) photo. */
