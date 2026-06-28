@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: "Phase 7 shipped — all v1 phases done except Phase 5 (Payments) PARKED"
-stopped_at: Phase 7 built + reviewed + Playwright-E2E verified; preparing PR + merging the stacked chain
-last_updated: "2026-06-27"
-last_activity: 2026-06-27 — Phase 7 (Public Site + i18n + PWA) built from imported claude.ai/design, reviewed, E2E-verified
+milestone: v2.0
+milestone_name: Dispatch Bridge
+status: roadmapped
+last_updated: "2026-06-29T00:00:00.000Z"
+last_activity: 2026-06-29
 progress:
-  total_phases: 7
-  completed_phases: 6
-  total_plans: 36
-  completed_plans: 36
-  percent: 86
+  total_phases: 5
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -21,16 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-25)
 
 **Core value:** A donor can post surplus food and a volunteer can reliably claim, pick up, and deliver it to people in need — the rescue loop must work end to end.
-**Current focus:** v1 feature-complete — merging the stacked PR chain to main (Phase 5 Payments PARKED)
+**Current focus:** v2.0 Dispatch Bridge — evolve live v1 app to coordinator-dispatched, twice-daily, multi-stop runs without a rewrite.
 
 ## Current Position
 
-Phase: 7 of 7 (Public Site + i18n + PWA) — complete; Phase 5 (Payments) PARKED. All other v1 phases done.
-Plan: 5 of 5 in Phase 7
-Status: Phase 7 shipped (built from imported claude.ai/design); preparing PR #6 + merging chain to main
-Last activity: 2026-06-27 — Phase 7 built + reviewed + Playwright-E2E verified
-
-Progress: [█████████░] 86% (6/7 phases; Phase 5 parked)
+Phase: Phase 8 (not started — roadmap complete, ready to plan)
+Plan: —
+Status: Roadmapped — next step is /gsd-plan-phase 8
+Last activity: 2026-06-29 — v2.0 roadmap created (Phases 8–12)
 
 ## Performance Metrics
 
@@ -60,30 +57,46 @@ Progress: [█████████░] 86% (6/7 phases; Phase 5 parked)
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Foundation: Host = Cloudflare Pages/Workers via @opennextjs/cloudflare, NOT Vercel. Use Cloudflare Cron Triggers for scheduled jobs.
-- Foundation: Supabase connection pooler on port 6543 (PgBouncer) from day one — never port 5432 from Workers.
-- Foundation: v1 notifications = email (Resend) + web push (VAPID) + in-app ONLY. SMS/WhatsApp are v2/when-funded.
-- Foundation: i18n (EN + Gujarati + Hindi) IS v1 scope, delivered in Phase 7.
-- Foundation: Razorpay NGO KYC must be submitted during Phase 1 (external parallel track, 3-5 day lead time).
+- v2.0 confirmed: operating model = coordinator-dispatched, twice-daily, multi-stop runs (DISPATCH-CONTEXT.md).
+- Drivers are paid rickshaw drivers; volunteers are unpaid NGO members who help distribute and never block a run.
+- Destinations table supports saved zones/shelters + ad-hoc free-entry per stop; no route optimization needed.
+- Proof-of-delivery photo is now OPTIONAL (DEL-01 supersedes v1 VOL-05).
+- Any involved role (driver / coordinator / volunteer) can confirm a drop delivered (DEL-02).
+- Live tracking reuses existing Supabase Realtime + Leaflet/OSM infrastructure — no Google Maps API.
+- ETA computation = haversine (free) — no OSRM required but can swap in later.
+- No per-delivery headcount; aggregate meals/kg/deliveries only (RPT-01).
+- Intake: restaurant self-flag AND coordinator-log-on-behalf; attestation stays; verify flag is optional, never a blocker.
+- Phase 11 (Intake) can be worked in parallel with Phase 9 (Runs) — both depend only on Phase 8.
+- Notifications remain in-app + email only (free channels); no SMS/WhatsApp for v2.0.
+- Payments (Phase 5) remains PARKED; v2.0 adds a possible static UPI/QR link later, not Razorpay.
+- Production build target: Linux (Cloudflare CI); avoid platform-specific deps.
 
 ### Pending Todos
 
-None yet.
+- [ ] Start /gsd-plan-phase 8 (Dispatch Foundations).
+- [ ] Phase 11 can be planned in parallel with Phase 9 once Phase 8 is done.
+- [ ] Phase 12 requires both Phase 9 and Phase 11 complete before planning.
 
 ### Blockers/Concerns
 
-- **External blocker (Phase 5 gate):** Razorpay NGO KYC — submit during Phase 1; must be approved before Phase 5 ships to production. Start immediately.
-- **Phase 3 research flag:** Confirm Supabase Realtime JS client API for INSERT events on `location_pings` filtered by `pickup_id` before Phase 3 planning.
+- **Restaurant login depth TBD**: DISPATCH-CONTEXT flags "whether restaurants need their own login now" as still-to-firm-up. Assumption: coordinator-logged is the default; optional self-serve. Revisit at Phase 11 planning.
+- **Stop ordering/optimization TBD**: coordinator manually sets order; no auto-routing. Assumption holds for v2.0.
+- **Run pre-planned vs. live-built TBD**: assumed pre-planned, editable mid-run (Phase 9 design must accommodate).
+- **Existing blocker (Phase 5 gate)**: Razorpay NGO KYC — still outstanding from v1; not on the v2.0 critical path.
 
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Notifications | SMS via MSG91 (NOT-06) | v2 — needs DLT reg + funding | Roadmap creation |
-| Notifications | WhatsApp via MSG91 (NOT-07) | v2 — needs Meta approval + funding | Roadmap creation |
+| Notifications | SMS via MSG91 (NOT-06) | When funded — needs DLT reg | Roadmap v1 creation |
+| Notifications | WhatsApp via MSG91 (NOT-07) | When funded — needs Meta approval | Roadmap v1 creation |
+| Payments | Razorpay donation flow (Phase 5) | PARKED — NGO KYC not cleared | Roadmap v1 creation |
+| Public | UPI/GPay QR donation link | Maybe post-v2.0 static addition | DISPATCH-CONTEXT |
+| Routing | OSRM turn-by-turn for run stops | Free but complex; haversine ETA is enough for v2.0 | v2.0 roadmap |
 
 ## Session Continuity
 
-Last session: 2026-06-26T20:04:21.507Z
-Stopped at: Phase 7 context gathered (discuss done); building
-Resume file: .planning/phases/07-public-site-i18n-pwa/07-CONTEXT.md
+Last session: 2026-06-29
+Stopped at: v2.0 roadmap created; REQUIREMENTS.md traceability updated; STATE.md updated
+Resume file: .planning/ROADMAP.md
+Next action: /gsd-plan-phase 8

@@ -4,6 +4,8 @@
 
 Seven phases build from nothing to a live food-rescue platform. Phase 1 lays the foundation (schema, auth, Cloudflare wiring). Phase 2 delivers the rescue loop — the product's core value. Phase 3 adds live tracking on top of that loop. Phase 4 connects the notification pipeline (email + web push + in-app). Phase 5 opens monetary donations with Razorpay. Phase 6 gives foundation staff the admin portal and reporting tools. Phase 7 ships the public site, i18n, and PWA polish. At every phase the app is runnable and the previous phase's features remain intact.
 
+Five further phases (8–12) evolve the live v1 app to the foundation's real operating model — coordinator-dispatched, twice-daily, multi-stop runs — without a rewrite (v2.0 — Dispatch Bridge).
+
 ## Phases
 
 **Phase Numbering:**
@@ -12,6 +14,8 @@ Seven phases build from nothing to a live food-rescue platform. Phase 1 lays the
 
 Decimal phases appear between their surrounding integers in numeric order.
 
+### v1 — Food Rescue MVP
+
 - [x] **Phase 1: Foundation** - Project scaffold, Drizzle schema, Clerk auth + RBAC, Cloudflare/Supabase wiring, env validation
 - [x] **Phase 2: Rescue Loop Core** - Donor post, volunteer claim, status machine, proof of delivery — the product
 - [x] **Phase 3: Live Tracking** - Volunteer location pings, Supabase Realtime, Leaflet map, stale indicator, privacy purge
@@ -19,6 +23,14 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 5: Payments** - Razorpay webhook-first donation flow, idempotency, 80G receipt email **(PARKED)**
 - [x] **Phase 6: Admin Portal + Reporting** - Pickup management, user/partner management, impact reporting, CSV export
 - [x] **Phase 7: Public Site + i18n + PWA** - Landing page, public impact counter, volunteer signup, EN/Gujarati/Hindi, PWA
+
+### v2.0 — Dispatch Bridge
+
+- [ ] **Phase 8: Dispatch Foundations** - Driver role + onboarding; destinations table + admin CRUD; proof photo made optional (schema + policy)
+- [ ] **Phase 9: Runs & Dispatch** - Run + run_stops schema; coordinator build/assign; driver "My Run" sequential stops + Navigate; manual override
+- [ ] **Phase 10: Live Run Tracking** - Reuse existing Realtime/Leaflet tracking across a full run; route + ETA overlay; any-role delivery confirm
+- [ ] **Phase 11: Intake** - Restaurant self-flag surplus; coordinator log-on-behalf; safety attestation + optional coordinator verify flag
+- [ ] **Phase 12: Run Reporting** - Impact aggregates (meals/kg/deliveries) across runs and by destination/partner; reuse admin reporting UI
 
 ## Phase Details
 
@@ -153,12 +165,80 @@ Plans:
 - [ ] 07-04-PLAN.md — Wave 3: GU/HI machine-drafted catalogs (all 4 namespaces, _review: pending), catalog parity test, app/sw.ts Serwist SW (push handlers merged), layout lang={locale}
 **UI hint**: yes
 
+---
+
+## v2.0 — Dispatch Bridge Phase Details
+
+### Phase 8: Dispatch Foundations
+**Goal**: The codebase has a `driver` role with an onboarding flow, a `destinations` table that admin can manage, and proof-of-delivery photos are demoted to optional — backbone changes that unblock all dispatch work
+**Depends on**: Phase 7 (v1 complete)
+**Requirements**: DRV-01, DRV-02, DEST-01, DEST-02, DEL-01
+**Success Criteria** (what must be TRUE):
+  1. A user can onboard as a driver; the driver role gates the "My Run" area and is enforced on every server action that requires it
+  2. A volunteer can be attached to a run's distribution slot without blocking run creation or dispatch
+  3. Admin/coordinator can create, edit, and delete saved destinations (name, area, lat/lng) via the admin portal
+  4. When building a run stop, a coordinator can pick a saved destination or enter a free-text address with a map pin
+  5. Marking a drop delivered no longer requires a proof photo — a driver or coordinator can confirm delivery without one
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 9: Runs & Dispatch
+**Goal**: A coordinator can build a multi-stop run, assign a driver, and manage it live; a driver sees their ordered stops and can navigate and mark each stop done; the coordinator retains a manual override at all times
+**Depends on**: Phase 8
+**Requirements**: RUN-01, RUN-02, RUN-03, RUN-04, RUN-05, RUN-06, RUN-07, RUN-08
+**Success Criteria** (what must be TRUE):
+  1. Coordinator can create a morning or night run, assign exactly one driver, and see it in the dispatch board
+  2. Coordinator can add pickup stops (restaurants) and drop stops (saved destination or ad-hoc) to a run and reorder or edit them before and during the run
+  3. Driver sees their assigned run as an ordered list of stops in a "My Run" view; each stop shows address, type, and status
+  4. Driver can tap one button to open Google Maps deep-link navigation to the next stop, without leaving the app
+  5. Driver or coordinator can mark each stop done; the run automatically completes when all stops are marked done
+  6. Coordinator can manually advance or override any stop or run status without waiting for the driver to act
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 10: Live Run Tracking
+**Goal**: Coordinator, restaurant, and volunteer can watch the driver's live location across the full run on a Leaflet/OSM map; the map shows the route and ETA to the next stop; any involved role can confirm a drop delivered
+**Depends on**: Phase 9
+**Requirements**: TRK-05, TRK-06, DEL-02
+**Success Criteria** (what must be TRUE):
+  1. While a run is active, coordinator, restaurant, and volunteer see the driver's live location on a Leaflet map, updated via Supabase Realtime (reusing the existing location-ping infrastructure)
+  2. The run map shows a route overlay and a haversine-derived ETA to the next stop alongside the live driver pin; no Google Maps API is used
+  3. When pings stop arriving (driver closed the app), the map shows a stale indicator and the coordinator's manual override remains available
+  4. A driver, coordinator, or volunteer on the run can confirm a drop delivered from the run view; the confirmation is reflected immediately for all watchers
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 11: Intake
+**Goal**: Restaurants can self-flag available surplus, coordinators can log surplus on a restaurant's behalf, and every surplus record carries a safety attestation with an optional coordinator-verified flag — reusing the v1 pickup form and partner model
+**Depends on**: Phase 8
+**Requirements**: INT-01, INT-02, INT-03
+**Success Criteria** (what must be TRUE):
+  1. A restaurant (partner) can log in and flag available surplus (food type, quantity, collection window, location) using the existing pickup form
+  2. A coordinator can open a restaurant's profile and log surplus on their behalf, pre-filling the partner's location
+  3. Every surplus record shows the restaurant's safety attestation; a coordinator can toggle an optional "verified" flag on any record without blocking the run if it is absent
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 12: Run Reporting
+**Goal**: Foundation staff can view impact aggregates (meals / kg / deliveries) across all runs and filter by destination or partner, reusing the existing admin reporting UI and CSV export
+**Depends on**: Phase 9, Phase 11
+**Requirements**: RPT-01
+**Success Criteria** (what must be TRUE):
+  1. The admin impact report shows aggregate meals rescued, kg rescued, and delivery count filtered by date range, broken down by run, destination, and partner
+  2. The coordinator can export the run impact report as a CSV file using the existing export route
+  3. No per-delivery headcount field exists; totals are approximate aggregates only, consistent with the dispatch model
+**Plans**: TBD
+**UI hint**: yes
+
+---
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+v1 phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7
+v2.0 phases execute: 8 → 9 → 10 (can run after 9) and 8 → 11 (can run after 8, parallel to 9) → 12 (after 9 + 11)
 
-Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and can be planned in parallel if needed, but are executed sequentially here for focus.
+Note: Phase 11 (Intake) depends only on Phase 8 and can be planned in parallel with Phase 9. Phase 12 requires both Phase 9 and Phase 11 to be complete.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -169,3 +249,8 @@ Note: Phase 3 (Tracking) and Phase 4 (Notifications) both depend on Phase 2 and 
 | 5. Payments | 0/? | PARKED | - |
 | 6. Admin Portal + Reporting | 6/6 | Done | 2026-06-26 |
 | 7. Public Site + i18n + PWA | 5/5 | Done | 2026-06-27 |
+| 8. Dispatch Foundations | 0/? | Not started | - |
+| 9. Runs & Dispatch | 0/? | Not started | - |
+| 10. Live Run Tracking | 0/? | Not started | - |
+| 11. Intake | 0/? | Not started | - |
+| 12. Run Reporting | 0/? | Not started | - |

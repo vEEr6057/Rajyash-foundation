@@ -3,11 +3,12 @@
  */
 
 // Roles (D-01). `admin` is assigned manually via Clerk metadata, never self-selected.
-export const ROLES = ["donor", "volunteer", "admin"] as const;
+// `driver` (v2 dispatch) = paid rickshaw driver who works coordinator-assigned runs.
+export const ROLES = ["donor", "volunteer", "driver", "admin"] as const;
 export type Role = (typeof ROLES)[number];
 
 // Roles a user may choose at onboarding (admin excluded — manual elevation only).
-export const SELECTABLE_ROLES = ["donor", "volunteer"] as const;
+export const SELECTABLE_ROLES = ["donor", "volunteer", "driver"] as const;
 export type SelectableRole = (typeof SELECTABLE_ROLES)[number];
 
 export const DEFAULT_CITY = "Ahmedabad";
@@ -23,6 +24,8 @@ export const ROUTES = {
   adminUsers: "/admin/users",
   adminPartners: "/admin/partners",
   adminReports: "/admin/reports",
+  // ── Destinations (Phase 8 / DEST-01) ───────────────────────────
+  adminDestinations: "/admin/destinations",
   donorPickups: "/portal/pickups",
   newPickup: "/portal/pickups/new",
   pickup: (id: string) => `/portal/pickups/${id}`,
@@ -114,6 +117,8 @@ export const QUERY_KEYS = {
   notifications: ["notifications"] as const,
   unreadCount: ["notifications", "unread-count"] as const,
   partners: ["partners"] as const,
+  // ── Destinations (Phase 8 / DEST-01) ───────────────────────────
+  destinations: ["destinations"] as const,
   adminPickups: (filters: Record<string, string | undefined>) =>
     ["admin", "pickups", filters] as const,
 } as const;

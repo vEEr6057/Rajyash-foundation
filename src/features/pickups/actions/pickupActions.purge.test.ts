@@ -67,6 +67,19 @@ describe("advancePickup purge (TRK-04)", () => {
     expect(res.ok).toBe(true);
     expect(h.purgeForPickup).not.toHaveBeenCalled();
   });
+
+  it("delivers WITHOUT a proof photo (DEL-01: proof is optional)", async () => {
+    // picked_up + no proof → still advances to delivered (no PROOF_REQUIRED gate)
+    h.pickupState.current = {
+      id: "p1",
+      volunteerId: "vol-1",
+      status: "picked_up",
+      proofPhotoPath: null,
+    };
+    const res = await advancePickup("p1");
+    expect(res.ok).toBe(true);
+    expect(h.purgeForPickup).toHaveBeenCalledWith("p1");
+  });
 });
 
 describe("cancelPickup purge (TRK-04)", () => {

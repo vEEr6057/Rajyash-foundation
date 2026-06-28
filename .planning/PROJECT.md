@@ -13,6 +13,18 @@ the existing 2023 "Rajyash Food Porter" mobile app is not a dependency.
 A donor can post surplus food and a volunteer can reliably claim, pick up, and deliver it to people in need —
 the rescue loop must work end to end. Everything else supports that loop.
 
+## Current Milestone: v2.0 — Dispatch Bridge
+
+**Goal:** Evolve the live v1 app to the foundation's real operating model — NGO coordinator-dispatched, twice-daily, **multi-stop runs** — without a rewrite.
+
+**Target features:**
+- A `driver` role; a coordinator (any admin) builds + assigns **runs**.
+- A **Run** = driver + ordered **stops** (pickup @ restaurant / drop @ destination); destinations are saved zones/shelters **or** ad-hoc.
+- Restaurants self-flag surplus, or the coordinator logs it on their behalf (attest + optional verify).
+- Live driver tracking across the run (coordinator/restaurant/volunteer) + coordinator manual status override; proof photo **optional**; impact aggregates only (no per-delivery headcount).
+
+**Key context:** Confirmed from the foundation Q&A — see `.planning/DISPATCH-CONTEXT.md`. Strictly free-tier, English-primary (GU/HI wired), green+gold brand live. Adapt v1 (reuse auth, tracking, maps/Navigate, notifications, impact, admin). Uncertain items in DISPATCH-CONTEXT "still to firm up" stay editable data/config.
+
 ## Requirements
 
 ### Validated

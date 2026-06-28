@@ -115,6 +115,26 @@
     "exportButton": "Download filtered pickups (CSV)",
     "totalsNote": "Totals count delivered pickups by delivery date. Servings and kilograms are shown separately (no conversion)."
   },
+  "destinations": {
+    "title": "Destinations",
+    "addDestination": "Add a destination",
+    "allDestinations": "All destinations",
+    "noDestinations": "No destinations yet.",
+    "editClose": "Close",
+    "seedNote": "Add the zones and shelters your drivers deliver to.",
+    "form": {
+      "name": "Name*",
+      "area": "Area / locality",
+      "lat": "Latitude",
+      "lng": "Longitude",
+      "city": "City",
+      "pinInstruction": "Click the map or drag the pin to set the location. Or type an address below to geocode.",
+      "geocodeAddress": "Address (to geocode)",
+      "geocodeButton": "Geocode",
+      "saveButton": "Save destination",
+      "addButton": "Add destination"
+    }
+  },
   "dashboard": {
     "title": "Admin",
     "pickupsLink": "Pickups",
@@ -124,6 +144,8 @@
     "partnersLink": "Partners",
     "partnersDesc": "Donor organizations",
     "reportsLink": "Reports",
-    "reportsDesc": "Impact & CSV export"
+    "reportsDesc": "Impact & CSV export",
+    "destinationsLink": "Destinations",
+    "destinationsDesc": "Drop-off zones for runs"
   }
 }

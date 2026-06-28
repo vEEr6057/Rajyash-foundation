@@ -26,7 +26,6 @@ import {
 import {
   canTransition,
   nextStatus,
-  isDeliveringTransition,
 } from "@/features/pickups/lib/statusMachine";
 
 type Result<T = unknown> =
@@ -329,9 +328,8 @@ export async function advancePickup(id: string): Promise<Result<{ status: Pickup
   if (!to || !canTransition(from, to)) {
     return fail("CONFLICT", "No further status to advance to.");
   }
-  if (isDeliveringTransition(from, to) && !pickup.proofPhotoPath) {
-    return fail("PROOF_REQUIRED", "Add a proof-of-delivery photo first.");
-  }
+  // DEL-01 (v2): proof photo is OPTIONAL — distribution is confirmed by whoever is
+  // present (driver/coordinator/volunteer); photos are taken for social media, not as a gate.
   const extra = to === "delivered" ? { deliveredAt: new Date() } : {};
   const row = await pickupsRepo.advance(id, userId, from, to, extra);
   if (!row) return fail("CONFLICT", "Status changed — please refresh.");

@@ -77,7 +77,43 @@
 - [ ] **I18N-02**: User can switch language; choice persists
 - [ ] **I18N-03**: Gujarati and Hindi scripts render correctly (next-intl locale setup verified)
 
-## v2 Requirements
+## v2.0 Requirements — Dispatch Bridge
+
+> Confirmed from the foundation Q&A (`.planning/DISPATCH-CONTEXT.md`). Adapts v1 to coordinator-dispatched, twice-daily, multi-stop runs. **Supersedes** v1 `VOL-05` (proof now optional → `DEL-01`) and reverses the v1 "single-stop only" exclusion.
+
+### Roles & onboarding
+- [ ] **DRV-01**: A `driver` role exists; a user can onboard as a driver (paid rickshaw driver).
+- [ ] **DRV-02**: A volunteer (unpaid NGO member) can optionally be attached to a run's distribution — never blocks the run.
+
+### Destinations
+- [ ] **DEST-01**: Admin/coordinator can manage a list of saved destinations (zone/shelter: name, area, lat/lng).
+- [ ] **DEST-02**: A drop stop can use a saved destination OR an ad-hoc location (free address + map pin).
+
+### Runs & dispatch
+- [ ] **RUN-01**: Coordinator (any admin) can create a run (morning/night) and assign one driver.
+- [ ] **RUN-02**: Coordinator can add one or more pickup stops (restaurants) to a run.
+- [ ] **RUN-03**: Coordinator can add one or more drop stops (saved destination or ad-hoc) to a run.
+- [ ] **RUN-04**: Coordinator can reorder/edit a run's stops before and during the run.
+- [ ] **RUN-05**: Driver sees their assigned run as an ordered list of stops ("My run").
+- [ ] **RUN-06**: Driver gets one-tap Navigate (Google Maps deep-link) per stop.
+- [ ] **RUN-07**: Driver or coordinator can mark each stop done; the run completes when all stops are done.
+- [ ] **RUN-08**: Coordinator can manually advance/override a run or stop status (no driver-app dependency).
+
+### Intake
+- [ ] **INT-01**: A restaurant (partner) can flag available surplus (food type, quantity, window, location).
+- [ ] **INT-02**: A coordinator can log surplus on a restaurant's behalf.
+- [ ] **INT-03**: Surplus carries a safety attestation (restaurant) + an optional coordinator "verified" flag.
+
+### Tracking (dispatch)
+- [ ] **TRK-05**: Coordinator, restaurant, and volunteer can watch a run's driver live location while the app is open.
+- [ ] **TRK-06**: The run map shows route + ETA to the next stop (free OSRM/haversine); current location is primary.
+
+### Delivery & reporting
+- [ ] **DEL-01**: Proof-of-delivery photo is OPTIONAL on a drop (not a gate). (Supersedes VOL-05.)
+- [ ] **DEL-02**: Any involved role (driver / coordinator / volunteer) can confirm a drop delivered.
+- [ ] **RPT-01**: Impact reporting aggregates meals / kg / deliveries across runs and by destination/partner (no per-delivery headcount).
+
+## Later / Deferred Requirements
 
 ### Donor / Volunteer enhancements
 
@@ -109,7 +145,7 @@
 |---------|--------|
 | In-app donor↔volunteer chat | WhatsApp link on request detail is sufficient; chat is high-maintenance |
 | Recipient self-service portal | Recipients served via volunteers/admin; not self-registering users |
-| Multi-stop route optimization | Single-stop model; Ahmedabad scale doesn't need OR-Tools |
+| Multi-stop route optimization | Coordinator sets order manually; Ahmedabad scale doesn't need OR-Tools |
 | Native iOS/Android apps | Web-first responsive PWA; old native app left behind |
 | AI volunteer matching | Small volunteer pool; manual claim works |
 | Multi-city / multi-org tenancy | Single org, single city; no RLS/multi-tenant complexity |
@@ -164,12 +200,33 @@
 | I18N-01 | Phase 7 | Pending |
 | I18N-02 | Phase 7 | Pending |
 | I18N-03 | Phase 7 | Pending |
+| DRV-01 | Phase 8 | Pending |
+| DRV-02 | Phase 8 | Pending |
+| DEST-01 | Phase 8 | Pending |
+| DEST-02 | Phase 8 | Pending |
+| DEL-01 | Phase 8 | Pending |
+| RUN-01 | Phase 9 | Pending |
+| RUN-02 | Phase 9 | Pending |
+| RUN-03 | Phase 9 | Pending |
+| RUN-04 | Phase 9 | Pending |
+| RUN-05 | Phase 9 | Pending |
+| RUN-06 | Phase 9 | Pending |
+| RUN-07 | Phase 9 | Pending |
+| RUN-08 | Phase 9 | Pending |
+| TRK-05 | Phase 10 | Pending |
+| TRK-06 | Phase 10 | Pending |
+| DEL-02 | Phase 10 | Pending |
+| INT-01 | Phase 11 | Pending |
+| INT-02 | Phase 11 | Pending |
+| INT-03 | Phase 11 | Pending |
+| RPT-01 | Phase 12 | Pending |
 
 **Coverage:**
 - v1 requirements: 44 total (AUTH 6, DON 6, VOL 6, TRK 4, NOT 5, PAY 4, ADM 6, PUB 4, I18N 3)
-- Mapped to phases: 44/44
+- v2.0 requirements: 20 total (DRV 2, DEST 2, RUN 8, INT 3, TRK 2, DEL 2, RPT 1)
+- Mapped to phases: 64/64
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-06-25*
-*Last updated: 2026-06-25 — traceability populated during roadmap creation*
+*Last updated: 2026-06-29 — v2.0 traceability populated during Dispatch Bridge roadmap creation*

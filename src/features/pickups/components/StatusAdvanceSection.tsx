@@ -33,8 +33,8 @@ export function StatusAdvanceSection({
   const next = nextStatus(status);
   if (!next) return null; // terminal (delivered/cancelled)
 
+  // DEL-01 (v2): proof photo is OPTIONAL — offered on the delivering step, never required.
   const delivering = isDeliveringTransition(status, next);
-  const needsProof = delivering && !proofDone;
 
   function advance() {
     setError(null);
@@ -66,7 +66,10 @@ export function StatusAdvanceSection({
           {proofDone ? (
             <p className="text-sm text-leaf">{t("pickup.detail.proofDone")}</p>
           ) : (
-            <PhotoUploader kind="proof" label="Add proof photo" onUploaded={onProofUploaded} />
+            <>
+              <p className="mb-1.5 text-xs text-muted-foreground">{t("pickup.detail.proofOptional")}</p>
+              <PhotoUploader kind="proof" label="Add proof photo" onUploaded={onProofUploaded} />
+            </>
           )}
         </div>
       )}
@@ -76,16 +79,13 @@ export function StatusAdvanceSection({
         size="lg"
         className="w-full"
         onClick={advance}
-        disabled={isPending || needsProof}
+        disabled={isPending}
       >
         {isPending ? <Loader2 className="size-4 animate-spin" /> : null}
         {isPending
           ? t("pickup.detail.advancing")
           : t("pickup.detail.advanceButton", { nextStatus: tCommon(`status.${next}`) })}
       </Button>
-      {needsProof && (
-        <p className="text-xs text-muted-foreground">{t("pickup.detail.needsProofHint")}</p>
-      )}
       {error && (
         <p className="text-sm text-destructive" role="alert">
           {error}{" "}
