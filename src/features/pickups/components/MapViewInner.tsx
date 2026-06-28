@@ -140,7 +140,7 @@ export default function MapViewInner({
           : DEFAULT_CENTER;
 
   // Route colours from the design tokens (theme-aware via getComputedStyle).
-  const routeColor = cssVar("--route", "#C04E12");
+  const routeColor = cssVar("--route", "#C49A3C");
   const routeCap = cssVar("--route-cap", "rgba(255,255,255,.92)");
 
   return (
