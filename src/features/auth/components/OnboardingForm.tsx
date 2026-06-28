@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { HeartHandshake, Truck } from "lucide-react";
+import { HeartHandshake, Truck, Bike } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,6 +21,7 @@ import { completeOnboarding } from "@/features/auth/actions/onboardingActions";
 const ROLE_ICONS: Record<(typeof SELECTABLE_ROLES)[number], typeof Truck> = {
   donor: HeartHandshake,
   volunteer: Truck,
+  driver: Bike,
 };
 
 // PUB-03: defaultRole pre-selects volunteer role when "Become a volunteer" CTA is clicked.

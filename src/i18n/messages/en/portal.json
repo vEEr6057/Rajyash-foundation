@@ -39,6 +39,7 @@
       "advanceButton": "Mark {nextStatus}",
       "advancing": "Updating…",
       "proofUpload": "Proof of delivery",
+      "proofOptional": "Optional — a photo for our records / social media.",
       "editButton": "Edit",
       "cancelButton": "Cancel pickup",
       "quickRepost": "Repost this",

@@ -3,11 +3,12 @@
  */
 
 // Roles (D-01). `admin` is assigned manually via Clerk metadata, never self-selected.
-export const ROLES = ["donor", "volunteer", "admin"] as const;
+// `driver` (v2 dispatch) = paid rickshaw driver who works coordinator-assigned runs.
+export const ROLES = ["donor", "volunteer", "driver", "admin"] as const;
 export type Role = (typeof ROLES)[number];
 
 // Roles a user may choose at onboarding (admin excluded — manual elevation only).
-export const SELECTABLE_ROLES = ["donor", "volunteer"] as const;
+export const SELECTABLE_ROLES = ["donor", "volunteer", "driver"] as const;
 export type SelectableRole = (typeof SELECTABLE_ROLES)[number];
 
 export const DEFAULT_CITY = "Ahmedabad";

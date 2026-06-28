@@ -7,8 +7,12 @@
     "blurb": "I have surplus food to give — restaurant, event, or home."
   },
   "volunteer": {
-    "title": "Volunteer / drive",
-    "blurb": "I'll pick up food and deliver it to people in need."
+    "title": "Volunteer",
+    "blurb": "I help hand out food to people at the drop-off points."
+  },
+  "driver": {
+    "title": "Driver",
+    "blurb": "I drive (rickshaw) — I collect food and bring it to the drop-off points."
   },
   "nameLabel": "Your name",
   "namePlaceholder": "e.g. Rajeshbhai Patel",
