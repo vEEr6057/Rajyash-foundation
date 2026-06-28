@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { requireRole, getSession } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
 import { runStopsRepo } from "@/server/db/repositories/runStops";
+import { runPingsRepo } from "@/server/db/repositories/runPings";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
 import { geocodeDestinationAddress } from "@/features/admin/actions/destinationActions";
@@ -224,7 +225,10 @@ export async function markStopDone(stopId: string): Promise<Result> {
   if (!session) return fail("UNAUTHORIZED", "Sign in first.");
   const isAdmin = session.role === "admin";
   const isDriver = session.role === "driver";
-  if (!isAdmin && !isDriver) return fail("FORBIDDEN", "Drivers and admins only.");
+  const isVolunteer = session.role === "volunteer";
+  if (!isAdmin && !isDriver && !isVolunteer) {
+    return fail("FORBIDDEN", "Drivers, admins, and volunteers only.");
+  }
 
   const stop = await runStopsRepo.getById(stopId);
   if (!stop) return fail("NOT_FOUND", "Stop not found.");
@@ -233,6 +237,12 @@ export async function markStopDone(stopId: string): Promise<Result> {
     const run = await runsRepo.getById(stop.runId);
     if (!run) return fail("NOT_FOUND", "Run not found.");
     if (run.driverId !== session.userId) return fail("FORBIDDEN", "Not your run.");
+  }
+  // DEL-02: any volunteer present can confirm a drop on an ACTIVE run.
+  if (isVolunteer) {
+    const run = await runsRepo.getById(stop.runId);
+    if (!run) return fail("NOT_FOUND", "Run not found.");
+    if (run.status !== "active") return fail("FORBIDDEN", "Run is not active.");
   }
 
   if (!canStopTransition(stop.status, "done")) {
@@ -248,6 +258,7 @@ export async function markStopDone(stopId: string): Promise<Result> {
   );
   if (allStopsDone(updated)) {
     await runsRepo.setRunStatus(stop.runId, "completed");
+    await runPingsRepo.purgeForRun(stop.runId); // TRK-05: ephemeral trail
   }
 
   revalidateRuns(stop.runId);
@@ -271,6 +282,7 @@ export async function overrideStopStatus(stopId: string, status: StopStatus): Pr
     const run = await runsRepo.getById(stop.runId);
     if (run && canRunTransition(run.status, "completed")) {
       await runsRepo.setRunStatus(stop.runId, "completed");
+      await runPingsRepo.purgeForRun(stop.runId); // TRK-05
     }
   }
   revalidateRuns(stop.runId);
@@ -290,6 +302,9 @@ export async function setRunStatus(runId: string, status: RunStatus): Promise<Re
     return fail("CONFLICT", `Cannot transition ${run.status} → ${status}.`);
   }
   await runsRepo.setRunStatus(runId, status);
+  if (status === "completed" || status === "cancelled") {
+    await runPingsRepo.purgeForRun(runId); // TRK-05: ephemeral trail
+  }
   revalidateRuns(runId);
   return { ok: true };
 }

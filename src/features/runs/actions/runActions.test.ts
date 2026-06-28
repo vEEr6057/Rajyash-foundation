@@ -21,6 +21,7 @@ const h = vi.hoisted(() => ({
   partnerGetById: vi.fn(),
   destGetById: vi.fn(),
   geocode: vi.fn(),
+  purgeForRun: vi.fn(),
 }));
 
 vi.mock("@/server/auth/session", () => ({
@@ -55,6 +56,9 @@ vi.mock("@/server/db/repositories/partners", () => ({
 }));
 vi.mock("@/server/db/repositories/destinations", () => ({
   destinationsRepo: { getById: (...a: unknown[]) => h.destGetById(...a) },
+}));
+vi.mock("@/server/db/repositories/runPings", () => ({
+  runPingsRepo: { purgeForRun: (...a: unknown[]) => h.purgeForRun(...a) },
 }));
 vi.mock("@/features/admin/actions/destinationActions", () => ({
   geocodeDestinationAddress: (...a: unknown[]) => h.geocode(...a),
@@ -135,6 +139,29 @@ describe("markStopDone — auto-complete", () => {
     h.stopGetByRunId.mockResolvedValue([{ id: "s1", status: "pending" }, { id: "s2", status: "pending" }]);
     await markStopDone("s1");
     expect(h.runSetStatus).not.toHaveBeenCalled();
+  });
+});
+
+describe("markStopDone — volunteer path (DEL-02)", () => {
+  it("allows a volunteer on an ACTIVE run", async () => {
+    h.getSession.mockResolvedValue({ userId: "vol-1", role: "volunteer" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "active" });
+    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([
+      { id: "s1", status: "pending" },
+      { id: "s2", status: "pending" },
+    ]);
+    const res = await markStopDone("s1");
+    expect(res.ok).toBe(true);
+  });
+
+  it("blocks a volunteer on a non-active run", async () => {
+    h.getSession.mockResolvedValue({ userId: "vol-1", role: "volunteer" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "planned" });
+    const res = await markStopDone("s1");
+    expect(!res.ok && (res as { code: string }).code).toBe("FORBIDDEN");
   });
 });
 
