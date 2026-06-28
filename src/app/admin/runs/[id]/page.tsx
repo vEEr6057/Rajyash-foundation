@@ -9,6 +9,7 @@ import { RunStatusPill } from "@/features/runs/components/RunStatusPill";
 import { RunStatusControls } from "@/features/runs/components/RunStatusControls";
 import { StopList } from "@/features/runs/components/StopList";
 import { AddStopForm } from "@/features/runs/components/AddStopForm";
+import { RunLiveMap } from "@/features/runs/components/RunLiveMap";
 
 export const dynamic = "force-dynamic";
 
@@ -36,6 +37,13 @@ export default async function AdminRunDetailPage({
   if (!runWithStops) notFound();
 
   const nextSeq = (runWithStops.stops.at(-1)?.seq ?? 0) + 1;
+  const nextPending = runWithStops.stops
+    .filter((s) => s.status === "pending" && s.lat !== null && s.lng !== null)
+    .sort((a, b) => a.seq - b.seq)[0];
+  const nextStopCoords =
+    nextPending && nextPending.lat !== null && nextPending.lng !== null
+      ? { lat: nextPending.lat, lng: nextPending.lng }
+      : null;
   const runDate = new Date(runWithStops.runDate).toLocaleDateString("en-IN", {
     day: "numeric",
     month: "short",
@@ -54,6 +62,13 @@ export default async function AdminRunDetailPage({
         <p className="text-sm text-muted-foreground">{runDate}</p>
         <RunStatusControls runId={runWithStops.id} status={runWithStops.status} />
       </header>
+
+      {runWithStops.status === "active" && (
+        <section className="mb-6">
+          <h2 className="mb-3 text-base font-semibold">{t("runs.liveMap.title")}</h2>
+          <RunLiveMap runId={runWithStops.id} active nextStop={nextStopCoords} />
+        </section>
+      )}
 
       <section className="mb-6">
         <h2 className="mb-3 text-base font-semibold">{t("runs.stopsSection")}</h2>

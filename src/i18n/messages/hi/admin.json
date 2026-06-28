@@ -179,6 +179,16 @@
       "savedDest": "सहेजा गंतव्य",
       "destRequired": "गंतव्य चुनें",
       "addrRequired": "पता दर्ज करें"
+    },
+    "liveMap": {
+      "_review": "pending",
+      "title": "ड्राइवर स्थान",
+      "live": "लाइव",
+      "stale": "स्थान पुराना हो सकता है",
+      "waiting": "ड्राइवर के स्थान की प्रतीक्षा हो रही है…",
+      "etaAway": "~{minutes} मिनट",
+      "etaEstimate": "अनुमान",
+      "reconnecting": "पुनः जुड़ रहे हैं…"
     }
   },
   "dashboard": {

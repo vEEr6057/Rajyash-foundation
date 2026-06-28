@@ -4,6 +4,8 @@ import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
 import { ROUTES, RUN_SLOT_LABELS } from "@/config/constants";
 import { RunStopCard } from "@/features/runs/components/RunStopCard";
+import { RunTracker } from "@/features/runs/components/RunTracker";
+import { RunLiveMap } from "@/features/runs/components/RunLiveMap";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "My Run — Rajyash Food Rescue" };
@@ -42,6 +44,13 @@ export default async function DriverRunPage() {
   const runWithStops = await runsRepo.getRunWithStops(activeRun.id);
   if (!runWithStops) redirect(ROUTES.portalDashboard);
 
+  const nextPending = runWithStops.stops
+    .filter((s) => s.status === "pending" && s.lat !== null && s.lng !== null)
+    .sort((a, b) => a.seq - b.seq)[0];
+  const nextStopCoords =
+    nextPending && nextPending.lat !== null && nextPending.lng !== null
+      ? { lat: nextPending.lat, lng: nextPending.lng }
+      : null;
   const slotLabel = RUN_SLOT_LABELS[activeRun.slot];
   const runDate = new Date(activeRun.runDate).toLocaleDateString("en-IN", {
     day: "numeric",
@@ -67,6 +76,13 @@ export default async function DriverRunPage() {
           {runWithStops.stops.map((stop) => (
             <RunStopCard key={stop.id} stop={stop} seq={stop.seq} />
           ))}
+        </div>
+      )}
+
+      {activeRun.status === "active" && (
+        <div className="mt-6 space-y-4">
+          <RunTracker runId={activeRun.id} active />
+          <RunLiveMap runId={activeRun.id} active nextStop={nextStopCoords} />
         </div>
       )}
     </main>
