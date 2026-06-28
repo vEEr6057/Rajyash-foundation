@@ -50,6 +50,13 @@
       "when": 1782682153567,
       "tag": "0006_add_destinations",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1782686048419,
+      "tag": "0007_add_runs",
+      "breakpoints": true
     }
   ]
 }

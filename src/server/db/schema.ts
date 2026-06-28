@@ -15,6 +15,10 @@ import {
   FOOD_CATEGORIES,
   QUANTITY_UNITS,
   PICKUP_STATUSES,
+  RUN_STATUSES,
+  RUN_SLOTS,
+  STOP_KINDS,
+  STOP_STATUSES,
 } from "@/config/constants";
 
 /** Role enum mirrors the app's ROLES constant (donor | volunteer | admin). */
@@ -325,3 +329,63 @@ export const destinations = pgTable("destinations", {
 });
 export type Destination = typeof destinations.$inferSelect;
 export type NewDestination = typeof destinations.$inferInsert;
+
+// ── Runs & Dispatch (Phase 9 / RUN-01..08) ─────────────────────────────────
+export const runStatusEnum = pgEnum("run_status", RUN_STATUSES);
+export const runSlotEnum = pgEnum("run_slot", RUN_SLOTS);
+export const stopKindEnum = pgEnum("stop_kind", STOP_KINDS);
+export const stopStatusEnum = pgEnum("stop_status", STOP_STATUSES);
+
+/**
+ * runs — a coordinator-dispatched multi-stop delivery run (RUN-01). driverId is
+ * nullable until assigned; createdBy is the Clerk userId of the coordinator (any
+ * admin, so not FK'd). runDate = target date (timestamptz, start of day).
+ */
+export const runs = pgTable("runs", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  driverId: text("driver_id").references(() => profiles.id), // nullable FK
+  slot: runSlotEnum("slot").notNull(),
+  status: runStatusEnum("status").notNull().default("planned"),
+  runDate: timestamp("run_date", { withTimezone: true }).notNull(),
+  createdBy: text("created_by").notNull(), // Clerk userId — not FK'd (any admin)
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+export type Run = typeof runs.$inferSelect;
+export type NewRun = typeof runs.$inferInsert;
+
+/**
+ * run_stops — ordered stops on a run (RUN-02/03/04/07). Each stop is a pickup
+ * (at a partner restaurant) or a drop (saved destination OR ad-hoc lat/lng).
+ * seq = 1-based display order; coordinator reorders by updating seq.
+ */
+export const runStops = pgTable(
+  "run_stops",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    runId: text("run_id")
+      .notNull()
+      .references(() => runs.id, { onDelete: "cascade" }),
+    seq: integer("seq").notNull(),
+    kind: stopKindEnum("kind").notNull(),
+    partnerId: text("partner_id").references(() => partners.id), // pickup stop, nullable
+    destinationId: text("destination_id").references(() => destinations.id), // saved drop, nullable
+    address: text("address"), // human-readable; required for drop stops
+    lat: doublePrecision("lat"), // nullable
+    lng: doublePrecision("lng"), // nullable
+    status: stopStatusEnum("status").notNull().default("pending"),
+    doneAt: timestamp("done_at", { withTimezone: true }),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("run_stops_run_idx").on(t.runId),
+    index("run_stops_run_seq_idx").on(t.runId, t.seq),
+  ],
+);
+export type RunStop = typeof runStops.$inferSelect;
+export type NewRunStop = typeof runStops.$inferInsert;

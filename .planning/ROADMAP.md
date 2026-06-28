@@ -179,7 +179,11 @@ Plans:
   3. Admin/coordinator can create, edit, and delete saved destinations (name, area, lat/lng) via the admin portal
   4. When building a run stop, a coordinator can pick a saved destination or enter a free-text address with a map pin
   5. Marking a drop delivered no longer requires a proof photo — a driver or coordinator can confirm delivery without one
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 08-01-PLAN.md — Wave 1: destinations table (schema.ts), destinationsRepo (CRUD, server-only), destinationSchema + Zod tests, ROUTES/QUERY_KEYS constants
+- [ ] 08-02-PLAN.md — Wave 2: destinationActions (create/update/delete, admin-gated) + tests, DestinationForm (MapView pin + geocode), DestinationList, /admin/destinations page, dashboard nav card, EN/GU/HI i18n keys, Drizzle migration generate + Supabase MCP apply, 5 seed rows
+> Note: DRV-01 (driver role + onboarding), DRV-02 (volunteer role present), and DEL-01 (proof photo optional) were completed prior to Phase 8 planning and are recorded as satisfied. See STATE.md for details.
 **UI hint**: yes
 
 ### Phase 9: Runs & Dispatch
@@ -193,7 +197,12 @@ Plans:
   4. Driver can tap one button to open Google Maps deep-link navigation to the next stop, without leaving the app
   5. Driver or coordinator can mark each stop done; the run automatically completes when all stops are marked done
   6. Coordinator can manually advance or override any stop or run status without waiting for the driver to act
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 09-01-PLAN.md — Wave 1: schema (runs + run_stops + 4 pgEnums), constants (RUN_STATUSES/SLOTS/STOP_KINDS/STATUSES + ROUTES + QUERY_KEYS), runStatusMachine (pure, tested), runsRepo + runStopsRepo
+- [ ] 09-02-PLAN.md — Wave 2: Zod validation schemas (createRunSchema, addPickupStopSchema, addDropStopSchema, reorderSchema) + 11 server actions (createRun, assignDriver, editRun, addPickupStop, addDropStop, reorderStops, removeStop, markStopDone, overrideStopStatus, setRunStatus, deleteRun) + action tests
+- [ ] 09-03-PLAN.md — Wave 3: driver "My Run" UI (/portal/run page, RunStopCard, StopStatusPill, MarkStopDoneButton) + EN/GU/HI i18n keys (portal.run.* + common.stopStatus.*)
+- [ ] 09-04-PLAN.md — Wave 4: coordinator dispatch UI (/admin/runs list + /admin/runs/new + /admin/runs/[id] detail with stop management) + RunStatusPill + RunCard + BuildRunForm + StopList + AddStopForm + RunStatusControls + dashboard nav card + EN/GU/HI i18n + Drizzle migration SQL
 **UI hint**: yes
 
 ### Phase 10: Live Run Tracking
@@ -249,8 +258,8 @@ Note: Phase 11 (Intake) depends only on Phase 8 and can be planned in parallel w
 | 5. Payments | 0/? | PARKED | - |
 | 6. Admin Portal + Reporting | 6/6 | Done | 2026-06-26 |
 | 7. Public Site + i18n + PWA | 5/5 | Done | 2026-06-27 |
-| 8. Dispatch Foundations | 0/? | Not started | - |
-| 9. Runs & Dispatch | 0/? | Not started | - |
+| 8. Dispatch Foundations | 0/2 | Planned | - |
+| 9. Runs & Dispatch | 0/4 | Planned | - |
 | 10. Live Run Tracking | 0/? | Not started | - |
 | 11. Intake | 0/? | Not started | - |
 | 12. Run Reporting | 0/? | Not started | - |

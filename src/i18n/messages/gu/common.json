@@ -63,5 +63,18 @@
     "donor": "દાતા",
     "volunteer": "સ્વયંસેવક",
     "admin": "એડ્મિન"
+  },
+  "stopStatus": {
+    "_review": "pending",
+    "pending": "બાકી",
+    "done": "પૂર્ણ",
+    "skipped": "છોડ્યો"
+  },
+  "runStatus": {
+    "_review": "pending",
+    "planned": "આયોજિત",
+    "active": "સક્રિય",
+    "completed": "પૂર્ણ",
+    "cancelled": "રદ"
   }
 }

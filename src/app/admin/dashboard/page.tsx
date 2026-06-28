@@ -27,6 +27,7 @@ export default async function AdminDashboardPage() {
     { href: ROUTES.adminUsers, title: t("dashboard.usersLink"), desc: t("dashboard.usersDesc") },
     { href: ROUTES.adminPartners, title: t("dashboard.partnersLink"), desc: t("dashboard.partnersDesc") },
     { href: ROUTES.adminDestinations, title: t("dashboard.destinationsLink"), desc: t("dashboard.destinationsDesc") },
+    { href: ROUTES.adminRuns, title: t("dashboard.runsLink"), desc: t("dashboard.runsDesc") },
     { href: ROUTES.adminReports, title: t("dashboard.reportsLink"), desc: t("dashboard.reportsDesc") },
   ];
 

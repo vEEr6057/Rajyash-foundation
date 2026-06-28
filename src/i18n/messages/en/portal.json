@@ -102,5 +102,18 @@
     "browsePickups": "Browse pickups",
     "mapView": "Map view",
     "adminDashboard": "Admin dashboard"
+  },
+  "run": {
+    "title": "My Run",
+    "emptyState": "No run assigned to you yet. Check back later.",
+    "noStopsYet": "No stops have been added to this run yet.",
+    "stopCount": "stops",
+    "stop": {
+      "kindPickup": "Pickup",
+      "kindDrop": "Drop",
+      "markDone": "Mark done",
+      "marking": "Marking…",
+      "retry": "Retry"
+    }
   }
 }

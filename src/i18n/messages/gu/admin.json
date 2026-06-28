@@ -138,6 +138,49 @@
       "addButton": "સ્થળ ઉમેરો"
     }
   },
+  "runs": {
+    "_review": "pending",
+    "title": "ડિસ્પેચ રન",
+    "newButton": "નવી રન",
+    "emptyState": "હજી સુધી કોઈ રન નથી. ડિસ્પેચ શરૂ કરવા માટે એક બનાવો.",
+    "stopCount": "સ્ટોપ",
+    "noDriver": "ડ્રાઇવર સોંપ્યો નથી",
+    "noStops": "હજી કોઈ સ્ટોપ ઉમેર્યો નથી.",
+    "kindPickup": "પિકઅપ",
+    "kindDrop": "ડ્રોપ",
+    "stopsSection": "સ્ટોપ",
+    "addStop": "સ્ટોપ ઉમેરો",
+    "removeStop": "સ્ટોપ દૂર કરો",
+    "moveUp": "ઉપર ખસેડો",
+    "moveDown": "નીચે ખસેડો",
+    "delete": "રન કાઢી નાખો",
+    "slotMorning": "સવારની ડ્રાઇવ",
+    "slotNight": "રાત્રિ ડ્રાઇવ",
+    "status": { "advance": "{status} પર સેટ કરો" },
+    "form": {
+      "title": "રન બનાવો",
+      "slot": "ડ્રાઇવ સ્લોટ",
+      "date": "રન તારીખ",
+      "driver": "ડ્રાઇવર (વૈકલ્પિક)",
+      "noDriver": "હજી ડ્રાઇવર નહીં",
+      "create": "રન બનાવો",
+      "creating": "બની રહ્યું છે…",
+      "partner": "રેસ્ટોરન્ટ / ભાગીદાર",
+      "selectPartner": "ભાગીદાર પસંદ કરો…",
+      "addPickupStop": "પિકઅપ સ્ટોપ ઉમેરો",
+      "partnerRequired": "ભાગીદાર પસંદ કરો",
+      "destination": "ગંતવ્ય",
+      "selectDest": "ગંતવ્ય પસંદ કરો…",
+      "adHoc": "તદ્દ ઉક્ત સ્થળ",
+      "adHocAddress": "સ્થળ",
+      "adHocPlaceholder": "દા.ત. SBI ATM નજીક, સેટેલાઈટ",
+      "addDropStop": "ડ્રોપ સ્ટોપ ઉમેરો",
+      "geocoding": "સ્થળ શોધ...",
+      "savedDest": "સાચવેલ ગંતવ્ય",
+      "destRequired": "ગંતવ્ય પસંદ કરો",
+      "addrRequired": "સ્થળ દાખલ કરો"
+    }
+  },
   "dashboard": {
     "title": "એડ્મિન",
     "pickupsLink": "પિકઅપ",
@@ -149,6 +192,8 @@
     "reportsLink": "અહેવાલ",
     "reportsDesc": "અસર અને CSV નિકાસ",
     "destinationsLink": "ડ્રોપ સ્થળ",
-    "destinationsDesc": "રન માટે ડ્રોપ-ઓફ ઝોન"
+    "destinationsDesc": "રન માટે ડ્રોપ-ઓફ ઝોન",
+    "runsLink": "ડિસ્પેચ રન",
+    "runsDesc": "દૈનિક પિકઅપ + ડિલિવરી રન"
   }
 }
