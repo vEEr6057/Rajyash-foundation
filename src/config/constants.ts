@@ -26,6 +26,10 @@ export const ROUTES = {
   adminReports: "/admin/reports",
   // ── Destinations (Phase 8 / DEST-01) ───────────────────────────
   adminDestinations: "/admin/destinations",
+  // ── Runs & Dispatch (Phase 9 / RUN-01..08) ─────────────────────
+  adminRuns: "/admin/runs",
+  adminRun: (id: string) => `/admin/runs/${id}`,
+  driverRun: "/portal/run",
   donorPickups: "/portal/pickups",
   newPickup: "/portal/pickups/new",
   pickup: (id: string) => `/portal/pickups/${id}`,
@@ -119,6 +123,10 @@ export const QUERY_KEYS = {
   partners: ["partners"] as const,
   // ── Destinations (Phase 8 / DEST-01) ───────────────────────────
   destinations: ["destinations"] as const,
+  // ── Runs & Dispatch (Phase 9) ──────────────────────────────────
+  runs: ["runs"] as const,
+  run: (id: string) => ["runs", id] as const,
+  myRun: ["runs", "mine"] as const,
   adminPickups: (filters: Record<string, string | undefined>) =>
     ["admin", "pickups", filters] as const,
 } as const;
@@ -163,4 +171,47 @@ export const PARTNER_TYPE_LABELS: Record<PartnerType, string> = {
   event_planner: "Event planner",
   family: "Family",
   other: "Other",
+};
+
+// ── Runs & Dispatch (Phase 9 / RUN-01..08) ──────────────────────────
+export const RUN_STATUSES = ["planned", "active", "completed", "cancelled"] as const;
+export type RunStatus = (typeof RUN_STATUSES)[number];
+export const RUN_STATUS_LABELS: Record<RunStatus, string> = {
+  planned: "Planned",
+  active: "Active",
+  completed: "Completed",
+  cancelled: "Cancelled",
+};
+
+export const RUN_SLOTS = ["morning", "night"] as const;
+export type RunSlot = (typeof RUN_SLOTS)[number];
+export const RUN_SLOT_LABELS: Record<RunSlot, string> = {
+  morning: "Morning drive",
+  night: "Night drive",
+};
+
+export const STOP_KINDS = ["pickup", "drop"] as const;
+export type StopKind = (typeof STOP_KINDS)[number];
+
+export const STOP_STATUSES = ["pending", "done", "skipped"] as const;
+export type StopStatus = (typeof STOP_STATUSES)[number];
+export const STOP_STATUS_LABELS: Record<StopStatus, string> = {
+  pending: "Pending",
+  done: "Done",
+  skipped: "Skipped",
+};
+
+/** Valid run-level transitions (coordinator or auto-complete). */
+export const VALID_RUN_TRANSITIONS: Record<RunStatus, readonly RunStatus[]> = {
+  planned: ["active", "cancelled"],
+  active: ["completed", "cancelled"],
+  completed: [],
+  cancelled: [],
+};
+
+/** Valid stop-level transitions. */
+export const VALID_STOP_TRANSITIONS: Record<StopStatus, readonly StopStatus[]> = {
+  pending: ["done", "skipped"],
+  done: [],
+  skipped: [],
 };
