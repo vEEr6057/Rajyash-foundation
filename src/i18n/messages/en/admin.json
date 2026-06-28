@@ -186,8 +186,28 @@
       "reconnecting": "reconnecting…"
     }
   },
+  "surplus": {
+    "title": "Log restaurant surplus",
+    "subtitle": "Create a surplus pickup on behalf of a restaurant partner.",
+    "partnerLabel": "Restaurant",
+    "partnerPlaceholder": "Select a restaurant",
+    "partnerRequired": "Choose a restaurant first.",
+    "submitLabel": "Log surplus",
+    "description": "Restaurant surplus",
+    "loggedBadge": "Logged by coordinator"
+  },
+  "pickup": {
+    "verify": {
+      "verifiedBadge": "Verified",
+      "verifyButton": "Mark verified",
+      "unverifyButton": "Remove verification",
+      "pending": "Saving…"
+    }
+  },
   "dashboard": {
     "title": "Admin",
+    "surplusLink": "Log surplus",
+    "surplusDesc": "Record restaurant surplus on behalf of a partner.",
     "pickupsLink": "Pickups",
     "pickupsDesc": "View & assign pickups",
     "usersLink": "Users",

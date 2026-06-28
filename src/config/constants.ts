@@ -24,6 +24,8 @@ export const ROUTES = {
   adminUsers: "/admin/users",
   adminPartners: "/admin/partners",
   adminReports: "/admin/reports",
+  // ── Intake (Phase 11 / INT-02) ─────────────────────────────────
+  adminSurplusNew: "/admin/surplus/new",
   // ── Destinations (Phase 8 / DEST-01) ───────────────────────────
   adminDestinations: "/admin/destinations",
   // ── Runs & Dispatch (Phase 9 / RUN-01..08) ─────────────────────

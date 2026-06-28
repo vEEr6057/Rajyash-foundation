@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { requireRole, AuthError, getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
+import { profilesRepo } from "@/server/db/repositories/profiles";
 import { pingsRepo } from "@/server/db/repositories/pings";
 import { inngest } from "@/server/inngest/client";
 import { buildEventId } from "@/server/notifications/events";
@@ -157,6 +158,19 @@ export async function createPickup(
       googleMapsUrl: d.googleMapsUrl || null,
       status: "requested",
     });
+    // INT-01: attribute the surplus to the donor's restaurant partner (if linked).
+    // Best-effort; skip silently if the donor has no partner (backward compat).
+    try {
+      const profile = await profilesRepo.getById(userId);
+      if (profile?.partnerId) {
+        await pickupsRepo.setPartnerId(row.id, profile.partnerId);
+      }
+    } catch (e) {
+      logger.error("createPickup: partnerId back-fill failed", {
+        pickupId: row.id,
+        err: String(e),
+      });
+    }
     // NOT-01/02: alert volunteers a new pickup is up (after-commit, best-effort).
     try {
       await inngest.send({

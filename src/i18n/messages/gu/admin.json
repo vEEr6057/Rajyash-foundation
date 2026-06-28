@@ -191,8 +191,30 @@
       "reconnecting": "ફરી જોડાઈ રહ્યા છીએ…"
     }
   },
+  "surplus": {
+    "_review": "pending",
+    "title": "રેસ્ટોરન્ટ સરપ્લસ નોંધો",
+    "subtitle": "ભાગીદાર રેસ્ટોરન્ટ વતી સરપ્લસ પિકઅપ બનાવો.",
+    "partnerLabel": "રેસ્ટોરન્ટ",
+    "partnerPlaceholder": "રેસ્ટોરન્ટ પસંદ કરો",
+    "partnerRequired": "પહેલા રેસ્ટોરન્ટ પસંદ કરો.",
+    "submitLabel": "સરપ્લસ નોંધો",
+    "description": "રેસ્ટોરન્ટ સરપ્લસ",
+    "loggedBadge": "કોઓર્ડિનેટર દ્વારા નોંધ્યું"
+  },
+  "pickup": {
+    "verify": {
+      "_review": "pending",
+      "verifiedBadge": "ચકાસાયેલ",
+      "verifyButton": "ચકાસેલ ચિહ્નિત કરો",
+      "unverifyButton": "ચકાસણી દૂર કરો",
+      "pending": "સચવાઈ રહ્યું છે…"
+    }
+  },
   "dashboard": {
     "title": "એડ્મિન",
+    "surplusLink": "સરપ્લસ નોંધો",
+    "surplusDesc": "ભાગીદાર રેસ્ટોરન્ટ વતી સરપ્લસ નોંધો.",
     "pickupsLink": "પિકઅપ",
     "pickupsDesc": "પિકઅપ જુઓ અને સોંપો",
     "usersLink": "વપરાશકર્તા",
