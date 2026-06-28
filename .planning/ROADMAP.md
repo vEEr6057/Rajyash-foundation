@@ -179,7 +179,11 @@ Plans:
   3. Admin/coordinator can create, edit, and delete saved destinations (name, area, lat/lng) via the admin portal
   4. When building a run stop, a coordinator can pick a saved destination or enter a free-text address with a map pin
   5. Marking a drop delivered no longer requires a proof photo — a driver or coordinator can confirm delivery without one
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 08-01-PLAN.md — Wave 1: destinations table (schema.ts), destinationsRepo (CRUD, server-only), destinationSchema + Zod tests, ROUTES/QUERY_KEYS constants
+- [ ] 08-02-PLAN.md — Wave 2: destinationActions (create/update/delete, admin-gated) + tests, DestinationForm (MapView pin + geocode), DestinationList, /admin/destinations page, dashboard nav card, EN/GU/HI i18n keys, Drizzle migration generate + Supabase MCP apply, 5 seed rows
+> Note: DRV-01 (driver role + onboarding), DRV-02 (volunteer role present), and DEL-01 (proof photo optional) were completed prior to Phase 8 planning and are recorded as satisfied. See STATE.md for details.
 **UI hint**: yes
 
 ### Phase 9: Runs & Dispatch
@@ -249,7 +253,7 @@ Note: Phase 11 (Intake) depends only on Phase 8 and can be planned in parallel w
 | 5. Payments | 0/? | PARKED | - |
 | 6. Admin Portal + Reporting | 6/6 | Done | 2026-06-26 |
 | 7. Public Site + i18n + PWA | 5/5 | Done | 2026-06-27 |
-| 8. Dispatch Foundations | 0/? | Not started | - |
+| 8. Dispatch Foundations | 0/2 | Planned | - |
 | 9. Runs & Dispatch | 0/? | Not started | - |
 | 10. Live Run Tracking | 0/? | Not started | - |
 | 11. Intake | 0/? | Not started | - |
