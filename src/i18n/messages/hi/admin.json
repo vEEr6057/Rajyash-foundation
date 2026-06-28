@@ -138,6 +138,49 @@
       "addButton": "गंतव्य जोड़ें"
     }
   },
+  "runs": {
+    "_review": "pending",
+    "title": "डिस्पैच रन",
+    "newButton": "नई रन",
+    "emptyState": "अभी तक कोई रन नहीं है। डिस्पैच शुरू करने के लिए एक बनाएं।",
+    "stopCount": "स्टॉप",
+    "noDriver": "ड्राइवर नहीं चुना",
+    "noStops": "अभी तक कोई स्टॉप नहीं जोड़ा गया।",
+    "kindPickup": "पिकअप",
+    "kindDrop": "ड्रॉप",
+    "stopsSection": "स्टॉप",
+    "addStop": "स्टॉप जोड़ें",
+    "removeStop": "स्टॉप हटाएं",
+    "moveUp": "ऊपर ले जाएं",
+    "moveDown": "नीचे ले जाएं",
+    "delete": "रन हटाएं",
+    "slotMorning": "सुबह ड्राइव",
+    "slotNight": "रात ड्राइव",
+    "status": { "advance": "{status} पर सेट करें" },
+    "form": {
+      "title": "रन बनाएं",
+      "slot": "ड्राइव स्लॉट",
+      "date": "रन तिथि",
+      "driver": "ड्राइवर (वैकल्पिक)",
+      "noDriver": "अभी ड्राइवर नहीं",
+      "create": "रन बनाएं",
+      "creating": "बनाया जा रहा है…",
+      "partner": "रेस्टोरेंट / भागीदार",
+      "selectPartner": "भागीदार चुनें…",
+      "addPickupStop": "पिकअप स्टॉप जोड़ें",
+      "partnerRequired": "भागीदार चुनें",
+      "destination": "गंतव्य",
+      "selectDest": "गंतव्य चुनें…",
+      "adHoc": "मनचाहा पता",
+      "adHocAddress": "पता",
+      "adHocPlaceholder": "जैसे SBI ATM के पास, सैटेलाइट",
+      "addDropStop": "ड्रॉप स्टॉप जोड़ें",
+      "geocoding": "पता खोज रहा है…",
+      "savedDest": "सहेजा गंतव्य",
+      "destRequired": "गंतव्य चुनें",
+      "addrRequired": "पता दर्ज करें"
+    }
+  },
   "dashboard": {
     "title": "एडमिन",
     "pickupsLink": "पिकअप",
@@ -149,6 +192,8 @@
     "reportsLink": "रिपोर्ट",
     "reportsDesc": "प्रभाव और CSV निर्यात",
     "destinationsLink": "गंतव्य",
-    "destinationsDesc": "रन के लिए ड्रॉप-ऑफ क्षेत्र"
+    "destinationsDesc": "रन के लिए ड्रॉप-ऑफ क्षेत्र",
+    "runsLink": "डिस्पैच रन",
+    "runsDesc": "दैनिक पिकअप + डिलीवरी रन"
   }
 }

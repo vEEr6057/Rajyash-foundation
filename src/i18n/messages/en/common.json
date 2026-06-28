@@ -66,5 +66,11 @@
     "pending": "Pending",
     "done": "Done",
     "skipped": "Skipped"
+  },
+  "runStatus": {
+    "planned": "Planned",
+    "active": "Active",
+    "completed": "Completed",
+    "cancelled": "Cancelled"
   }
 }

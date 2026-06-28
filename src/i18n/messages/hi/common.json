@@ -69,5 +69,12 @@
     "pending": "बाकी",
     "done": "पूर्ण",
     "skipped": "छोड़ा"
+  },
+  "runStatus": {
+    "_review": "pending",
+    "planned": "नियोजित",
+    "active": "सक्रिय",
+    "completed": "पूर्ण",
+    "cancelled": "रद्द"
   }
 }
