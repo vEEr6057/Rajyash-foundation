@@ -179,6 +179,16 @@
       "savedDest": "સાચવેલ ગંતવ્ય",
       "destRequired": "ગંતવ્ય પસંદ કરો",
       "addrRequired": "સ્થળ દાખલ કરો"
+    },
+    "liveMap": {
+      "_review": "pending",
+      "title": "ડ્રાઇવર સ્થાન",
+      "live": "લાઇવ",
+      "stale": "સ્થાન જૂનું હોઈ શકે છે",
+      "waiting": "ડ્રાઇવરના સ્થાનની રાહ જોઈ રહ્યા છીએ…",
+      "etaAway": "~{minutes} મિનિટ",
+      "etaEstimate": "અંદાજ",
+      "reconnecting": "ફરી જોડાઈ રહ્યા છીએ…"
     }
   },
   "dashboard": {

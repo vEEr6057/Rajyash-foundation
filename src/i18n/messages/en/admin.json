@@ -175,6 +175,15 @@
       "savedDest": "Saved destination",
       "destRequired": "Select a destination",
       "addrRequired": "Enter an address"
+    },
+    "liveMap": {
+      "title": "Driver location",
+      "live": "Live",
+      "stale": "Location may be outdated",
+      "waiting": "Waiting for driver location…",
+      "etaAway": "~{minutes} min away",
+      "etaEstimate": "estimate",
+      "reconnecting": "reconnecting…"
     }
   },
   "dashboard": {

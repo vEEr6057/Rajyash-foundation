@@ -389,3 +389,35 @@ export const runStops = pgTable(
 );
 export type RunStop = typeof runStops.$inferSelect;
 export type NewRunStop = typeof runStops.$inferInsert;
+
+// ── Run Pings (Phase 10, Live Run Tracking / TRK-05) ───────────────────────
+/**
+ * Ephemeral GPS breadcrumb trail for an ACTIVE run. The assigned driver's browser
+ * pings while the run is active; coordinator/volunteer subscribe via Supabase
+ * Realtime. Append-only — purged when the run completes or is cancelled (TRK-05).
+ * Mirrors location_pings, keyed on runId instead of pickupId.
+ */
+export const runPings = pgTable(
+  "run_pings",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    runId: text("run_id")
+      .notNull()
+      .references(() => runs.id, { onDelete: "cascade" }),
+    driverId: text("driver_id")
+      .notNull()
+      .references(() => profiles.id),
+    lat: doublePrecision("lat").notNull(),
+    lng: doublePrecision("lng").notNull(),
+    accuracy: doublePrecision("accuracy"), // metres; nullable
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    index("run_pings_run_idx").on(t.runId),
+    index("run_pings_run_created_idx").on(t.runId, t.createdAt.desc()),
+  ],
+);
+export type RunPing = typeof runPings.$inferSelect;
+export type NewRunPing = typeof runPings.$inferInsert;

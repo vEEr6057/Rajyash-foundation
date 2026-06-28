@@ -10,6 +10,7 @@ const h = vi.hoisted(() => ({
   runSetStatus: vi.fn(),
   runUpdate: vi.fn(),
   runDelete: vi.fn(),
+  runGetWithStops: vi.fn(),
   // run stops repo
   stopAdd: vi.fn(),
   stopGetById: vi.fn(),
@@ -21,6 +22,7 @@ const h = vi.hoisted(() => ({
   partnerGetById: vi.fn(),
   destGetById: vi.fn(),
   geocode: vi.fn(),
+  purgeForRun: vi.fn(),
 }));
 
 vi.mock("@/server/auth/session", () => ({
@@ -38,7 +40,16 @@ vi.mock("@/server/db/repositories/runs", () => ({
     setRunStatus: (...a: unknown[]) => h.runSetStatus(...a),
     update: (...a: unknown[]) => h.runUpdate(...a),
     delete: (...a: unknown[]) => h.runDelete(...a),
+    getRunWithStops: (...a: unknown[]) => h.runGetWithStops(...a),
   },
+}));
+vi.mock("@/lib/routing", () => ({
+  haversineMeters: vi.fn().mockReturnValue(500),
+  estimateEtaMinutes: vi.fn().mockReturnValue(3),
+  straightLineRoute: vi.fn().mockReturnValue([[23, 72], [23.02, 72.6]]),
+}));
+vi.mock("@/lib/routing.server", () => ({
+  fetchOsrmRoute: vi.fn().mockResolvedValue(null),
 }));
 vi.mock("@/server/db/repositories/runStops", () => ({
   runStopsRepo: {
@@ -56,6 +67,9 @@ vi.mock("@/server/db/repositories/partners", () => ({
 vi.mock("@/server/db/repositories/destinations", () => ({
   destinationsRepo: { getById: (...a: unknown[]) => h.destGetById(...a) },
 }));
+vi.mock("@/server/db/repositories/runPings", () => ({
+  runPingsRepo: { purgeForRun: (...a: unknown[]) => h.purgeForRun(...a) },
+}));
 vi.mock("@/features/admin/actions/destinationActions", () => ({
   geocodeDestinationAddress: (...a: unknown[]) => h.geocode(...a),
 }));
@@ -70,6 +84,7 @@ import {
   overrideStopStatus,
   setRunStatus,
   markStopDone,
+  getRunRoute,
 } from "./runActions";
 
 beforeEach(() => {
@@ -138,6 +153,29 @@ describe("markStopDone — auto-complete", () => {
   });
 });
 
+describe("markStopDone — volunteer path (DEL-02)", () => {
+  it("allows a volunteer on an ACTIVE run", async () => {
+    h.getSession.mockResolvedValue({ userId: "vol-1", role: "volunteer" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "active" });
+    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([
+      { id: "s1", status: "pending" },
+      { id: "s2", status: "pending" },
+    ]);
+    const res = await markStopDone("s1");
+    expect(res.ok).toBe(true);
+  });
+
+  it("blocks a volunteer on a non-active run", async () => {
+    h.getSession.mockResolvedValue({ userId: "vol-1", role: "volunteer" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "planned" });
+    const res = await markStopDone("s1");
+    expect(!res.ok && (res as { code: string }).code).toBe("FORBIDDEN");
+  });
+});
+
 describe("addDropStop — saved vs ad-hoc", () => {
   it("denormalizes a saved destination", async () => {
     h.destGetById.mockResolvedValue({ id: "d1", name: "Zone", area: "Satellite", city: "Ahmedabad", lat: 23, lng: 72 });
@@ -160,5 +198,48 @@ describe("addDropStop — saved vs ad-hoc", () => {
     h.geocode.mockResolvedValue(null);
     const res = await addDropStop({ runId: "r1", seq: 2, address: "nowhere" } as never);
     expect(!res.ok && (res as { code: string }).code).toBe("GEOCODE_FAILED");
+  });
+});
+
+describe("getRunRoute (TRK-06)", () => {
+  it("returns UNAUTHORIZED with no session", async () => {
+    h.getSession.mockResolvedValue(null);
+    expect((await getRunRoute("r1", 23, 72) as { code: string }).code).toBe("UNAUTHORIZED");
+  });
+  it("forbids a non-watcher role (donor)", async () => {
+    h.getSession.mockResolvedValue({ userId: "d1", role: "donor" });
+    h.runGetWithStops.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "active", stops: [] });
+    expect((await getRunRoute("r1", 23, 72) as { code: string }).code).toBe("FORBIDDEN");
+  });
+  it("returns an empty route when no pending stop has coords", async () => {
+    h.getSession.mockResolvedValue({ userId: "drv-1", role: "driver" });
+    h.runGetWithStops.mockResolvedValue({
+      id: "r1",
+      driverId: "drv-1",
+      status: "active",
+      stops: [{ id: "s1", seq: 1, status: "pending", lat: null, lng: null }],
+    });
+    const res = await getRunRoute("r1", 23, 72);
+    expect(res.ok).toBe(true);
+    if (res.ok) expect(res.coords).toEqual([]);
+  });
+  it("routes to the lowest-seq pending stop with coords (straight-line fallback)", async () => {
+    h.getSession.mockResolvedValue({ userId: "vol-1", role: "volunteer" });
+    h.runGetWithStops.mockResolvedValue({
+      id: "r1",
+      driverId: "drv-1",
+      status: "active",
+      stops: [
+        { id: "s1", seq: 1, status: "done", lat: 23.01, lng: 72.6 },
+        { id: "s2", seq: 2, status: "pending", lat: 23.02, lng: 72.6 },
+        { id: "s3", seq: 3, status: "pending", lat: 23.03, lng: 72.6 },
+      ],
+    });
+    const res = await getRunRoute("r1", 23.0, 72.5);
+    expect(res.ok).toBe(true);
+    if (res.ok) {
+      expect(res.source).toBe("line");
+      expect(res.etaMinutes).toBeGreaterThanOrEqual(1);
+    }
   });
 });
