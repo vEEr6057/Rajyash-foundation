@@ -5,6 +5,8 @@ import { requireRole, getSession } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
 import { runStopsRepo } from "@/server/db/repositories/runStops";
 import { runPingsRepo } from "@/server/db/repositories/runPings";
+import { haversineMeters, estimateEtaMinutes, straightLineRoute } from "@/lib/routing";
+import { fetchOsrmRoute } from "@/lib/routing.server";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
 import { geocodeDestinationAddress } from "@/features/admin/actions/destinationActions";
@@ -322,4 +324,53 @@ export async function deleteRun(runId: string): Promise<Result> {
   await runsRepo.delete(runId);
   revalidatePath(ROUTES.adminRuns);
   return { ok: true };
+}
+
+/**
+ * TRK-06: route + ETA from the driver's current position to the next PENDING stop
+ * (lowest seq with coords). OSRM road route, else straight-line + haversine ETA.
+ * Auth mirrors getLatestRunPing: admin, the run's driver, or a volunteer.
+ */
+export async function getRunRoute(
+  runId: string,
+  fromLat: number,
+  fromLng: number,
+): Promise<
+  Result<{ coords: [number, number][]; etaMinutes: number; source: "osrm" | "line" }>
+> {
+  const session = await getSession();
+  if (!session) return fail("UNAUTHORIZED", "Sign in first.");
+  if (!Number.isFinite(fromLat) || !Number.isFinite(fromLng)) {
+    return fail("VALIDATION", "Invalid coordinates.");
+  }
+  const run = await runsRepo.getRunWithStops(runId);
+  if (!run) return fail("NOT_FOUND", "Run not found.");
+  const allowed =
+    session.role === "admin" ||
+    session.role === "volunteer" ||
+    run.driverId === session.userId;
+  if (!allowed) return fail("FORBIDDEN", "Not allowed to view this route.");
+
+  const next = run.stops
+    .filter((s) => s.status === "pending" && s.lat !== null && s.lng !== null)
+    .sort((a, b) => a.seq - b.seq)[0];
+  const from = { lat: fromLat, lng: fromLng };
+  if (!next) return { ok: true, coords: [], etaMinutes: 0, source: "line" };
+
+  const to = { lat: next.lat as number, lng: next.lng as number };
+  const osrm = await fetchOsrmRoute(from, to);
+  if (osrm) {
+    return {
+      ok: true,
+      coords: osrm.coords,
+      etaMinutes: Math.max(1, Math.round(osrm.durationSec / 60)),
+      source: "osrm",
+    };
+  }
+  return {
+    ok: true,
+    coords: straightLineRoute(from, to),
+    etaMinutes: estimateEtaMinutes(haversineMeters(from, to)),
+    source: "line",
+  };
 }
