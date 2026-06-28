@@ -214,7 +214,11 @@ Plans:
   2. The run map shows a route overlay and a haversine-derived ETA to the next stop alongside the live driver pin; no Google Maps API is used
   3. When pings stop arriving (driver closed the app), the map shows a stale indicator and the coordinator's manual override remains available
   4. A driver, coordinator, or volunteer on the run can confirm a drop delivered from the run view; the confirmation is reflected immediately for all watchers
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 10-01-PLAN.md — run_pings schema + runPingsRepo + recordRunPing/getLatestRunPing actions + DEL-02 volunteer path + purge wiring
+- [ ] 10-02-PLAN.md — useLiveRunLocation hook + RunTracker component + useRunRoute hook (movement-throttled)
+- [ ] 10-03-PLAN.md — getRunRoute action + RunLiveMap watcher component + page wiring + i18n + checkpoint
 **UI hint**: yes
 
 ### Phase 11: Intake
@@ -260,6 +264,6 @@ Note: Phase 11 (Intake) depends only on Phase 8 and can be planned in parallel w
 | 7. Public Site + i18n + PWA | 5/5 | Done | 2026-06-27 |
 | 8. Dispatch Foundations | 0/2 | Planned | - |
 | 9. Runs & Dispatch | 0/4 | Planned | - |
-| 10. Live Run Tracking | 0/? | Not started | - |
+| 10. Live Run Tracking | 0/3 | Planned | - |
 | 11. Intake | 0/? | Not started | - |
 | 12. Run Reporting | 0/? | Not started | - |
