@@ -19,8 +19,8 @@ describe("manifest() — PWA manifest route handler (PUB-04)", () => {
     expect(srcs).toContain("/icon-512-maskable.png");
   });
 
-  it("test 4: theme_color === '#C04E12' and background_color === '#FBF7F0'", () => {
-    expect(result.theme_color).toBe("#C04E12");
+  it("test 4: theme_color === '#2E7A47' (brand green) and background_color === '#FBF7F0'", () => {
+    expect(result.theme_color).toBe("#2E7A47");
     expect(result.background_color).toBe("#FBF7F0");
   });
 });
