@@ -243,7 +243,10 @@ Plans:
   1. The admin impact report shows aggregate meals rescued, kg rescued, and delivery count filtered by date range, broken down by run, destination, and partner
   2. The coordinator can export the run impact report as a CSV file using the existing export route
   3. No per-delivery headcount field exists; totals are approximate aggregates only, consistent with the dispatch model
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 12-01-PLAN.md -- reportsRepo (runSummary/destinationBreakdown/partnerBreakdown) + tests + /admin/reports/export CSV route
+- [ ] 12-02-PLAN.md -- Admin reports page breakdown tables (run/destination/partner) + i18n EN/GU/HI
 **UI hint**: yes
 
 ---
