@@ -222,4 +222,40 @@ export const pickupsRepo = {
       );
     return row;
   },
+
+  // ── Intake (Phase 11) ──────────────────────────────────────────────
+  /**
+   * INT-01 back-fill: set partnerId on a newly created pickup (called from createPickup
+   * when the donor's profile has a linked partner). Only called when partnerId is non-null;
+   * noop guard is in the action, not here.
+   */
+  async setPartnerId(id: string, partnerId: string): Promise<void> {
+    const db = getDb();
+    await db
+      .update(pickups)
+      .set({ partnerId, updatedAt: new Date() })
+      .where(eq(pickups.id, id));
+  },
+
+  /** INT-03: coordinator sets the verified flag. */
+  async verify(id: string, verifiedBy: string): Promise<Pickup | null> {
+    const db = getDb();
+    const rows = await db
+      .update(pickups)
+      .set({ verifiedAt: new Date(), verifiedBy, updatedAt: new Date() })
+      .where(eq(pickups.id, id))
+      .returning();
+    return rows[0] ?? null;
+  },
+
+  /** INT-03: coordinator clears the verified flag. */
+  async unverify(id: string): Promise<Pickup | null> {
+    const db = getDb();
+    const rows = await db
+      .update(pickups)
+      .set({ verifiedAt: null, verifiedBy: null, updatedAt: new Date() })
+      .where(eq(pickups.id, id))
+      .returning();
+    return rows[0] ?? null;
+  },
 };

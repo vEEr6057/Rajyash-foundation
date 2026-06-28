@@ -48,10 +48,18 @@ export function PickupForm({
   mode,
   pickupId,
   defaults,
+  onSubmit: onSubmitOverride,
+  submitLabel,
+  submitting,
 }: {
   mode: "create" | "edit";
   pickupId?: string;
   defaults?: Partial<FormValues>;
+  // When provided, the form calls this instead of createPickup/updatePickup
+  // (used by AdminSurplusForm to route through logSurplus). INT-02.
+  onSubmit?: (data: PickupFormInput) => void | Promise<void>;
+  submitLabel?: string;
+  submitting?: boolean;
 }) {
   const router = useRouter();
   const t = useTranslations("portal");
@@ -94,6 +102,11 @@ export function PickupForm({
 
   function onSubmit(values: FormValues) {
     setServerError(null);
+    // INT-02: caller-supplied submit handler (e.g. logSurplus) takes over.
+    if (onSubmitOverride) {
+      void onSubmitOverride(values as unknown as PickupFormInput);
+      return;
+    }
     startTransition(async () => {
       const res =
         mode === "create"
@@ -253,12 +266,13 @@ export function PickupForm({
         <p className="text-sm text-destructive" role="alert">{serverError}</p>
       )}
 
-      <Button type="submit" size="lg" className="w-full" disabled={isPending}>
-        {isPending
+      <Button type="submit" size="lg" className="w-full" disabled={isPending || submitting}>
+        {isPending || submitting
           ? tCommon("buttons.loading")
-          : mode === "create"
-            ? t("pickup.form.submitCreate")
-            : t("pickup.form.submitEdit")}
+          : (submitLabel ??
+            (mode === "create"
+              ? t("pickup.form.submitCreate")
+              : t("pickup.form.submitEdit")))}
       </Button>
     </form>
   );

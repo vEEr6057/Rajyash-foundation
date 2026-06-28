@@ -140,6 +140,14 @@ export const pickups = pgTable(
     updatedAt: timestamp("updated_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
+
+    // ── Intake (Phase 11) ──────────────────────────────────────────────
+    // Partner that sourced this surplus (denormalized from donor's profiles.partnerId at creation).
+    // Nullable: pickups created before Phase 11 have no partner link.
+    partnerId: text("partner_id").references(() => partners.id),
+    // Coordinator "verified" flag (INT-03). Optional — never blocks a run.
+    verifiedAt: timestamp("verified_at", { withTimezone: true }),
+    verifiedBy: text("verified_by"), // Clerk userId of the verifying coordinator; no FK (any admin)
   },
   (t) => [
     index("pickups_status_idx").on(t.status),

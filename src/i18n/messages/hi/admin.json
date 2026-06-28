@@ -191,8 +191,30 @@
       "reconnecting": "पुनः जुड़ रहे हैं…"
     }
   },
+  "surplus": {
+    "_review": "pending",
+    "title": "रेस्तरां सरप्लस दर्ज करें",
+    "subtitle": "भागीदार रेस्तरां की ओर से सरप्लस पिकअप बनाएं।",
+    "partnerLabel": "रेस्तरां",
+    "partnerPlaceholder": "रेस्तरां चुनें",
+    "partnerRequired": "पहले एक रेस्तरां चुनें।",
+    "submitLabel": "सरप्लस दर्ज करें",
+    "description": "रेस्तरां सरप्लस",
+    "loggedBadge": "समन्वयक द्वारा दर्ज"
+  },
+  "pickup": {
+    "verify": {
+      "_review": "pending",
+      "verifiedBadge": "सत्यापित",
+      "verifyButton": "सत्यापित चिह्नित करें",
+      "unverifyButton": "सत्यापन हटाएं",
+      "pending": "सहेजा जा रहा है…"
+    }
+  },
   "dashboard": {
     "title": "एडमिन",
+    "surplusLink": "सरप्लस दर्ज करें",
+    "surplusDesc": "भागीदार रेस्तरां की ओर से सरप्लस दर्ज करें।",
     "pickupsLink": "पिकअप",
     "pickupsDesc": "पिकअप देखें और सौंपें",
     "usersLink": "उपयोगकर्ता",
