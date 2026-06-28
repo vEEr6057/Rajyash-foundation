@@ -117,6 +117,27 @@
     "exportButton": "ફ઼િલ્ટર કરેલ પિકઅપ ડાઉનલોડ (CSV)",
     "totalsNote": "ડિલિવરી તારીખ મુજબ ડિલિવર થયેલ પિકઅપ ગણાય. ભોજન અને કિ.ગ્રા. અલગ દર્શાવ્યા (કોઈ રૂપાંતર નહીં)."
   },
+  "destinations": {
+    "_review": "pending",
+    "title": "ડ્રોપ સ્થળ",
+    "addDestination": "સ્થળ ઉમેરો",
+    "allDestinations": "બધા સ્થળ",
+    "noDestinations": "હજી કોઈ સ્થળ નથી.",
+    "editClose": "બંધ",
+    "seedNote": "ડ્રાઇવર જ્યાં ડિલિવરી કરે છે તે ઝોન અને આશ્રયો ઉમેરો.",
+    "form": {
+      "name": "નામ*",
+      "area": "વિસ્તાર / વિભાગ",
+      "lat": "અક્ષાંશ",
+      "lng": "રેખાંશ",
+      "city": "શહેર",
+      "pinInstruction": "નકશા પર ક્લિક કરો અથવા પિન ખેંચો. અથવા સરનામું ટાઇપ કરો.",
+      "geocodeAddress": "સરનામું (Geocode)",
+      "geocodeButton": "Geocode",
+      "saveButton": "સ્થળ સાચવો",
+      "addButton": "સ્થળ ઉમેરો"
+    }
+  },
   "dashboard": {
     "title": "એડ્મિન",
     "pickupsLink": "પિકઅપ",
@@ -126,6 +147,8 @@
     "partnersLink": "ભાગીદારો",
     "partnersDesc": "દાતા સંસ્થાઓ",
     "reportsLink": "અહેવાલ",
-    "reportsDesc": "અસર અને CSV નિકાસ"
+    "reportsDesc": "અસર અને CSV નિકાસ",
+    "destinationsLink": "ડ્રોપ સ્થળ",
+    "destinationsDesc": "રન માટે ડ્રોપ-ઓફ ઝોન"
   }
 }

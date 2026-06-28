@@ -117,6 +117,27 @@
     "exportButton": "फ़िल्टर किए पिकअप डाउनलोड (CSV)",
     "totalsNote": "कुल डिलीवरी तारीख के अनुसार डिलीवर किए पिकअप गिने जाते हैं. परोसे और किलोग्राम अलग दिखाए जाते हैं (कोई रूपांतरण नहीं)."
   },
+  "destinations": {
+    "_review": "pending",
+    "title": "गंतव्य",
+    "addDestination": "गंतव्य जोड़ें",
+    "allDestinations": "सभी गंतव्य",
+    "noDestinations": "अभी कोई गंतव्य नहीं।",
+    "editClose": "बंद करें",
+    "seedNote": "वे क्षेत्र और आश्रय जोड़ें जहाँ ड्राइवर डिलीवरी करते हैं।",
+    "form": {
+      "name": "नाम*",
+      "area": "क्षेत्र / मुहल्ला",
+      "lat": "अक्षांश",
+      "lng": "देशांतर",
+      "city": "शहर",
+      "pinInstruction": "मानचित्र पर क्लिक करें या पिन खींचें। या पता टाइप करें।",
+      "geocodeAddress": "पता (Geocode)",
+      "geocodeButton": "Geocode",
+      "saveButton": "गंतव्य सहेजें",
+      "addButton": "गंतव्य जोड़ें"
+    }
+  },
   "dashboard": {
     "title": "एडमिन",
     "pickupsLink": "पिकअप",
@@ -126,6 +147,8 @@
     "partnersLink": "भागीदार",
     "partnersDesc": "दाता संगठन",
     "reportsLink": "रिपोर्ट",
-    "reportsDesc": "प्रभाव और CSV निर्यात"
+    "reportsDesc": "प्रभाव और CSV निर्यात",
+    "destinationsLink": "गंतव्य",
+    "destinationsDesc": "रन के लिए ड्रॉप-ऑफ क्षेत्र"
   }
 }
