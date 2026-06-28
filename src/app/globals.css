@@ -18,13 +18,13 @@
   --popover: #FFFFFF;
   --popover-foreground: #22271F;
 
-  /* Brand — saffron */
-  --primary: #C04E12;
+  /* Brand — green (matches the Rajyash Foundation logo) */
+  --primary: #2E7A47;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #A8420E;
-  --primary-soft: #FBE7D2;
-  --primary-soft-foreground: #8A3D10;
-  --saffron: #F2711C;
+  --primary-hover: #25683B;
+  --primary-soft: #E2F0E6;
+  --primary-soft-foreground: #1E6B36;
+  --saffron: #C49A3C; /* repurposed as the logo's GOLD accent */
 
   /* Brand — leaf */
   --leaf: #2E7D46;
@@ -53,7 +53,7 @@
   --border: #E8E0CF;
   --border-strong: #D9CFBA;
   --input: #D9CFBA;
-  --ring: #E0651B;
+  --ring: #2E7A47;
 
   /* Pickup status pills */
   --st-requested-bg: #FCEBD4;  --st-requested-fg: #8A4E12;  --st-requested-dot: #E8842B;
@@ -94,9 +94,9 @@
   /* Live-map layer (Driver, Volunteer, Restaurant mini-map) + splash */
   --map-bg: #E8E1D2; --map-block: #F1ECDF; --map-road: #FCFAF4; --map-edge: #DDD3BF;
   --map-green: #D5E6C6; --map-water: #C4DCE0;
-  --route: #C04E12; --route-cap: rgba(255,255,255,.92);
+  --route: #C49A3C; --route-cap: rgba(255,255,255,.92);
   --traveled: #B7AC95; --future: #C7BCA6;
-  --splash: #C04E12; --splash-2: #8A3D10;
+  --splash: #2E7A47; --splash-2: #1C5A34;
 }
 
 .dark {
@@ -109,9 +109,9 @@
   --popover: #1F1D16;
   --popover-foreground: #F3ECDD;
 
-  --primary: #C8531A; --primary-foreground: #FFFFFF; --primary-hover: #DA5F22;
-  --primary-soft: #3A2412; --primary-soft-foreground: #F4B07C;
-  --saffron: #F8924A;
+  --primary: #2F8A4F; --primary-foreground: #FFFFFF; --primary-hover: #36975A;
+  --primary-soft: #14301E; --primary-soft-foreground: #84D196;
+  --saffron: #D8B05A; /* gold accent (brighter for dark) */
 
   --leaf: #2E7D46; --leaf-foreground: #FFFFFF; --leaf-hover: #358A50;
   --leaf-soft: #16301F; --leaf-soft-foreground: #7FCB92; --leaf-bright: #56B36E;
@@ -128,7 +128,7 @@
   --border: #37321F;
   --border-strong: #4A442E;
   --input: #4A442E;
-  --ring: #F2842F;
+  --ring: #46A865;
 
   --st-requested-bg: #3A2A12; --st-requested-fg: #F2C079; --st-requested-dot: #E8842B;
   --st-accepted-bg: #142E3D;  --st-accepted-fg: #86C2E2;  --st-accepted-dot: #2E8BBE;
@@ -144,9 +144,9 @@
   /* Live-map layer + splash (dark) */
   --map-bg: #100F0A; --map-block: #1A1813; --map-road: #2B2719; --map-edge: #15140D;
   --map-green: #18271A; --map-water: #10282D;
-  --route: #E26A22; --route-cap: rgba(0,0,0,.55);
+  --route: #D8B05A; --route-cap: rgba(0,0,0,.55);
   --traveled: #3A3520; --future: #46402B;
-  --splash: #1A1812; --splash-2: #100F0A;
+  --splash: #11241A; --splash-2: #0A170F;
 }
 
 @theme inline {

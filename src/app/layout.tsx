@@ -43,7 +43,7 @@ export default async function RootLayout({
     <ClerkProvider
       appearance={{
         variables: {
-          colorPrimary: "#C04E12",
+          colorPrimary: "#2E7A47",
           colorBackground: "#FFFFFF",
           borderRadius: "0.75rem",
           fontFamily: "var(--font-mukta), system-ui, sans-serif",
