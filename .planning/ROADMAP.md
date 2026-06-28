@@ -229,7 +229,10 @@ Plans:
   1. A restaurant (partner) can log in and flag available surplus (food type, quantity, collection window, location) using the existing pickup form
   2. A coordinator can open a restaurant's profile and log surplus on their behalf, pre-filling the partner's location
   3. Every surplus record shows the restaurant's safety attestation; a coordinator can toggle an optional "verified" flag on any record without blocking the run if it is absent
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 11-01-PLAN.md -- Schema + pickupsRepo extend + logSurplus / verifyPickup / unverifyPickup actions + tests
+- [ ] 11-02-PLAN.md -- Admin surplus page + VerifyToggle UI + i18n EN/GU/HI + migration apply
 **UI hint**: yes
 
 ### Phase 12: Run Reporting
@@ -265,5 +268,5 @@ Note: Phase 11 (Intake) depends only on Phase 8 and can be planned in parallel w
 | 8. Dispatch Foundations | 0/2 | Planned | - |
 | 9. Runs & Dispatch | 0/4 | Planned | - |
 | 10. Live Run Tracking | 0/3 | Planned | - |
-| 11. Intake | 0/? | Not started | - |
+| 11. Intake | 0/2 | Planned | - |
 | 12. Run Reporting | 0/? | Not started | - |
