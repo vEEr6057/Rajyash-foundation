@@ -1,0 +1,3 @@
+# 09-02 SUMMARY — validations + 11 server actions
+Status: complete · tsc 0; 7 validation + 15 action tests pass.
+Built: validations/run.ts (createRun/editRun/addPickupStop/addDropStop[superRefine]/reorder schemas) + tests; runActions.ts — createRun, assignDriver, editRun (uses runsRepo.update — checker fix #3), addPickupStop, addDropStop (saved denormalize OR ad-hoc geocode via geocodeDestinationAddress {lat,lng}|null — checker fix #2), reorderStops, removeStop, markStopDone (driver-ownership + allStopsDone auto-complete), overrideStopStatus, setRunStatus, deleteRun. All admin actions requireRole(["admin"]); markStopDone driver-or-admin + ownership.
