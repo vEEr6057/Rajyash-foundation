@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: "Phase 7 shipped — all v1 phases done except Phase 5 (Payments) PARKED"
-stopped_at: Phase 7 built + reviewed + Playwright-E2E verified; preparing PR + merging the stacked chain
-last_updated: "2026-06-27"
-last_activity: 2026-06-27 — Phase 7 (Public Site + i18n + PWA) built from imported claude.ai/design, reviewed, E2E-verified
+milestone: v2.0
+milestone_name: Dispatch Bridge
+status: planning
+last_updated: "2026-06-28T20:34:30.936Z"
+last_activity: 2026-06-28
 progress:
-  total_phases: 7
-  completed_phases: 6
-  total_plans: 36
-  completed_plans: 36
-  percent: 86
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -25,12 +24,10 @@ See: .planning/PROJECT.md (updated 2026-06-25)
 
 ## Current Position
 
-Phase: 7 of 7 (Public Site + i18n + PWA) — complete; Phase 5 (Payments) PARKED. All other v1 phases done.
-Plan: 5 of 5 in Phase 7
-Status: Phase 7 shipped (built from imported claude.ai/design); preparing PR #6 + merging chain to main
-Last activity: 2026-06-27 — Phase 7 built + reviewed + Playwright-E2E verified
-
-Progress: [█████████░] 86% (6/7 phases; Phase 5 parked)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-06-28 — Milestone v2.0 started
 
 ## Performance Metrics
 
