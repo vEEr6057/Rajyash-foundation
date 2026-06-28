@@ -104,5 +104,19 @@
     "browsePickups": "પિકઅપ જુઓ",
     "mapView": "નકશો",
     "adminDashboard": "એડ્મિન ડૅશબોર્ડ"
+  },
+  "run": {
+    "_review": "pending",
+    "title": "મારી રન",
+    "emptyState": "હજી સુધી કોઈ રન સોંપવામાં આવ્યો નથી. પછી તપાસો.",
+    "noStopsYet": "આ રનમાં હજી સુધી કોઈ સ્ટોપ ઉમેરવામાં આવ્યો નથી.",
+    "stopCount": "સ્ટોપ",
+    "stop": {
+      "kindPickup": "પિકઅપ",
+      "kindDrop": "ડ્રોપ",
+      "markDone": "પૂર્ણ ચિહ્નિત કરો",
+      "marking": "ચિહ્નિત થઈ રહ્યું છે…",
+      "retry": "ફરી પ્રયાસ"
+    }
   }
 }

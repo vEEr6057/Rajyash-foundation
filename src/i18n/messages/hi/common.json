@@ -63,5 +63,11 @@
     "donor": "दाता",
     "volunteer": "स्वयंसेवक",
     "admin": "एडमिन"
+  },
+  "stopStatus": {
+    "_review": "pending",
+    "pending": "बाकी",
+    "done": "पूर्ण",
+    "skipped": "छोड़ा"
   }
 }

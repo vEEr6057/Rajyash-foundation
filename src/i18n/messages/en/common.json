@@ -61,5 +61,10 @@
     "donor": "Donor",
     "volunteer": "Volunteer",
     "admin": "Admin"
+  },
+  "stopStatus": {
+    "pending": "Pending",
+    "done": "Done",
+    "skipped": "Skipped"
   }
 }
