@@ -24,6 +24,8 @@ export const ROUTES = {
   adminUsers: "/admin/users",
   adminPartners: "/admin/partners",
   adminReports: "/admin/reports",
+  // ── Destinations (Phase 8 / DEST-01) ───────────────────────────
+  adminDestinations: "/admin/destinations",
   donorPickups: "/portal/pickups",
   newPickup: "/portal/pickups/new",
   pickup: (id: string) => `/portal/pickups/${id}`,
@@ -115,6 +117,8 @@ export const QUERY_KEYS = {
   notifications: ["notifications"] as const,
   unreadCount: ["notifications", "unread-count"] as const,
   partners: ["partners"] as const,
+  // ── Destinations (Phase 8 / DEST-01) ───────────────────────────
+  destinations: ["destinations"] as const,
   adminPickups: (filters: Record<string, string | undefined>) =>
     ["admin", "pickups", filters] as const,
 } as const;

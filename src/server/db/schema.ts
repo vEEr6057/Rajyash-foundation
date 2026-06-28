@@ -298,3 +298,30 @@ export const notificationDeliveries = pgTable(
 );
 export type NotificationDelivery = typeof notificationDeliveries.$inferSelect;
 export type NewNotificationDelivery = typeof notificationDeliveries.$inferInsert;
+
+// ── Destinations (Phase 8, Dispatch Foundations / DEST-01) ─────────────────
+/**
+ * destinations — saved drop-off zones or shelters the foundation delivers to
+ * (DEST-01 / DEST-02). Coordinator picks one of these when building a run stop
+ * or enters a free-text address (ad-hoc, handled in Phase 9 stops). lat/lng
+ * power the MapView draggable pin in DestinationForm.
+ */
+export const destinations = pgTable("destinations", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => crypto.randomUUID()),
+  name: text("name").notNull(),
+  area: text("area"), // neighbourhood / locality, nullable
+  lat: doublePrecision("lat").notNull(),
+  lng: doublePrecision("lng").notNull(),
+  city: text("city").notNull().default("Ahmedabad"),
+  active: boolean("active").notNull().default(true),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+export type Destination = typeof destinations.$inferSelect;
+export type NewDestination = typeof destinations.$inferInsert;
