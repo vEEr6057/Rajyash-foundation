@@ -145,7 +145,7 @@
 |---------|--------|
 | In-app donor↔volunteer chat | WhatsApp link on request detail is sufficient; chat is high-maintenance |
 | Recipient self-service portal | Recipients served via volunteers/admin; not self-registering users |
-| Multi-stop route optimization | Single-stop model; Ahmedabad scale doesn't need OR-Tools |
+| Multi-stop route optimization | Coordinator sets order manually; Ahmedabad scale doesn't need OR-Tools |
 | Native iOS/Android apps | Web-first responsive PWA; old native app left behind |
 | AI volunteer matching | Small volunteer pool; manual claim works |
 | Multi-city / multi-org tenancy | Single org, single city; no RLS/multi-tenant complexity |
@@ -200,12 +200,33 @@
 | I18N-01 | Phase 7 | Pending |
 | I18N-02 | Phase 7 | Pending |
 | I18N-03 | Phase 7 | Pending |
+| DRV-01 | Phase 8 | Pending |
+| DRV-02 | Phase 8 | Pending |
+| DEST-01 | Phase 8 | Pending |
+| DEST-02 | Phase 8 | Pending |
+| DEL-01 | Phase 8 | Pending |
+| RUN-01 | Phase 9 | Pending |
+| RUN-02 | Phase 9 | Pending |
+| RUN-03 | Phase 9 | Pending |
+| RUN-04 | Phase 9 | Pending |
+| RUN-05 | Phase 9 | Pending |
+| RUN-06 | Phase 9 | Pending |
+| RUN-07 | Phase 9 | Pending |
+| RUN-08 | Phase 9 | Pending |
+| TRK-05 | Phase 10 | Pending |
+| TRK-06 | Phase 10 | Pending |
+| DEL-02 | Phase 10 | Pending |
+| INT-01 | Phase 11 | Pending |
+| INT-02 | Phase 11 | Pending |
+| INT-03 | Phase 11 | Pending |
+| RPT-01 | Phase 12 | Pending |
 
 **Coverage:**
 - v1 requirements: 44 total (AUTH 6, DON 6, VOL 6, TRK 4, NOT 5, PAY 4, ADM 6, PUB 4, I18N 3)
-- Mapped to phases: 44/44
+- v2.0 requirements: 20 total (DRV 2, DEST 2, RUN 8, INT 3, TRK 2, DEL 2, RPT 1)
+- Mapped to phases: 64/64
 - Unmapped: 0
 
 ---
 *Requirements defined: 2026-06-25*
-*Last updated: 2026-06-25 — traceability populated during roadmap creation*
+*Last updated: 2026-06-29 — v2.0 traceability populated during Dispatch Bridge roadmap creation*
