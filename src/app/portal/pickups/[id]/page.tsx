@@ -20,6 +20,7 @@ import { DonorPickupActions } from "@/features/pickups/components/DonorPickupAct
 import { LiveTrackingMap } from "@/features/pickups/components/LiveTrackingMap";
 import { VolunteerTracker } from "@/features/pickups/components/VolunteerTracker";
 import { NavigateButton } from "@/features/pickups/components/NavigateButton";
+import { VerifyToggle } from "@/features/admin/components/VerifyToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -131,6 +132,15 @@ export default async function PickupDetailPage({
 
       {/* Actions by viewer */}
       <div className="mt-6">
+        {isAdmin && (
+          <div className="mb-4">
+            <VerifyToggle
+              pickupId={id}
+              verifiedAt={pickup.verifiedAt ?? null}
+              verifiedBy={pickup.verifiedBy ?? null}
+            />
+          </div>
+        )}
         {isDonorOwner && <DonorPickupActions pickupId={id} status={pickup.status} />}
         {isVolunteer && pickup.status === "requested" && <ClaimButton pickupId={id} />}
         {isAssignedVolunteer &&

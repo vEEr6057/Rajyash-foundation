@@ -24,6 +24,7 @@ export default async function AdminDashboardPage() {
 
   const SECTIONS = [
     { href: ROUTES.adminPickups, title: t("dashboard.pickupsLink"), desc: t("dashboard.pickupsDesc") },
+    { href: ROUTES.adminSurplusNew, title: t("dashboard.surplusLink"), desc: t("dashboard.surplusDesc") },
     { href: ROUTES.adminUsers, title: t("dashboard.usersLink"), desc: t("dashboard.usersDesc") },
     { href: ROUTES.adminPartners, title: t("dashboard.partnersLink"), desc: t("dashboard.partnersDesc") },
     { href: ROUTES.adminDestinations, title: t("dashboard.destinationsLink"), desc: t("dashboard.destinationsDesc") },
