@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Providers } from "./providers";
+import { SkipLink } from "@/components/SkipLink";
 import "./globals.css";
 
 const bricolage = Bricolage_Grotesque({
@@ -107,6 +108,7 @@ export default async function RootLayout({
           <NextIntlClientProvider>
             {/* Global header removed — public landing has its own PublicHeader (plan 07-02).
                 Portal/admin shells add their own LanguageSwitcher in plan 07-03. */}
+            <SkipLink />
             <Providers>{children}</Providers>
           </NextIntlClientProvider>
         </body>
