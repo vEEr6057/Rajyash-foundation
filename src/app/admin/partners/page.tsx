@@ -33,7 +33,7 @@ export default async function AdminPartnersPage() {
   const partnerOpts = partners.map((p) => ({ id: p.id, name: p.name }));
 
   return (
-    <main className="mx-auto max-w-4xl space-y-6 px-4 py-8">
+    <div className="mx-auto max-w-5xl space-y-6">
       <h1 className="font-display text-2xl font-bold tracking-tight">{t("partners.title")}</h1>
 
       <Card>
@@ -60,6 +60,6 @@ export default async function AdminPartnersPage() {
           <LinkDonorControl donors={donors} partners={partnerOpts} />
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }

@@ -1,18 +1,28 @@
-// Admin shell — adds the shared authed header (LanguageSwitcher + ThemeToggle)
-// above every /admin/* route so the locale is switchable from any admin page
-// (I18N-02). Pure chrome: admin access is already enforced by middleware + the
-// per-page requireRole(["admin"]) guard (AUTH-05). The layout adds no auth logic
-// to avoid duplicating/contradicting that gating.
-import { ROUTES } from "@/config/constants";
-import { AuthedHeader } from "@/components/AuthedHeader";
+// Admin shell — desktop sidebar rail + a slim top bar (mobile menu, locale, theme,
+// account). Pure chrome: admin access is enforced by middleware + per-page
+// requireRole(["admin"]) (AUTH-05); the layout adds no auth logic.
+import { UserButton } from "@clerk/nextjs";
+import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher";
+import { ThemeToggle } from "@/features/public/components/ThemeToggle";
+import { AdminSidebar, AdminMobileNav } from "@/features/admin/components/AdminNav";
 
 export default function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <>
-      <AuthedHeader homeHref={ROUTES.adminDashboard} />
-      {children}
-    </>
+    <div className="flex min-h-screen bg-background">
+      <AdminSidebar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-border bg-background/90 px-4 py-2.5 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <AdminMobileNav />
+          <div className="ml-auto flex items-center gap-2">
+            <LanguageSwitcher />
+            <ThemeToggle />
+            <UserButton />
+          </div>
+        </header>
+        <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+      </div>
+    </div>
   );
 }

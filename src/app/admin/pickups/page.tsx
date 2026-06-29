@@ -1,12 +1,13 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
-import { ROUTES } from "@/config/constants";
+import { ROUTES, ADMIN_PAGE_SIZE } from "@/config/constants";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { parseAdminFilters } from "@/features/admin";
 import { AdminPickupFilters } from "@/features/admin/components/AdminPickupFilters";
-import { AdminPickupRow } from "@/features/admin/components/AdminPickupRow";
+import { PickupsTable } from "@/features/admin/components/PickupsTable";
+import { Pagination } from "@/components/ui/pagination";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Pickups — Rajyash Food Rescue" };
@@ -31,17 +32,34 @@ export default async function AdminPickupsPage({
     if (typeof v === "string") params.set(k, v);
   }
   const filters = parseAdminFilters(params);
-  const [t, pickups, volunteers] = await Promise.all([
+  const page = Math.max(1, Number(params.get("page")) || 1);
+
+  const [t, { rows, total }, volunteers] = await Promise.all([
     getTranslations("admin"),
-    pickupsRepo.listForAdmin(filters),
+    pickupsRepo.listForAdminPaged(filters, page, ADMIN_PAGE_SIZE),
     profilesRepo.listAssignableVolunteers(),
   ]);
 
+  const totalPages = Math.ceil(total / ADMIN_PAGE_SIZE);
+  const hrefForPage = (p: number) => {
+    const q = new URLSearchParams(params);
+    q.set("page", String(p));
+    return `${ROUTES.adminPickups}?${q.toString()}`;
+  };
+
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="mb-4 font-display text-2xl font-bold tracking-tight">
-        {t("pickups.title")}
-      </h1>
+    <div className="mx-auto max-w-6xl space-y-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-tight">
+            {t("pickups.title")}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {total.toLocaleString()}
+          </p>
+        </div>
+      </div>
+
       <AdminPickupFilters
         current={{
           status: params.get("status") ?? undefined,
@@ -51,17 +69,10 @@ export default async function AdminPickupsPage({
           to: params.get("to") ?? undefined,
         }}
       />
-      {pickups.length === 0 ? (
-        <p className="text-sm text-muted-foreground">
-          {t("pickups.noMatch")}
-        </p>
-      ) : (
-        <div className="space-y-2">
-          {pickups.map((p) => (
-            <AdminPickupRow key={p.id} pickup={p} volunteers={volunteers} />
-          ))}
-        </div>
-      )}
-    </main>
+
+      <PickupsTable pickups={rows} volunteers={volunteers} />
+
+      <Pagination page={page} totalPages={totalPages} hrefForPage={hrefForPage} />
+    </div>
   );
 }

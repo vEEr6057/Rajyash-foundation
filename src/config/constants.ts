@@ -13,6 +13,9 @@ export type SelectableRole = (typeof SELECTABLE_ROLES)[number];
 
 export const DEFAULT_CITY = "Ahmedabad";
 
+// Rows per page for admin data tables (server-side pagination).
+export const ADMIN_PAGE_SIZE = 20;
+
 export const ROUTES = {
   home: "/",
   signIn: "/sign-in",

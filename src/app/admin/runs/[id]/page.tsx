@@ -51,7 +51,7 @@ export default async function AdminRunDetailPage({
   });
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
+    <div className="mx-auto max-w-3xl">
       <header className="mb-6 space-y-2">
         <div className="flex items-center justify-between gap-2">
           <h1 className="font-display text-2xl font-bold tracking-tight">
@@ -85,6 +85,6 @@ export default async function AdminRunDetailPage({
           />
         </div>
       </section>
-    </main>
+    </div>
   );
 }
