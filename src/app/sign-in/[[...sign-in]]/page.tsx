@@ -1,11 +1,12 @@
 import { SignIn } from "@clerk/nextjs";
+import { AuthSplitLayout } from "@/features/auth/components/AuthSplitLayout";
 
 export const metadata = { title: "Sign in — Rajyash Food Rescue" };
 
 export default function SignInPage() {
   return (
-    <main className="flex min-h-dvh items-center justify-center bg-background px-4 py-10">
+    <AuthSplitLayout>
       <SignIn forceRedirectUrl="/portal/dashboard" signUpUrl="/sign-up" />
-    </main>
+    </AuthSplitLayout>
   );
 }

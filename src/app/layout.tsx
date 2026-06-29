@@ -57,6 +57,8 @@ export default async function RootLayout({
         elements: {
           rootBox: "mx-auto w-full",
           cardBox: "shadow-xl",
+          // force the single social button to show its label, not an icon-only "G"
+          socialButtonsBlockButton__google: "justify-start",
           card: "border border-black/[0.06] bg-white",
           headerTitle: "font-display text-xl font-bold text-gray-900",
           headerSubtitle: "text-sm text-gray-500",
