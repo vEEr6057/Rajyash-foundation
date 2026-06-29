@@ -3,20 +3,31 @@
 // All text from "landing" namespace (flat keys from en/landing.json).
 // SECURITY (T-7-02-01): getCachedImpactReport returns aggregate only — no PII.
 import Link from "next/link";
-import { HandHeart, MapPin } from "lucide-react";
+import { HandHeart, MapPin, LayoutDashboard } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { ROUTES } from "@/config/constants";
 import { getTranslations } from "next-intl/server";
+import { getSession } from "@/server/auth/session";
 import { getCachedImpactReport } from "@/server/db/repositories/impact";
 import { ImpactCounter } from "./ImpactCounter";
 import { HowItWorks } from "./HowItWorks";
 import { RevealOnScroll } from "./RevealOnScroll";
 
 export async function LandingPage() {
-  const [t, impact] = await Promise.all([
+  const [t, tNav, impact, session] = await Promise.all([
     getTranslations("landing"),
+    getTranslations("common"),
     getCachedImpactReport(),
+    getSession(),
   ]);
+  // Auth-aware hero: a signed-in visitor gets a direct dashboard CTA instead of
+  // the sign-up "Donate / Become a volunteer" pair (which would just bounce them
+  // through auth and back into the app).
+  const dashboardHref = session
+    ? session.role === "admin"
+      ? ROUTES.adminDashboard
+      : ROUTES.portalDashboard
+    : null;
 
   return (
     <main id="main-content" className="overflow-x-clip">
@@ -54,16 +65,25 @@ export async function LandingPage() {
 
           <RevealOnScroll delay={190}>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link href={ROUTES.signUp} className={buttonVariants({ size: "lg" })}>
-                <HandHeart className="size-5" aria-hidden />
-                {t("donateFood")}
-              </Link>
-              <Link
-                href={ROUTES.becomeVolunteer}
-                className={buttonVariants({ variant: "outline", size: "lg" })}
-              >
-                {t("becomeVol")}
-              </Link>
+              {dashboardHref ? (
+                <Link href={dashboardHref} className={buttonVariants({ size: "lg" })}>
+                  <LayoutDashboard className="size-5" aria-hidden />
+                  {tNav("nav.dashboard")}
+                </Link>
+              ) : (
+                <>
+                  <Link href={ROUTES.signUp} className={buttonVariants({ size: "lg" })}>
+                    <HandHeart className="size-5" aria-hidden />
+                    {t("donateFood")}
+                  </Link>
+                  <Link
+                    href={ROUTES.becomeVolunteer}
+                    className={buttonVariants({ variant: "outline", size: "lg" })}
+                  >
+                    {t("becomeVol")}
+                  </Link>
+                </>
+              )}
             </div>
           </RevealOnScroll>
 

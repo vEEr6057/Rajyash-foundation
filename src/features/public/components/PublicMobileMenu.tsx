@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 import { useTranslations } from "next-intl";
 import { Menu } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -25,8 +26,13 @@ const NAV = [
 
 /** Mobile-only header menu — collapses nav + locale + theme + auth into a Sheet
  * so the public header never overflows on small screens. */
-export function PublicMobileMenu() {
+export function PublicMobileMenu({
+  dashboardHref,
+}: {
+  dashboardHref?: string | null;
+}) {
   const t = useTranslations("landing");
+  const tNav = useTranslations("common");
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -55,20 +61,38 @@ export function PublicMobileMenu() {
           <ThemeToggle />
         </div>
         <div className="mt-auto flex flex-col gap-2">
-          <Link
-            href={ROUTES.signIn}
-            onClick={() => setOpen(false)}
-            className={buttonVariants({ variant: "outline" })}
-          >
-            {t("signin")}
-          </Link>
-          <Link
-            href={ROUTES.becomeVolunteer}
-            onClick={() => setOpen(false)}
-            className={buttonVariants({})}
-          >
-            {t("becomeVol")}
-          </Link>
+          {dashboardHref ? (
+            <div className="flex items-center justify-between gap-2">
+              <Link
+                href={dashboardHref}
+                onClick={() => setOpen(false)}
+                className={buttonVariants({ className: "flex-1" })}
+              >
+                {tNav("nav.dashboard")}
+              </Link>
+              <UserButton
+                appearance={{ elements: { avatarBox: "size-9" } }}
+                userProfileMode="modal"
+              />
+            </div>
+          ) : (
+            <>
+              <Link
+                href={ROUTES.signIn}
+                onClick={() => setOpen(false)}
+                className={buttonVariants({ variant: "outline" })}
+              >
+                {t("signin")}
+              </Link>
+              <Link
+                href={ROUTES.becomeVolunteer}
+                onClick={() => setOpen(false)}
+                className={buttonVariants({})}
+              >
+                {t("becomeVol")}
+              </Link>
+            </>
+          )}
         </div>
       </SheetContent>
     </Sheet>
