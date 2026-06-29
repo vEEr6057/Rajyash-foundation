@@ -113,7 +113,29 @@
       "deliveries": "Deliveries completed"
     },
     "exportButton": "Download filtered pickups (CSV)",
-    "totalsNote": "Totals count delivered pickups by delivery date. Servings and kilograms are shown separately (no conversion)."
+    "totalsNote": "Totals count delivered pickups by delivery date. Servings and kilograms are shown separately (no conversion).",
+    "runExportButton": "Download run impact report (CSV)",
+    "approximationNote": "Run totals show stop counts only. No per-delivery headcount — meal totals are by partner (delivered pickups).",
+    "breakdowns": {
+      "runTitle": "Run summary",
+      "runDate": "Date",
+      "runSlot": "Slot",
+      "runStatus": "Status",
+      "runPickupStops": "Pickup stops",
+      "runDropStops": "Drop stops",
+      "runCompletedDrops": "Completed drops",
+      "runEmpty": "No runs in this date range.",
+      "destTitle": "Destination breakdown",
+      "destName": "Destination",
+      "destDrops": "Completed drops",
+      "destEmpty": "No completed drops in this date range.",
+      "partnerTitle": "Partner breakdown",
+      "partnerName": "Partner",
+      "partnerServings": "Servings",
+      "partnerKg": "kg",
+      "partnerDeliveries": "Delivered pickups",
+      "partnerEmpty": "No delivered pickups in this date range."
+    }
   },
   "destinations": {
     "title": "Destinations",
