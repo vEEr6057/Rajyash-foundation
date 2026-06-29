@@ -4,6 +4,9 @@
    Tailwind CSS v4 + shadcn/ui. Dark mode via class="dark" on <html>.
    ============================================================ */
 @import "tailwindcss";
+/* Radix overlay enter/exit animations (data-[state] + animate-in/out utilities)
+   used by Dialog / Sheet / Dropdown / Select / Tabs. Tailwind v4 compatible. */
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
