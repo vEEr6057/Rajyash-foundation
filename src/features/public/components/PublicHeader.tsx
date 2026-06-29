@@ -3,15 +3,27 @@
 // The global sticky header in root layout.tsx is REMOVED so this is the only
 // header on the landing page (header reconciliation — 07-02 objective).
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 import { buttonVariants } from "@/components/ui/button";
 import { ROUTES } from "@/config/constants";
 import { getTranslations } from "next-intl/server";
+import { getSession } from "@/server/auth/session";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { PublicMobileMenu } from "./PublicMobileMenu";
 
 export async function PublicHeader() {
-  const t = await getTranslations("landing");
+  const [t, tNav, session] = await Promise.all([
+    getTranslations("landing"),
+    getTranslations("common"),
+    getSession(),
+  ]);
+  // Auth-aware: a signed-in visitor sees Dashboard + account menu, not Sign in / Join.
+  const dashboardHref = session
+    ? session.role === "admin"
+      ? ROUTES.adminDashboard
+      : ROUTES.portalDashboard
+    : null;
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <a
@@ -68,22 +80,39 @@ export async function PublicHeader() {
         <div className="hidden items-center gap-2 md:flex">
           <LanguageSwitcher />
           <ThemeToggle />
-          <Link
-            href={ROUTES.signIn}
-            className={buttonVariants({ variant: "ghost", size: "sm" })}
-          >
-            {t("signin")}
-          </Link>
-          <Link
-            href={ROUTES.becomeVolunteer}
-            className={buttonVariants({ size: "sm" })}
-          >
-            {t("becomeVol")}
-          </Link>
+          {dashboardHref ? (
+            <>
+              <Link
+                href={dashboardHref}
+                className={buttonVariants({ size: "sm" })}
+              >
+                {tNav("nav.dashboard")}
+              </Link>
+              <UserButton
+                appearance={{ elements: { avatarBox: "size-8" } }}
+                userProfileMode="modal"
+              />
+            </>
+          ) : (
+            <>
+              <Link
+                href={ROUTES.signIn}
+                className={buttonVariants({ variant: "ghost", size: "sm" })}
+              >
+                {t("signin")}
+              </Link>
+              <Link
+                href={ROUTES.becomeVolunteer}
+                className={buttonVariants({ size: "sm" })}
+              >
+                {t("becomeVol")}
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile: collapse everything into a Sheet menu */}
-        <PublicMobileMenu />
+        <PublicMobileMenu dashboardHref={dashboardHref} />
       </div>
     </header>
   );
