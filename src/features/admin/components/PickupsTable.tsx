@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
-import { MoreHorizontal, Eye, UserPlus } from "lucide-react";
+import { MoreHorizontal, Eye, UserPlus, ArrowUp, ArrowDown, ChevronsUpDown } from "lucide-react";
 import {
   Table,
   TableHeader,
@@ -44,34 +45,74 @@ import { ROUTES } from "@/config/constants";
 import type { Pickup } from "@/server/db/schema";
 
 type Volunteer = { id: string; name: string };
+type SortKey = "status" | "category" | "quantity" | "createdAt";
 
 export function PickupsTable({
   pickups,
   volunteers,
+  sort,
+  dir,
 }: {
   pickups: Pickup[];
   volunteers: Volunteer[];
+  sort: SortKey;
+  dir: "asc" | "desc";
 }) {
   const t = useTranslations("admin");
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [assignFor, setAssignFor] = useState<Pickup | null>(null);
 
   const fmtDate = (d: Date) =>
     new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(d);
+
+  // Sortable column header — toggles asc/desc via URL, resets to page 1, sets aria-sort.
+  function SortHead({
+    col,
+    label,
+    className,
+  }: {
+    col: SortKey;
+    label: string;
+    className?: string;
+  }) {
+    const active = sort === col;
+    const nextDir = active && dir === "asc" ? "desc" : "asc";
+    const q = new URLSearchParams(searchParams);
+    q.set("sort", col);
+    q.set("dir", active ? nextDir : "asc");
+    q.set("page", "1");
+    const Icon = active ? (dir === "asc" ? ArrowUp : ArrowDown) : ChevronsUpDown;
+    return (
+      <TableHead
+        className={className}
+        aria-sort={active ? (dir === "asc" ? "ascending" : "descending") : "none"}
+      >
+        <Link
+          href={`${pathname}?${q.toString()}`}
+          className="inline-flex items-center gap-1 hover:text-foreground"
+        >
+          {label}
+          <Icon className={active ? "size-3.5" : "size-3.5 opacity-40"} />
+        </Link>
+      </TableHead>
+    );
+  }
 
   return (
     <>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("pickups.table.status")}</TableHead>
-            <TableHead>{t("pickups.table.category")}</TableHead>
-            <TableHead>{t("pickups.table.quantity")}</TableHead>
+            <SortHead col="status" label={t("pickups.table.status")} />
+            <SortHead col="category" label={t("pickups.table.category")} />
+            <SortHead col="quantity" label={t("pickups.table.quantity")} />
             <TableHead className="hidden md:table-cell">{t("pickups.table.location")}</TableHead>
             <TableHead className="hidden sm:table-cell">{t("pickups.table.volunteer")}</TableHead>
-            <TableHead className="hidden lg:table-cell">{t("pickups.table.createdAt")}</TableHead>
+            <SortHead col="createdAt" label={t("pickups.table.createdAt")} className="hidden lg:table-cell" />
             <TableHead className="w-12 text-right">{t("pickups.table.actions")}</TableHead>
           </TableRow>
         </TableHeader>
