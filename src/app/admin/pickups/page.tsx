@@ -35,10 +35,16 @@ export default async function AdminPickupsPage({
   }
   const filters = parseAdminFilters(params);
   const page = Math.max(1, Number(params.get("page")) || 1);
+  const SORT_KEYS = ["status", "category", "quantity", "createdAt"] as const;
+  const sortParam = params.get("sort");
+  const sort = (SORT_KEYS as readonly string[]).includes(sortParam ?? "")
+    ? (sortParam as (typeof SORT_KEYS)[number])
+    : "createdAt";
+  const dir = params.get("dir") === "asc" ? "asc" : "desc";
 
   const [t, { rows, total }, volunteers, partners] = await Promise.all([
     getTranslations("admin"),
-    pickupsRepo.listForAdminPaged(filters, page, ADMIN_PAGE_SIZE),
+    pickupsRepo.listForAdminPaged(filters, page, ADMIN_PAGE_SIZE, sort, dir),
     profilesRepo.listAssignableVolunteers(),
     partnersRepo.list(),
   ]);
@@ -74,7 +80,7 @@ export default async function AdminPickupsPage({
         }}
       />
 
-      <PickupsTable pickups={rows} volunteers={volunteers} />
+      <PickupsTable pickups={rows} volunteers={volunteers} sort={sort} dir={dir} />
 
       <Pagination page={page} totalPages={totalPages} hrefForPage={hrefForPage} />
     </div>

@@ -1,8 +1,17 @@
 import "server-only";
-import { and, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { pickups, type NewPickup, type Pickup } from "@/server/db/schema";
 import type { PickupStatus } from "@/config/constants";
+
+/** Columns the admin pickups table can sort by (server-side). */
+export const PICKUP_SORT_COLUMNS = {
+  status: pickups.status,
+  category: pickups.category,
+  quantity: pickups.quantity,
+  createdAt: pickups.createdAt,
+} as const;
+export type PickupSortKey = keyof typeof PICKUP_SORT_COLUMNS;
 
 /** Admin pickups filter (D-03). All optional; and() drops undefined natively. */
 export interface AdminPickupFilters {
@@ -177,6 +186,8 @@ export const pickupsRepo = {
     f: AdminPickupFilters,
     page: number,
     pageSize: number,
+    sort: PickupSortKey = "createdAt",
+    dir: "asc" | "desc" = "desc",
   ): Promise<{ rows: Pickup[]; total: number }> {
     const db = getDb();
     const where = and(
@@ -186,12 +197,14 @@ export const pickupsRepo = {
       f.from ? gte(pickups.createdAt, f.from) : undefined,
       f.to ? lte(pickups.createdAt, f.to) : undefined,
     );
+    const col = PICKUP_SORT_COLUMNS[sort] ?? pickups.createdAt;
+    const orderBy = dir === "asc" ? asc(col) : desc(col);
     const [rows, totalRows] = await Promise.all([
       db
         .select()
         .from(pickups)
         .where(where)
-        .orderBy(desc(pickups.createdAt))
+        .orderBy(orderBy)
         .limit(pageSize)
         .offset((page - 1) * pageSize),
       db

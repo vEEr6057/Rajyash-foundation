@@ -57,13 +57,14 @@ export default async function RootLayout({
         elements: {
           rootBox: "mx-auto w-full",
           cardBox: "shadow-xl",
-          // force the single social button to show its label, not an icon-only "G"
-          socialButtonsBlockButton__google: "justify-start",
           card: "border border-black/[0.06] bg-white",
           headerTitle: "font-display text-xl font-bold text-gray-900",
           headerSubtitle: "text-sm text-gray-500",
           socialButtonsBlockButton:
-            "border border-black/10 bg-white text-gray-800 hover:bg-black/[0.03]",
+            "border border-black/10 bg-white text-gray-800 hover:bg-black/[0.03] justify-center gap-3",
+          // the provider label exists in the DOM but renders hidden for a single
+          // provider — force it visible so it reads "Continue with Google".
+          socialButtonsBlockButtonText: "!inline-block text-sm font-medium text-gray-800",
           dividerLine: "bg-black/10",
           dividerText: "text-gray-400",
           formFieldLabel: "text-gray-700 font-medium",
