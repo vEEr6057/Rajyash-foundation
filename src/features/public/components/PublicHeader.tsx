@@ -8,6 +8,7 @@ import { ROUTES } from "@/config/constants";
 import { getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
+import { PublicMobileMenu } from "./PublicMobileMenu";
 
 export async function PublicHeader() {
   const t = await getTranslations("landing");
@@ -63,8 +64,8 @@ export async function PublicHeader() {
           </Link>
         </nav>
 
-        {/* Right side: language + theme + auth CTAs */}
-        <div className="flex items-center gap-2">
+        {/* Right side: desktop cluster (hidden on mobile to prevent overflow) */}
+        <div className="hidden items-center gap-2 md:flex">
           <LanguageSwitcher />
           <ThemeToggle />
           <Link
@@ -77,10 +78,12 @@ export async function PublicHeader() {
             href={ROUTES.becomeVolunteer}
             className={buttonVariants({ size: "sm" })}
           >
-            <span className="hidden sm:inline">{t("becomeVol")}</span>
-            <span className="sm:hidden">{t("becomeVolShort")}</span>
+            {t("becomeVol")}
           </Link>
         </div>
+
+        {/* Mobile: collapse everything into a Sheet menu */}
+        <PublicMobileMenu />
       </div>
     </header>
   );

@@ -1,9 +1,11 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { setRunStatus, deleteRun } from "@/features/runs/actions/runActions";
 import {
   VALID_RUN_TRANSITIONS,
@@ -21,7 +23,9 @@ export function RunStatusControls({
 }) {
   const router = useRouter();
   const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const [pending, start] = useTransition();
+  const [confirm, setConfirm] = useState<null | "cancel" | "delete">(null);
 
   const nextStatuses = VALID_RUN_TRANSITIONS[status];
   const canDelete = status === "planned";
@@ -30,16 +34,22 @@ export function RunStatusControls({
 
   function advance(to: RunStatus) {
     start(async () => {
-      await setRunStatus(runId, to);
-      router.refresh();
+      const res = await setRunStatus(runId, to);
+      if (res.ok) {
+        toast.success(tCommon("toast.updated"));
+        setConfirm(null);
+        router.refresh();
+      } else toast.error(res.message ?? tCommon("toast.error"));
     });
   }
 
   function doDelete() {
     start(async () => {
       const res = await deleteRun(runId);
-      if (res.ok) router.push(ROUTES.adminRuns);
-      else router.refresh();
+      if (res.ok) {
+        toast.success(tCommon("toast.deleted"));
+        router.push(ROUTES.adminRuns);
+      } else toast.error(res.message ?? tCommon("toast.error"));
     });
   }
 
@@ -51,16 +61,37 @@ export function RunStatusControls({
           size="sm"
           variant={to === "cancelled" ? "destructive" : "leaf"}
           disabled={pending}
-          onClick={() => advance(to)}
+          onClick={() => (to === "cancelled" ? setConfirm("cancel") : advance(to))}
         >
           {t("runs.status.advance", { status: RUN_STATUS_LABELS[to] })}
         </Button>
       ))}
       {canDelete && (
-        <Button size="sm" variant="destructive" disabled={pending} onClick={doDelete}>
+        <Button size="sm" variant="destructive" disabled={pending} onClick={() => setConfirm("delete")}>
           {t("runs.delete")}
         </Button>
       )}
+
+      <ConfirmDialog
+        open={confirm === "cancel"}
+        onOpenChange={(o) => !o && setConfirm(null)}
+        title={tCommon("confirm.cancelRunTitle")}
+        description={tCommon("confirm.cancelRunBody")}
+        confirmLabel={tCommon("confirm.cancelRunConfirm")}
+        cancelLabel={tCommon("confirm.keep")}
+        pending={pending}
+        onConfirm={() => advance("cancelled")}
+      />
+      <ConfirmDialog
+        open={confirm === "delete"}
+        onOpenChange={(o) => !o && setConfirm(null)}
+        title={tCommon("confirm.deleteTitle", { item: "run" })}
+        description={tCommon("confirm.deleteBody")}
+        confirmLabel={tCommon("confirm.deleteConfirm")}
+        cancelLabel={tCommon("confirm.keep")}
+        pending={pending}
+        onConfirm={doDelete}
+      />
     </div>
   );
 }

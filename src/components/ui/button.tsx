@@ -21,7 +21,8 @@ const buttonVariants = cva(
         sm: "h-9 px-3",
         md: "h-11 px-5",
         lg: "h-12 px-6 text-base",
-        icon: "size-9",
+        // 40px desktop, 44px on touch/coarse pointers (Apple 44 / Material 48 min).
+        icon: "size-10 [@media(pointer:coarse)]:size-11",
       },
     },
     defaultVariants: { variant: "primary", size: "md" },

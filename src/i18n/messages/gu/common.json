@@ -29,6 +29,32 @@
     "retry": "ફરી પ્રયાસ",
     "view": "જુઓ"
   },
+  "toast": {
+    "saved": "સાચવ્યું.",
+    "updated": "અપડેટ થયું.",
+    "deleted": "કાઢી નાખ્યું.",
+    "sent": "મોકલ્યું.",
+    "done": "થઈ ગયું.",
+    "error": "કંઈક ખોટું થયું. ફરી પ્રયાસ કરો."
+  },
+  "confirm": {
+    "deleteTitle": "આ {item} કાઢી નાખવું?",
+    "deleteBody": "આ પાછું લાવી શકાશે નહીં.",
+    "deleteConfirm": "કાઢી નાખો",
+    "deactivateTitle": "{name} ને નિષ્ક્રિય કરવું?",
+    "deactivateBody": "તેઓ સાઇન-આઉટ થશે અને ફરી સક્રિય ન થાય ત્યાં સુધી ઍક્સેસ ગુમાવશે.",
+    "deactivateConfirm": "નિષ્ક્રિય કરો",
+    "cancelRunTitle": "આ રન રદ કરવી?",
+    "cancelRunBody": "રન અને તેના સ્ટોપ રદ તરીકે ચિહ્નિત થશે.",
+    "cancelRunConfirm": "રન રદ કરો",
+    "cancelPickupTitle": "આ પિકઅપ રદ કરવું?",
+    "cancelPickupBody": "સ્વયંસેવકો હવે તે જોઈ શકશે નહીં.",
+    "cancelPickupConfirm": "પિકઅપ રદ કરો",
+    "removeStopTitle": "આ સ્ટોપ દૂર કરવો?",
+    "removeStopBody": "તે રનમાંથી દૂર થશે.",
+    "removeStopConfirm": "દૂર કરો",
+    "keep": "રાખો"
+  },
   "status": {
     "requested": "વિનંતી",
     "accepted": "સ્વીકૃત",

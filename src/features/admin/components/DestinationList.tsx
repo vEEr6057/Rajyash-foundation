@@ -3,8 +3,10 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Table,
   TableHeader,
@@ -32,8 +34,22 @@ import { DestinationForm } from "./DestinationForm";
 
 function Row({ d, onEdit }: { d: Destination; onEdit: (d: Destination) => void }) {
   const router = useRouter();
+  const t = useTranslations("admin");
   const tCommon = useTranslations("common");
   const [pending, start] = useTransition();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  const doDelete = () =>
+    start(async () => {
+      const res = await deleteDestination(d.id);
+      if (res.ok) {
+        toast.success(tCommon("toast.deleted"));
+        setConfirmOpen(false);
+        router.refresh();
+      } else {
+        toast.error(res.message ?? tCommon("toast.error"));
+      }
+    });
 
   return (
     <TableRow>
@@ -58,19 +74,27 @@ function Row({ d, onEdit }: { d: Destination; onEdit: (d: Destination) => void }
             </DropdownMenuItem>
             <DropdownMenuItem
               variant="destructive"
-              disabled={pending}
-              onClick={() =>
-                start(async () => {
-                  const res = await deleteDestination(d.id);
-                  if (res.ok) router.refresh();
-                })
-              }
+              onSelect={(e) => {
+                e.preventDefault();
+                setConfirmOpen(true);
+              }}
             >
               <Trash2 /> {tCommon("buttons.delete")}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </TableCell>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={tCommon("confirm.deleteTitle", { item: t("destinations.title").toLowerCase() })}
+        description={tCommon("confirm.deleteBody")}
+        confirmLabel={tCommon("confirm.deleteConfirm")}
+        cancelLabel={tCommon("confirm.keep")}
+        pending={pending}
+        onConfirm={doDelete}
+      />
     </TableRow>
   );
 }

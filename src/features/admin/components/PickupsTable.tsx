@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
+import { toast } from "sonner";
 import { MoreHorizontal, Eye, UserPlus } from "lucide-react";
 import {
   Table,
@@ -203,8 +204,13 @@ function AssignDialog({
               setErr(null);
               start(async () => {
                 const res = await assignPickup(pickup.id, vol);
-                if (!res.ok) setErr(res.message ?? t("pickups.assign.errorMessage"));
-                else onAssigned();
+                if (!res.ok) {
+                  setErr(res.message ?? t("pickups.assign.errorMessage"));
+                  toast.error(res.message ?? t("pickups.assign.errorMessage"));
+                } else {
+                  toast.success(t("pickups.assign.successMessage"));
+                  onAssigned();
+                }
               });
             }}
           >

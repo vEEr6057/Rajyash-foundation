@@ -29,6 +29,32 @@
     "retry": "पुनः प्रयास",
     "view": "देखें"
   },
+  "toast": {
+    "saved": "सहेजा गया.",
+    "updated": "अपडेट हो गया.",
+    "deleted": "हटा दिया.",
+    "sent": "भेज दिया.",
+    "done": "हो गया.",
+    "error": "कुछ गलत हुआ. फिर से प्रयास करें."
+  },
+  "confirm": {
+    "deleteTitle": "यह {item} हटाएं?",
+    "deleteBody": "इसे पूर्ववत नहीं किया जा सकता.",
+    "deleteConfirm": "हटाएं",
+    "deactivateTitle": "{name} को निष्क्रिय करें?",
+    "deactivateBody": "वे साइन-आउट हो जाएंगे और पुनः सक्रिय होने तक पहुँच खो देंगे.",
+    "deactivateConfirm": "निष्क्रिय करें",
+    "cancelRunTitle": "यह रन रद्द करें?",
+    "cancelRunBody": "रन और इसके स्टॉप रद्द के रूप में चिह्नित होंगे.",
+    "cancelRunConfirm": "रन रद्द करें",
+    "cancelPickupTitle": "यह पिकअप रद्द करें?",
+    "cancelPickupBody": "स्वयंसेवक अब इसे नहीं देखेंगे.",
+    "cancelPickupConfirm": "पिकअप रद्द करें",
+    "removeStopTitle": "यह स्टॉप हटाएं?",
+    "removeStopBody": "यह रन से हटा दिया जाएगा.",
+    "removeStopConfirm": "हटाएं",
+    "keep": "रखें"
+  },
   "status": {
     "requested": "अनुरोधित",
     "accepted": "स्वीकृत",
