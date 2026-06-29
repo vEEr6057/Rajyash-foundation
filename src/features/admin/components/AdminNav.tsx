@@ -7,7 +7,6 @@ import { useTranslations } from "next-intl";
 import {
   LayoutDashboard,
   PackageOpen,
-  PlusSquare,
   Route,
   MapPin,
   Building2,
@@ -28,7 +27,6 @@ import {
 const ICONS = {
   overview: LayoutDashboard,
   pickups: PackageOpen,
-  surplus: PlusSquare,
   runs: Route,
   destinations: MapPin,
   partners: Building2,
@@ -36,11 +34,12 @@ const ICONS = {
   reports: BarChart3,
 } as const;
 
-/** Single source of truth for admin nav order + routing. Labels resolved via i18n. */
+/** Single source of truth for admin nav order + routing. Labels resolved via i18n.
+ * 'Log surplus' is intentionally NOT a nav item — it's an action (sheet on the
+ * Pickups page + quick-action on the overview), not a section. */
 const NAV: { key: keyof typeof ICONS; href: string; labelKey: string }[] = [
   { key: "overview", href: ROUTES.adminDashboard, labelKey: "dashboard.overviewLink" },
   { key: "pickups", href: ROUTES.adminPickups, labelKey: "dashboard.pickupsLink" },
-  { key: "surplus", href: ROUTES.adminSurplusNew, labelKey: "dashboard.surplusLink" },
   { key: "runs", href: ROUTES.adminRuns, labelKey: "dashboard.runsLink" },
   { key: "destinations", href: ROUTES.adminDestinations, labelKey: "dashboard.destinationsLink" },
   { key: "partners", href: ROUTES.adminPartners, labelKey: "dashboard.partnersLink" },
