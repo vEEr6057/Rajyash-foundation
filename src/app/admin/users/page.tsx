@@ -3,7 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { profilesRepo } from "@/server/db/repositories/profiles";
-import { UserRow } from "@/features/admin/components/UserRow";
+import { UsersTable } from "@/features/admin/components/UsersTable";
 import { AddUserDialog } from "@/features/admin/components/AddUserDialog";
 
 export const dynamic = "force-dynamic";
@@ -32,11 +32,7 @@ export default async function AdminUsersPage() {
         </h1>
         <AddUserDialog />
       </div>
-      <div className="space-y-2">
-        {users.map((u) => (
-          <UserRow key={u.id} user={u} currentAdminId={session.userId} />
-        ))}
-      </div>
+      <UsersTable users={users} currentAdminId={session.userId} />
     </div>
   );
 }
