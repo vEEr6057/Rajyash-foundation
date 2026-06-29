@@ -34,11 +34,17 @@ export function RevealOnScroll({
       window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
     if (reduce) return; // leave visible, no animation
 
-    setArmed(true);
-
     const el = ref.current;
     if (!el) return;
 
+    // Already in view on mount (above-fold) → reveal immediately, never hide.
+    // Prevents the "empty first paint" where above-fold content flashed hidden.
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.95) {
+      setShown(true);
+      return;
+    }
+
+    setArmed(true);
     const io = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
@@ -52,7 +58,12 @@ export function RevealOnScroll({
       { threshold: 0.15, rootMargin: "0px 0px -10% 0px" },
     );
     io.observe(el);
-    return () => io.disconnect();
+    // Safety: never leave content stuck hidden if the observer never fires.
+    const fallback = setTimeout(() => setShown(true), 1500);
+    return () => {
+      io.disconnect();
+      clearTimeout(fallback);
+    };
   }, []);
 
   // Hidden state only applies once armed and not yet shown.

@@ -3,7 +3,7 @@
 // All text from "landing" namespace (flat keys from en/landing.json).
 // SECURITY (T-7-02-01): getCachedImpactReport returns aggregate only — no PII.
 import Link from "next/link";
-import { HandHeart, MapPin, Sprout, Utensils, Truck } from "lucide-react";
+import { HandHeart, MapPin } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { ROUTES } from "@/config/constants";
 import { getTranslations } from "next-intl/server";
@@ -20,150 +20,61 @@ export async function LandingPage() {
 
   return (
     <main id="main-content" className="overflow-x-clip">
-      {/* ── HERO (premium: two-column, contained gradient depth) ─────── */}
-      <section className="relative overflow-hidden px-6 py-16 sm:py-24">
-        {/* Decorative brand gradient blobs — contained, transform/opacity only */}
-        <div aria-hidden className="pointer-events-none absolute inset-0">
-          <div
-            className="absolute -right-24 -top-32 size-[28rem] rounded-full blur-3xl"
-            style={{
-              background:
-                "radial-gradient(circle at 35% 35%, color-mix(in srgb, var(--saffron) 38%, transparent), transparent 70%)",
-            }}
-          />
-          <div
-            className="absolute -bottom-40 -left-32 size-[30rem] rounded-full blur-3xl"
-            style={{
-              background:
-                "radial-gradient(circle at 50% 50%, color-mix(in srgb, var(--leaf-bright) 28%, transparent), transparent 70%)",
-            }}
-          />
-        </div>
+      {/* ── HERO (editorial: oversized type + real-impact stat band) ──── */}
+      <section className="relative overflow-hidden px-6 pb-12 pt-16 sm:pt-24">
+        {/* single soft warm wash behind the headline (no floating blobs) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-[70%]"
+          style={{
+            background:
+              "radial-gradient(60% 100% at 50% 0%, color-mix(in srgb, var(--leaf-bright) 13%, transparent), transparent 72%)",
+          }}
+        />
 
-        <div className="relative z-10 mx-auto grid max-w-6xl items-center gap-10 lg:grid-cols-2 lg:gap-14">
-          {/* Text column */}
-          <div className="text-center lg:text-left">
-            <RevealOnScroll>
-              <span className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-sm font-semibold text-foreground shadow-sm">
-                <span className="rj-dot-live inline-block size-2 rounded-full bg-leaf-bright" aria-hidden="true" />
-                {t("heroLive")}
-              </span>
-            </RevealOnScroll>
+        <div className="relative z-10 mx-auto max-w-4xl text-center">
+          <RevealOnScroll>
+            <span className="mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-surface px-4 py-1.5 text-sm font-semibold text-foreground shadow-sm">
+              <span className="rj-dot-live inline-block size-2 rounded-full bg-leaf-bright" aria-hidden="true" />
+              {t("heroLive")}
+            </span>
+          </RevealOnScroll>
 
-            <RevealOnScroll delay={70}>
-              <h1 className="font-display text-4xl font-extrabold leading-[1.03] tracking-tight text-balance text-foreground sm:text-5xl lg:text-6xl">
-                {t("heroTitle")}
-              </h1>
-            </RevealOnScroll>
+          <RevealOnScroll delay={70}>
+            <h1 className="font-display text-5xl font-extrabold leading-[0.98] tracking-tight text-balance text-foreground sm:text-6xl lg:text-7xl">
+              {t("heroTitle")}
+            </h1>
+          </RevealOnScroll>
 
-            <RevealOnScroll delay={130}>
-              <p className="mx-auto mt-5 max-w-xl text-muted-foreground sm:text-lg lg:mx-0">
-                {t("heroSub")}
-              </p>
-            </RevealOnScroll>
+          <RevealOnScroll delay={130}>
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-muted-foreground">
+              {t("heroSub")}
+            </p>
+          </RevealOnScroll>
 
-            <RevealOnScroll delay={190}>
-              <div className="mt-8 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
-                <Link href={ROUTES.signUp} className={buttonVariants({ size: "lg" })}>
-                  <HandHeart className="size-5" aria-hidden />
-                  {t("donateFood")}
-                </Link>
-                <Link
-                  href={ROUTES.becomeVolunteer}
-                  className={buttonVariants({ variant: "outline", size: "lg" })}
-                >
-                  {t("becomeVol")}
-                </Link>
-              </div>
-            </RevealOnScroll>
-
-            <RevealOnScroll delay={240}>
-              <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-muted-foreground lg:justify-start">
-                <MapPin className="size-4" aria-hidden />
-                {t("heroTrust")}
-              </p>
-            </RevealOnScroll>
-          </div>
-
-          {/* Visual column — branded gradient panel with a central motif and
-              ambient floating impact chips (real aggregate numbers). */}
-          <RevealOnScroll delay={160} className="relative mx-auto w-full max-w-md lg:max-w-none">
-            <div
-              className="relative aspect-[5/4] w-full overflow-hidden rounded-[1.75rem] border border-border shadow-lg sm:aspect-[16/10] lg:aspect-[4/5]"
-              style={{
-                background:
-                  "linear-gradient(150deg, color-mix(in srgb, var(--primary) 20%, var(--surface)), color-mix(in srgb, var(--leaf) 18%, var(--surface)))",
-              }}
-            >
-              {/* soft radial glow */}
-              <div
-                aria-hidden
-                className="absolute inset-0"
-                style={{
-                  background:
-                    "radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--leaf-bright) 22%, transparent), transparent 60%)",
-                }}
-              />
-              {/* central motif */}
-              <div className="absolute inset-0 grid place-items-center">
-                <div className="rj-float-slow grid size-36 place-items-center rounded-full border border-leaf/20 bg-leaf-soft/40 text-primary/70 backdrop-blur-sm">
-                  <HandHeart className="size-20" strokeWidth={1.3} aria-hidden />
-                </div>
-              </div>
-
-              {/* floating chip — meals (top-right) */}
-              <div
-                className="rj-float absolute right-4 top-5 flex items-center gap-2.5 rounded-2xl border border-border bg-surface/95 px-3.5 py-2.5 shadow-lg backdrop-blur"
-                style={{ animationDelay: "0.6s" }}
+          <RevealOnScroll delay={190}>
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link href={ROUTES.signUp} className={buttonVariants({ size: "lg" })}>
+                <HandHeart className="size-5" aria-hidden />
+                {t("donateFood")}
+              </Link>
+              <Link
+                href={ROUTES.becomeVolunteer}
+                className={buttonVariants({ variant: "outline", size: "lg" })}
               >
-                <span className="grid size-9 place-items-center rounded-lg bg-primary-soft text-primary-soft-foreground">
-                  <Utensils className="size-5" aria-hidden />
-                </span>
-                <span className="leading-tight">
-                  <span className="block font-display text-lg font-extrabold tracking-tight text-foreground tabular-nums">
-                    {impact.servings.toLocaleString()}
-                  </span>
-                  <span className="block text-[11px] font-semibold text-muted-foreground">
-                    {t("statMeals")}
-                  </span>
-                </span>
-              </div>
-
-              {/* floating chip — deliveries (mid-left) */}
-              <div
-                className="rj-float-slow absolute -left-3 top-1/2 flex items-center gap-2.5 rounded-2xl border border-border bg-surface/95 px-3.5 py-2.5 shadow-lg backdrop-blur"
-                style={{ animationDelay: "1.4s" }}
-              >
-                <span className="grid size-9 place-items-center rounded-lg bg-leaf-soft text-leaf-soft-foreground">
-                  <Truck className="size-5" aria-hidden />
-                </span>
-                <span className="leading-tight">
-                  <span className="block font-display text-lg font-extrabold tracking-tight text-foreground tabular-nums">
-                    {impact.count.toLocaleString()}
-                  </span>
-                  <span className="block text-[11px] font-semibold text-muted-foreground">
-                    {t("statDeliveries")}
-                  </span>
-                </span>
-              </div>
-            </div>
-
-            {/* anchor card — daily rate (bottom-left, overlaps panel) */}
-            <div className="rj-float absolute -left-3 -bottom-5 flex items-center gap-3 rounded-2xl border border-border bg-surface p-3.5 shadow-lg" style={{ animationDelay: "0.2s" }}>
-              <span className="grid size-11 place-items-center rounded-xl bg-leaf-soft text-leaf-soft-foreground">
-                <Sprout className="size-6" aria-hidden />
-              </span>
-              <span className="leading-tight">
-                <span className="block font-display text-2xl font-extrabold tracking-tight text-foreground">
-                  {t("aboutStat1")}
-                </span>
-                <span className="block text-xs font-semibold text-muted-foreground">
-                  {t("aboutStat1L")}
-                </span>
-              </span>
+                {t("becomeVol")}
+              </Link>
             </div>
           </RevealOnScroll>
+
+          <RevealOnScroll delay={240}>
+            <p className="mt-5 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+              <MapPin className="size-4" aria-hidden />
+              {t("heroTrust")}
+            </p>
+          </RevealOnScroll>
         </div>
+
       </section>
 
       {/* ── IMPACT COUNTER (client — receives server-fetched aggregate) ── */}
