@@ -1,17 +1,24 @@
-// Portal shell — adds the shared authed header (LanguageSwitcher + ThemeToggle)
-// above every /portal/* route so the locale is switchable from any portal page
-// (I18N-02). Pure chrome: per-page getSession/redirect guards stay in the pages
-// themselves (defence-in-depth, AUTH-05) — the layout adds no auth logic.
+// Portal shell — shared authed header + (mobile) role-aware bottom nav.
+// Per-page getSession/redirect guards stay in the pages themselves (AUTH-05);
+// the layout reads the session only to choose the bottom-nav items.
 import { ROUTES } from "@/config/constants";
 import { AuthedHeader } from "@/components/AuthedHeader";
+import { getSession } from "@/server/auth/session";
+import { PortalBottomNav } from "@/features/portal/components/PortalBottomNav";
 
-export default function PortalLayout({
+export default async function PortalLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const session = await getSession();
+  const role = session?.role;
+  const hasBottomNav = role === "donor" || role === "volunteer";
+
   return (
     <>
       <AuthedHeader homeHref={ROUTES.portalDashboard} />
-      {children}
+      {/* pad content above the fixed bottom nav on mobile */}
+      <div className={hasBottomNav ? "pb-20 lg:pb-0" : undefined}>{children}</div>
+      {role && <PortalBottomNav role={role} />}
     </>
   );
 }
