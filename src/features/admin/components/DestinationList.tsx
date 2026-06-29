@@ -3,86 +3,128 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableEmpty,
+} from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { deleteDestination } from "../actions/destinationActions";
 import type { Destination } from "@/server/db/schema";
 import { DestinationForm } from "./DestinationForm";
 
-function Row({ d }: { d: Destination }) {
+function Row({ d, onEdit }: { d: Destination; onEdit: (d: Destination) => void }) {
   const router = useRouter();
-  const t = useTranslations("admin");
   const tCommon = useTranslations("common");
-  const [editing, setEditing] = useState(false);
-  const [delErr, setDelErr] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
   return (
-    <div className="rounded-lg border border-border px-4 py-3 text-sm">
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-col gap-0.5">
-          <span className="font-medium">{d.name}</span>
-          <span className="text-xs text-muted-foreground">
-            {d.area ? `${d.area} · ` : ""}
-            {d.city} · {d.lat.toFixed(4)}, {d.lng.toFixed(4)}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button size="sm" variant="ghost" onClick={() => setEditing((v) => !v)}>
-            {editing ? t("destinations.editClose") : tCommon("buttons.edit")}
-          </Button>
-          <Button
-            size="sm"
-            variant="destructive"
-            disabled={pending}
-            onClick={() => {
-              setDelErr(null);
-              start(async () => {
-                const res = await deleteDestination(d.id);
-                if (res.ok) router.refresh();
-                else setDelErr(res.message);
-              });
-            }}
-          >
-            {tCommon("buttons.delete")}
-          </Button>
-        </div>
-      </div>
-      {delErr && <p className="mt-2 text-xs text-destructive">{delErr}</p>}
-      {editing && (
-        <div className="mt-3 border-t border-border pt-3">
-          <DestinationForm
-            mode="edit"
-            destinationId={d.id}
-            defaults={{
-              name: d.name,
-              area: d.area ?? "",
-              lat: d.lat,
-              lng: d.lng,
-              city: d.city,
-              active: d.active,
-            }}
-            onDone={() => setEditing(false)}
-          />
-        </div>
-      )}
-    </div>
+    <TableRow>
+      <TableCell className="font-medium">{d.name}</TableCell>
+      <TableCell className="text-muted-foreground">
+        {d.area ? `${d.area}, ` : ""}
+        {d.city}
+      </TableCell>
+      <TableCell className="hidden whitespace-nowrap text-muted-foreground sm:table-cell">
+        {d.lat.toFixed(4)}, {d.lng.toFixed(4)}
+      </TableCell>
+      <TableCell className="text-right">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="icon" aria-label={tCommon("buttons.edit")}>
+              <MoreHorizontal className="size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => onEdit(d)}>
+              <Pencil /> {tCommon("buttons.edit")}
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              variant="destructive"
+              disabled={pending}
+              onClick={() =>
+                start(async () => {
+                  const res = await deleteDestination(d.id);
+                  if (res.ok) router.refresh();
+                })
+              }
+            >
+              <Trash2 /> {tCommon("buttons.delete")}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </TableCell>
+    </TableRow>
   );
 }
 
 export function DestinationList({ destinations }: { destinations: Destination[] }) {
   const t = useTranslations("admin");
-  if (destinations.length === 0) {
-    return (
-      <p className="text-sm text-muted-foreground">
-        {t("destinations.noDestinations")}
-      </p>
-    );
-  }
+  const router = useRouter();
+  const [editing, setEditing] = useState<Destination | null>(null);
+
   return (
-    <div className="space-y-2">
-      {destinations.map((d) => (
-        <Row key={d.id} d={d} />
-      ))}
-    </div>
+    <>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>{t("destinations.form.name")}</TableHead>
+            <TableHead>{t("destinations.form.area")}</TableHead>
+            <TableHead className="hidden sm:table-cell">{t("destinations.form.lat")}</TableHead>
+            <TableHead className="w-12 text-right" />
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {destinations.length === 0 ? (
+            <TableEmpty colSpan={4}>{t("destinations.noDestinations")}</TableEmpty>
+          ) : (
+            destinations.map((d) => <Row key={d.id} d={d} onEdit={setEditing} />)
+          )}
+        </TableBody>
+      </Table>
+
+      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
+          <DialogHeader>
+            <DialogTitle>{t("destinations.addDestination")}</DialogTitle>
+          </DialogHeader>
+          {editing && (
+            <DestinationForm
+              mode="edit"
+              destinationId={editing.id}
+              defaults={{
+                name: editing.name,
+                area: editing.area ?? "",
+                lat: editing.lat,
+                lng: editing.lng,
+                city: editing.city,
+                active: editing.active,
+              }}
+              onDone={() => {
+                setEditing(null);
+                router.refresh();
+              }}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
