@@ -21,7 +21,13 @@ export default function AdminLayout({
             <UserButton />
           </div>
         </header>
-        <main className="min-w-0 flex-1 px-4 py-6 sm:px-6 lg:px-8">{children}</main>
+        <main
+          id="main-content"
+          tabIndex={-1}
+          className="min-w-0 flex-1 px-4 py-6 scroll-mt-20 focus:outline-none sm:px-6 lg:px-8"
+        >
+          {children}
+        </main>
       </div>
     </div>
   );

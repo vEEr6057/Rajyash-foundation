@@ -1,6 +1,9 @@
 {
   "appName": "Rajyash Foundation",
   "appTagline": "Food Rescue",
+  "a11y": {
+    "skipToContent": "Skip to content"
+  },
   "nav": {
     "home": "Home",
     "signIn": "Sign in",

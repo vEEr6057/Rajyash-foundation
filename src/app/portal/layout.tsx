@@ -17,7 +17,13 @@ export default async function PortalLayout({
     <>
       <AuthedHeader homeHref={ROUTES.portalDashboard} />
       {/* pad content above the fixed bottom nav on mobile */}
-      <div className={hasBottomNav ? "pb-20 lg:pb-0" : undefined}>{children}</div>
+      <div
+        id="main-content"
+        tabIndex={-1}
+        className={`scroll-mt-20 focus:outline-none${hasBottomNav ? " pb-20 lg:pb-0" : ""}`}
+      >
+        {children}
+      </div>
       {role && <PortalBottomNav role={role} />}
     </>
   );
