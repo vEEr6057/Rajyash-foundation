@@ -17,6 +17,10 @@ export default async function PortalDashboardPage() {
   const session = await getSession();
   if (!session) redirect(ROUTES.signIn);
   if (!session.onboardingComplete) redirect(ROUTES.onboarding);
+  // Role-home routing: admins manage from the admin area, drivers from their run.
+  // The donor/volunteer welcome below is not meaningful for them.
+  if (session.role === "admin") redirect(ROUTES.adminDashboard);
+  if (session.role === "driver") redirect(ROUTES.driverRun);
 
   const t = await getTranslations("portal");
 
@@ -64,11 +68,6 @@ export default async function PortalDashboardPage() {
                 <MapIcon className="size-4" /> {t("dashboard.mapView")}
               </Link>
             </div>
-          )}
-          {session.role === "admin" && (
-            <Link href={ROUTES.adminDashboard} className={buttonVariants({ size: "lg" })}>
-              {t("dashboard.adminDashboard")}
-            </Link>
           )}
         </CardContent>
       </Card>
