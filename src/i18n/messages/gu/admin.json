@@ -115,7 +115,29 @@
       "deliveries": "પૂર્ણ ડિલિવરી"
     },
     "exportButton": "ફ઼િલ્ટર કરેલ પિકઅપ ડાઉનલોડ (CSV)",
-    "totalsNote": "ડિલિવરી તારીખ મુજબ ડિલિવર થયેલ પિકઅપ ગણાય. ભોજન અને કિ.ગ્રા. અલગ દર્શાવ્યા (કોઈ રૂપાંતર નહીં)."
+    "totalsNote": "ડિલિવરી તારીખ મુજબ ડિલિવર થયેલ પિકઅપ ગણાય. ભોજન અને કિ.ગ્રા. અલગ દર્શાવ્યા (કોઈ રૂપાંતર નહીં).",
+    "runExportButton": "રન અસર અહેવાલ ડાઉનલોડ (CSV)",
+    "approximationNote": "રન ટોટલ ફક્ત સ્ટોપ ગણના દર્શાવે છે. પ્રતિ-ડિલિવરી હેડકાઉન્ટ નહીં — ભોજન ટોટલ ભાગીદાર મુજબ છે.",
+    "breakdowns": {
+      "runTitle": "રન સારાંશ",
+      "runDate": "તારીખ",
+      "runSlot": "સ્લૉટ",
+      "runStatus": "સ્ટેટસ",
+      "runPickupStops": "પિકઅપ સ્ટૉપ",
+      "runDropStops": "ડ્રોપ સ્ટૉપ",
+      "runCompletedDrops": "પૂર્ણ ડ્રોપ",
+      "runEmpty": "આ તારીખ સ્તર પર કોઈ રન નથી.",
+      "destTitle": "ગંતવ્ય વિભાજન",
+      "destName": "ગંતવ્ય",
+      "destDrops": "પૂર્ણ ડ્રોપ",
+      "destEmpty": "આ તારીખ સ્તર પર કોઈ ડ્રોપ નથી.",
+      "partnerTitle": "ભાગીદાર વિભાજન",
+      "partnerName": "ભાગીદાર",
+      "partnerServings": "ભોજન",
+      "partnerKg": "કિ.ગ્રા.",
+      "partnerDeliveries": "ડિલિવર પિકઅપ",
+      "partnerEmpty": "આ તારીખ સ્તર પર કોઈ ડિલિવર થયેલ પિકઅપ નથી."
+    }
   },
   "destinations": {
     "_review": "pending",
