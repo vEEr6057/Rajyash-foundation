@@ -103,7 +103,19 @@
     "myPickups": "મારા પિકઅપ",
     "browsePickups": "પિકઅપ જુઓ",
     "mapView": "નકશો",
-    "adminDashboard": "એડ્મિન ડૅશબોર્ડ"
+    "adminDashboard": "એડ્મિન ડૅશબોર્ડ",
+    "recentTitle": "તાજેતરના પિકઅપ",
+    "activeTitle": "તમારા ચાલુ પિકઅપ",
+    "noActive": "તમારી પાસે કોઈ ચાલુ પિકઅપ નથી. દાવો કરવા બોર્ડ જુઓ.",
+    "stats": {
+      "total": "કુલ પોસ્ટ",
+      "open": "ખુલ્લા",
+      "active": "ચાલુ",
+      "delivered": "પહોંચાડ્યું",
+      "openNow": "હાલ ખુલ્લા",
+      "myActive": "મારા ચાલુ",
+      "deliveredByMe": "મેં પહોંચાડ્યું"
+    }
   },
   "run": {
     "_review": "pending",
