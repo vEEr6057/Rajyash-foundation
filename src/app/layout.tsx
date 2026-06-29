@@ -48,6 +48,24 @@ export default async function RootLayout({
           borderRadius: "0.75rem",
           fontFamily: "var(--font-mukta), system-ui, sans-serif",
         },
+        elements: {
+          rootBox: "mx-auto w-full",
+          cardBox: "shadow-xl",
+          card: "border border-black/[0.06] bg-white",
+          headerTitle: "font-display text-xl font-bold text-gray-900",
+          headerSubtitle: "text-sm text-gray-500",
+          socialButtonsBlockButton:
+            "border border-black/10 bg-white text-gray-800 hover:bg-black/[0.03]",
+          dividerLine: "bg-black/10",
+          dividerText: "text-gray-400",
+          formFieldLabel: "text-gray-700 font-medium",
+          formFieldInput:
+            "border border-black/15 bg-white text-gray-900 focus:border-[#2E7A47]",
+          formButtonPrimary:
+            "bg-[#2E7A47] text-white hover:bg-[#256b3c] shadow-sm normal-case font-semibold",
+          footerActionLink: "text-[#2E7A47] hover:text-[#256b3c] font-semibold",
+          identityPreviewEditButton: "text-[#2E7A47]",
+        },
       }}
     >
       <html lang={locale} suppressHydrationWarning>

@@ -101,7 +101,19 @@
     "myPickups": "My pickups",
     "browsePickups": "Browse pickups",
     "mapView": "Map view",
-    "adminDashboard": "Admin dashboard"
+    "adminDashboard": "Admin dashboard",
+    "recentTitle": "Recent pickups",
+    "activeTitle": "Your active pickups",
+    "noActive": "You have no active pickups. Browse the board to claim one.",
+    "stats": {
+      "total": "Total posted",
+      "open": "Open",
+      "active": "In progress",
+      "delivered": "Delivered",
+      "openNow": "Open now",
+      "myActive": "My active",
+      "deliveredByMe": "Delivered by me"
+    }
   },
   "run": {
     "title": "My Run",

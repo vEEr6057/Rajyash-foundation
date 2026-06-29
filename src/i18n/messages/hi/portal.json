@@ -103,7 +103,19 @@
     "myPickups": "मेरे पिकअप",
     "browsePickups": "पिकअप देखें",
     "mapView": "नक्शा",
-    "adminDashboard": "एडमिन डैशबोर्ड"
+    "adminDashboard": "एडमिन डैशबोर्ड",
+    "recentTitle": "हाल के पिकअप",
+    "activeTitle": "आपके सक्रिय पिकअप",
+    "noActive": "आपके कोई सक्रिय पिकअप नहीं हैं। दावा करने के लिए बोर्ड देखें।",
+    "stats": {
+      "total": "कुल पोस्ट",
+      "open": "खुले",
+      "active": "प्रगति में",
+      "delivered": "डिलीवर",
+      "openNow": "अभी खुले",
+      "myActive": "मेरे सक्रिय",
+      "deliveredByMe": "मैंने डिलीवर किए"
+    }
   },
   "run": {
     "_review": "pending",
