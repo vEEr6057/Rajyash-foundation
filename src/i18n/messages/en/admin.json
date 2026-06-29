@@ -62,7 +62,16 @@
       "linkPartner": "Link partner"
     },
     "statusActive": "Active",
-    "statusDeactivated": "Deactivated"
+    "statusDeactivated": "Deactivated",
+    "invite": {
+      "button": "Add user",
+      "title": "Invite a user",
+      "subtitle": "Send an email invitation with a preset role. They finish sign-up via the link.",
+      "email": "Email",
+      "role": "Role",
+      "send": "Send invite",
+      "sent": "Invitation sent to {email}."
+    }
   },
   "partners": {
     "title": "Partners",

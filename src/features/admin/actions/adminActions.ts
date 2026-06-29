@@ -118,6 +118,36 @@ export async function setUserRole(
   }
 }
 
+/**
+ * Invite a new user by email with a preset role. Creates a Clerk invitation;
+ * the role rides along in publicMetadata and is applied to the user on sign-up,
+ * so onboarding picks it up and the profile is created with the right role.
+ */
+export async function inviteUser(email: string, role: Role): Promise<Result> {
+  try {
+    await admin();
+  } catch {
+    return fail("FORBIDDEN", "Admins only.");
+  }
+  const trimmed = email.trim().toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+    return fail("VALIDATION", "Enter a valid email address.");
+  }
+  if (!ROLES.includes(role)) return fail("VALIDATION", "Invalid role.");
+  try {
+    const client = await clerkClient();
+    await client.invitations.createInvitation({
+      emailAddress: trimmed,
+      publicMetadata: { role },
+      ignoreExisting: true,
+    });
+    return { ok: true };
+  } catch (e) {
+    logger.error("inviteUser failed", { email: trimmed, role, err: String(e) });
+    return fail("SERVER_ERROR", "Could not send the invitation.");
+  }
+}
+
 /** ADM-03: soft-deactivate (getSession blocks immediately) + best-effort Clerk ban. */
 export async function deactivateUser(targetUserId: string): Promise<Result> {
   let adminId: string;
