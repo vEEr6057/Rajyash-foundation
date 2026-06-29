@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
 import { PickupForm } from "@/features/pickups/components/PickupForm";
 import { logSurplus } from "@/features/admin/actions/intakeActions";
@@ -33,8 +34,10 @@ export function AdminSurplusForm({ partners }: Props) {
       const r = await logSurplus(partnerId, data);
       if (!r.ok) {
         setServerError(r.message);
+        toast.error(r.message);
         return;
       }
+      toast.success(t("surplus.submitLabel"));
       router.push(ROUTES.adminPickups);
     });
   }

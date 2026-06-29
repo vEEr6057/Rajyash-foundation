@@ -19,7 +19,7 @@ export async function LandingPage() {
   ]);
 
   return (
-    <main id="main-content">
+    <main id="main-content" className="overflow-x-clip">
       {/* ── HERO (premium: two-column, contained gradient depth) ─────── */}
       <section className="relative overflow-hidden px-6 py-16 sm:py-24">
         {/* Decorative brand gradient blobs — contained, transform/opacity only */}

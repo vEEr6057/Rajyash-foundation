@@ -3,8 +3,10 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Table,
   TableHeader,
@@ -25,15 +27,17 @@ function Row({ user, isSelf }: { user: Profile; isSelf: boolean }) {
   const t = useTranslations("admin");
   const tCommon = useTranslations("common");
   const [pending, start] = useTransition();
-  const [err, setErr] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
   const deactivated = !!user.deactivatedAt;
 
-  const run = (fn: () => Promise<{ ok: boolean; message?: string }>) => {
-    setErr(null);
+  const run = (fn: () => Promise<{ ok: boolean; message?: string }>, okMsg: string) => {
     start(async () => {
       const res = await fn();
-      if (!res.ok) setErr(res.message ?? "Failed");
-      else router.refresh();
+      if (!res.ok) toast.error(res.message ?? tCommon("toast.error"));
+      else {
+        toast.success(okMsg);
+        router.refresh();
+      }
     });
   };
 
@@ -55,7 +59,7 @@ function Row({ user, isSelf }: { user: Profile; isSelf: boolean }) {
             defaultValue={user.role}
             disabled={pending}
             aria-label={`Role for ${user.name}`}
-            onChange={(e) => run(() => setUserRole(user.id, e.target.value as Role))}
+            onChange={(e) => run(() => setUserRole(user.id, e.target.value as Role), tCommon("toast.updated"))}
           >
             {ROLES.map((r) => (
               <option key={r} value={r}>
@@ -64,7 +68,6 @@ function Row({ user, isSelf }: { user: Profile; isSelf: boolean }) {
             ))}
           </select>
         )}
-        {err && <span className="block text-xs text-destructive">{err}</span>}
       </TableCell>
       <TableCell>
         <Badge variant={deactivated ? "destructive" : "success"}>
@@ -75,15 +78,29 @@ function Row({ user, isSelf }: { user: Profile; isSelf: boolean }) {
         {isSelf ? (
           <span className="text-xs text-muted-foreground">{t("users.yourAccount")}</span>
         ) : deactivated ? (
-          <Button size="sm" variant="outline" disabled={pending} onClick={() => run(() => reactivateUser(user.id))}>
+          <Button size="sm" variant="outline" disabled={pending} onClick={() => run(() => reactivateUser(user.id), tCommon("toast.done"))}>
             {t("users.actions.reactivate")}
           </Button>
         ) : (
-          <Button size="sm" variant="destructive" disabled={pending} onClick={() => run(() => deactivateUser(user.id))}>
+          <Button size="sm" variant="destructive" disabled={pending} onClick={() => setConfirmOpen(true)}>
             {t("users.actions.deactivate")}
           </Button>
         )}
       </TableCell>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        onOpenChange={setConfirmOpen}
+        title={tCommon("confirm.deactivateTitle", { name: user.name })}
+        description={tCommon("confirm.deactivateBody")}
+        confirmLabel={tCommon("confirm.deactivateConfirm")}
+        cancelLabel={tCommon("confirm.keep")}
+        pending={pending}
+        onConfirm={() => {
+          run(() => deactivateUser(user.id), tCommon("toast.done"));
+          setConfirmOpen(false);
+        }}
+      />
     </TableRow>
   );
 }

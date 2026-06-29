@@ -3,6 +3,7 @@
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +19,7 @@ interface Props {
 
 export function VerifyToggle({ pickupId, verifiedAt }: Props) {
   const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -27,7 +29,10 @@ export function VerifyToggle({ pickupId, verifiedAt }: Props) {
     startTransition(async () => {
       const action = isVerified ? unverifyPickup : verifyPickup;
       const r = await action(pickupId);
-      if (r.ok) router.refresh();
+      if (r.ok) {
+        toast.success(tCommon("toast.updated"));
+        router.refresh();
+      } else toast.error(r.message ?? tCommon("toast.error"));
     });
   }
 

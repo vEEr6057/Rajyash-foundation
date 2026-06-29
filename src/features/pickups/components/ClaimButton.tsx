@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { claimPickup } from "@/features/pickups/actions/pickupActions";
@@ -21,9 +22,11 @@ export function ClaimButton({ pickupId }: { pickupId: string }) {
       const res = await claimPickup(pickupId);
       if (!res.ok) {
         setError(res.message);
+        toast.error(res.message);
         if (res.code === "TAKEN") router.refresh();
         return;
       }
+      toast.success(t("pickup.card.claimButton"));
       router.refresh();
     });
   }

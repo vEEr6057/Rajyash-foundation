@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { type PickupStatus } from "@/config/constants";
@@ -42,8 +43,10 @@ export function StatusAdvanceSection({
       const res = await advancePickup(pickupId);
       if (!res.ok) {
         setError(res.message);
+        toast.error(res.message);
         return;
       }
+      toast.success(tCommon("status." + next));
       router.refresh();
     });
   }

@@ -5,6 +5,7 @@ import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -114,8 +115,10 @@ export function PickupForm({
           : await updatePickup(pickupId!, values as unknown as PickupFormInput);
       if (!res.ok) {
         setServerError(res.message);
+        toast.error(res.message);
         return;
       }
+      toast.success(mode === "create" ? tCommon("toast.sent") : tCommon("toast.saved"));
       const id =
         mode === "create"
           ? (res as unknown as { id: string }).id

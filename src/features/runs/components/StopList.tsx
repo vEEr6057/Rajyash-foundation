@@ -1,18 +1,33 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { StopStatusPill } from "./StopStatusPill";
 import { removeStop, reorderStops } from "@/features/runs/actions/runActions";
 import type { RunStop } from "@/server/db/schema";
 
 export function StopList({ stops, runId }: { stops: RunStop[]; runId: string }) {
   const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const [pending, start] = useTransition();
+  const [removeId, setRemoveId] = useState<string | null>(null);
+
+  function doRemove(id: string) {
+    start(async () => {
+      const res = await removeStop(id, runId);
+      if (res.ok) {
+        toast.success(tCommon("toast.deleted"));
+        setRemoveId(null);
+        router.refresh();
+      } else toast.error(res.message ?? tCommon("toast.error"));
+    });
+  }
 
   if (stops.length === 0) {
     return (
@@ -78,21 +93,27 @@ export function StopList({ stops, runId }: { stops: RunStop[]; runId: string }) 
           </span>
           <StopStatusPill status={stop.status} />
           <Button
-            size="sm"
+            size="icon"
             variant="ghost"
             disabled={pending}
             aria-label={t("runs.removeStop")}
-            onClick={() => {
-              start(async () => {
-                await removeStop(stop.id, runId);
-                router.refresh();
-              });
-            }}
+            onClick={() => setRemoveId(stop.id)}
           >
-            <Trash2 className="size-3.5 text-destructive" />
+            <Trash2 className="size-4 text-destructive" />
           </Button>
         </div>
       ))}
+
+      <ConfirmDialog
+        open={!!removeId}
+        onOpenChange={(o) => !o && setRemoveId(null)}
+        title={tCommon("confirm.removeStopTitle")}
+        description={tCommon("confirm.removeStopBody")}
+        confirmLabel={tCommon("confirm.removeStopConfirm")}
+        cancelLabel={tCommon("confirm.keep")}
+        pending={pending}
+        onConfirm={() => removeId && doRemove(removeId)}
+      />
     </div>
   );
 }

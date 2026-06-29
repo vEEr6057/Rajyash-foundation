@@ -27,6 +27,32 @@
     "retry": "Retry",
     "view": "View"
   },
+  "toast": {
+    "saved": "Saved.",
+    "updated": "Updated.",
+    "deleted": "Deleted.",
+    "sent": "Sent.",
+    "done": "Done.",
+    "error": "Something went wrong. Please try again."
+  },
+  "confirm": {
+    "deleteTitle": "Delete this {item}?",
+    "deleteBody": "This can't be undone.",
+    "deleteConfirm": "Delete",
+    "deactivateTitle": "Deactivate {name}?",
+    "deactivateBody": "They will be signed out and lose access until reactivated.",
+    "deactivateConfirm": "Deactivate",
+    "cancelRunTitle": "Cancel this run?",
+    "cancelRunBody": "The run and its stops will be marked cancelled.",
+    "cancelRunConfirm": "Cancel run",
+    "cancelPickupTitle": "Cancel this pickup?",
+    "cancelPickupBody": "Volunteers will no longer see it.",
+    "cancelPickupConfirm": "Cancel pickup",
+    "removeStopTitle": "Remove this stop?",
+    "removeStopBody": "It will be removed from the run.",
+    "removeStopConfirm": "Remove",
+    "keep": "Keep"
+  },
   "status": {
     "requested": "Requested",
     "accepted": "Accepted",
