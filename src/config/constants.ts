@@ -20,6 +20,7 @@ export const ROUTES = {
   home: "/",
   signIn: "/sign-in",
   signUp: "/sign-up",
+  staffSignIn: "/staff",
   onboarding: "/onboarding",
   portalDashboard: "/portal/dashboard",
   adminDashboard: "/admin/dashboard",

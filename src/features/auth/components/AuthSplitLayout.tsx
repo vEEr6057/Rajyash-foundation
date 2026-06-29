@@ -8,7 +8,16 @@ import { ROUTES } from "@/config/constants";
  * card (right). On mobile the panel collapses to a slim brand header so the card
  * stays the focus. Gives the auth pages a real product identity (audit fix).
  */
-export async function AuthSplitLayout({ children }: { children: React.ReactNode }) {
+export async function AuthSplitLayout({
+  children,
+  headline,
+  subline,
+}: {
+  children: React.ReactNode;
+  /** Override the brand-panel hero copy (e.g. for the staff sign-in). */
+  headline?: string;
+  subline?: string;
+}) {
   const t = await getTranslations("landing");
   const tc = await getTranslations("common");
   return (
@@ -34,9 +43,9 @@ export async function AuthSplitLayout({ children }: { children: React.ReactNode 
         <div className="relative z-10 max-w-md">
           <HandHeart className="mb-5 size-12 text-white/90" strokeWidth={1.4} aria-hidden />
           <h2 className="font-display text-3xl font-extrabold leading-tight text-balance">
-            {t("heroTitle")}
+            {headline ?? t("heroTitle")}
           </h2>
-          <p className="mt-3 text-white/80">{t("heroSub")}</p>
+          <p className="mt-3 text-white/80">{subline ?? t("heroSub")}</p>
         </div>
 
         <div className="relative z-10 flex items-center gap-3 text-sm text-white/80">

@@ -5,6 +5,7 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/staff(.*)", // staff (admin/coordinator) sign-in entry; /admin itself still role-gated below
   "/api/inngest(.*)", // S2S — Inngest authenticates via signing-key signature, not Clerk
 ]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
