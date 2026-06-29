@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@clerk/nextjs";
@@ -30,7 +30,7 @@ const ROLE_ICONS: Record<(typeof SELECTABLE_ROLES)[number], typeof Truck> = {
 export function OnboardingForm({
   defaultRole,
 }: {
-  defaultRole?: "donor" | "volunteer";
+  defaultRole?: "donor" | "volunteer" | "driver";
 }) {
   const router = useRouter();
   const t = useTranslations("onboarding");
@@ -52,6 +52,14 @@ export function OnboardingForm({
   });
 
   const role = watch("role");
+
+  // Prefill name from the signed-in (Google) account so users don't retype it.
+  // Only fills while the field is still empty — never clobbers a manual edit.
+  useEffect(() => {
+    if (user?.fullName && !watch("name")) {
+      setValue("name", user.fullName);
+    }
+  }, [user?.fullName, setValue, watch]);
 
   async function onSubmit(values: OnboardingInput) {
     setServerError(null);

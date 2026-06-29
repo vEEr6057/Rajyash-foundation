@@ -12,12 +12,12 @@ export default async function OnboardingPage({
 }) {
   const { role } = await searchParams;
   const t = await getTranslations("onboarding");
-  // SECURITY (T-7-02-02): Validate role against allowlist — only donor/volunteer permitted.
+  // SECURITY (T-7-02-02): Validate role against the selectable allowlist — donor/volunteer/driver.
   // Anything else (including admin) is silently ignored; role is also re-validated
   // in completeOnboarding server action (AUTH-05 path unchanged).
   const defaultRole =
-    role === "volunteer" || role === "donor"
-      ? (role as "volunteer" | "donor")
+    role === "volunteer" || role === "donor" || role === "driver"
+      ? (role as "volunteer" | "donor" | "driver")
       : undefined;
 
   return (
