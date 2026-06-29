@@ -7,6 +7,7 @@ import { reportsRepo } from "@/server/db/repositories/reports";
 import { Card, CardContent } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { ImpactReport } from "@/features/admin/components/ImpactReport";
+import { TopBar } from "@/features/admin/components/AnalyticsCharts";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Reports — Rajyash Food Rescue" };
@@ -152,6 +153,11 @@ export default async function AdminReportsPage({
         <h2 className="mb-2 font-display text-lg font-semibold">
           {t("reports.breakdowns.destTitle")}
         </h2>
+        {destRows.length > 0 && (
+          <div className="mb-3 rounded-lg border border-border bg-card p-3">
+            <TopBar data={destRows.slice(0, 8).map((r) => ({ name: r.destinationName, value: r.completedDropCount }))} />
+          </div>
+        )}
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead className="bg-muted/50">
@@ -191,6 +197,11 @@ export default async function AdminReportsPage({
         <h2 className="mb-2 font-display text-lg font-semibold">
           {t("reports.breakdowns.partnerTitle")}
         </h2>
+        {partnerRows.length > 0 && (
+          <div className="mb-3 rounded-lg border border-border bg-card p-3">
+            <TopBar data={partnerRows.slice(0, 8).map((r) => ({ name: r.partnerName, value: r.count }))} />
+          </div>
+        )}
         <div className="overflow-x-auto rounded-lg border border-border">
           <table className="w-full text-sm">
             <thead className="bg-muted/50">

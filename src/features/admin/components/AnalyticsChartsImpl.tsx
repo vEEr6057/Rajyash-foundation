@@ -47,7 +47,9 @@ export function DeliveriesTrendChart({ data }: { data: TrendPoint[] }) {
   };
   return (
     <ResponsiveContainer width="100%" height={260}>
-      <AreaChart data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+      <AreaChart accessibilityLayer data={data} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}
+        role="img"
+        aria-label={`Deliveries per day over the last ${data.length} days`}>
         <defs>
           <linearGradient id="rj-trend" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="var(--leaf)" stopOpacity={0.35} />
@@ -107,9 +109,10 @@ export function StatusDonut({ data }: { data: DonutSlice[] }) {
       </div>
     );
   }
+  const summary = data.map((d) => `${d.name}: ${d.value}`).join(", ");
   return (
     <ResponsiveContainer width="100%" height={220}>
-      <PieChart>
+      <PieChart role="img" aria-label={`Pickup status — ${summary}`}>
         <Pie
           data={data}
           dataKey="value"
@@ -151,7 +154,9 @@ export function TopBar({ data }: { data: BarDatum[] }) {
   }
   return (
     <ResponsiveContainer width="100%" height={Math.max(180, data.length * 40)}>
-      <BarChart data={data} layout="vertical" margin={{ left: 8, right: 16 }}>
+      <BarChart accessibilityLayer data={data} layout="vertical" margin={{ left: 8, right: 16 }}
+        role="img"
+        aria-label={data.map((d) => `${d.name}: ${d.value}`).join(", ")}>
         <CartesianGrid strokeDasharray="3 3" stroke={GRID} horizontal={false} />
         <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11, fill: AXIS }} tickLine={false} axisLine={false} />
         <YAxis
