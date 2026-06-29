@@ -2,7 +2,7 @@ import "server-only";
 import { sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { pickups, runs, partners, destinations, profiles } from "@/server/db/schema";
-import { getCachedImpactReport } from "./impact";
+import { pickupsRepo } from "./pickups";
 import {
   bucketPickupStatuses,
   bucketRunStatuses,
@@ -21,6 +21,12 @@ export interface AdminOverview {
   drivers: number;
 }
 
+// All-time impact bounds (mirror impact.ts) — direct call, no unstable_cache
+// layer (the overview is force-dynamic; the cache wrapper is unnecessary here
+// and was preventing the page from rendering on Workers).
+const ALL_TIME_FROM = new Date(0);
+const ALL_TIME_TO = new Date(9999, 0, 1);
+
 /** Admin overview analytics — one parallel fan-out of cheap COUNT/GROUP BY queries. */
 export async function getAdminOverview(): Promise<AdminOverview> {
   const db = getDb();
@@ -28,7 +34,7 @@ export async function getAdminOverview(): Promise<AdminOverview> {
 
   const [impact, pickupRows, runRows, partnerRows, destRows, roleRows] =
     await Promise.all([
-      getCachedImpactReport(),
+      pickupsRepo.impactReport(ALL_TIME_FROM, ALL_TIME_TO),
       db
         .select({ status: pickups.status, n: sql<number>`count(*)`.mapWith(Number) })
         .from(pickups)

@@ -4,9 +4,20 @@ import { PlusSquare, Route, PackageOpen } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
-import { getAdminOverview } from "@/server/db/repositories/stats";
+import { getAdminOverview, type AdminOverview } from "@/server/db/repositories/stats";
+import { logger } from "@/lib/logger";
 import { Card, CardContent } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
+
+const EMPTY_OVERVIEW: AdminOverview = {
+  impact: { servings: 0, kg: 0, count: 0 },
+  pickups: { total: 0, open: 0, inProgress: 0, delivered: 0, cancelled: 0 },
+  runs: { total: 0, active: 0, planned: 0, completed: 0 },
+  partners: 0,
+  destinations: 0,
+  volunteers: 0,
+  drivers: 0,
+};
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Overview — Rajyash Food Rescue" };
@@ -35,7 +46,14 @@ export default async function AdminOverviewPage() {
     throw e;
   }
 
-  const [t, o] = await Promise.all([getTranslations("admin"), getAdminOverview()]);
+  const t = await getTranslations("admin");
+  let o: AdminOverview;
+  try {
+    o = await getAdminOverview();
+  } catch (e) {
+    logger.error("admin overview stats failed", { err: String(e) });
+    o = EMPTY_OVERVIEW;
+  }
   const ov = (k: string) => t(`dashboard.overview.${k}`);
 
   return (
