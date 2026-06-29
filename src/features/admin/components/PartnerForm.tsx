@@ -42,6 +42,7 @@ export function PartnerForm({
     formState: { errors },
   } = useForm<PartnerInput>({
     resolver: zodResolver(partnerSchema) as unknown as Resolver<PartnerInput>,
+    mode: "onTouched",
     defaultValues: {
       name: "",
       type: "restaurant",
@@ -98,11 +99,11 @@ export function PartnerForm({
       </div>
       <div>
         <Label htmlFor="p-cp">{t("partners.form.contactPhone")}</Label>
-        <Input id="p-cp" {...register("contactPhone")} />
+        <Input id="p-cp" type="tel" inputMode="tel" autoComplete="tel" {...register("contactPhone")} />
       </div>
       <div>
         <Label htmlFor="p-ce">{t("partners.form.contactEmail")}</Label>
-        <Input id="p-ce" {...register("contactEmail")} />
+        <Input id="p-ce" type="email" inputMode="email" autoComplete="email" {...register("contactEmail")} />
         {errors.contactEmail && (
           <p className="mt-1 text-xs text-destructive">
             {errors.contactEmail.message}

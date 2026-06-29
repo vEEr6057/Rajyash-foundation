@@ -51,6 +51,7 @@ export function DestinationForm({
     formState: { errors },
   } = useForm<DestinationInput>({
     resolver: zodResolver(destinationSchema) as unknown as Resolver<DestinationInput>,
+    mode: "onTouched",
     defaultValues: {
       name: "",
       area: "",

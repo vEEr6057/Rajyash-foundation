@@ -60,7 +60,7 @@ export function TableCell({
   ...props
 }: React.TdHTMLAttributes<HTMLTableCellElement>) {
   return (
-    <td className={cn("px-3 py-3 align-middle", className)} {...props} />
+    <td className={cn("px-3 py-3 align-middle tabular-nums", className)} {...props} />
   );
 }
 
