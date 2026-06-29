@@ -235,6 +235,7 @@
   },
   "dashboard": {
     "title": "એડ્મિન",
+    "overviewLink": "ઝાંખી",
     "surplusLink": "સરપ્લસ નોંધો",
     "surplusDesc": "ભાગીદાર રેસ્ટોરન્ટ વતી સરપ્લસ નોંધો.",
     "pickupsLink": "પિકઅપ",

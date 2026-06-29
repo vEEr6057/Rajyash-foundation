@@ -24,7 +24,8 @@
     "submit": "Submit",
     "back": "Back",
     "loading": "Loading…",
-    "retry": "Retry"
+    "retry": "Retry",
+    "view": "View"
   },
   "status": {
     "requested": "Requested",

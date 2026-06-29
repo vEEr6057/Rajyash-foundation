@@ -26,7 +26,7 @@ export default async function AdminDestinationsPage() {
   ]);
 
   return (
-    <main className="mx-auto max-w-4xl space-y-6 px-4 py-8">
+    <div className="mx-auto max-w-5xl space-y-6">
       <h1 className="font-display text-2xl font-bold tracking-tight">
         {t("destinations.title")}
       </h1>
@@ -49,6 +49,6 @@ export default async function AdminDestinationsPage() {
         </h2>
         <DestinationList destinations={destinations} />
       </section>
-    </main>
+    </div>
   );
 }

@@ -28,7 +28,7 @@ export default async function AdminRunsPage() {
   );
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
+    <div className="mx-auto max-w-4xl">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold tracking-tight">{t("runs.title")}</h1>
         <Link
@@ -49,6 +49,6 @@ export default async function AdminRunsPage() {
           ))}
         </div>
       )}
-    </main>
+    </div>
   );
 }

@@ -56,7 +56,7 @@ export default async function AdminReportsPage({
   const exportUrl = `/admin/reports/export?from=${fromStr}&to=${toStr}`;
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-8">
+    <div className="mx-auto max-w-5xl">
       <h1 className="mb-4 font-display text-2xl font-bold tracking-tight">
         {t("reports.title")}
       </h1>
@@ -228,6 +228,6 @@ export default async function AdminReportsPage({
           </table>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

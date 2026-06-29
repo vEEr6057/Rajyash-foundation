@@ -235,6 +235,7 @@
   },
   "dashboard": {
     "title": "एडमिन",
+    "overviewLink": "अवलोकन",
     "surplusLink": "सरप्लस दर्ज करें",
     "surplusDesc": "भागीदार रेस्तरां की ओर से सरप्लस दर्ज करें।",
     "pickupsLink": "पिकअप",

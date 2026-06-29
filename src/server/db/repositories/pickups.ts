@@ -169,6 +169,40 @@ export const pickupsRepo = {
   },
 
   /**
+   * ADM-01 (paged): same filter as listForAdmin but windowed for the admin table.
+   * Returns the page rows + total matching count (one extra count round-trip).
+   * page is 1-based.
+   */
+  async listForAdminPaged(
+    f: AdminPickupFilters,
+    page: number,
+    pageSize: number,
+  ): Promise<{ rows: Pickup[]; total: number }> {
+    const db = getDb();
+    const where = and(
+      f.status ? eq(pickups.status, f.status) : undefined,
+      f.donorId ? eq(pickups.donorId, f.donorId) : undefined,
+      f.volunteerId ? eq(pickups.volunteerId, f.volunteerId) : undefined,
+      f.from ? gte(pickups.createdAt, f.from) : undefined,
+      f.to ? lte(pickups.createdAt, f.to) : undefined,
+    );
+    const [rows, totalRows] = await Promise.all([
+      db
+        .select()
+        .from(pickups)
+        .where(where)
+        .orderBy(desc(pickups.createdAt))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize),
+      db
+        .select({ count: sql<number>`count(*)`.mapWith(Number) })
+        .from(pickups)
+        .where(where),
+    ]);
+    return { rows, total: totalRows[0]?.count ?? 0 };
+  },
+
+  /**
    * ADM-02: admin assigns a REQUESTED pickup to a chosen volunteer. Mirrors
    * claimIfAvailable's atomic guard — only succeeds while still 'requested'
    * (0 rows = already claimed/assigned/cancelled). No read-then-write.

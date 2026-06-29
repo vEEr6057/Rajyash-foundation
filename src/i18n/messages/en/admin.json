@@ -228,6 +228,7 @@
   },
   "dashboard": {
     "title": "Admin",
+    "overviewLink": "Overview",
     "surplusLink": "Log surplus",
     "surplusDesc": "Record restaurant surplus on behalf of a partner.",
     "pickupsLink": "Pickups",

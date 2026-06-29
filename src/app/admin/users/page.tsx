@@ -24,7 +24,7 @@ export default async function AdminUsersPage() {
   ]);
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
+    <div className="mx-auto max-w-5xl">
       <h1 className="mb-4 font-display text-2xl font-bold tracking-tight">
         {t("users.title")}
       </h1>
@@ -33,6 +33,6 @@ export default async function AdminUsersPage() {
           <UserRow key={u.id} user={u} currentAdminId={session.userId} />
         ))}
       </div>
-    </main>
+    </div>
   );
 }

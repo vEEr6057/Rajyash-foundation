@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
 import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
@@ -33,14 +32,11 @@ export default async function AdminDashboardPage() {
   ];
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
-      <header className="mb-6 flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold tracking-tight">
-          {t("dashboard.title")}
-        </h1>
-        <UserButton />
-      </header>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+    <div className="mx-auto max-w-5xl">
+      <h1 className="mb-6 font-display text-2xl font-bold tracking-tight">
+        {t("dashboard.title")}
+      </h1>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {SECTIONS.map((s) => (
           <Link key={s.href} href={s.href}>
             <Card className="transition-colors hover:border-border-strong">
@@ -54,6 +50,6 @@ export default async function AdminDashboardPage() {
           </Link>
         ))}
       </div>
-    </main>
+    </div>
   );
 }

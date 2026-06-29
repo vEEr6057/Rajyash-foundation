@@ -29,7 +29,7 @@ export default async function AdminSurplusNewPage() {
   const partners = await partnersRepo.list();
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
+    <div className="mx-auto max-w-2xl">
       <Card>
         <CardHeader>
           <CardTitle>{t("surplus.title")}</CardTitle>
@@ -39,6 +39,6 @@ export default async function AdminSurplusNewPage() {
           <AdminSurplusForm partners={partners} />
         </CardContent>
       </Card>
-    </main>
+    </div>
   );
 }
