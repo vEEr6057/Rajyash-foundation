@@ -40,7 +40,14 @@ shadcn's old `toast` is **deprecated → use Sonner** (now the shadcn default).
 - Measure `--muted-foreground` on dark cards; if <4.5:1, lighten the dark-theme token a notch. Add the "stale/updated" + helper texts to the audit.
 - **Reco:** token tweak + a one-pass contrast check (web-perf/axe). **Effort S.**
 
-### 6. Native controls → shadcn  🟠
+### 6. Native controls → shadcn  🟠  — RESOLVED (by decision)
+**Decision (2026-06-29):** keep **native `<select>` + native date/datetime inputs for in-form fields** —
+they give the best mobile UX (native keyboards/pickers; the product is mobile-first) and are themed via
+`rj-field`. Use **shadcn Select for standalone controls** (filters, table-inline). This makes the "mix"
+intentional and consistent-by-rule rather than accidental. The full RHF→Controller migration is **not**
+pursued (marginal visual gain, real regression risk). Original analysis kept below for reference.
+
+
 - Selects: replace every native `<select>` (filters, role, partner type, food type, unit, add-stop) with the shadcn `Select` we already have. [S each]
 - Dates/datetime (pickup window, run date, report range): native `<input type=date/datetime-local>` → **shadcn date-time picker** (Popover + `react-day-picker` v9 + time). Options: official shadcn date-picker (date only) or `huybuidac/shadcn-datetime-picker` (datetime, TZ-aware, Tailwind-v4 ok). **Reco:** Select swaps now [S]; adopt `shadcn-datetime-picker` for windows [M]. **Effort M.**
 
