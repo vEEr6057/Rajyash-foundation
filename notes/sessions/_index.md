@@ -4,6 +4,7 @@ Use this file to quickly jump to recent session logs.
 
 ## Recent Sessions
 
+- [[notes/sessions/2026-06-30-0116-staff-signin-auth-ux-role-logins]] - Staff sign-in + auth UX fixes + role logins (2026-06-30)
 - [[notes/sessions/2026-06-29-2155-ui-deferred-sorting-skiplink-shipped]] - UI deferred items — pickups sorting, Google label, skip-link shipped (2026-06-29)
 - [[notes/sessions/2026-06-29-1930-ui-overhaul-audit-solutions]] - UI overhaul, full E2E audit + solutions research (2026-06-29)
 - [[notes/sessions/2026-06-27-0110-phases-3-4-6-ship-e2e-stacked-prs]] - Phases 3, 4, 6 ship — E2E + stacked PRs (2026-06-27)

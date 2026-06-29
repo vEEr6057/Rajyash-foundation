@@ -2,6 +2,7 @@
 // Server component — static, i18n content. Uses landing.* flat keys.
 // RevealOnScroll (client) wraps server-rendered children for the design's
 // data-reveal fade + slide-up (generous public motion budget).
+import { UtensilsCrossed, Truck, HandHeart } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { RevealOnScroll } from "./RevealOnScroll";
 
@@ -13,19 +14,19 @@ export async function HowItWorks() {
       num: 1,
       title: t("step1Title"),
       body: t("step1Desc"),
-      icon: "🍽️",
+      Icon: UtensilsCrossed,
     },
     {
       num: 2,
       title: t("step2Title"),
       body: t("step2Desc"),
-      icon: "🚗",
+      Icon: Truck,
     },
     {
       num: 3,
       title: t("step3Title"),
       body: t("step3Desc"),
-      icon: "🤝",
+      Icon: HandHeart,
     },
   ] as const;
 
@@ -45,7 +46,7 @@ export async function HowItWorks() {
         </RevealOnScroll>
 
         <ol className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-          {steps.map(({ num, title, body, icon }, i) => (
+          {steps.map(({ num, title, body, Icon }, i) => (
             <RevealOnScroll
               key={num}
               as="li"
@@ -56,7 +57,7 @@ export async function HowItWorks() {
                 <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-white font-bold font-display text-lg">
                   {num}
                 </div>
-                <span className="text-2xl" aria-hidden="true">{icon}</span>
+                <Icon className="size-7 text-primary" strokeWidth={1.6} aria-hidden="true" />
               </div>
               <h3 className="font-display font-semibold text-foreground text-lg">
                 {title}
