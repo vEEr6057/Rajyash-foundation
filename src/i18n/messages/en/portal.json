@@ -1,4 +1,10 @@
 {
+  "nav": {
+    "home": "Home",
+    "post": "Post",
+    "pickups": "Pickups",
+    "board": "Board"
+  },
   "pickup": {
     "form": {
       "title": "Post surplus food",
@@ -117,7 +123,9 @@
   },
   "run": {
     "title": "My Run",
+    "emptyTitle": "No run yet",
     "emptyState": "No run assigned to you yet. Check back later.",
+    "help": "Questions? Call the coordinator:",
     "noStopsYet": "No stops have been added to this run yet.",
     "stopCount": "stops",
     "stop": {

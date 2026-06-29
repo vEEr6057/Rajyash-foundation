@@ -1,6 +1,12 @@
 {
   "_review": "pending",
   "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "nav": {
+    "home": "होम",
+    "post": "पोस्ट",
+    "pickups": "पिकअप",
+    "board": "बोर्ड"
+  },
   "pickup": {
     "form": {
       "title": "बचा हुआ भोजन पोस्ट करें",
@@ -120,7 +126,9 @@
   "run": {
     "_review": "pending",
     "title": "मेरी रन",
+    "emptyTitle": "अभी कोई रन नहीं",
     "emptyState": "अभी तक कोई रन असाइन नहीं हुई है। बाद में जाँचें।",
+    "help": "सवाल हैं? समन्वयक को कॉल करें:",
     "noStopsYet": "इस रन में अभी तक कोई स्टॉप नहीं जोड़ा गया है।",
     "stopCount": "स्टॉप",
     "stop": {

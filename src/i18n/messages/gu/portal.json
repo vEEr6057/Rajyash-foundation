@@ -1,6 +1,12 @@
 {
   "_review": "pending",
   "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "nav": {
+    "home": "હોમ",
+    "post": "પોસ્ટ",
+    "pickups": "પિકઅપ",
+    "board": "બોર્ડ"
+  },
   "pickup": {
     "form": {
       "title": "વધારાનું ભોજન પોસ્ટ કરો",
@@ -120,7 +126,9 @@
   "run": {
     "_review": "pending",
     "title": "મારી રન",
+    "emptyTitle": "હજી કોઈ રન નથી",
     "emptyState": "હજી સુધી કોઈ રન સોંપવામાં આવ્યો નથી. પછી તપાસો.",
+    "help": "પ્રશ્નો છે? કોઓર્ડિનેટરને કૉલ કરો:",
     "noStopsYet": "આ રનમાં હજી સુધી કોઈ સ્ટોપ ઉમેરવામાં આવ્યો નથી.",
     "stopCount": "સ્ટોપ",
     "stop": {

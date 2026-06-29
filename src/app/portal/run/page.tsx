@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import { Truck } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
@@ -29,13 +30,24 @@ export default async function DriverRunPage() {
     null;
 
   if (!activeRun) {
+    const tCommon = await getTranslations("common");
     return (
       <main className="mx-auto max-w-2xl px-4 py-8">
         <h1 className="mb-6 font-display text-2xl font-bold tracking-tight">
           {t("run.title")}
         </h1>
-        <div className="rounded-xl border border-dashed border-border-strong p-8 text-center text-muted-foreground">
-          {t("run.emptyState")}
+        <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-sm">
+          <div className="mx-auto mb-3 grid size-12 place-items-center rounded-full bg-leaf-soft text-leaf-soft-foreground">
+            <Truck className="size-6" aria-hidden />
+          </div>
+          <p className="font-display text-lg font-bold">{t("run.emptyTitle")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("run.emptyState")}</p>
+          <div className="mt-5 border-t border-border pt-4 text-sm text-muted-foreground">
+            {t("run.help")}{" "}
+            <a href={`tel:${tCommon("footer.phone")}`} className="font-semibold text-primary">
+              {tCommon("footer.phone")}
+            </a>
+          </div>
         </div>
       </main>
     );
