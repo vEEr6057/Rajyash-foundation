@@ -44,7 +44,13 @@ export default async function RootLayout({
       appearance={{
         variables: {
           colorPrimary: "#2E7A47",
+          colorPrimaryForeground: "#FFFFFF",
           colorBackground: "#FFFFFF",
+          colorForeground: "#1F2937",
+          colorMutedForeground: "#6B7280",
+          colorInput: "#FFFFFF",
+          colorInputForeground: "#1F2937",
+          colorDanger: "#C0341D",
           borderRadius: "0.75rem",
           fontFamily: "var(--font-mukta), system-ui, sans-serif",
         },
