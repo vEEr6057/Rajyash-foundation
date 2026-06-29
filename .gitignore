@@ -49,3 +49,8 @@ yarn-debug.log*
 # PWA — Serwist builds this from app/sw.ts at compile time
 /public/sw.js
 /public/swe-worker*
+
+# throwaway verification/design screenshots at repo root
+/*.jpeg
+/*.jpg
+/*.png

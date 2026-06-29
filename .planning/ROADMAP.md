@@ -26,11 +26,11 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 ### v2.0 — Dispatch Bridge
 
-- [ ] **Phase 8: Dispatch Foundations** - Driver role + onboarding; destinations table + admin CRUD; proof photo made optional (schema + policy)
-- [ ] **Phase 9: Runs & Dispatch** - Run + run_stops schema; coordinator build/assign; driver "My Run" sequential stops + Navigate; manual override
-- [ ] **Phase 10: Live Run Tracking** - Reuse existing Realtime/Leaflet tracking across a full run; route + ETA overlay; any-role delivery confirm
-- [ ] **Phase 11: Intake** - Restaurant self-flag surplus; coordinator log-on-behalf; safety attestation + optional coordinator verify flag
-- [ ] **Phase 12: Run Reporting** - Impact aggregates (meals/kg/deliveries) across runs and by destination/partner; reuse admin reporting UI
+- [x] **Phase 8: Dispatch Foundations** - Driver role + onboarding; destinations table + admin CRUD; proof photo made optional (schema + policy)
+- [x] **Phase 9: Runs & Dispatch** - Run + run_stops schema; coordinator build/assign; driver "My Run" sequential stops + Navigate; manual override
+- [x] **Phase 10: Live Run Tracking** - Reuse existing Realtime/Leaflet tracking across a full run; route + ETA overlay; any-role delivery confirm
+- [x] **Phase 11: Intake** - Restaurant self-flag surplus; coordinator log-on-behalf; safety attestation + optional coordinator verify flag
+- [x] **Phase 12: Run Reporting** - Impact aggregates (meals/kg/deliveries) across runs and by destination/partner; reuse admin reporting UI
 
 ## Phase Details
 
