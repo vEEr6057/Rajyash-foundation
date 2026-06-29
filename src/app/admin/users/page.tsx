@@ -4,6 +4,7 @@ import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { UserRow } from "@/features/admin/components/UserRow";
+import { AddUserDialog } from "@/features/admin/components/AddUserDialog";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Users — Rajyash Food Rescue" };
@@ -25,9 +26,12 @@ export default async function AdminUsersPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <h1 className="mb-4 font-display text-2xl font-bold tracking-tight">
-        {t("users.title")}
-      </h1>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-2xl font-bold tracking-tight">
+          {t("users.title")}
+        </h1>
+        <AddUserDialog />
+      </div>
       <div className="space-y-2">
         {users.map((u) => (
           <UserRow key={u.id} user={u} currentAdminId={session.userId} />

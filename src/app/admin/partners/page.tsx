@@ -5,9 +5,9 @@ import { ROUTES } from "@/config/constants";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PartnerForm } from "@/features/admin/components/PartnerForm";
 import { PartnerList } from "@/features/admin/components/PartnerList";
 import { LinkDonorControl } from "@/features/admin/components/LinkDonorControl";
+import { AddPartnerDialog } from "@/features/admin/components/AddPartnerDialog";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Partners — Rajyash Food Rescue" };
@@ -34,16 +34,10 @@ export default async function AdminPartnersPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <h1 className="font-display text-2xl font-bold tracking-tight">{t("partners.title")}</h1>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("partners.addPartner")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <PartnerForm mode="create" />
-        </CardContent>
-      </Card>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="font-display text-2xl font-bold tracking-tight">{t("partners.title")}</h1>
+        <AddPartnerDialog />
+      </div>
 
       <section>
         <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">

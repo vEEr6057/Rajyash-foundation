@@ -61,6 +61,7 @@
   "role": {
     "donor": "Donor",
     "volunteer": "Volunteer",
+    "driver": "Driver",
     "admin": "Admin"
   },
   "stopStatus": {

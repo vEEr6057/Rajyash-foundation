@@ -4,9 +4,11 @@ import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES, ADMIN_PAGE_SIZE } from "@/config/constants";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { profilesRepo } from "@/server/db/repositories/profiles";
+import { partnersRepo } from "@/server/db/repositories/partners";
 import { parseAdminFilters } from "@/features/admin";
 import { AdminPickupFilters } from "@/features/admin/components/AdminPickupFilters";
 import { PickupsTable } from "@/features/admin/components/PickupsTable";
+import { LogSurplusSheet } from "@/features/admin/components/LogSurplusSheet";
 import { Pagination } from "@/components/ui/pagination";
 
 export const dynamic = "force-dynamic";
@@ -34,10 +36,11 @@ export default async function AdminPickupsPage({
   const filters = parseAdminFilters(params);
   const page = Math.max(1, Number(params.get("page")) || 1);
 
-  const [t, { rows, total }, volunteers] = await Promise.all([
+  const [t, { rows, total }, volunteers, partners] = await Promise.all([
     getTranslations("admin"),
     pickupsRepo.listForAdminPaged(filters, page, ADMIN_PAGE_SIZE),
     profilesRepo.listAssignableVolunteers(),
+    partnersRepo.list(),
   ]);
 
   const totalPages = Math.ceil(total / ADMIN_PAGE_SIZE);
@@ -58,6 +61,7 @@ export default async function AdminPickupsPage({
             {total.toLocaleString()}
           </p>
         </div>
+        <LogSurplusSheet partners={partners} />
       </div>
 
       <AdminPickupFilters

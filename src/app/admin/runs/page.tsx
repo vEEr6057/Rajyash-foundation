@@ -1,12 +1,12 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
 import { runStopsRepo } from "@/server/db/repositories/runStops";
+import { profilesRepo } from "@/server/db/repositories/profiles";
 import { ROUTES } from "@/config/constants";
-import { buttonVariants } from "@/components/ui/button";
 import { RunCard } from "@/features/runs/components/RunCard";
+import { NewRunSheet } from "@/features/runs/components/NewRunSheet";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Runs — Rajyash Food Rescue Admin" };
@@ -21,8 +21,12 @@ export default async function AdminRunsPage() {
     throw e;
   }
 
-  const t = await getTranslations("admin");
-  const runs = await runsRepo.listRuns();
+  const [t, runs, allProfiles] = await Promise.all([
+    getTranslations("admin"),
+    runsRepo.listRuns(),
+    profilesRepo.listAll(),
+  ]);
+  const drivers = allProfiles.filter((p) => p.role === "driver" && !p.deactivatedAt);
   const stopCounts = await Promise.all(
     runs.map((r) => runStopsRepo.getByRunId(r.id).then((s) => s.length)),
   );
@@ -31,12 +35,7 @@ export default async function AdminRunsPage() {
     <div className="mx-auto max-w-4xl">
       <header className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-2xl font-bold tracking-tight">{t("runs.title")}</h1>
-        <Link
-          href={`${ROUTES.adminRuns}/new`}
-          className={buttonVariants({ variant: "leaf", size: "sm" })}
-        >
-          {t("runs.newButton")}
-        </Link>
+        <NewRunSheet drivers={drivers} />
       </header>
       {runs.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border-strong p-8 text-center text-muted-foreground">

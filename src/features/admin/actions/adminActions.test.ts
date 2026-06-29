@@ -10,12 +10,16 @@ vi.mock("@/server/auth/session", () => ({
 const updateUserMetadata = vi.fn().mockResolvedValue(undefined);
 const banUser = vi.fn().mockResolvedValue(undefined);
 const unbanUser = vi.fn().mockResolvedValue(undefined);
+const createInvitation = vi.fn().mockResolvedValue({ id: "inv1" });
 vi.mock("@clerk/nextjs/server", () => ({
   clerkClient: vi.fn().mockResolvedValue({
     users: {
       updateUserMetadata: (...a: unknown[]) => updateUserMetadata(...a),
       banUser: (...a: unknown[]) => banUser(...a),
       unbanUser: (...a: unknown[]) => unbanUser(...a),
+    },
+    invitations: {
+      createInvitation: (...a: unknown[]) => createInvitation(...a),
     },
   }),
 }));
@@ -66,7 +70,7 @@ vi.mock("@/server/notifications/events", () => ({
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/logger", () => ({ logger: { error: vi.fn(), info: vi.fn() } }));
 
-import { setUserRole, deactivateUser, assignPickup } from "./adminActions";
+import { setUserRole, deactivateUser, assignPickup, inviteUser } from "./adminActions";
 
 beforeEach(() => {
   requireRole.mockResolvedValue({ userId: "admin-1", role: "admin" });
@@ -182,5 +186,37 @@ describe("assignPickup (ADM-02)", () => {
     const r = await assignPickup("pk1", "v1");
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.code).toBe("CONFLICT");
+  });
+});
+
+describe("inviteUser", () => {
+  beforeEach(() => {
+    requireRole.mockResolvedValue({ userId: "admin-1", role: "admin" });
+  });
+
+  it("returns FORBIDDEN for non-admin and does not invite", async () => {
+    requireRole.mockRejectedValueOnce(new Error("no"));
+    const r = await inviteUser("a@b.com", "volunteer");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("FORBIDDEN");
+    expect(createInvitation).not.toHaveBeenCalled();
+  });
+
+  it("rejects an invalid email with VALIDATION", async () => {
+    const r = await inviteUser("not-an-email", "volunteer");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("VALIDATION");
+    expect(createInvitation).not.toHaveBeenCalled();
+  });
+
+  it("creates a Clerk invitation carrying the role on the happy path", async () => {
+    const r = await inviteUser("New.Person@Example.com", "driver");
+    expect(r.ok).toBe(true);
+    expect(createInvitation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        emailAddress: "new.person@example.com",
+        publicMetadata: { role: "driver" },
+      }),
+    );
   });
 });

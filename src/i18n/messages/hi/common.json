@@ -63,6 +63,7 @@
   "role": {
     "donor": "दाता",
     "volunteer": "स्वयंसेवक",
+    "driver": "ड्राइवर",
     "admin": "एडमिन"
   },
   "stopStatus": {
