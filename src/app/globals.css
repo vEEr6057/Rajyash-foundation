@@ -260,6 +260,12 @@
 @keyframes rj-badge-bump { 0% { transform: scale(1); } 30% { transform: scale(1.22); } 100% { transform: scale(1); } }
 @keyframes rj-shake      { 10%,90% { transform: translateX(-1px); } 20%,80% { transform: translateX(2px); } 30%,50%,70% { transform: translateX(-5px); } 40%,60% { transform: translateX(5px); } }
 @keyframes rj-check-draw { to { stroke-dashoffset: 0; } }
+@keyframes rj-float      { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+
+/* Gentle ambient float for hero motifs (public, generous motion budget).
+   Auto-disabled by the prefers-reduced-motion block below. */
+.rj-float       { animation: rj-float 5s var(--ease-in-out, ease-in-out) infinite; }
+.rj-float-slow  { animation: rj-float 7s var(--ease-in-out, ease-in-out) infinite; }
 
 .rj-press {
   transition: transform var(--motion-instant) var(--ease-out),
