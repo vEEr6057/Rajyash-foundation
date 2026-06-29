@@ -81,6 +81,8 @@ export function DeliveriesTrendChart({ data }: { data: TrendPoint[] }) {
           stroke="var(--leaf)"
           strokeWidth={2}
           fill="url(#rj-trend)"
+          isAnimationActive={false}
+          dot={{ r: 2, fill: "var(--leaf)" }}
         />
       </AreaChart>
     </ResponsiveContainer>
@@ -119,6 +121,7 @@ export function StatusDonut({ data }: { data: DonutSlice[] }) {
           paddingAngle={2}
           stroke="var(--card)"
           strokeWidth={2}
+          isAnimationActive={false}
         >
           {data.map((d) => (
             <Cell key={d.name} fill={d.color} />
@@ -160,7 +163,7 @@ export function TopBar({ data }: { data: BarDatum[] }) {
           width={120}
         />
         <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "var(--secondary)" }} />
-        <Bar dataKey="value" fill="var(--primary)" radius={[0, 6, 6, 0]} barSize={18} />
+        <Bar dataKey="value" fill="var(--primary)" radius={[0, 6, 6, 0]} barSize={18} isAnimationActive={false} />
       </BarChart>
     </ResponsiveContainer>
   );
