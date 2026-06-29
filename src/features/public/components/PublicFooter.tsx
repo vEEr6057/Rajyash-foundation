@@ -53,6 +53,14 @@ export async function PublicFooter() {
                     {t("signin")}
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href={ROUTES.staffSignIn}
+                    className="hover:text-foreground transition-colors"
+                  >
+                    {t("staffSignin")}
+                  </Link>
+                </li>
               </ul>
             </div>
 
