@@ -79,6 +79,7 @@ export function PickupForm({
     // schema coerces form strings → number/date at submit; type the resolver to
     // the string-based form shape so watch/register stay typed.
     resolver: zodResolver(pickupFormSchema) as unknown as Resolver<FormValues>,
+    mode: "onTouched",
     defaultValues: { quantityUnit: "servings", ...defaults },
   });
 
