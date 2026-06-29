@@ -3,6 +3,7 @@
 // only client islands. Carries the LanguageSwitcher onto EVERY authed page so
 // the locale can be switched from anywhere (I18N-02 / success criterion #4).
 import Link from "next/link";
+import { UserButton } from "@clerk/nextjs";
 import { getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher";
 import { ThemeToggle } from "@/features/public/components/ThemeToggle";
@@ -25,6 +26,10 @@ export async function AuthedHeader({ homeHref }: { homeHref: string }) {
         <div className="flex items-center gap-2">
           <LanguageSwitcher />
           <ThemeToggle />
+          <UserButton
+            appearance={{ elements: { avatarBox: "size-8" } }}
+            userProfileMode="modal"
+          />
         </div>
       </div>
     </header>

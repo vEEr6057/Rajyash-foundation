@@ -42,6 +42,7 @@ export default async function RootLayout({
   const locale = await getLocale();
   return (
     <ClerkProvider
+      afterSignOutUrl="/"
       appearance={{
         variables: {
           colorPrimary: "#2E7A47",
