@@ -59,9 +59,11 @@ export async function createRun(input: CreateRunInput): Promise<Result<{ id: str
   const d = parsed.data;
   try {
     const row = await runsRepo.create({
+      // Empty string (form's "No driver yet") must become null — "" is a non-null
+      // value that fails the driver FK. ?? only catches null/undefined, not "".
       slot: d.slot,
       runDate: d.runDate,
-      driverId: d.driverId ?? null,
+      driverId: d.driverId || null,
       createdBy: adminId,
       status: "planned",
     });
@@ -101,7 +103,8 @@ export async function editRun(runId: string, input: EditRunInput): Promise<Resul
   const update: Partial<NewRun> = {};
   if (parsed.data.slot !== undefined) update.slot = parsed.data.slot;
   if (parsed.data.runDate !== undefined) update.runDate = parsed.data.runDate;
-  if (parsed.data.driverId !== undefined) update.driverId = parsed.data.driverId;
+  // "" (no driver) → null to satisfy the driver FK.
+  if (parsed.data.driverId !== undefined) update.driverId = parsed.data.driverId || null;
   await runsRepo.update(runId, update);
   revalidateRuns(runId);
   return { ok: true };
