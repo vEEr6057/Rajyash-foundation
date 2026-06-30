@@ -128,12 +128,14 @@
     "help": "Questions? Call the coordinator:",
     "noStopsYet": "No stops have been added to this run yet.",
     "stopCount": "stops",
+    "runCompleteToast": "Run complete — great work!",
     "stop": {
       "kindPickup": "Pickup",
       "kindDrop": "Drop",
       "markDone": "Mark done",
       "marking": "Marking…",
-      "retry": "Retry"
+      "retry": "Retry",
+      "doneToast": "Stop marked done"
     },
     "liveMap": {
       "live": "Live",
