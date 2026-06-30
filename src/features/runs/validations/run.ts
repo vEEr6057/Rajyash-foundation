@@ -1,21 +1,25 @@
 import { z } from "zod";
 
+// runDate is preprocessed (not `.transform`) so the schema is IDEMPOTENT: zodResolver
+// transforms the form string → Date client-side, then the server action re-validates the
+// SAME object (now a Date). A `z.string().transform` rejects the Date on that second pass
+// ("Invalid input") and blocked all run creation — see E2E-AUDIT 🔴 1.
 export const createRunSchema = z.object({
   slot: z.enum(["morning", "night"], { error: "Slot is required" }),
-  runDate: z
-    .string()
-    .min(1, { message: "Run date is required" })
-    .transform((s) => new Date(s)),
+  runDate: z.preprocess(
+    (v) => (typeof v === "string" && v ? new Date(v) : v),
+    z.date({ error: "Run date is required" }),
+  ),
   driverId: z.string().nullable().optional(),
 });
 export type CreateRunInput = z.infer<typeof createRunSchema>;
 
 export const editRunSchema = z.object({
   slot: z.enum(["morning", "night"]).optional(),
-  runDate: z
-    .string()
-    .optional()
-    .transform((s) => (s ? new Date(s) : undefined)),
+  runDate: z.preprocess(
+    (v) => (typeof v === "string" && v ? new Date(v) : v || undefined),
+    z.date().optional(),
+  ),
   driverId: z.string().nullable().optional(),
 });
 export type EditRunInput = z.infer<typeof editRunSchema>;

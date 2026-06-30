@@ -26,7 +26,7 @@ export async function RunsTable({
 }) {
   const t = await getTranslations("admin");
   const fmt = (d: Date | string) =>
-    new Date(d).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+    new Date(d).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" });
 
   return (
     <Table>

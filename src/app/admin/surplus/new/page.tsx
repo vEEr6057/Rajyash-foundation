@@ -1,44 +1,9 @@
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
-import { requireRole, AuthError, getSession } from "@/server/auth/session";
-import { partnersRepo } from "@/server/db/repositories/partners";
 import { ROUTES } from "@/config/constants";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { AdminSurplusForm } from "@/features/admin/components/AdminSurplusForm";
 
-export const dynamic = "force-dynamic";
-export const metadata = { title: "Log surplus — Rajyash Food Rescue" };
-
-export default async function AdminSurplusNewPage() {
-  const session = await getSession();
-  if (!session) redirect(ROUTES.signIn);
-  try {
-    await requireRole(["admin"]);
-  } catch (e) {
-    if (e instanceof AuthError) redirect(ROUTES.portalDashboard);
-    throw e;
-  }
-
-  const t = await getTranslations("admin");
-  const partners = await partnersRepo.list();
-
-  return (
-    <div className="mx-auto max-w-2xl">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("surplus.title")}</CardTitle>
-          <CardDescription>{t("surplus.subtitle")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <AdminSurplusForm partners={partners} />
-        </CardContent>
-      </Card>
-    </div>
-  );
+// Log surplus is now a popup (LogSurplusSheet) on the Pickups page and the Overview,
+// not a standalone page. Keep this route working for old links/bookmarks by sending
+// it to Pickups, where the "Log surplus" button opens the form in place.
+export default function AdminSurplusNewPage() {
+  redirect(ROUTES.adminPickups);
 }

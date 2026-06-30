@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { PlusSquare, Route, PackageOpen } from "lucide-react";
+import { Route, PackageOpen } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
@@ -11,9 +11,11 @@ import {
   type TrendPoint,
 } from "@/server/db/repositories/stats";
 import { reportsRepo } from "@/server/db/repositories/reports";
+import { partnersRepo } from "@/server/db/repositories/partners";
 import { logger } from "@/lib/logger";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
+import { LogSurplusSheet } from "@/features/admin/components/LogSurplusSheet";
 import {
   DeliveriesTrendChart,
   StatusDonut,
@@ -64,6 +66,9 @@ export default async function AdminOverviewPage() {
 
   const [t, locale] = await Promise.all([getTranslations("admin"), getLocale()]);
 
+  // Partners power the Log-surplus popup (rendered in the header, not a separate page).
+  const partners = await partnersRepo.list().catch(() => []);
+
   let o: AdminOverview = EMPTY_OVERVIEW;
   let trend: TrendPoint[] = [];
   let topPartners: BarDatum[] = [];
@@ -90,6 +95,7 @@ export default async function AdminOverviewPage() {
   const ov = (k: string, values?: Record<string, string>) =>
     t(`dashboard.overview.${k}`, values);
   const updated = new Intl.DateTimeFormat(locale, {
+    timeZone: "Asia/Kolkata",
     day: "numeric",
     month: "short",
     hour: "numeric",
@@ -111,9 +117,7 @@ export default async function AdminOverviewPage() {
           <p className="text-xs text-muted-foreground">{ov("lastUpdated", { time: updated })}</p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Link href={ROUTES.adminSurplusNew} className={buttonVariants({ size: "sm" })}>
-            <PlusSquare className="size-4" /> {t("dashboard.surplusLink")}
-          </Link>
+          <LogSurplusSheet partners={partners} />
           <Link
             href={`${ROUTES.adminRuns}/new`}
             className={buttonVariants({ variant: "leaf", size: "sm" })}
