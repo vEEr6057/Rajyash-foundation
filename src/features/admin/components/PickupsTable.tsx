@@ -67,7 +67,7 @@ export function PickupsTable({
   const [assignFor, setAssignFor] = useState<Pickup | null>(null);
 
   const fmtDate = (d: Date) =>
-    new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(d);
+    new Intl.DateTimeFormat(locale, { timeZone: "Asia/Kolkata", day: "numeric", month: "short" }).format(d);
 
   // Sortable column header — toggles asc/desc via URL, resets to page 1, sets aria-sort.
   function SortHead({

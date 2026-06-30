@@ -172,6 +172,7 @@ export default async function PickupDetailPage({
                 → {tCommon(`status.${e.toStatus}`)}{" "}
                 <span className="text-subtle-foreground">
                   {new Intl.DateTimeFormat("en-IN", {
+                    timeZone: "Asia/Kolkata",
                     day: "numeric",
                     month: "short",
                     hour: "numeric",

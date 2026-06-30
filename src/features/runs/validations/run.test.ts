@@ -20,6 +20,15 @@ describe("createRunSchema", () => {
     const r = createRunSchema.safeParse({ runDate: "2026-07-01" });
     expect(r.success).toBe(false);
   });
+  it("accepts an already-parsed Date (idempotent — zodResolver transforms before the action re-validates)", () => {
+    const r = createRunSchema.safeParse({
+      slot: "morning",
+      runDate: new Date("2026-07-01"),
+      driverId: "drv-1",
+    });
+    expect(r.success).toBe(true);
+    if (r.success) expect(r.data.runDate).toBeInstanceOf(Date);
+  });
 });
 
 describe("addPickupStopSchema", () => {

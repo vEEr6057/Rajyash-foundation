@@ -15,9 +15,10 @@ export default async function StaffSignInPage() {
     <AuthSplitLayout headline={t("staff.title")} subline={t("staff.subtitle")}>
       <div className="w-full max-w-sm space-y-3">
         <div className="text-center lg:text-left">
-          <h1 className="font-display text-2xl font-bold text-foreground">
+          {/* h2, not h1 — Clerk's <SignIn> card already renders the page's <h1>. */}
+          <h2 className="font-display text-2xl font-bold text-foreground">
             {t("staff.heading")}
-          </h1>
+          </h2>
           <p className="mt-1 text-sm text-muted-foreground">{t("staff.hint")}</p>
         </div>
         <SignIn
