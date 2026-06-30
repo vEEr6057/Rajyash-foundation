@@ -198,13 +198,19 @@ export const pickupsRepo = {
       f.to ? lte(pickups.createdAt, f.to) : undefined,
     );
     const col = PICKUP_SORT_COLUMNS[sort] ?? pickups.createdAt;
-    const orderBy = dir === "asc" ? asc(col) : desc(col);
+    const dirFn = dir === "asc" ? asc : desc;
+    // Quantity mixes units (kg vs servings) — group by unit first so the numeric
+    // sort is within-unit, not apples-to-oranges (E2E-AUDIT 🟡 6).
+    const orderBy =
+      sort === "quantity"
+        ? [asc(pickups.quantityUnit), dirFn(pickups.quantity)]
+        : [dirFn(col)];
     const [rows, totalRows] = await Promise.all([
       db
         .select()
         .from(pickups)
         .where(where)
-        .orderBy(orderBy)
+        .orderBy(...orderBy)
         .limit(pageSize)
         .offset((page - 1) * pageSize),
       db

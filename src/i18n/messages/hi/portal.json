@@ -131,12 +131,14 @@
     "help": "सवाल हैं? समन्वयक को कॉल करें:",
     "noStopsYet": "इस रन में अभी तक कोई स्टॉप नहीं जोड़ा गया है।",
     "stopCount": "स्टॉप",
+    "runCompleteToast": "रन पूर्ण — बढ़िया काम!",
     "stop": {
       "kindPickup": "पिकअप",
       "kindDrop": "ड्रॉप",
       "markDone": "पूर्ण चिह्नित करें",
       "marking": "चिह्नित हो रहा है…",
-      "retry": "पुनः प्रयास"
+      "retry": "पुनः प्रयास",
+      "doneToast": "स्टॉप पूर्ण चिह्नित"
     },
     "liveMap": {
       "_review": "pending",

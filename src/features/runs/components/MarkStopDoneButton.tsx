@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { markStopDone } from "@/features/runs/actions/runActions";
@@ -30,6 +31,9 @@ export function MarkStopDoneButton({
         setError(res.message);
         return;
       }
+      toast.success(
+        res.runCompleted ? t("run.runCompleteToast") : t("run.stop.doneToast"),
+      );
       router.refresh();
     });
   }

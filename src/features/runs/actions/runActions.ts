@@ -225,7 +225,9 @@ export async function removeStop(stopId: string, runId: string): Promise<Result>
 }
 
 // ── RUN-07: mark stop done (driver OR admin) ───────────────────────
-export async function markStopDone(stopId: string): Promise<Result> {
+export async function markStopDone(
+  stopId: string,
+): Promise<Result<{ runCompleted: boolean }>> {
   const session = await getSession();
   if (!session) return fail("UNAUTHORIZED", "Sign in first.");
   const isAdmin = session.role === "admin";
@@ -261,14 +263,15 @@ export async function markStopDone(stopId: string): Promise<Result> {
   const updated = allStops.map((s) =>
     s.id === stopId ? { ...s, status: "done" as const } : s,
   );
-  if (allStopsDone(updated)) {
+  const runCompleted = allStopsDone(updated);
+  if (runCompleted) {
     await runsRepo.setRunStatus(stop.runId, "completed");
     await runPingsRepo.purgeForRun(stop.runId); // TRK-05: ephemeral trail
   }
 
   revalidateRuns(stop.runId);
   revalidatePath(ROUTES.driverRun);
-  return { ok: true };
+  return { ok: true, runCompleted };
 }
 
 // ── RUN-08: admin override stop status ─────────────────────────────
