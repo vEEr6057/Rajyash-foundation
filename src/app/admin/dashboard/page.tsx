@@ -13,7 +13,6 @@ import {
 import { reportsRepo } from "@/server/db/repositories/reports";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { logger } from "@/lib/logger";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { LedgerRow } from "@/components/LedgerRow";
@@ -39,20 +38,27 @@ const EMPTY_OVERVIEW: AdminOverview = {
 const ALL_TIME_FROM = new Date(0);
 const ALL_TIME_TO = new Date(9999, 0, 1);
 
+// Pickup-status composition colours draw from the status-pill DOT tokens so the
+// donut reads the same language as the pills elsewhere (charter §1.2).
+const CHART_COLORS = {
+  open: "var(--st-requested-dot)", // amber
+  inProgress: "var(--st-accepted-dot)", // blue
+  delivered: "var(--st-delivered-dot)", // green
+  cancelled: "var(--st-cancelled-dot)", // red/grey
+} as const;
+
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Overview — Rajyash Food Rescue" };
 
-function Stat({ label, value, hint }: { label: string; value: number; hint?: string }) {
+/** Hairline chart panel (charter §3 / batch-3 §1.1): one rule, no shadow. */
+function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <Card className="transition-shadow hover:shadow-lg">
-      <CardContent className="pt-5">
-        <p className="text-3xl font-bold tracking-tight text-foreground tabular-nums">
-          {value.toLocaleString()}
-        </p>
-        <p className="mt-0.5 text-sm font-medium text-muted-foreground">{label}</p>
-        {hint && <p className="text-xs text-subtle-foreground">{hint}</p>}
-      </CardContent>
-    </Card>
+    <div className="rounded-lg border border-border bg-transparent p-4">
+      <h2 className="border-b border-border pb-3 font-display text-[15px] font-semibold">
+        {title}
+      </h2>
+      <div className="pt-4">{children}</div>
+    </div>
   );
 }
 
@@ -105,10 +111,10 @@ export default async function AdminOverviewPage() {
   }).format(new Date());
 
   const statusSlices: DonutSlice[] = [
-    { name: ov("openPickups"), value: o.pickups.open, color: "var(--warning)" },
-    { name: ov("inProgress"), value: o.pickups.inProgress, color: "var(--info)" },
-    { name: ov("delivered"), value: o.pickups.delivered, color: "var(--leaf)" },
-    { name: ov("cancelled"), value: o.pickups.cancelled, color: "var(--muted-foreground)" },
+    { name: ov("openPickups"), value: o.pickups.open, color: CHART_COLORS.open },
+    { name: ov("inProgress"), value: o.pickups.inProgress, color: CHART_COLORS.inProgress },
+    { name: ov("delivered"), value: o.pickups.delivered, color: CHART_COLORS.delivered },
+    { name: ov("cancelled"), value: o.pickups.cancelled, color: CHART_COLORS.cancelled },
   ];
 
   return (
@@ -151,66 +157,50 @@ export default async function AdminOverviewPage() {
 
       {/* Trend + status composition */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle className="text-base">{ov("trendTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent>
+        <div className="lg:col-span-2">
+          <Panel title={ov("trendTitle")}>
             <DeliveriesTrendChart data={trend} />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{ov("statusTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <StatusDonut data={statusSlices} />
-            <ul className="mt-3 space-y-1">
-              {statusSlices.map((s) => (
-                <li key={s.name} className="flex items-center justify-between text-sm">
-                  <span className="flex items-center gap-2 text-muted-foreground">
-                    <span className="size-2.5 rounded-full" style={{ background: s.color }} />
-                    {s.name}
-                  </span>
-                  <span className="font-semibold tabular-nums">{s.value.toLocaleString()}</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+          </Panel>
+        </div>
+        <Panel title={ov("statusTitle")}>
+          <StatusDonut data={statusSlices} />
+          <ul className="mt-3 space-y-1">
+            {statusSlices.map((s) => (
+              <li key={s.name} className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-2 text-muted-foreground">
+                  <span className="size-2.5 rounded-full" style={{ background: s.color }} />
+                  {s.name}
+                </span>
+                <span className="font-semibold tabular-nums">{s.value.toLocaleString()}</span>
+              </li>
+            ))}
+          </ul>
+        </Panel>
       </div>
 
       {/* Leaderboards */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{ov("topPartnersTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TopBar data={topPartners} />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{ov("topDestinationsTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <TopBar data={topDestinations} />
-          </CardContent>
-        </Card>
+        <Panel title={ov("topPartnersTitle")}>
+          <TopBar data={topPartners} />
+        </Panel>
+        <Panel title={ov("topDestinationsTitle")}>
+          <TopBar data={topDestinations} />
+        </Panel>
       </div>
 
-      {/* Directory */}
+      {/* Directory — a linked ledger row (charter §3.3), each stat to its page */}
       <section className="space-y-3">
-        <h2 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">
+        <h2 className="text-xs font-semibold uppercase tracking-[0.04em] text-gold-ink">
           {ov("directoryTitle")}
         </h2>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <Stat label={ov("partners")} value={o.partners} />
-          <Stat label={ov("destinations")} value={o.destinations} />
-          <Stat label={ov("volunteers")} value={o.volunteers} />
-          <Stat label={ov("drivers")} value={o.drivers} />
-        </div>
+        <LedgerRow
+          stats={[
+            { value: o.partners.toLocaleString(), label: ov("partners"), href: ROUTES.adminPartners },
+            { value: o.destinations.toLocaleString(), label: ov("destinations"), href: ROUTES.adminDestinations },
+            { value: o.volunteers.toLocaleString(), label: ov("volunteers"), href: ROUTES.adminUsers },
+            { value: o.drivers.toLocaleString(), label: ov("drivers"), href: ROUTES.adminUsers },
+          ]}
+        />
       </section>
     </div>
   );

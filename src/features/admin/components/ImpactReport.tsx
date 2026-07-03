@@ -8,11 +8,17 @@ import { ROUTES } from "@/config/constants";
 const FIELD =
   "rj-field h-9 rounded-lg border border-input bg-surface px-2 text-sm";
 
-/** Date-range driver for the impact report — pushes ?from&to; the server page aggregates. */
+/**
+ * Date-range driver for the impact report — pushes ?from&to; the server page
+ * aggregates. `trailing` (the CSV export buttons) sits on the same toolbar row,
+ * pushed right (charter §3.4 worktable recipe).
+ */
 export function ImpactReport({
   current,
+  trailing,
 }: {
   current: { from: string; to: string };
+  trailing?: React.ReactNode;
 }) {
   const router = useRouter();
   const t = useTranslations("admin");
@@ -20,7 +26,7 @@ export function ImpactReport({
   const [to, setTo] = useState(current.to);
 
   return (
-    <div className="mb-6 flex flex-wrap items-end gap-2">
+    <div className="flex flex-wrap items-end gap-2">
       <label className="flex flex-col gap-1 text-xs text-muted-foreground">
         {t("reports.dateFrom")}
         <input
@@ -47,6 +53,7 @@ export function ImpactReport({
       >
         {t("reports.updateButton")}
       </Button>
+      {trailing && <div className="ml-auto flex flex-wrap gap-2">{trailing}</div>}
     </div>
   );
 }

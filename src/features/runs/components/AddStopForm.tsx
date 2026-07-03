@@ -6,10 +6,19 @@ import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { addPickupStop, addDropStop } from "@/features/runs/actions/runActions";
 import type { Partner, Destination } from "@/server/db/schema";
 
+/** Segmented control — active segment is primary solid, inactive is outline
+ * (charter: solid green = interactive; batch-3 §3.3). */
 function Toggle({
   active,
   onClick,
@@ -24,8 +33,10 @@ function Toggle({
       type="button"
       onClick={onClick}
       className={cn(
-        "rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
-        active ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground",
+        "h-9 rounded-lg px-3 text-sm font-medium transition-colors",
+        active
+          ? "bg-primary text-primary-foreground"
+          : "border border-border-strong bg-surface text-foreground hover:bg-secondary",
       )}
     >
       {children}
@@ -101,7 +112,6 @@ export function AddStopForm({
 
   return (
     <div className="space-y-3">
-      <h3 className="text-sm font-semibold">{t("runs.addStop")}</h3>
       <div className="flex gap-2">
         <Toggle active={kind === "pickup"} onClick={() => setKind("pickup")}>
           {t("runs.kindPickup")}
@@ -115,26 +125,20 @@ export function AddStopForm({
         <div className="space-y-3">
           <div>
             <Label>{t("runs.form.partner")}</Label>
-            <select
-              value={partnerId}
-              onChange={(e) => setPartnerId(e.target.value)}
-              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-            >
-              <option value="">{t("runs.form.selectPartner")}</option>
-              {partners.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.name} · {p.type}
-                </option>
-              ))}
-            </select>
+            <Select value={partnerId} onValueChange={setPartnerId}>
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder={t("runs.form.selectPartner")} />
+              </SelectTrigger>
+              <SelectContent>
+                {partners.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name} · {p.type}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={pending}
-            onClick={addPickup}
-            className="w-full"
-          >
+          <Button size="sm" disabled={pending} onClick={addPickup}>
             {t("runs.form.addPickupStop")}
           </Button>
         </div>
@@ -152,21 +156,21 @@ export function AddStopForm({
           {destMode === "saved" ? (
             <div>
               <Label>{t("runs.form.destination")}</Label>
-              <select
-                value={destinationId}
-                onChange={(e) => setDestinationId(e.target.value)}
-                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-              >
-                <option value="">{t("runs.form.selectDest")}</option>
-                {destinations
-                  .filter((d) => d.active)
-                  .map((d) => (
-                    <option key={d.id} value={d.id}>
-                      {d.name}
-                      {d.area ? ` · ${d.area}` : ""}
-                    </option>
-                  ))}
-              </select>
+              <Select value={destinationId} onValueChange={setDestinationId}>
+                <SelectTrigger className="mt-1">
+                  <SelectValue placeholder={t("runs.form.selectDest")} />
+                </SelectTrigger>
+                <SelectContent>
+                  {destinations
+                    .filter((d) => d.active)
+                    .map((d) => (
+                      <SelectItem key={d.id} value={d.id}>
+                        {d.name}
+                        {d.area ? ` · ${d.area}` : ""}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
             </div>
           ) : (
             <div>
@@ -180,13 +184,7 @@ export function AddStopForm({
             </div>
           )}
 
-          <Button
-            variant="outline"
-            size="sm"
-            disabled={pending}
-            onClick={addDrop}
-            className="w-full"
-          >
+          <Button size="sm" disabled={pending} onClick={addDrop}>
             {pending ? t("runs.form.geocoding") : t("runs.form.addDropStop")}
           </Button>
         </div>

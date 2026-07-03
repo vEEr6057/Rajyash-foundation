@@ -141,8 +141,10 @@
       "deliveries": "પૂર્ણ ડિલિવરી"
     },
     "exportButton": "ફ઼િલ્ટર કરેલ પિકઅપ ડાઉનલોડ (CSV)",
+    "exportButtonShort": "પિકઅપ CSV",
     "totalsNote": "ડિલિવરી તારીખ મુજબ ડિલિવર થયેલ પિકઅપ ગણાય. ભોજન અને કિ.ગ્રા. અલગ દર્શાવ્યા (કોઈ રૂપાંતર નહીં).",
     "runExportButton": "રન અસર અહેવાલ ડાઉનલોડ (CSV)",
+    "runExportButtonShort": "રન અસર CSV",
     "approximationNote": "રન ટોટલ ફક્ત સ્ટોપ ગણના દર્શાવે છે. પ્રતિ-ડિલિવરી હેડકાઉન્ટ નહીં — ભોજન ટોટલ ભાગીદાર મુજબ છે.",
     "breakdowns": {
       "runTitle": "રન સારાંશ",
@@ -211,7 +213,9 @@
     },
     "newButton": "નવી રન",
     "emptyState": "હજી સુધી કોઈ રન નથી. ડિસ્પેચ શરૂ કરવા માટે એક બનાવો.",
+    "detailEyebrow": "એડમિન · ડિસ્પેચ",
     "stopCount": "સ્ટોપ",
+    "stopCountMeta": "{count, plural, one {# સ્ટોપ} other {# સ્ટોપ}}",
     "table": { "driver": "ડ્રાઇવર" },
     "noDriver": "ડ્રાઇવર સોંપ્યો નથી",
     "noStops": "હજી કોઈ સ્ટોપ ઉમેર્યો નથી.",

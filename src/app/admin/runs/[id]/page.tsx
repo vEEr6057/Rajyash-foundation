@@ -4,7 +4,9 @@ import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
+import { profilesRepo } from "@/server/db/repositories/profiles";
 import { ROUTES, RUN_SLOT_LABELS } from "@/config/constants";
+import { PageHeader } from "@/components/PageHeader";
 import { RunStatusPill } from "@/features/runs/components/RunStatusPill";
 import { RunStatusControls } from "@/features/runs/components/RunStatusControls";
 import { StopList } from "@/features/runs/components/StopList";
@@ -50,18 +52,29 @@ export default async function AdminRunDetailPage({
     year: "numeric",
   });
 
+  // Driver name for the header meta (existing read; no query change).
+  const driverName = runWithStops.driverId
+    ? (await profilesRepo.getById(runWithStops.driverId))?.name ?? null
+    : null;
+  const meta = [
+    runDate,
+    t("runs.stopCountMeta", { count: runWithStops.stops.length }),
+    driverName,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+
   return (
     <div className="mx-auto max-w-[40rem]">
-      <header className="mb-6 space-y-2">
-        <div className="flex items-center justify-between gap-2">
-          <h1 className="font-display text-2xl font-medium tracking-tight">
-            {RUN_SLOT_LABELS[runWithStops.slot]}
-          </h1>
-          <RunStatusPill status={runWithStops.status} />
-        </div>
-        <p className="text-sm text-muted-foreground">{runDate}</p>
+      <PageHeader
+        eyebrow={t("runs.detailEyebrow")}
+        title={RUN_SLOT_LABELS[runWithStops.slot]}
+        meta={meta}
+        action={<RunStatusPill status={runWithStops.status} />}
+      />
+      <div className="mb-6">
         <RunStatusControls runId={runWithStops.id} status={runWithStops.status} />
-      </header>
+      </div>
 
       {runWithStops.status === "active" && (
         <section className="mb-6 border-t border-border pt-6">
