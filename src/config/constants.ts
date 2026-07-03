@@ -191,9 +191,11 @@ export const RUN_STATUS_LABELS: Record<RunStatus, string> = {
 
 export const RUN_SLOTS = ["morning", "night"] as const;
 export type RunSlot = (typeof RUN_SLOTS)[number];
-export const RUN_SLOT_LABELS: Record<RunSlot, string> = {
-  morning: "Morning drive",
-  night: "Night drive",
+// i18n key (in the `admin` namespace) for each slot's display label — routed
+// through next-intl so labels localize. Single source: admin.runs.slotMorning/Night.
+export const RUN_SLOT_LABEL_KEYS: Record<RunSlot, string> = {
+  morning: "runs.slotMorning",
+  night: "runs.slotNight",
 };
 
 export const STOP_KINDS = ["pickup", "drop"] as const;

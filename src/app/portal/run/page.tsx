@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
-import { ROUTES, RUN_SLOT_LABELS } from "@/config/constants";
+import { ROUTES, RUN_SLOT_LABEL_KEYS } from "@/config/constants";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { LeafMark } from "@/components/LeafMark";
@@ -27,6 +27,8 @@ export default async function DriverRunPage() {
   }
 
   const t = await getTranslations("portal");
+  // Slot label lives in the shared `admin` runs catalog (single source).
+  const tAdmin = await getTranslations("admin");
 
   const allRuns = await runsRepo.listRunsForDriver(session.userId);
   const activeRun =
@@ -72,7 +74,7 @@ export default async function DriverRunPage() {
     year: "numeric",
   });
   const meta = [
-    RUN_SLOT_LABELS[activeRun.slot],
+    tAdmin(RUN_SLOT_LABEL_KEYS[activeRun.slot]),
     runDate,
     `${stops.length} ${t("run.stopCount")}`,
   ].join(" · ");

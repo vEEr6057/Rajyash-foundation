@@ -22,7 +22,7 @@ export async function PickupCard({ pickup }: { pickup: Pickup }) {
         <PickupStatusPill status={pickup.status} />
       </div>
       <p className="font-display text-sm font-medium tabular-nums text-foreground">
-        {formatQuantity(pickup.quantity, pickup.quantityUnit)}
+        {formatQuantity(pickup.quantity, pickup.quantityUnit, t)}
       </p>
       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
         <Clock className="size-3.5" />

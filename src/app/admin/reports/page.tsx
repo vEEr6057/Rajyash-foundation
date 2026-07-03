@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
-import { ROUTES } from "@/config/constants";
+import { ROUTES, RUN_SLOT_LABEL_KEYS, type RunSlot } from "@/config/constants";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { reportsRepo } from "@/server/db/repositories/reports";
 import { buttonVariants } from "@/components/ui/button";
@@ -70,8 +70,9 @@ export default async function AdminReportsPage({
   const to = new Date(toStr);
   to.setHours(23, 59, 59, 999);
 
-  const [t, locale, report, runRows, destRows, partnerRows] = await Promise.all([
+  const [t, tCommon, locale, report, runRows, destRows, partnerRows] = await Promise.all([
     getTranslations("admin"),
+    getTranslations("common"),
     getLocale(),
     pickupsRepo.impactReport(from, to),
     reportsRepo.runSummary(from, to),
@@ -163,8 +164,8 @@ export default async function AdminReportsPage({
               runRows.map((r) => (
                 <TableRow key={r.runId}>
                   <TableCell className="whitespace-nowrap">{r.runDate}</TableCell>
-                  <TableCell>{r.slot}</TableCell>
-                  <TableCell>{r.status}</TableCell>
+                  <TableCell>{t(RUN_SLOT_LABEL_KEYS[r.slot as RunSlot])}</TableCell>
+                  <TableCell>{tCommon(`runStatus.${r.status}`)}</TableCell>
                   <TableCell className="text-right">{r.pickupStopCount}</TableCell>
                   <TableCell className="text-right">{r.dropStopCount}</TableCell>
                   <TableCell className="text-right">{r.completedDropCount}</TableCell>
@@ -183,7 +184,10 @@ export default async function AdminReportsPage({
             <TopBar
               data={destRows
                 .slice(0, 8)
-                .map((r) => ({ name: r.destinationName, value: r.completedDropCount }))}
+                .map((r) => ({
+                  name: r.destinationId ? r.destinationName : tCommon("adHocDestination"),
+                  value: r.completedDropCount,
+                }))}
             />
           </div>
         )}
@@ -200,7 +204,9 @@ export default async function AdminReportsPage({
             ) : (
               destRows.map((r, i) => (
                 <TableRow key={r.destinationId ?? `adhoc-${i}`}>
-                  <TableCell>{r.destinationName}</TableCell>
+                  <TableCell>
+                    {r.destinationId ? r.destinationName : tCommon("adHocDestination")}
+                  </TableCell>
                   <TableCell className="text-right">{r.completedDropCount}</TableCell>
                 </TableRow>
               ))
@@ -217,7 +223,10 @@ export default async function AdminReportsPage({
             <TopBar
               data={partnerRows
                 .slice(0, 8)
-                .map((r) => ({ name: r.partnerName, value: r.count }))}
+                .map((r) => ({
+                  name: r.partnerId ? r.partnerName : tCommon("unknownPartner"),
+                  value: r.count,
+                }))}
             />
           </div>
         )}
@@ -236,7 +245,9 @@ export default async function AdminReportsPage({
             ) : (
               partnerRows.map((r, i) => (
                 <TableRow key={r.partnerId ?? `unknown-${i}`}>
-                  <TableCell>{r.partnerName}</TableCell>
+                  <TableCell>
+                    {r.partnerId ? r.partnerName : tCommon("unknownPartner")}
+                  </TableCell>
                   <TableCell className="text-right">{r.servings.toLocaleString()}</TableCell>
                   <TableCell className="text-right">{r.kg.toLocaleString()}</TableCell>
                   <TableCell className="text-right">{r.count.toLocaleString()}</TableCell>

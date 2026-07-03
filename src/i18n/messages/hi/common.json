@@ -123,5 +123,7 @@
     "active": "सक्रिय",
     "completed": "पूर्ण",
     "cancelled": "रद्द"
-  }
+  },
+  "unknownPartner": "अज्ञात साझेदार",
+  "adHocDestination": "अन्य स्थान"
 }

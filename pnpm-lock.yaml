@@ -11,6 +11,9 @@ importers:
       '@block65/webcrypto-web-push':
         specifier: ^1.0.2
         version: 1.0.2
+      '@clerk/localizations':
+        specifier: ^4.12.0
+        version: 4.12.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@clerk/nextjs':
         specifier: ^7.5.8
         version: 7.5.8(next@15.5.19(@opentelemetry/api@1.9.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -489,6 +492,10 @@ packages:
     resolution: {integrity: sha512-3G+kEu8kalqQokJ/n0IynhBh2i6TtiilRzuAg5UWMburkK658/elrG0Uqsapd5yKhmkNuvizHwOPWwKAMxP2EQ==}
     engines: {node: '>=20.9.0'}
 
+  '@clerk/localizations@4.12.0':
+    resolution: {integrity: sha512-uuSQeB/HLg4Fkd0lJPBuG3jaW1o/enzh2ZsKaPCiAqZG39x109RkjyU3AP2dreVwXoXL572PYGT0JqKW+6THCA==}
+    engines: {node: '>=20.9.0'}
+
   '@clerk/nextjs@7.5.8':
     resolution: {integrity: sha512-KHiisnF+DpXEdMebeO1WGY4v/P2D6hMBxYbrvsf+RXS0MEz8oRclAuTJX96D9uxgjUt/e6VtTb3Bua0VQFRgsA==}
     engines: {node: '>=20.9.0'}
@@ -518,6 +525,18 @@ packages:
 
   '@clerk/shared@4.22.0':
     resolution: {integrity: sha512-GZ56kzUB2UBb8MCF+Eo8WIey+W4RP1tAkyOL+geiHxrQxJlUcgD+xalY2YPJLH8WVFwtOnfIl8KPEo0M0e/DRg==}
+    engines: {node: '>=20.9.0'}
+    peerDependencies:
+      react: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
+      react-dom: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+
+  '@clerk/shared@4.23.0':
+    resolution: {integrity: sha512-v4roxB9AwEVq56luLc9MtQ+RkVR66XZJGAfTbQXD0ArdW+fs1P/FhlKwm6OQfvDFNiCCVZA6GoP648t9dGtfrw==}
     engines: {node: '>=20.9.0'}
     peerDependencies:
       react: ^18.0.0 || ~19.0.3 || ~19.1.4 || ~19.2.3 || ~19.3.0-0
@@ -6958,6 +6977,13 @@ snapshots:
       - react
       - react-dom
 
+  '@clerk/localizations@4.12.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@clerk/shared': 4.23.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+    transitivePeerDependencies:
+      - react
+      - react-dom
+
   '@clerk/nextjs@7.5.8(next@15.5.19(@opentelemetry/api@1.9.1)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@clerk/backend': 3.8.4(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -6987,6 +7013,16 @@ snapshots:
       react-dom: 19.1.0(react@19.1.0)
 
   '@clerk/shared@4.22.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+    dependencies:
+      '@tanstack/query-core': 5.101.1
+      dequal: 2.0.3
+      glob-to-regexp: 0.4.1
+      js-cookie: 3.0.7
+    optionalDependencies:
+      react: 19.1.0
+      react-dom: 19.1.0(react@19.1.0)
+
+  '@clerk/shared@4.23.0(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@tanstack/query-core': 5.101.1
       dequal: 2.0.3

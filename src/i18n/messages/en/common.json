@@ -119,5 +119,7 @@
     "active": "Active",
     "completed": "Completed",
     "cancelled": "Cancelled"
-  }
+  },
+  "unknownPartner": "Unknown partner",
+  "adHocDestination": "Ad-hoc"
 }

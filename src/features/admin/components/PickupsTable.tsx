@@ -127,7 +127,7 @@ export function PickupsTable({
                 {tCommon(`foodCategory.${p.category}`)}
               </TableCell>
               <TableCell className="whitespace-nowrap text-right text-muted-foreground">
-                {formatQuantity(p.quantity, p.quantityUnit)}
+                {formatQuantity(p.quantity, p.quantityUnit, tCommon)}
               </TableCell>
               <TableCell className="hidden max-w-[16rem] truncate text-muted-foreground md:table-cell">
                 {p.address}
