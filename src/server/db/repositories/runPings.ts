@@ -1,5 +1,5 @@
 import "server-only";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, lt } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { runPings, type RunPing, type NewRunPing } from "@/server/db/schema";
 
@@ -26,5 +26,15 @@ export const runPingsRepo = {
   async purgeForRun(runId: string): Promise<void> {
     const db = getDb();
     await db.delete(runPings).where(eq(runPings.runId, runId));
+  },
+
+  /** B3 hygiene sweep: delete run pings older than `cutoff`. Returns the count purged. */
+  async purgeOlderThan(cutoff: Date): Promise<number> {
+    const db = getDb();
+    const rows = await db
+      .delete(runPings)
+      .where(lt(runPings.createdAt, cutoff))
+      .returning({ id: runPings.id });
+    return rows.length;
   },
 };

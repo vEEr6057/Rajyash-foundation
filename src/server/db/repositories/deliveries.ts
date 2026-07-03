@@ -1,5 +1,5 @@
 import "server-only";
-import { and, eq } from "drizzle-orm";
+import { and, eq, lt } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { notificationDeliveries } from "@/server/db/schema";
 import type { ChannelKey } from "@/server/notifications/types";
@@ -50,5 +50,18 @@ export const deliveriesRepo = {
           eq(notificationDeliveries.channel, channel),
         ),
       );
+  },
+
+  /**
+   * B3 hygiene sweep: delete dedup-claim rows older than `cutoff` (the dedup window is
+   * far longer than the retry window, so old claims are safe to drop). Returns the count.
+   */
+  async purgeOlderThan(cutoff: Date): Promise<number> {
+    const db = getDb();
+    const rows = await db
+      .delete(notificationDeliveries)
+      .where(lt(notificationDeliveries.createdAt, cutoff))
+      .returning({ id: notificationDeliveries.id });
+    return rows.length;
   },
 };
