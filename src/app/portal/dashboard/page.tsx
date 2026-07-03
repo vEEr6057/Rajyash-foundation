@@ -8,7 +8,6 @@ import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { ROUTES, type PickupStatus } from "@/config/constants";
 import type { Pickup } from "@/server/db/schema";
 import { buttonVariants } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { LedgerRow } from "@/components/LedgerRow";
@@ -20,20 +19,6 @@ export const dynamic = "force-dynamic";
 export const metadata = { title: "Dashboard — Rajyash Food Rescue" };
 
 const ACTIVE: PickupStatus[] = ["accepted", "en_route", "picked_up"];
-
-// Volunteer stat tile — batch 5 restyles the volunteer dashboard; donor uses LedgerRow.
-function Stat({ label, value }: { label: string; value: number }) {
-  return (
-    <Card>
-      <CardContent className="pt-5">
-        <p className="text-3xl font-bold tracking-tight text-foreground tabular-nums">
-          {value.toLocaleString()}
-        </p>
-        <p className="mt-0.5 text-sm font-medium text-muted-foreground">{label}</p>
-      </CardContent>
-    </Card>
-  );
-}
 
 export default async function PortalDashboardPage() {
   const session = await getSession();
@@ -59,7 +44,7 @@ export default async function PortalDashboardPage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-8">
       <PageHeader
-        eyebrow={isDonor ? t("dashboard.donorEyebrow") : undefined}
+        eyebrow={isDonor ? t("dashboard.donorEyebrow") : t("dashboard.volunteerEyebrow")}
         title={name ? t("dashboard.greeting", { name }) : t("dashboard.title")}
         meta={isDonor ? istDate : t("dashboard.volunteerCta")}
       />
@@ -149,11 +134,14 @@ async function VolunteerDashboard({ userId }: { userId: string }) {
 
   return (
     <>
-      <div className="grid grid-cols-3 gap-3">
-        <Stat label={t("dashboard.stats.openNow")} value={open.length} />
-        <Stat label={t("dashboard.stats.myActive")} value={active.length} />
-        <Stat label={t("dashboard.stats.deliveredByMe")} value={delivered} />
-      </div>
+      <LedgerRow
+        stats={[
+          { value: open.length.toLocaleString(), label: t("dashboard.stats.openNow") },
+          { value: active.length.toLocaleString(), label: t("dashboard.stats.myActive") },
+          { value: delivered.toLocaleString(), label: t("dashboard.stats.deliveredByMe") },
+        ]}
+        provenance={t("dashboard.volunteerStatsProvenance")}
+      />
 
       <div className="mt-6 flex flex-wrap gap-3">
         <Link href={ROUTES.volunteerBoard} className={buttonVariants({ size: "lg" })}>
