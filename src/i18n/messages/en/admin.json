@@ -138,8 +138,10 @@
       "deliveries": "Deliveries completed"
     },
     "exportButton": "Download filtered pickups (CSV)",
+    "exportButtonShort": "Pickups CSV",
     "totalsNote": "Totals count delivered pickups by delivery date. Servings and kilograms are shown separately (no conversion).",
     "runExportButton": "Download run impact report (CSV)",
+    "runExportButtonShort": "Run impact CSV",
     "approximationNote": "Run totals show stop counts only. No per-delivery headcount — meal totals are by partner (delivered pickups).",
     "breakdowns": {
       "runTitle": "Run summary",
@@ -206,7 +208,9 @@
     },
     "newButton": "New run",
     "emptyState": "No runs yet. Create one to start dispatching.",
+    "detailEyebrow": "Admin · Dispatch",
     "stopCount": "stops",
+    "stopCountMeta": "{count, plural, one {# stop} other {# stops}}",
     "table": { "driver": "Driver" },
     "noDriver": "No driver assigned",
     "noStops": "No stops added yet. Add pickup and drop stops below.",
