@@ -11,11 +11,13 @@ import { ThemeToggle } from "./ThemeToggle";
 import { PublicMobileMenu } from "./PublicMobileMenu";
 import { HeaderScroll } from "./HeaderScroll";
 
-const NAV: [string, string][] = [
-  ["#programs", "What we do"],
-  ["#impact", "Impact"],
-  ["/sign-up?role=volunteer", "Volunteer"],
-  ["#contact", "Contact"],
+// Anchor targets must exist on the homepage: #programs, #impact (LandingPage
+// sections) and #contact (PublicFooter). Labels are landing.nav.* keys.
+const NAV: [href: string, labelKey: "nav.whatWeDo" | "nav.impact" | "nav.volunteer" | "nav.contact"][] = [
+  ["#programs", "nav.whatWeDo"],
+  ["#impact", "nav.impact"],
+  [ROUTES.becomeVolunteer, "nav.volunteer"],
+  ["#contact", "nav.contact"],
 ];
 
 export async function PublicHeader() {
@@ -32,26 +34,23 @@ export async function PublicHeader() {
 
   return (
     <HeaderScroll>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded focus:bg-[var(--rj-paper)] focus:px-3 focus:py-1.5 focus:text-sm"
-      >
-        {t("skip")}
-      </a>
+      {/* No skip link here — the root layout's <SkipLink /> is already the page's
+          first focusable element and targets the same #main-content. Two identical
+          skip links in the tab order is an a11y anti-pattern. */}
       <div className="mx-auto flex h-[72px] max-w-[78rem] items-center justify-between gap-4 px-6 sm:px-10">
         <Link href={ROUTES.home} aria-label={t("brandName")} className="flex items-center">
-          <img src="/images/rajyash/logo.png" alt="Rajyash Foundation" width={160} height={42} className="h-10 w-auto" />
+          <img src="/images/rajyash/logo.png" alt={t("brandName")} width={160} height={42} className="h-10 w-auto" />
         </Link>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Site navigation">
-          {NAV.map(([href, label]) => (
+        <nav className="hidden items-center gap-6 md:flex" aria-label={t("navAria")}>
+          {NAV.map(([href, labelKey]) => (
             <Link
-              key={label}
+              key={labelKey}
               href={href}
               className="rj-underline text-sm font-medium"
               style={{ color: "var(--rj-ink)" }}
             >
-              {label}
+              {t(labelKey)}
             </Link>
           ))}
         </nav>

@@ -16,14 +16,16 @@ export default async function PortalLayout({
   return (
     <>
       <AuthedHeader homeHref={ROUTES.portalDashboard} />
-      {/* pad content above the fixed bottom nav on mobile */}
-      <div
+      {/* pad content above the fixed bottom nav on mobile.
+          <main> (not a div) so the skip-link target is also the main landmark,
+          matching the admin shell. */}
+      <main
         id="main-content"
         tabIndex={-1}
         className={`scroll-mt-20 focus:outline-none${hasBottomNav ? " pb-20 lg:pb-0" : ""}`}
       >
         {children}
-      </div>
+      </main>
       {role && <PortalBottomNav role={role} />}
     </>
   );

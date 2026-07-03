@@ -372,8 +372,13 @@
 
 .rj-home { font-family: var(--rj-body); background: var(--rj-paper); color: var(--rj-ink); }
 .rj-home .rj-display, .rj-home h1, .rj-home h2, .rj-home h3 { font-family: var(--rj-display); font-weight: 500; }
-/* Indic optical match — Baloo runs larger/heavier than Roboto Slab */
-.rj-home:lang(gu) h1, .rj-home:lang(gu) h2, .rj-home:lang(hi) h1, .rj-home:lang(hi) h2 { font-size: 0.92em; line-height: 1.15; }
+/* Indic optical match — Baloo runs larger/heavier than Roboto Slab (HOMEPAGE-SPEC §3).
+   Headings size themselves inline with clamp(), so a bare `font-size: 0.92em` rule can
+   never win (inline style specificity) and would resolve against the PARENT size anyway.
+   Instead the headings multiply their clamp() by --rj-indic and read --rj-h*-lh, and
+   these :lang overrides retune both for GU/HI (0.92 scale, 1.15 lh to clear matras). */
+.rj-home { --rj-indic: 1; --rj-h1-lh: 1.06; --rj-h2-lh: 1.12; }
+.rj-home:lang(gu), .rj-home:lang(hi) { --rj-indic: 0.92; --rj-h1-lh: 1.15; --rj-h2-lh: 1.15; }
 
 /* Repeatable photo grade — one look across every candid phone photo */
 .rj-graded { filter: saturate(0.88) contrast(0.96) brightness(1.03); }
@@ -405,6 +410,9 @@
 }
 .rj-home a:focus-visible,
 .rj-home button:focus-visible { outline: 3px solid var(--rj-gold-ink); outline-offset: 2px; }
+/* On the full-bleed green finale the gold ring has no contrast — use white (SPEC §8). */
+.rj-home .rj-finale a:focus-visible,
+.rj-home .rj-finale button:focus-visible { outline-color: #fff; }
 
 /* Homepage masthead: transparent over hero → paper on scroll (HOMEPAGE-SPEC §5.1) */
 .rj-masthead { background: transparent; border-bottom: 1px solid transparent; }

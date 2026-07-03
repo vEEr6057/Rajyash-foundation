@@ -10,6 +10,7 @@ import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FormField, FormSelect, FormTextarea, FormDateTime } from "@/components/forms";
 import {
   FOOD_CATEGORIES,
   QUANTITY_UNITS,
@@ -71,6 +72,7 @@ export function PickupForm({
 
   const {
     register,
+    control,
     handleSubmit,
     watch,
     setValue,
@@ -137,62 +139,42 @@ export function PickupForm({
         <h2 className="font-display text-[15px] font-semibold">
           {t("pickup.form.sectionWhat")}
         </h2>
-      <div>
-        <Label htmlFor="category">{t("pickup.form.category")}</Label>
-        <select
-          id="category"
-          className="rj-field h-11 w-full rounded-lg border border-input bg-surface px-3 text-[15px]"
-          {...register("category")}
-        >
-          <option value="">{t("pickup.form.categoryPlaceholder")}</option>
-          {FOOD_CATEGORIES.map((c) => (
-            <option key={c} value={c}>
-              {tCommon(`foodCategory.${c}`)}
-            </option>
-          ))}
-        </select>
-        {errors.category && (
-          <p className="mt-1.5 text-sm text-destructive">{errors.category.message}</p>
-        )}
-      </div>
+      <FormSelect
+        control={control}
+        name="category"
+        label={t("pickup.form.category")}
+        placeholder={t("pickup.form.categoryPlaceholder")}
+        options={FOOD_CATEGORIES.map((c) => ({ value: c, label: tCommon(`foodCategory.${c}`) }))}
+      />
 
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label htmlFor="quantity">{t("pickup.form.quantity")}</Label>
-          <Input id="quantity" type="number" min={1} {...register("quantity")} />
-          {errors.quantity && (
-            <p className="mt-1.5 text-sm text-destructive">{errors.quantity.message}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="quantityUnit">{t("pickup.form.unit")}</Label>
-          <select
-            id="quantityUnit"
-            className="rj-field h-11 w-full rounded-lg border border-input bg-surface px-3 text-[15px]"
-            {...register("quantityUnit")}
-          >
-            {QUANTITY_UNITS.map((u) => (
-              <option key={u} value={u}>
-                {tCommon(`quantityUnit.${u}`)}
-              </option>
-            ))}
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="description">
-          {t("pickup.form.description")}{" "}
-          <span className="font-normal text-muted-foreground">{t("pickup.form.descriptionOptional")}</span>
-        </Label>
-        <textarea
-          id="description"
-          rows={2}
-          className="rj-field w-full rounded-lg border border-input bg-surface px-3 py-2 text-[15px]"
-          placeholder={t("pickup.form.descriptionPlaceholder")}
-          {...register("description")}
+        <FormField
+          control={control}
+          name="quantity"
+          label={t("pickup.form.quantity")}
+          type="number"
+          min={1}
+        />
+        <FormSelect
+          control={control}
+          name="quantityUnit"
+          label={t("pickup.form.unit")}
+          options={QUANTITY_UNITS.map((u) => ({ value: u, label: tCommon(`quantityUnit.${u}`) }))}
         />
       </div>
+
+      <FormTextarea
+        control={control}
+        name="description"
+        label={
+          <>
+            {t("pickup.form.description")}{" "}
+            <span className="font-normal text-muted-foreground">{t("pickup.form.descriptionOptional")}</span>
+          </>
+        }
+        rows={2}
+        placeholder={t("pickup.form.descriptionPlaceholder")}
+      />
       </section>
 
       {/* Section: When to pick up */}
@@ -201,20 +183,8 @@ export function PickupForm({
           {t("pickup.form.sectionWhen")}
         </h2>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div>
-          <Label htmlFor="windowStart">{t("pickup.form.windowStart")}</Label>
-          <Input id="windowStart" type="datetime-local" {...register("windowStart")} />
-          {errors.windowStart && (
-            <p className="mt-1.5 text-sm text-destructive">{errors.windowStart.message}</p>
-          )}
-        </div>
-        <div>
-          <Label htmlFor="windowEnd">{t("pickup.form.windowEnd")}</Label>
-          <Input id="windowEnd" type="datetime-local" {...register("windowEnd")} />
-          {errors.windowEnd && (
-            <p className="mt-1.5 text-sm text-destructive">{errors.windowEnd.message}</p>
-          )}
-        </div>
+        <FormDateTime control={control} name="windowStart" label={t("pickup.form.windowStart")} />
+        <FormDateTime control={control} name="windowEnd" label={t("pickup.form.windowEnd")} />
       </div>
       </section>
 
