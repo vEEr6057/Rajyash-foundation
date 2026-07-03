@@ -12,16 +12,16 @@ export async function PickupCard({ pickup }: { pickup: Pickup }) {
   return (
     <Link
       href={ROUTES.pickup(pickup.id)}
-      className="rj-press block rounded-xl border border-border bg-card p-4 shadow-sm"
+      className="rj-press block rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:bg-surface-2 active:bg-surface-2"
     >
       <div className="mb-2 flex items-center justify-between gap-2">
-        <span className="inline-flex items-center gap-1.5 font-display font-bold">
+        <span className="inline-flex items-center gap-1.5 font-display font-semibold">
           <Package className="size-4 text-primary" />
           {t(`foodCategory.${pickup.category}`)}
         </span>
         <PickupStatusPill status={pickup.status} />
       </div>
-      <p className="text-sm font-semibold text-foreground">
+      <p className="font-display text-sm font-medium tabular-nums text-foreground">
         {formatQuantity(pickup.quantity, pickup.quantityUnit)}
       </p>
       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
