@@ -11,6 +11,40 @@ const isPublicRoute = createRouteMatcher([
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 
+// Security headers (HOMEPAGE-STANDARDS §4). Enforced set + a report-only CSP so we can
+// observe violations (Clerk/Supabase/OSM/geocoders) before switching CSP to enforcing.
+// geolocation kept `self` — volunteer live-tracking uses it.
+const CSP_REPORT_ONLY = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "object-src 'none'",
+  "frame-ancestors 'none'",
+  "img-src 'self' data: blob: https:",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com data:",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
+  "connect-src 'self' https: wss:",
+  "frame-src 'self' https://*.clerk.com https://challenges.cloudflare.com",
+  "worker-src 'self' blob:",
+  "upgrade-insecure-requests",
+].join("; ");
+
+function secure(res: NextResponse): NextResponse {
+  res.headers.set(
+    "Strict-Transport-Security",
+    "max-age=31536000; includeSubDomains",
+  );
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  res.headers.set("X-Frame-Options", "DENY");
+  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), usb=(), payment=(), geolocation=(self)",
+  );
+  res.headers.set("Content-Security-Policy-Report-Only", CSP_REPORT_ONLY);
+  return res;
+}
+
 /**
  * Edge RBAC gate (AUTH-04). Defence-in-depth only — server actions and protected
  * server components MUST still call requireRole() (AUTH-05); middleware is not a
@@ -20,7 +54,7 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId, sessionClaims, redirectToSignIn } = await auth();
 
   // Public routes pass through.
-  if (isPublicRoute(req)) return NextResponse.next();
+  if (isPublicRoute(req)) return secure(NextResponse.next());
 
   // Everything below requires authentication.
   if (!userId) return redirectToSignIn();
@@ -32,20 +66,20 @@ export default clerkMiddleware(async (auth, req) => {
   // users visiting /onboarding are sent to their dashboard.
   if (isOnboardingRoute(req)) {
     if (onboardingComplete) {
-      return NextResponse.redirect(new URL("/portal/dashboard", req.url));
+      return secure(NextResponse.redirect(new URL("/portal/dashboard", req.url)));
     }
-    return NextResponse.next();
+    return secure(NextResponse.next());
   }
   if (!onboardingComplete) {
-    return NextResponse.redirect(new URL("/onboarding", req.url));
+    return secure(NextResponse.redirect(new URL("/onboarding", req.url)));
   }
 
   // Admin routes are admin-only → 403 for everyone else.
   if (isAdminRoute(req) && role !== "admin") {
-    return new NextResponse("Forbidden", { status: 403 });
+    return secure(new NextResponse("Forbidden", { status: 403 }));
   }
 
-  return NextResponse.next();
+  return secure(NextResponse.next());
 });
 
 export const config = {

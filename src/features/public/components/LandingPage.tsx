@@ -3,6 +3,7 @@
 // Built verbatim from docs/design/HOMEPAGE-SPEC.md (scoped --rj-* token layer, no app
 // saffron system). English copy inline for this cut; i18n extraction is the final build step.
 import Link from "next/link";
+import { preload } from "react-dom";
 import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
@@ -11,6 +12,8 @@ import { ROUTES } from "@/config/constants";
 import { RevealOnScroll } from "./RevealOnScroll";
 import { RescueLine, LeafMark } from "./RescueLine";
 import { LedgerImpact } from "./LedgerImpact";
+
+const HERO_IMG = "/images/foodporter/food-porter2.jpg";
 
 const ink = "var(--rj-ink)";
 const inkSoft = "var(--rj-ink-soft)";
@@ -73,6 +76,9 @@ export async function LandingPage() {
       : ROUTES.portalDashboard
     : null;
 
+  // LCP: preload the hero image at high priority (HOMEPAGE-STANDARDS §3.1).
+  preload(HERO_IMG, { as: "image", fetchPriority: "high" });
+
   return (
     <main id="main-content" className="rj-home overflow-x-clip">
       {/* ── Rescue-line band: hero → ledger ─────────────────────────── */}
@@ -131,10 +137,14 @@ export async function LandingPage() {
               style={{ border: "1px solid var(--rj-hairline-2)" }}
             >
               <img
-                src="/images/foodporter/food-porter2.jpg"
+                src={HERO_IMG}
                 alt="Volunteers handing out warm evening meals from tiffins on an Ahmedabad street"
+                width={1600}
+                height={721}
                 className="rj-graded absolute inset-0 h-full w-full object-cover"
                 loading="eager"
+                fetchPriority="high"
+                decoding="async"
               />
               <Caption>Evening distribution, Ahmedabad · 2026</Caption>
             </div>
@@ -197,7 +207,7 @@ export async function LandingPage() {
                     </div>
                     <div className="col-span-12 sm:col-span-3">
                       <div className="ml-auto aspect-[4/3] max-w-[9rem] overflow-hidden rounded-lg" style={{ border: `1px solid ${hairline}` }}>
-                        <img src={p.img} alt="" className="rj-graded rj-row-thumb h-full w-full object-cover" loading="lazy" />
+                        <img src={p.img} alt="" className="rj-graded rj-row-thumb h-full w-full object-cover" loading="lazy" decoding="async" />
                       </div>
                     </div>
                   </div>
@@ -233,7 +243,7 @@ export async function LandingPage() {
           </div>
           <figure className="relative -mr-6 overflow-hidden sm:-mr-10 lg:col-span-6 lg:-mr-[max(2.5rem,calc((100vw-78rem)/2))]">
             <div className="relative aspect-[4/3] overflow-hidden rounded-lg lg:aspect-auto lg:h-[30rem]" style={{ border: "1px solid var(--rj-hairline-2)" }}>
-              <img src="/images/foodporter/food-porter3.jpg" alt="Two Food Porter volunteers serving rescued food from steel containers" className="rj-graded absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <img src="/images/foodporter/food-porter3.jpg" alt="Two Food Porter volunteers serving rescued food from steel containers" className="rj-graded absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
               <Caption>A Food Porter run, Satellite · 2026</Caption>
             </div>
           </figure>
@@ -251,7 +261,7 @@ export async function LandingPage() {
       <section className="mx-auto grid max-w-[78rem] grid-cols-1 items-center gap-10 px-6 py-20 sm:px-10 lg:grid-cols-12 lg:gap-8">
         <figure className="relative -ml-6 overflow-hidden sm:-ml-10 lg:col-span-6 lg:order-1 lg:-ml-[max(2.5rem,calc((100vw-78rem)/2))]">
           <div className="relative aspect-[4/3] overflow-hidden rounded-lg" style={{ border: "1px solid var(--rj-hairline-2)" }}>
-            <img src="/images/rajyash/prog6.jpg" alt="A Rajyash Foundation volunteer during an evening food run" className="rj-graded absolute inset-0 h-full w-full object-cover" loading="lazy" />
+            <img src="/images/rajyash/prog6.jpg" alt="A Rajyash Foundation volunteer during an evening food run" className="rj-graded absolute inset-0 h-full w-full object-cover" loading="lazy" decoding="async" />
             <Caption>A volunteer on the evening route · Ahmedabad</Caption>
           </div>
         </figure>
