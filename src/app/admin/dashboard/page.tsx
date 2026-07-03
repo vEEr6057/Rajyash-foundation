@@ -72,7 +72,11 @@ export default async function AdminOverviewPage() {
     throw e;
   }
 
-  const [t, locale] = await Promise.all([getTranslations("admin"), getLocale()]);
+  const [t, tCommon, locale] = await Promise.all([
+    getTranslations("admin"),
+    getTranslations("common"),
+    getLocale(),
+  ]);
 
   // Partners power the Log-surplus popup (rendered in the header, not a separate page).
   const partners = await partnersRepo.list().catch(() => []);
@@ -92,10 +96,16 @@ export default async function AdminOverviewPage() {
     trend = t30;
     topPartners = partnerRows
       .slice(0, 5)
-      .map((p) => ({ name: p.partnerName, value: p.count }));
+      .map((p) => ({
+        name: p.partnerId ? p.partnerName : tCommon("unknownPartner"),
+        value: p.count,
+      }));
     topDestinations = destRows
       .slice(0, 5)
-      .map((d) => ({ name: d.destinationName, value: d.completedDropCount }));
+      .map((d) => ({
+        name: d.destinationId ? d.destinationName : tCommon("adHocDestination"),
+        value: d.completedDropCount,
+      }));
   } catch (e) {
     logger.error("admin overview stats failed", { err: String(e) });
   }

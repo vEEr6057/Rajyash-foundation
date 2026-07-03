@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { ChevronRight } from "lucide-react";
-import { ROUTES, RUN_SLOT_LABELS } from "@/config/constants";
+import { ROUTES, RUN_SLOT_LABEL_KEYS } from "@/config/constants";
 import {
   Table,
   TableHeader,
@@ -43,7 +43,7 @@ export async function RunsTable({
         {runs.map((run, i) => (
           <TableRow key={run.id}>
             <TableCell className="whitespace-nowrap font-medium">{fmt(run.runDate)}</TableCell>
-            <TableCell>{RUN_SLOT_LABELS[run.slot]}</TableCell>
+            <TableCell>{t(RUN_SLOT_LABEL_KEYS[run.slot])}</TableCell>
             <TableCell className="hidden text-muted-foreground sm:table-cell">
               {run.driverId ? (
                 driverNameById[run.driverId] ?? "—"

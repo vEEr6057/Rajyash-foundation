@@ -5,7 +5,7 @@ import { runsRepo } from "@/server/db/repositories/runs";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
 import { profilesRepo } from "@/server/db/repositories/profiles";
-import { ROUTES, RUN_SLOT_LABELS } from "@/config/constants";
+import { ROUTES, RUN_SLOT_LABEL_KEYS } from "@/config/constants";
 import { PageHeader } from "@/components/PageHeader";
 import { RunStatusPill } from "@/features/runs/components/RunStatusPill";
 import { RunStatusControls } from "@/features/runs/components/RunStatusControls";
@@ -68,7 +68,7 @@ export default async function AdminRunDetailPage({
     <div className="mx-auto max-w-[40rem]">
       <PageHeader
         eyebrow={t("runs.detailEyebrow")}
-        title={RUN_SLOT_LABELS[runWithStops.slot]}
+        title={t(RUN_SLOT_LABEL_KEYS[runWithStops.slot])}
         meta={meta}
         action={<RunStatusPill status={runWithStops.status} />}
       />
