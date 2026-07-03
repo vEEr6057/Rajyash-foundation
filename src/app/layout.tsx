@@ -5,6 +5,8 @@ import {
   Noto_Sans_Devanagari,
   Roboto,
   Roboto_Slab,
+  Baloo_Bhai_2,
+  Baloo_2,
 } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { NextIntlClientProvider } from "next-intl";
@@ -41,6 +43,21 @@ const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
   weight: ["300", "400", "500", "700", "900"],
+  display: "swap",
+});
+
+// Indic display faces for the homepage (GU/HI headings) — Roboto Slab has no Indic glyphs.
+const balooBhai2 = Baloo_Bhai_2({
+  variable: "--font-baloo-bhai2",
+  subsets: ["gujarati", "latin"],
+  weight: ["500", "600"],
+  display: "swap",
+});
+
+const baloo2 = Baloo_2({
+  variable: "--font-baloo2",
+  subsets: ["devanagari", "latin"],
+  weight: ["500", "600"],
   display: "swap",
 });
 
@@ -121,7 +138,7 @@ export default async function RootLayout({
           />
         </head>
         <body
-          className={`${bricolage.variable} ${mukta.variable} ${notoDevanagari.variable} ${roboto.variable} ${robotoSlab.variable} antialiased`}
+          className={`${bricolage.variable} ${mukta.variable} ${notoDevanagari.variable} ${roboto.variable} ${robotoSlab.variable} ${balooBhai2.variable} ${baloo2.variable} antialiased`}
         >
           {/* PITFALL GUARD (RESEARCH §Pitfall 2): NextIntlClientProvider MUST be
               outside <Providers> (which is 'use client'). As a Server Component
