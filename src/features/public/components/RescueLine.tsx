@@ -100,21 +100,6 @@ export function RescueLine() {
   );
 }
 
-/** The logo's gold leaf, redrawn as a ~12px inline divider/bullet glyph (spec §8). */
-export function LeafMark({ className = "" }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-      className={className}
-      fill="none"
-    >
-      <path
-        d="M4 20C4 11 11 4 20 4c0 9-7 16-16 16Z"
-        fill="var(--rj-gold)"
-        opacity="0.9"
-      />
-      <path d="M6 18C10 13 14 9 19 6" stroke="var(--rj-paper)" strokeWidth="1.2" strokeLinecap="round" />
-    </svg>
-  );
-}
+// LeafMark now lives in @/components/LeafMark (shared brand glyph). Re-exported
+// here so existing homepage imports (`import { LeafMark } from "./RescueLine"`) keep working.
+export { LeafMark } from "@/components/LeafMark";
