@@ -88,7 +88,7 @@ export default async function PickupDetailPage({
       {/* Info — hairline panel (charter: hairlines over boxes) */}
       <div className="space-y-3 rounded-lg border border-border p-4">
         <p className="text-lg font-semibold">
-          {formatQuantity(pickup.quantity, pickup.quantityUnit)}
+          {formatQuantity(pickup.quantity, pickup.quantityUnit, tCommon)}
         </p>
         {pickup.description && (
           <p className="text-sm text-muted-foreground">{pickup.description}</p>

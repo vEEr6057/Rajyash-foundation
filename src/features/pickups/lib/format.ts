@@ -14,8 +14,19 @@ export function formatStatus(s: PickupStatus): string {
   return PICKUP_STATUS_LABELS[s];
 }
 
-export function formatQuantity(qty: number, unit: QuantityUnit): string {
-  return `${qty} ${unit}`;
+/**
+ * Compose a localized "quantity + unit" string (e.g. "40 servings", "40 સર્વિંગ").
+ * The unit label is resolved through the `common` translator so it renders in the
+ * active locale — `t` is a next-intl translator scoped to the `common` namespace
+ * (from `useTranslations("common")` or `getTranslations("common")`). DB value is
+ * unchanged; this is display-only.
+ */
+export function formatQuantity(
+  qty: number,
+  unit: QuantityUnit,
+  t: (key: string) => string,
+): string {
+  return `${qty} ${t(`quantityUnit.${unit}`)}`;
 }
 
 // Single-city app — all pickup times are Ahmedabad local (IST). Pin the zone so dates
