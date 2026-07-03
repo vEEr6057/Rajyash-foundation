@@ -1,8 +1,9 @@
 import { notFound, redirect } from "next/navigation";
+import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { ROUTES } from "@/config/constants";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageHeader } from "@/components/PageHeader";
 import { PickupForm } from "@/features/pickups/components/PickupForm";
 import { toDatetimeLocal } from "@/features/pickups/lib/format";
 
@@ -22,32 +23,31 @@ export default async function EditPickupPage({
   if (!pickup || pickup.donorId !== session.userId) notFound();
   if (pickup.status !== "requested") redirect(ROUTES.pickup(id));
 
+  const t = await getTranslations("portal");
+
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Edit pickup</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <PickupForm
-            mode="edit"
-            pickupId={id}
-            defaults={{
-              category: pickup.category,
-              description: pickup.description ?? "",
-              quantity: pickup.quantity,
-              quantityUnit: pickup.quantityUnit,
-              windowStart: toDatetimeLocal(pickup.windowStart),
-              windowEnd: toDatetimeLocal(pickup.windowEnd),
-              address: pickup.address,
-              lat: pickup.lat,
-              lng: pickup.lng,
-              safetyAttested: true,
-              foodPhotoPath: pickup.foodPhotoPath ?? "",
-            }}
-          />
-        </CardContent>
-      </Card>
+    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+      <PageHeader
+        eyebrow={t("pickup.form.eyebrow")}
+        title={t("pickup.form.editTitle")}
+      />
+      <PickupForm
+        mode="edit"
+        pickupId={id}
+        defaults={{
+          category: pickup.category,
+          description: pickup.description ?? "",
+          quantity: pickup.quantity,
+          quantityUnit: pickup.quantityUnit,
+          windowStart: toDatetimeLocal(pickup.windowStart),
+          windowEnd: toDatetimeLocal(pickup.windowEnd),
+          address: pickup.address,
+          lat: pickup.lat,
+          lng: pickup.lng,
+          safetyAttested: true,
+          foodPhotoPath: pickup.foodPhotoPath ?? "",
+        }}
+      />
     </main>
   );
 }

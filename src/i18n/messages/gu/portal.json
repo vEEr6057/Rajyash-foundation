@@ -11,6 +11,11 @@
     "form": {
       "title": "વધારાનું ભોજન પોસ્ટ કરો",
       "subtitle": "શું ઉપલબ્ધ છે અને ક્યાં છે તે જણાવો — સ્વયંસેવક ઉઠાવી જશે.",
+      "eyebrow": "દાન કરો",
+      "editTitle": "પિકઅપમાં ફેરફાર",
+      "sectionWhat": "તમે શું વહેંચી રહ્યા છો",
+      "sectionWhen": "ક્યારે ઉઠાવવું",
+      "sectionWhere": "ક્યાં",
       "category": "ભોજનનો પ્રકાર",
       "categoryPlaceholder": "પસંદ કરો…",
       "quantity": "જથ્થો",
@@ -44,6 +49,7 @@
     },
     "detail": {
       "title": "પિકઅપ વિગત",
+      "eyebrow": "પિકઅપ",
       "advanceButton": "{nextStatus} ચિહ્નિત કરો",
       "advancing": "અપડેટ થઈ રહ્યું છે…",
       "proofUpload": "ડિલિવરીનો પુરાવો",
@@ -71,8 +77,12 @@
     },
     "donor": {
       "title": "મારા પિકઅપ",
+      "eyebrow": "મારું રસોડું",
+      "meta": "{active} ચાલુ · {delivered} પહોંચાડ્યા",
       "newButton": "નવું",
       "emptyState": "હજી કોઈ પિકઅપ નથી.",
+      "emptyTitle": "હજી કંઈ પોસ્ટ કર્યું નથી",
+      "emptyBody": "તમારા રસોડામાં વધારાનું ભોજન હોય ત્યારે અહીં પોસ્ટ કરો — સ્વયંસેવક તે જ સાંજે ઉઠાવી જશે.",
       "firstPickupCta": "તમારો પ્રથમ પિકઅપ પોસ્ટ કરો"
     }
   },
@@ -99,6 +109,8 @@
   },
   "dashboard": {
     "title": "ડૅશબોર્ડ",
+    "donorEyebrow": "મારું રસોડું",
+    "statsProvenance": "આ ઍપમાં તમારી પોસ્ટ પરથી ગણેલું.",
     "greeting": "પાછા આવ્યા, {name}",
     "donorTitle": "દાતા ડૅશબોર્ડ",
     "volunteerTitle": "સ્વયંસેવક ડૅશબોર્ડ",

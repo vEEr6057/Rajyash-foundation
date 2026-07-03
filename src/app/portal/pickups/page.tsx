@@ -6,6 +6,8 @@ import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { ROUTES } from "@/config/constants";
 import { buttonVariants } from "@/components/ui/button";
+import { PageHeader } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
 import { PickupCard } from "@/features/pickups/components/PickupCard";
 
 export const dynamic = "force-dynamic";
@@ -21,24 +23,36 @@ export default async function DonorPickupsPage() {
     pickupsRepo.listByDonor(session.userId),
   ]);
 
+  const delivered = pickups.filter((p) => p.status === "delivered").length;
+  const active = pickups.filter(
+    (p) => p.status !== "delivered" && p.status !== "cancelled",
+  ).length;
+
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <header className="mb-6 flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold tracking-tight">{t("pickup.donor.title")}</h1>
-        <Link href={ROUTES.newPickup} className={buttonVariants({ size: "sm" })}>
-          <Plus className="size-4" /> {t("pickup.donor.newButton")}
-        </Link>
-      </header>
+    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+      <PageHeader
+        eyebrow={t("pickup.donor.eyebrow")}
+        title={t("pickup.donor.title")}
+        meta={t("pickup.donor.meta", { active, delivered })}
+        action={
+          <Link href={ROUTES.newPickup} className={buttonVariants({ size: "sm" })}>
+            <Plus className="size-4" /> {t("pickup.donor.newButton")}
+          </Link>
+        }
+      />
 
       {pickups.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border-strong p-8 text-center">
-          <p className="text-muted-foreground">{t("pickup.donor.emptyState")}</p>
-          <Link href={ROUTES.newPickup} className={buttonVariants({ size: "lg" }) + " mt-4"}>
-            {t("pickup.donor.firstPickupCta")}
-          </Link>
-        </div>
+        <EmptyState
+          title={t("pickup.donor.emptyTitle")}
+          body={t("pickup.donor.emptyBody")}
+          action={
+            <Link href={ROUTES.newPickup} className={buttonVariants()}>
+              {t("pickup.form.title")}
+            </Link>
+          }
+        />
       ) : (
-        <div className="space-y-3">
+        <div className="grid gap-3 md:grid-cols-2">
           {pickups.map((p) => (
             <PickupCard key={p.id} pickup={p} />
           ))}
