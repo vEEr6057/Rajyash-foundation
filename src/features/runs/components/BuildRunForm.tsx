@@ -7,12 +7,14 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { FormSelect, FormDateTime } from "@/components/forms";
 import { createRun } from "@/features/runs/actions/runActions";
 import { createRunSchema, type CreateRunInput } from "@/features/runs/validations/run";
 import { ROUTES } from "@/config/constants";
 import type { Profile } from "@/server/db/schema";
+
+const SELECT = "mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm";
+const ERR = "mt-1 text-xs text-destructive";
 
 export function BuildRunForm({ drivers }: { drivers: Profile[] }) {
   const router = useRouter();
@@ -21,9 +23,8 @@ export function BuildRunForm({ drivers }: { drivers: Profile[] }) {
   const [err, setErr] = useState<string | null>(null);
 
   const {
-    register,
+    control,
     handleSubmit,
-    formState: { errors },
   } = useForm({
     resolver: zodResolver(createRunSchema),
     defaultValues: {
@@ -47,42 +48,34 @@ export function BuildRunForm({ drivers }: { drivers: Profile[] }) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-      <div>
-        <Label htmlFor="slot">{t("runs.form.slot")}</Label>
-        <select
-          id="slot"
-          {...register("slot")}
-          className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-        >
-          <option value="morning">{t("runs.slotMorning")}</option>
-          <option value="night">{t("runs.slotNight")}</option>
-        </select>
-        {errors.slot && (
-          <p className="mt-1 text-xs text-destructive">{errors.slot.message}</p>
-        )}
-      </div>
-      <div>
-        <Label htmlFor="runDate">{t("runs.form.date")}</Label>
-        <Input id="runDate" type="date" {...register("runDate")} className="mt-1" />
-        {errors.runDate && (
-          <p className="mt-1 text-xs text-destructive">{String(errors.runDate.message)}</p>
-        )}
-      </div>
-      <div>
-        <Label htmlFor="driverId">{t("runs.form.driver")}</Label>
-        <select
-          id="driverId"
-          {...register("driverId")}
-          className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm"
-        >
-          <option value="">{t("runs.form.noDriver")}</option>
-          {drivers.map((d) => (
-            <option key={d.id} value={d.id}>
-              {d.name}
-            </option>
-          ))}
-        </select>
-      </div>
+      <FormSelect
+        control={control}
+        name="slot"
+        label={t("runs.form.slot")}
+        className={SELECT}
+        errorClassName={ERR}
+        options={[
+          { value: "morning", label: t("runs.slotMorning") },
+          { value: "night", label: t("runs.slotNight") },
+        ]}
+      />
+      <FormDateTime
+        control={control}
+        name="runDate"
+        label={t("runs.form.date")}
+        kind="date"
+        className="mt-1"
+        errorClassName={ERR}
+      />
+      <FormSelect
+        control={control}
+        name="driverId"
+        label={t("runs.form.driver")}
+        className={SELECT}
+        errorClassName={ERR}
+        placeholder={t("runs.form.noDriver")}
+        options={drivers.map((d) => ({ value: d.id, label: d.name }))}
+      />
       {err && (
         <p className="text-sm text-destructive" role="alert">
           {err}

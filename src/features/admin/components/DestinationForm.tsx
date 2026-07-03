@@ -10,6 +10,7 @@ import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FormField } from "@/components/forms";
 import { MapView } from "@/features/pickups/components/MapView";
 import { resolvePickupLocation } from "@/features/pickups/actions/pickupActions";
 import {
@@ -44,6 +45,7 @@ export function DestinationForm({
 
   const {
     register,
+    control,
     handleSubmit,
     reset,
     watch,
@@ -107,17 +109,20 @@ export function DestinationForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
-      <div>
-        <Label htmlFor="dest-name">{t("destinations.form.name")}</Label>
-        <Input id="dest-name" {...register("name")} />
-        {errors.name && (
-          <p className="mt-1 text-xs text-destructive">{errors.name.message}</p>
-        )}
-      </div>
-      <div>
-        <Label htmlFor="dest-area">{t("destinations.form.area")}</Label>
-        <Input id="dest-area" {...register("area")} />
-      </div>
+      <FormField
+        control={control}
+        name="name"
+        id="dest-name"
+        label={t("destinations.form.name")}
+        errorClassName="mt-1 text-xs text-destructive"
+      />
+      <FormField
+        control={control}
+        name="area"
+        id="dest-area"
+        label={t("destinations.form.area")}
+        errorClassName="mt-1 text-xs text-destructive"
+      />
 
       <div>
         <Label htmlFor="dest-address">{t("destinations.form.address")}</Label>
@@ -165,10 +170,13 @@ export function DestinationForm({
         />
       </div>
 
-      <div>
-        <Label htmlFor="dest-city">{t("destinations.form.city")}</Label>
-        <Input id="dest-city" {...register("city")} />
-      </div>
+      <FormField
+        control={control}
+        name="city"
+        id="dest-city"
+        label={t("destinations.form.city")}
+        errorClassName="mt-1 text-xs text-destructive"
+      />
 
       {err && <p className="text-sm text-destructive">{err}</p>}
       <Button type="submit" size="lg" disabled={pending}>
