@@ -23,6 +23,9 @@ import { ImpactCounter } from "./ImpactCounter";
 import { RevealOnScroll } from "./RevealOnScroll";
 
 const GREEN = "#337048";
+// CTA fill: deep green with white text passes WCAG AA (~8:1). White-on-coral #FC615D is
+// only ~2.9:1 and FAILS AA — coral is now reserved for the small decorative/live accent only.
+const CTA = "#2A5C3C";
 const CORAL = "#FC615D";
 
 const PROGRAMS = [
@@ -84,11 +87,17 @@ export async function LandingPage() {
     : null;
 
   return (
-    <main id="main-content" className="rj-clone overflow-x-clip bg-white text-[#233]">
+    <main
+      id="main-content"
+      className="rj-clone overflow-x-clip bg-[#FAF7F1] text-[#26302B] dark:bg-[#12211A] dark:text-[#e8efe9]"
+    >
       <style>{`
         .rj-clone{font-family:var(--font-roboto),system-ui,sans-serif}
+        /* Headings: Roboto Slab for Latin, but it has NO Gujarati/Devanagari glyphs — fall
+           through to the Gujarati + Devanagari faces so GU/HI headings don't hit a random
+           system font (blocker fix). */
         .rj-clone h1,.rj-clone h2,.rj-clone h3,.rj-clone .slab{
-          font-family:var(--font-roboto-slab),Georgia,serif}
+          font-family:var(--font-roboto-slab),"Noto Sans Gujarati",var(--font-noto-devanagari),var(--font-mukta),Georgia,serif}
       `}</style>
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
@@ -131,7 +140,7 @@ export async function LandingPage() {
                   <Link
                     href={dashboardHref}
                     className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg transition hover:brightness-110"
-                    style={{ background: CORAL }}
+                    style={{ background: CTA }}
                   >
                     <LayoutDashboard className="size-5" /> Go to dashboard
                   </Link>
@@ -140,7 +149,7 @@ export async function LandingPage() {
                     <Link
                       href={ROUTES.signUp}
                       className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg transition hover:brightness-110"
-                      style={{ background: CORAL }}
+                      style={{ background: CTA }}
                     >
                       <HandHeart className="size-5" /> Donate surplus food
                     </Link>
@@ -192,14 +201,14 @@ export async function LandingPage() {
             <RevealOnScroll>
               <p
                 className="mb-2 text-xs font-bold uppercase tracking-[0.15em]"
-                style={{ color: CORAL }}
+                style={{ color: GREEN }}
               >
                 About us
               </p>
               <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
                 More than an act of charity — a movement of kindness.
               </h2>
-              <p className="mt-4 max-w-prose text-[#555] leading-relaxed">
+              <p className="mt-4 max-w-prose text-[#555] dark:text-white/70 leading-relaxed">
                 The Rajyash Foundation is the social arm of the Rajyash Group, based in
                 Ahmedabad. Our dedicated team of 70 works tirelessly to create a brighter,
                 kinder tomorrow — from environmental conservation to feeding people in need.
@@ -208,11 +217,11 @@ export async function LandingPage() {
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
               {PILLARS.map((p, i) => (
                 <RevealOnScroll key={p.title} delay={60 + i * 70}>
-                  <div className="h-full rounded-xl border border-black/5 bg-[#f7faf7] p-5">
+                  <div className="h-full rounded-xl border border-black/5 bg-[#f7faf7] p-5 dark:border-white/10 dark:bg-white/[0.04]">
                     <h3 className="slab text-lg font-bold" style={{ color: GREEN }}>
                       {p.title}
                     </h3>
-                    <p className="mt-1 text-sm text-[#555]">{p.body}</p>
+                    <p className="mt-1 text-sm text-[#555] dark:text-white/70">{p.body}</p>
                   </div>
                 </RevealOnScroll>
               ))}
@@ -222,19 +231,19 @@ export async function LandingPage() {
       </section>
 
       {/* ── WHAT WE DO — 6 programs ──────────────────────────────── */}
-      <section id="programs" className="bg-[#f6f8f6] px-6 py-20">
+      <section id="programs" className="bg-[#f6f8f6] px-6 py-20 dark:bg-[#16261d]">
         <div className="mx-auto max-w-6xl">
           <RevealOnScroll className="mx-auto mb-12 max-w-2xl text-center">
             <p
               className="mb-2 text-xs font-bold uppercase tracking-[0.15em]"
-              style={{ color: CORAL }}
+              style={{ color: GREEN }}
             >
               What we do
             </p>
             <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
               Six ways we lift our city
             </h2>
-            <p className="mt-3 text-[#555]">
+            <p className="mt-3 text-[#555] dark:text-white/70">
               From saplings to surplus food, every programme turns everyday kindness into
               lasting change.
             </p>
@@ -243,7 +252,7 @@ export async function LandingPage() {
           <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
             {PROGRAMS.map((p, i) => {
               const card = (
-                <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+                <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-[#1b2a22]">
                   <div className="relative h-48 overflow-hidden">
                     <img
                       src={p.img}
@@ -259,8 +268,8 @@ export async function LandingPage() {
                     </span>
                   </div>
                   <div className="flex flex-1 flex-col p-6">
-                    <h3 className="slab text-xl font-bold text-[#233]">{p.title}</h3>
-                    <p className="mt-2 flex-1 text-sm text-[#555] leading-relaxed">{p.body}</p>
+                    <h3 className="slab text-xl font-bold text-[#233] dark:text-white">{p.title}</h3>
+                    <p className="mt-2 flex-1 text-sm text-[#555] dark:text-white/70 leading-relaxed">{p.body}</p>
                     {"href" in p && p.href ? (
                       <span
                         className="mt-4 inline-flex items-center gap-1 text-sm font-semibold"
@@ -302,8 +311,8 @@ export async function LandingPage() {
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link
               href={ROUTES.becomeVolunteer}
-              className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg transition hover:brightness-110"
-              style={{ background: CORAL }}
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-semibold shadow-lg transition hover:bg-white/90"
+              style={{ color: GREEN }}
             >
               Become a volunteer <ArrowRight className="size-5" />
             </Link>
