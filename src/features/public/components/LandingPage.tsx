@@ -105,7 +105,7 @@ export async function LandingPage() {
             <RevealOnScroll delay={80}>
               <h1
                 className="mt-5"
-                style={{ fontSize: "clamp(2.5rem, 6vw, 4.25rem)", lineHeight: 1.06, letterSpacing: "-0.005em", color: ink }}
+                style={{ fontSize: "calc(clamp(2.5rem, 6vw, 4.25rem) * var(--rj-indic))", lineHeight: "var(--rj-h1-lh)", letterSpacing: "-0.005em", color: ink }}
               >
                 {t.rich("heroTitle", { g: goldWord })}
               </h1>
@@ -180,7 +180,7 @@ export async function LandingPage() {
         <section id="programs" className="mx-auto max-w-[78rem] scroll-mt-24 px-6 py-20 sm:px-10">
           <RevealOnScroll>
             <Marker>{t("programsEyebrow")}</Marker>
-            <h2 className="mt-2" style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.12, color: ink, fontWeight: 600 }}>
+            <h2 className="mt-2" style={{ fontSize: "calc(clamp(1.75rem,3vw,2.5rem) * var(--rj-indic))", lineHeight: "var(--rj-h2-lh)", color: ink, fontWeight: 600 }}>
               {t("programsTitle")}
             </h2>
           </RevealOnScroll>
@@ -229,7 +229,7 @@ export async function LandingPage() {
           <div className="lg:col-span-6">
             <RevealOnScroll>
               <Marker>{t("fpEyebrow")}</Marker>
-              <h2 className="mt-2" style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.12, color: ink, fontWeight: 600 }}>
+              <h2 className="mt-2" style={{ fontSize: "calc(clamp(1.75rem,3vw,2.5rem) * var(--rj-indic))", lineHeight: "var(--rj-h2-lh)", color: ink, fontWeight: 600 }}>
                 {t("fpTitle")}
               </h2>
               <p className="mt-5 max-w-prose" style={{ color: inkSoft, fontSize: "1.0625rem", lineHeight: 1.65 }}>
@@ -279,9 +279,9 @@ export async function LandingPage() {
       </section>
 
       {/* ── 5.8 FINALE CTA — the one full-bleed green, one centered ── */}
-      <section className="px-6 py-20 text-center text-white" style={{ background: "var(--rj-green)" }}>
+      <section className="rj-finale px-6 py-20 text-center text-white" style={{ background: "var(--rj-green)" }}>
         <RevealOnScroll className="mx-auto max-w-2xl">
-          <h2 style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.12, fontWeight: 600 }}>
+          <h2 style={{ fontSize: "calc(clamp(1.75rem,3vw,2.5rem) * var(--rj-indic))", lineHeight: "var(--rj-h2-lh)", fontWeight: 600 }}>
             {t("finalTitle")}
           </h2>
           <p className="mt-3 text-white/85">

@@ -34,12 +34,9 @@ export async function PublicHeader() {
 
   return (
     <HeaderScroll>
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded focus:bg-[var(--rj-paper)] focus:px-3 focus:py-1.5 focus:text-sm"
-      >
-        {t("skip")}
-      </a>
+      {/* No skip link here — the root layout's <SkipLink /> is already the page's
+          first focusable element and targets the same #main-content. Two identical
+          skip links in the tab order is an a11y anti-pattern. */}
       <div className="mx-auto flex h-[72px] max-w-[78rem] items-center justify-between gap-4 px-6 sm:px-10">
         <Link href={ROUTES.home} aria-label={t("brandName")} className="flex items-center">
           <img src="/images/rajyash/logo.png" alt={t("brandName")} width={160} height={42} className="h-10 w-auto" />
