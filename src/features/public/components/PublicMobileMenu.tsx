@@ -18,9 +18,8 @@ import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 
 const NAV = [
-  ["#how", "nav.how"],
-  ["#impact", "nav.impact"],
   ["#about", "nav.about"],
+  ["#programs", "nav.how"],
   ["#contact", "nav.contact"],
 ] as const;
 

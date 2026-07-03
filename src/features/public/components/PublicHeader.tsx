@@ -25,55 +25,44 @@ export async function PublicHeader() {
       : ROUTES.portalDashboard
     : null;
   return (
-    <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-40 border-b border-black/10 bg-white/95 backdrop-blur">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-background focus:px-3 focus:py-1.5 focus:text-sm"
+        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-1.5 focus:text-sm"
       >
         {t("skip")}
       </a>
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        {/* Brand */}
-        <Link
-          href={ROUTES.home}
-          className="flex flex-col leading-tight"
-          aria-label={t("brandName")}
-        >
-          <span className="font-display text-lg font-bold text-primary">
-            {t("brandName")}
-          </span>
-          <span className="text-xs text-muted-foreground">{t("brandSub")}</span>
+        {/* Brand — official Rajyash Foundation logo */}
+        <Link href={ROUTES.home} aria-label={t("brandName")} className="flex items-center">
+          <img
+            src="/images/rajyash/logo.png"
+            alt="Rajyash Foundation"
+            width={168}
+            height={44}
+            className="h-11 w-auto"
+          />
         </Link>
 
         {/* Desktop nav */}
         <nav
-          className="hidden items-center gap-5 md:flex"
+          className="hidden items-center gap-6 md:flex"
           aria-label="Site navigation"
         >
-          <Link
-            href="#how"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("nav.how")}
-          </Link>
-          <Link
-            href="#impact"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("nav.impact")}
-          </Link>
-          <Link
-            href="#about"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("nav.about")}
-          </Link>
-          <Link
-            href="#contact"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("nav.contact")}
-          </Link>
+          {[
+            ["#about", "About us"],
+            ["#programs", "What we do"],
+            ["/sign-up?role=volunteer", "Volunteer"],
+            ["#contact", "Contact"],
+          ].map(([href, label]) => (
+            <Link
+              key={label}
+              href={href}
+              className="text-sm font-medium text-[#3a4a3f] transition-colors hover:text-[#337048]"
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
 
         {/* Right side: desktop cluster (hidden on mobile to prevent overflow) */}

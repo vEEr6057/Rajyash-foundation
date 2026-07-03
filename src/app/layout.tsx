@@ -1,5 +1,11 @@
 import type { Metadata } from "next";
-import { Bricolage_Grotesque, Mukta, Noto_Sans_Devanagari } from "next/font/google";
+import {
+  Bricolage_Grotesque,
+  Mukta,
+  Noto_Sans_Devanagari,
+  Roboto,
+  Roboto_Slab,
+} from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
@@ -27,6 +33,21 @@ const notoDevanagari = Noto_Sans_Devanagari({
   variable: "--font-noto-devanagari",
   subsets: ["devanagari", "latin"],
   weight: ["400", "500", "600", "700"],
+  display: "swap",
+});
+
+// Public-site faces — mirror the official rajyashfoundation.com (Roboto + Roboto Slab).
+const roboto = Roboto({
+  variable: "--font-roboto",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "700", "900"],
+  display: "swap",
+});
+
+const robotoSlab = Roboto_Slab({
+  variable: "--font-roboto-slab",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
   display: "swap",
 });
 
@@ -100,7 +121,7 @@ export default async function RootLayout({
           />
         </head>
         <body
-          className={`${bricolage.variable} ${mukta.variable} ${notoDevanagari.variable} antialiased`}
+          className={`${bricolage.variable} ${mukta.variable} ${notoDevanagari.variable} ${roboto.variable} ${robotoSlab.variable} antialiased`}
         >
           {/* PITFALL GUARD (RESEARCH §Pitfall 2): NextIntlClientProvider MUST be
               outside <Providers> (which is 'use client'). As a Server Component
