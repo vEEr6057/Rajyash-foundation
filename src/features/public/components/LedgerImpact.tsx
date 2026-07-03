@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from "react";
+import { useTranslations } from "next-intl";
 import { useCountUp } from "@tokens/motion";
 import { LeafMark } from "./RescueLine";
 
@@ -20,6 +21,7 @@ export function LedgerImpact({
   kg: number;
   count: number;
 }) {
+  const t = useTranslations("landing");
   const r1 = useRef<HTMLElement>(null) as React.RefObject<HTMLElement>;
   const r2 = useRef<HTMLElement>(null) as React.RefObject<HTMLElement>;
   const r3 = useRef<HTMLElement>(null) as React.RefObject<HTMLElement>;
@@ -28,9 +30,9 @@ export function LedgerImpact({
   useCountUp(r3, count);
 
   const rows = [
-    { ref: r1, label: "Meals served", note: "warm meals to people in need" },
-    { ref: r2, label: "Kilograms rescued", note: "of good food kept from waste" },
-    { ref: r3, label: "Deliveries completed", note: "pickups logged by volunteers" },
+    { ref: r1, label: t("statMeals"), note: t("statMealsNote") },
+    { ref: r2, label: t("statKg"), note: t("statKgNote") },
+    { ref: r3, label: t("statDeliveries"), note: t("statDeliveriesNote") },
   ];
 
   return (
@@ -48,7 +50,7 @@ export function LedgerImpact({
           className="text-xs font-semibold uppercase tracking-[0.14em]"
           style={{ color: "var(--rj-ink-soft)" }}
         >
-          Live impact
+          {t("impactEyebrow")}
         </span>
         <span
           className="inline-flex items-center gap-2 text-xs font-semibold"
@@ -59,7 +61,7 @@ export function LedgerImpact({
             style={{ background: "var(--rj-coral)" }}
             data-rescue-terminus
           />
-          Live · updated tonight
+          {t("impactLive")}
         </span>
       </div>
 
@@ -100,8 +102,7 @@ export function LedgerImpact({
         style={{ color: "var(--rj-ink-soft)" }}
       >
         <LeafMark className="mt-0.5 size-4 shrink-0" />
-        Counted directly from deliveries logged in the Food Porter app — not estimates.
-        Updated as each rescue is marked delivered.
+        {t("impactProvenance")}
       </p>
     </div>
   );

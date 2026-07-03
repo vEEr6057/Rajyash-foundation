@@ -23,7 +23,7 @@ export async function PublicFooter() {
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Brand */}
           <div className="space-y-3">
-            <img src="/images/rajyash/logo.png" alt="Rajyash Foundation" width={160} height={42} className="h-10 w-auto" />
+            <img src="/images/rajyash/logo.png" alt={t("brandName")} width={160} height={42} className="h-10 w-auto" />
             <p className="flex items-center gap-2 text-sm" style={{ color: "var(--rj-ink-soft)" }}>
               <LeafMark className="size-4" /> {t("footTagline")}
             </p>
@@ -35,7 +35,7 @@ export async function PublicFooter() {
               {t("footExplore")}
             </p>
             <ul className="space-y-2">
-              <li><Link href="#programs" className={link} style={linkStyle}>What we do</Link></li>
+              <li><Link href="#programs" className={link} style={linkStyle}>{t("nav.whatWeDo")}</Link></li>
               <li><Link href="#impact" className={link} style={linkStyle}>{t("nav.impact")}</Link></li>
               <li><Link href={ROUTES.becomeVolunteer} className={link} style={linkStyle}>{t("becomeVol")}</Link></li>
               <li><Link href={ROUTES.signIn} className={link} style={linkStyle}>{t("signin")}</Link></li>
@@ -58,10 +58,10 @@ export async function PublicFooter() {
           {/* Registration / legitimacy */}
           <div>
             <p className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "var(--rj-ink)" }}>
-              Rajyash Foundation
+              {t("brandName")}
             </p>
             <p className="text-sm" style={{ color: "var(--rj-ink-soft)" }}>
-              A social initiative of the Rajyash Group, serving Ahmedabad since 2016.
+              {t("footAbout")}
             </p>
           </div>
         </div>
