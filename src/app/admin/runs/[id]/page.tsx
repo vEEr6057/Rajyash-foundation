@@ -51,10 +51,10 @@ export default async function AdminRunDetailPage({
   });
 
   return (
-    <div className="mx-auto max-w-3xl">
+    <div className="mx-auto max-w-[40rem]">
       <header className="mb-6 space-y-2">
         <div className="flex items-center justify-between gap-2">
-          <h1 className="font-display text-2xl font-bold tracking-tight">
+          <h1 className="font-display text-2xl font-medium tracking-tight">
             {RUN_SLOT_LABELS[runWithStops.slot]}
           </h1>
           <RunStatusPill status={runWithStops.status} />
@@ -64,26 +64,25 @@ export default async function AdminRunDetailPage({
       </header>
 
       {runWithStops.status === "active" && (
-        <section className="mb-6">
-          <h2 className="mb-3 text-base font-semibold">{t("runs.liveMap.title")}</h2>
+        <section className="mb-6 border-t border-border pt-6">
+          <h2 className="mb-3 font-display text-[15px] font-semibold">{t("runs.liveMap.title")}</h2>
           <RunLiveMap runId={runWithStops.id} active nextStop={nextStopCoords} />
         </section>
       )}
 
-      <section className="mb-6">
-        <h2 className="mb-3 text-base font-semibold">{t("runs.stopsSection")}</h2>
+      <section className="mb-6 border-t border-border pt-6">
+        <h2 className="mb-3 font-display text-[15px] font-semibold">{t("runs.stopsSection")}</h2>
         <StopList stops={runWithStops.stops} runId={runWithStops.id} />
       </section>
 
-      <section>
-        <div className="rounded-xl border border-border bg-card p-4">
-          <AddStopForm
-            runId={runWithStops.id}
-            nextSeq={nextSeq}
-            partners={partners}
-            destinations={destinations}
-          />
-        </div>
+      <section className="border-t border-border pt-6">
+        <h2 className="mb-3 font-display text-[15px] font-semibold">{t("runs.addStop")}</h2>
+        <AddStopForm
+          runId={runWithStops.id}
+          nextSeq={nextSeq}
+          partners={partners}
+          destinations={destinations}
+        />
       </section>
     </div>
   );
