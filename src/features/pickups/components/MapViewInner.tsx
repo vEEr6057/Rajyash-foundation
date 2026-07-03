@@ -120,7 +120,8 @@ export default function MapViewInner({
   draggable?: boolean;
   pin?: { lat: number; lng: number } | null;
   onPinMove?: (lat: number, lng: number) => void;
-  height?: number;
+  /** Number = px; string = any CSS length (e.g. board map `min(70dvh,640px)`). */
+  height?: number | string;
   /** Live mode: the volunteer's current position (moves without remount). */
   live?: { lat: number; lng: number } | null;
   liveStale?: boolean;
