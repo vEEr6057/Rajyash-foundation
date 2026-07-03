@@ -12,22 +12,24 @@
 
 :root {
   /* Surfaces */
-  --background: #FBF7F0;
+  --background: #FAF7F1;
   --foreground: #22271F;
   --surface: #FFFFFF;
-  --surface-2: #F6F1E7;
+  --surface-2: #F2ECDF;
   --card: #FFFFFF;
   --card-foreground: #22271F;
   --popover: #FFFFFF;
   --popover-foreground: #22271F;
 
-  /* Brand — green (matches the Rajyash Foundation logo) */
-  --primary: #2E7A47;
+  /* Brand — green (matches the Rajyash Foundation logo). ONE CTA green shared
+     with the homepage --rj-green-cta (APP-UI-CHARTER §2). */
+  --primary: #2A5C3C;
   --primary-foreground: #FFFFFF;
-  --primary-hover: #25683B;
+  --primary-hover: #234E33;
   --primary-soft: #E2F0E6;
   --primary-soft-foreground: #1E6B36;
   --saffron: #C49A3C; /* repurposed as the logo's GOLD accent */
+  --gold-ink: #8A6D1A; /* eyebrows, section numbers, focus accents (charter §2) */
 
   /* Brand — leaf */
   --leaf: #2E7D46;
@@ -53,7 +55,7 @@
   --info: #0E6F9E; --info-foreground: #FFFFFF; --info-soft: #DBEBF4; --info-soft-foreground: #125C7E;
 
   /* Form + focus */
-  --border: #E8E0CF;
+  --border: rgba(30,42,34,.14);
   --border-strong: #D9CFBA;
   --input: #D9CFBA;
   --ring: #2E7A47;
@@ -68,7 +70,7 @@
 
   /* Radius + type (font vars injected by next/font in layout.tsx) */
   --radius: 0.75rem;
-  --font-display: var(--font-bricolage, "Bricolage Grotesque"), "Mukta", system-ui, sans-serif;
+  --font-display: var(--font-roboto-slab), Georgia, serif;
   --font-sans: var(--font-mukta, "Mukta"), "Noto Sans Devanagari", "Noto Sans Gujarati", system-ui, sans-serif;
 
   /* Elevation (warm-tinted) */
@@ -112,9 +114,10 @@
   --popover: #1F1D16;
   --popover-foreground: #F3ECDD;
 
-  --primary: #2F8A4F; --primary-foreground: #FFFFFF; --primary-hover: #36975A;
+  --primary: #3E8B58; --primary-foreground: #FFFFFF; --primary-hover: #489A63;
   --primary-soft: #14301E; --primary-soft-foreground: #84D196;
   --saffron: #D8B05A; /* gold accent (brighter for dark) */
+  --gold-ink: #E7C15A;
 
   --leaf: #2E7D46; --leaf-foreground: #FFFFFF; --leaf-hover: #358A50;
   --leaf-soft: #16301F; --leaf-soft-foreground: #7FCB92; --leaf-bright: #56B36E;
@@ -128,7 +131,7 @@
   --destructive: #C0392C; --destructive-foreground: #FFFFFF; --destructive-soft: #3A1C17; --destructive-soft-foreground: #F0A79C;
   --info: #1E89B8; --info-foreground: #FFFFFF; --info-soft: #10303D; --info-soft-foreground: #86C7E2;
 
-  --border: #37321F;
+  --border: rgba(236,242,233,.13);
   --border-strong: #4A442E;
   --input: #4A442E;
   --ring: #46A865;
@@ -152,6 +155,11 @@
   --splash: #11241A; --splash-2: #0A170F;
 }
 
+/* App-wide Indic display fallbacks — Roboto Slab has no Indic glyphs (charter §2).
+   Mirrors the .rj-home:lang pattern at root so every app screen swaps face by locale. */
+:root:lang(gu) { --font-display: var(--font-baloo-bhai2), "Noto Sans Gujarati", sans-serif; }
+:root:lang(hi) { --font-display: var(--font-baloo2), var(--font-noto-devanagari), sans-serif; }
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -167,6 +175,7 @@
   --color-primary-soft: var(--primary-soft);
   --color-primary-soft-foreground: var(--primary-soft-foreground);
   --color-saffron: var(--saffron);
+  --color-gold-ink: var(--gold-ink);
 
   --color-leaf: var(--leaf);
   --color-leaf-foreground: var(--leaf-foreground);

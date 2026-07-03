@@ -21,7 +21,7 @@ export default function Loading() {
           <span className="absolute inset-0 animate-ping rounded-3xl bg-white/30" aria-hidden />
           <HandHeart className="relative size-9" aria-hidden />
         </span>
-        <span className="font-display text-lg font-bold tracking-tight text-white">
+        <span className="font-display text-lg font-semibold text-white">
           Rajyash Food Rescue
         </span>
       </div>

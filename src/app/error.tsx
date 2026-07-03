@@ -26,10 +26,10 @@ export default function Error({
   return (
     <main className="grid min-h-[70dvh] place-items-center px-6 text-center">
       <div className="max-w-md space-y-4">
-        <p className="font-display text-5xl font-extrabold tracking-tight text-destructive">
+        <p className="font-display text-5xl font-medium text-destructive">
           Oops
         </p>
-        <h1 className="font-display text-2xl font-bold text-foreground">
+        <h1 className="font-display text-2xl font-medium text-foreground">
           Something went wrong
         </h1>
         <p className="text-muted-foreground">
