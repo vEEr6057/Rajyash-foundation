@@ -14,12 +14,53 @@ export interface GeocodeResult {
   displayName: string;
 }
 
+/**
+ * In-memory, per-isolate memo of resolved lookups (B1 note 4). Repeated Find
+ * clicks and identical addresses skip the network entirely. Capped ~100 entries,
+ * FIFO-evicted (insertion order = Map iteration order). Best-effort: a Worker
+ * isolate is short-lived, so this is a cheap hot-path cache, not a global cache
+ * (a durable one would need KV/DO — not warranted at this volume).
+ */
+const MEMO_CAP = 100;
+const memo = new Map<string, GeocodeResult | null>();
+
+/**
+ * Timestamp of the last outbound Nominatim call, per isolate. Used to keep under
+ * Nominatim's ≤1 rps usage policy — best-effort only (see memo note above).
+ */
+let lastCallAt = 0;
+
+/** Collapse case + whitespace so "Foo Bar " and "foo  bar" share one memo slot. */
+function normalizeQuery(address: string): string {
+  return address.trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+function memoize(key: string, result: GeocodeResult | null): void {
+  if (memo.size >= MEMO_CAP) {
+    const oldest = memo.keys().next().value;
+    if (oldest !== undefined) memo.delete(oldest);
+  }
+  memo.set(key, result);
+}
+
 /** Returns the best match, or null if nothing found. Biased to Ahmedabad/India. */
 export async function geocodeAddress(
   address: string,
 ): Promise<GeocodeResult | null> {
   const q = address.trim();
   if (!q) return null;
+
+  const key = normalizeQuery(address);
+  if (memo.has(key)) return memo.get(key) ?? null;
+
+  // Nominatim ToS wants ≤1 rps — if we called within the last second, wait out
+  // the remainder before firing. Per-isolate best effort (a global limiter would
+  // need a DO/KV; not warranted at this volume).
+  const sinceLast = Date.now() - lastCallAt;
+  if (sinceLast < 1000) {
+    await new Promise((r) => setTimeout(r, 1000 - sinceLast));
+  }
+  lastCallAt = Date.now();
 
   const url = `${NOMINATIM}?q=${encodeURIComponent(
     q,
@@ -30,6 +71,7 @@ export async function geocodeAddress(
     // Geocoding is request-time; don't let Next cache a stale coordinate.
     cache: "no-store",
   });
+  // Don't poison the memo with a transient failure — only cache a real response.
   if (!res.ok) return null;
 
   const data = (await res.json()) as Array<{
@@ -38,13 +80,17 @@ export async function geocodeAddress(
     display_name: string;
   }>;
   const hit = data[0];
-  if (!hit) return null;
 
-  const lat = Number.parseFloat(hit.lat);
-  const lng = Number.parseFloat(hit.lon);
-  if (Number.isNaN(lat) || Number.isNaN(lng)) return null;
-
-  return { lat, lng, displayName: hit.display_name };
+  let result: GeocodeResult | null = null;
+  if (hit) {
+    const lat = Number.parseFloat(hit.lat);
+    const lng = Number.parseFloat(hit.lon);
+    if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
+      result = { lat, lng, displayName: hit.display_name };
+    }
+  }
+  memoize(key, result);
+  return result;
 }
 
 /**
