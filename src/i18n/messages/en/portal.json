@@ -9,6 +9,11 @@
     "form": {
       "title": "Post surplus food",
       "subtitle": "Tell us what's available and where — a volunteer will pick it up.",
+      "eyebrow": "Donate",
+      "editTitle": "Edit pickup",
+      "sectionWhat": "What you're sharing",
+      "sectionWhen": "When to pick up",
+      "sectionWhere": "Where",
       "category": "Food type",
       "categoryPlaceholder": "Select…",
       "quantity": "Quantity",
@@ -42,6 +47,7 @@
     },
     "detail": {
       "title": "Pickup details",
+      "eyebrow": "Pickup",
       "advanceButton": "Mark {nextStatus}",
       "advancing": "Updating…",
       "proofUpload": "Proof of delivery",
@@ -69,8 +75,12 @@
     },
     "donor": {
       "title": "My pickups",
+      "eyebrow": "My kitchen",
+      "meta": "{active} active · {delivered} delivered",
       "newButton": "New",
       "emptyState": "No pickups yet.",
+      "emptyTitle": "Nothing posted yet",
+      "emptyBody": "When your kitchen has surplus, post it here — a volunteer picks it up the same evening.",
       "firstPickupCta": "Post your first pickup"
     }
   },
@@ -97,6 +107,8 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "donorEyebrow": "My kitchen",
+    "statsProvenance": "Counted from your posts in this app.",
     "greeting": "Welcome back, {name}",
     "donorTitle": "Donor dashboard",
     "volunteerTitle": "Volunteer dashboard",

@@ -11,6 +11,11 @@
     "form": {
       "title": "बचा हुआ भोजन पोस्ट करें",
       "subtitle": "बताएँ क्या उपलब्ध है और कहाँ — एक स्वयंसेवक उठा लेगा.",
+      "eyebrow": "दान करें",
+      "editTitle": "पिकअप संपादित करें",
+      "sectionWhat": "आप क्या साझा कर रहे हैं",
+      "sectionWhen": "कब उठाना है",
+      "sectionWhere": "कहाँ",
       "category": "भोजन का प्रकार",
       "categoryPlaceholder": "चुनें…",
       "quantity": "मात्रा",
@@ -44,6 +49,7 @@
     },
     "detail": {
       "title": "पिकअप विवरण",
+      "eyebrow": "पिकअप",
       "advanceButton": "{nextStatus} चिह्नित करें",
       "advancing": "अपडेट हो रहा है…",
       "proofUpload": "डिलीवरी का प्रमाण",
@@ -71,8 +77,12 @@
     },
     "donor": {
       "title": "मेरे पिकअप",
+      "eyebrow": "मेरी रसोई",
+      "meta": "{active} सक्रिय · {delivered} डिलीवर",
       "newButton": "नया",
       "emptyState": "अभी तक कोई पिकअप नहीं.",
+      "emptyTitle": "अभी कुछ पोस्ट नहीं किया",
+      "emptyBody": "जब आपकी रसोई में भोजन बचे, यहाँ पोस्ट करें — स्वयंसेवक उसी शाम उठा लेगा.",
       "firstPickupCta": "अपना पहला पिकअप पोस्ट करें"
     }
   },
@@ -99,6 +109,8 @@
   },
   "dashboard": {
     "title": "डैशबोर्ड",
+    "donorEyebrow": "मेरी रसोई",
+    "statsProvenance": "इस ऐप में आपकी पोस्ट से गिना गया.",
     "greeting": "वापस आए, {name}",
     "donorTitle": "दाता डैशबोर्ड",
     "volunteerTitle": "स्वयंसेवक डैशबोर्ड",
