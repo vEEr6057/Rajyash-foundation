@@ -30,9 +30,9 @@ export function LedgerImpact({
   useCountUp(r3, count);
 
   const rows = [
-    { ref: r1, label: t("statMeals"), note: t("statMealsNote") },
-    { ref: r2, label: t("statKg"), note: t("statKgNote") },
-    { ref: r3, label: t("statDeliveries"), note: t("statDeliveriesNote") },
+    { ref: r1, value: servings, label: t("statMeals"), note: t("statMealsNote") },
+    { ref: r2, value: kg, label: t("statKg"), note: t("statKgNote") },
+    { ref: r3, value: count, label: t("statDeliveries"), note: t("statDeliveriesNote") },
   ];
 
   return (
@@ -83,7 +83,10 @@ export function LedgerImpact({
                 color: "var(--rj-ink)",
               }}
             >
-              0
+              {/* SSR fallback (HOMEPAGE-UI-SPEC §3.8): server HTML carries the FINAL
+                  totals so no-JS/crawler/reduced-motion readers never see 0. The
+                  count-up (client, motion allowed) overwrites textContent on entry. */}
+              {row.value.toLocaleString("en-IN")}
             </dd>
             <dt className="text-right">
               <span className="block text-sm font-semibold" style={{ color: "var(--rj-ink)" }}>
