@@ -1,7 +1,12 @@
 import { describe, it, expect } from "vitest";
 import { destinationSchema } from "./destination";
 
-const VALID = { name: "Satellite Zone", lat: 23.022, lng: 72.571 };
+const VALID = {
+  name: "Satellite Zone",
+  address: "Satellite, Ahmedabad",
+  lat: 23.022,
+  lng: 72.571,
+};
 
 describe("destinationSchema (DEST-01)", () => {
   it("accepts a minimal valid destination", () => {
@@ -12,6 +17,12 @@ describe("destinationSchema (DEST-01)", () => {
     const r = destinationSchema.safeParse({ ...VALID, name: "" });
     expect(r.success).toBe(false);
     if (!r.success) expect(r.error.issues[0].message).toMatch(/destination name/i);
+  });
+
+  it("requires an address (or Google Maps link)", () => {
+    const r = destinationSchema.safeParse({ ...VALID, address: "" });
+    expect(r.success).toBe(false);
+    if (!r.success) expect(r.error.issues[0].message).toMatch(/address or google maps/i);
   });
 
   it("rejects lat below −90", () => {

@@ -25,7 +25,12 @@ import {
   deleteDestination,
 } from "./destinationActions";
 
-const VALID = { name: "Satellite Zone", lat: 23.022, lng: 72.571 };
+const VALID = {
+  name: "Satellite Zone",
+  address: "Satellite, Ahmedabad",
+  lat: 23.022,
+  lng: 72.571,
+};
 
 beforeEach(() => {
   requireRole.mockReset().mockResolvedValue({ userId: "admin-1", role: "admin" });

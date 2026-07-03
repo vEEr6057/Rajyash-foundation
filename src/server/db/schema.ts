@@ -324,7 +324,9 @@ export const destinations = pgTable("destinations", {
     .$defaultFn(() => crypto.randomUUID()),
   name: text("name").notNull(),
   area: text("area"), // neighbourhood / locality, nullable
-  lat: doublePrecision("lat").notNull(),
+  address: text("address"), // human-entered address / place — what admins actually care about
+  mapsLink: text("maps_link"), // original Google Maps link, when location came from one
+  lat: doublePrecision("lat").notNull(), // derived from address/link or the draggable pin
   lng: doublePrecision("lng").notNull(),
   city: text("city").notNull().default("Ahmedabad"),
   active: boolean("active").notNull().default(true),

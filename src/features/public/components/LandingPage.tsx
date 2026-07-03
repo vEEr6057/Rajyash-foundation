@@ -95,6 +95,19 @@ export async function LandingPage() {
           </RevealOnScroll>
         </div>
 
+        {/* Real Food Porter photo — a rescued-meal serving on an Ahmedabad street. */}
+        <RevealOnScroll delay={300} className="relative z-10 mx-auto mt-14 max-w-5xl">
+          <div className="overflow-hidden rounded-3xl border border-border shadow-xl">
+            <img
+              src="/images/foodporter/food-porter3.jpg"
+              alt={t("photoHero")}
+              width={1600}
+              height={760}
+              loading="lazy"
+              className="h-64 w-full object-cover object-center sm:h-[420px]"
+            />
+          </div>
+        </RevealOnScroll>
       </section>
 
       {/* ── IMPACT COUNTER (client — receives server-fetched aggregate) ── */}
@@ -145,9 +158,17 @@ async function WaysToHelpSection() {
           {/* Donor card */}
           <RevealOnScroll
             delay={40}
-            className="flex flex-col gap-4 rounded-2xl border border-border bg-card p-6"
+            className="flex flex-col gap-4 overflow-hidden rounded-2xl border border-border bg-card p-6"
           >
-            <span className="inline-block rounded-full border border-primary/30 bg-primary/10 px-3 py-0.5 text-xs font-semibold text-primary">
+            <img
+              src="/images/foodporter/food-porter7.jpg"
+              alt={t("photoDonor")}
+              width={800}
+              height={360}
+              loading="lazy"
+              className="-mx-6 -mt-6 mb-1 h-40 w-[calc(100%+3rem)] max-w-none object-cover object-center"
+            />
+            <span className="inline-block w-fit rounded-full border border-primary/30 bg-primary/10 px-3 py-0.5 text-xs font-semibold text-primary">
               {t("donorTag")}
             </span>
             <h3 className="font-display text-xl font-bold text-foreground">
@@ -179,9 +200,17 @@ async function WaysToHelpSection() {
           {/* Volunteer card */}
           <RevealOnScroll
             delay={120}
-            className="flex flex-col gap-4 rounded-2xl border border-primary bg-primary/5 p-6"
+            className="flex flex-col gap-4 overflow-hidden rounded-2xl border border-primary bg-primary/5 p-6"
           >
-            <span className="inline-block rounded-full border border-primary/40 bg-primary/20 px-3 py-0.5 text-xs font-semibold text-primary">
+            <img
+              src="/images/foodporter/food-porter5.jpg"
+              alt={t("photoVolunteer")}
+              width={800}
+              height={360}
+              loading="lazy"
+              className="-mx-6 -mt-6 mb-1 h-40 w-[calc(100%+3rem)] max-w-none object-cover object-top"
+            />
+            <span className="inline-block w-fit rounded-full border border-primary/40 bg-primary/20 px-3 py-0.5 text-xs font-semibold text-primary">
               {t("volTag")}
             </span>
             <h3 className="font-display text-xl font-bold text-foreground">
@@ -252,6 +281,19 @@ async function AboutSection() {
           <p className="mx-auto mb-8 max-w-xl text-center text-muted-foreground leading-relaxed">
             {t("aboutBody")}
           </p>
+        </RevealOnScroll>
+
+        <RevealOnScroll delay={40} className="mb-10">
+          <div className="overflow-hidden rounded-2xl border border-border shadow-sm">
+            <img
+              src="/images/foodporter/food-porter2.jpg"
+              alt={t("photoAbout")}
+              width={1600}
+              height={720}
+              loading="lazy"
+              className="h-56 w-full object-cover object-center sm:h-72"
+            />
+          </div>
         </RevealOnScroll>
 
         {/* Quote */}
