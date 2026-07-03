@@ -43,7 +43,10 @@ export const pickupsRepo = {
       .select()
       .from(pickups)
       .where(eq(pickups.status, "requested"))
-      .orderBy(desc(pickups.createdAt));
+      .orderBy(desc(pickups.createdAt))
+      // Cap for the Workers CPU budget (each row is SSR-serialized); the board
+      // never usefully shows more. Add pagination if an owner ever exceeds it.
+      .limit(100);
   },
 
   async listByDonor(donorId: string): Promise<Pickup[]> {
@@ -52,7 +55,9 @@ export const pickupsRepo = {
       .select()
       .from(pickups)
       .where(eq(pickups.donorId, donorId))
-      .orderBy(desc(pickups.createdAt));
+      .orderBy(desc(pickups.createdAt))
+      // Cap for the Workers CPU budget; newest 100 shown. Paginate when exceeded.
+      .limit(100);
   },
 
   async listByVolunteer(volunteerId: string): Promise<Pickup[]> {
@@ -61,7 +66,9 @@ export const pickupsRepo = {
       .select()
       .from(pickups)
       .where(eq(pickups.volunteerId, volunteerId))
-      .orderBy(desc(pickups.createdAt));
+      .orderBy(desc(pickups.createdAt))
+      // Cap for the Workers CPU budget; newest 100 shown. Paginate when exceeded.
+      .limit(100);
   },
 
   /** Donor edit — only the owner, only while still requested. Returns null if not applicable. */

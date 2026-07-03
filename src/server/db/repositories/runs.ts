@@ -42,7 +42,13 @@ export const runsRepo = {
   /** All runs (coordinator board), newest run-date first. */
   async listRuns(): Promise<Run[]> {
     const db = getDb();
-    return db.select().from(runs).orderBy(desc(runs.runDate), desc(runs.createdAt));
+    return db
+      .select()
+      .from(runs)
+      .orderBy(desc(runs.runDate), desc(runs.createdAt))
+      // Cap for the Workers CPU budget (each row is SSR-serialized); newest 100.
+      // Paginate when a coordinator actually exceeds it.
+      .limit(100);
   },
 
   /** Runs assigned to a driver, newest run-date first. */

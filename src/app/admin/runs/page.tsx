@@ -23,16 +23,17 @@ export default async function AdminRunsPage() {
     throw e;
   }
 
-  const [t, runs, allProfiles] = await Promise.all([
+  // Only drivers are ever referenced by runs.driverId — fetch just that role
+  // instead of the whole profiles table (serves both the picker and name map).
+  const [t, runs, drivers] = await Promise.all([
     getTranslations("admin"),
     runsRepo.listRuns(),
-    profilesRepo.listAll(),
+    profilesRepo.listByRole("driver"),
   ]);
-  const drivers = allProfiles.filter((p) => p.role === "driver" && !p.deactivatedAt);
-  const driverNameById = Object.fromEntries(allProfiles.map((p) => [p.id, p.name]));
-  const stopCounts = await Promise.all(
-    runs.map((r) => runStopsRepo.getByRunId(r.id).then((s) => s.length)),
-  );
+  const driverNameById = Object.fromEntries(drivers.map((p) => [p.id, p.name]));
+  // One grouped query for every run's stop count (was an N+1 of getByRunId().length).
+  const stopCountByRunId = await runStopsRepo.countByRunIds(runs.map((r) => r.id));
+  const stopCounts = runs.map((r) => stopCountByRunId[r.id] ?? 0);
 
   return (
     <div className="mx-auto max-w-5xl">

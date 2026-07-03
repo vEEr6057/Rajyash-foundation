@@ -78,6 +78,20 @@ export const profilesRepo = {
     return db.select().from(profiles).orderBy(desc(profiles.createdAt));
   },
 
+  /**
+   * Active (non-deactivated) profiles of a single role, newest first. Lets a
+   * single-role screen skip pulling the whole profiles table just to filter it
+   * client-side (e.g. the runs pages, which only ever need drivers).
+   */
+  async listByRole(role: Role): Promise<Profile[]> {
+    const db = getDb();
+    return db
+      .select()
+      .from(profiles)
+      .where(and(eq(profiles.role, role), isNull(profiles.deactivatedAt)))
+      .orderBy(desc(profiles.createdAt));
+  },
+
   /** ADM-02 assign-target source: onboarded, NON-deactivated volunteers + names. */
   async listAssignableVolunteers(): Promise<{ id: string; name: string }[]> {
     const db = getDb();

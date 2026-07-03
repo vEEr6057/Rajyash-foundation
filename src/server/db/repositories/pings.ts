@@ -1,5 +1,5 @@
 import "server-only";
-import { desc, eq, lt } from "drizzle-orm";
+import { desc, eq, lt, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import {
   locationPings,
@@ -13,11 +13,28 @@ import {
  * (bypasses RLS); ownership/role checks live in the server actions that call this.
  */
 export const pingsRepo = {
-  /** Insert one ping. Caller (recordPing action) has already authorised + validated. */
-  async insert(input: NewLocationPing): Promise<LocationPing> {
+  /**
+   * Insert one ping, with a 5-second server-side rate floor (B1 note 2). Caller
+   * (recordPing action) has already authorised + validated. Implemented as ONE
+   * statement — INSERT … SELECT … WHERE NOT EXISTS — so the guard is race-free
+   * (no read-then-write). A ping arriving < 5s after the newest one for the same
+   * pickup silently no-ops (0 rows); the action still returns {ok:true} so a
+   * throttled client does NOT retry. The (pickup_id, created_at desc) index makes
+   * the NOT EXISTS probe cheap. id is generated here (schema uses a JS $defaultFn,
+   * not a DB default); created_at falls back to the column's default now().
+   */
+  async insert(input: NewLocationPing): Promise<void> {
     const db = getDb();
-    const rows = await db.insert(locationPings).values(input).returning();
-    return rows[0];
+    const id = crypto.randomUUID();
+    await db.execute(sql`
+      insert into ${locationPings} (id, pickup_id, volunteer_id, lat, lng, accuracy)
+      select ${id}, ${input.pickupId}, ${input.volunteerId}, ${input.lat}, ${input.lng}, ${input.accuracy ?? null}
+      where not exists (
+        select 1 from ${locationPings}
+        where ${locationPings.pickupId} = ${input.pickupId}
+          and ${locationPings.createdAt} > now() - interval '5 seconds'
+      )
+    `);
   },
 
   /** Newest ping for a pickup, or null. Backs the polling fallback (D-06). */

@@ -1,14 +1,28 @@
 import "server-only";
-import { desc, eq, lt } from "drizzle-orm";
+import { desc, eq, lt, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { runPings, type RunPing, type NewRunPing } from "@/server/db/schema";
 
 /** Ephemeral driver GPS trail for an active run (TRK-05). Mirrors pingsRepo. */
 export const runPingsRepo = {
-  async insert(input: NewRunPing): Promise<RunPing> {
+  /**
+   * Insert one run ping with a 5-second server-side rate floor (B1 note 2).
+   * Same single-statement guard as pingsRepo.insert — INSERT … SELECT … WHERE
+   * NOT EXISTS, race-free, silent no-op when throttled. The (run_id, created_at
+   * desc) index keeps the probe cheap.
+   */
+  async insert(input: NewRunPing): Promise<void> {
     const db = getDb();
-    const rows = await db.insert(runPings).values(input).returning();
-    return rows[0];
+    const id = crypto.randomUUID();
+    await db.execute(sql`
+      insert into ${runPings} (id, run_id, driver_id, lat, lng, accuracy)
+      select ${id}, ${input.runId}, ${input.driverId}, ${input.lat}, ${input.lng}, ${input.accuracy ?? null}
+      where not exists (
+        select 1 from ${runPings}
+        where ${runPings.runId} = ${input.runId}
+          and ${runPings.createdAt} > now() - interval '5 seconds'
+      )
+    `);
   },
 
   async latestForRun(runId: string): Promise<RunPing | null> {
