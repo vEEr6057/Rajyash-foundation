@@ -131,7 +131,12 @@ export function PickupForm({
   const hasPin = typeof lat === "number" && typeof lng === "number" && !!lat && !!lng;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      {/* Section: What you're sharing (charter §3.5 — hairline sections, not cards) */}
+      <section className="space-y-5">
+        <h2 className="font-display text-[15px] font-semibold">
+          {t("pickup.form.sectionWhat")}
+        </h2>
       <div>
         <Label htmlFor="category">{t("pickup.form.category")}</Label>
         <select
@@ -188,7 +193,13 @@ export function PickupForm({
           {...register("description")}
         />
       </div>
+      </section>
 
+      {/* Section: When to pick up */}
+      <section className="mt-6 space-y-5 border-t border-border pt-5">
+        <h2 className="font-display text-[15px] font-semibold">
+          {t("pickup.form.sectionWhen")}
+        </h2>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
           <Label htmlFor="windowStart">{t("pickup.form.windowStart")}</Label>
@@ -205,7 +216,13 @@ export function PickupForm({
           )}
         </div>
       </div>
+      </section>
 
+      {/* Section: Where */}
+      <section className="mt-6 space-y-5 border-t border-border pt-5">
+        <h2 className="font-display text-[15px] font-semibold">
+          {t("pickup.form.sectionWhere")}
+        </h2>
       <div>
         <Label htmlFor="address">{t("pickup.form.location")}</Label>
         <p className="mb-1.5 text-xs text-muted-foreground">{t("pickup.form.locationLinkHint")}</p>
@@ -265,19 +282,37 @@ export function PickupForm({
       {errors.safetyAttested && (
         <p className="-mt-3 text-sm text-destructive">{errors.safetyAttested.message}</p>
       )}
+      </section>
 
       {serverError && (
-        <p className="text-sm text-destructive" role="alert">{serverError}</p>
+        <p className="mt-5 text-sm text-destructive" role="alert">{serverError}</p>
       )}
 
-      <Button type="submit" size="lg" className="w-full" disabled={isPending || submitting}>
-        {isPending || submitting
-          ? tCommon("buttons.loading")
-          : (submitLabel ??
-            (mode === "create"
-              ? t("pickup.form.submitCreate")
-              : t("pickup.form.submitEdit")))}
-      </Button>
+      <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <Button
+          type="button"
+          variant="ghost"
+          size="lg"
+          className="w-full sm:w-auto"
+          onClick={() => router.back()}
+          disabled={isPending || submitting}
+        >
+          {tCommon("buttons.cancel")}
+        </Button>
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full sm:w-auto"
+          disabled={isPending || submitting}
+        >
+          {isPending || submitting
+            ? tCommon("buttons.loading")
+            : (submitLabel ??
+              (mode === "create"
+                ? t("pickup.form.submitCreate")
+                : t("pickup.form.submitEdit")))}
+        </Button>
+      </div>
     </form>
   );
 }

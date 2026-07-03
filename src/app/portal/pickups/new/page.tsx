@@ -2,13 +2,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { PageHeader } from "@/components/PageHeader";
 import { PickupForm } from "@/features/pickups/components/PickupForm";
 
 export const dynamic = "force-dynamic";
@@ -22,16 +16,13 @@ export default async function NewPickupPage() {
   const t = await getTranslations("portal");
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("pickup.form.title")}</CardTitle>
-          <CardDescription>{t("pickup.form.subtitle")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <PickupForm mode="create" />
-        </CardContent>
-      </Card>
+    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+      <PageHeader
+        eyebrow={t("pickup.form.eyebrow")}
+        title={t("pickup.form.title")}
+        meta={t("pickup.form.subtitle")}
+      />
+      <PickupForm mode="create" />
     </main>
   );
 }
