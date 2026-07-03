@@ -8,6 +8,7 @@ import {
   Baloo_2,
 } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
+import { hiIN } from "@clerk/localizations";
 import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Providers } from "./providers";
@@ -104,18 +105,26 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
+  // Clerk widgets follow the app locale. @clerk/localizations ships Hindi (hiIN)
+  // but NOT Gujarati (no guIN in v4.12) — gu falls back to English. Custom brand
+  // overrides are merged OVER the package (spread package first) so our copy wins.
+  const clerkBase = locale === "hi" ? hiIN : undefined;
+  const clerkLocalization = {
+    ...clerkBase,
+    signIn: {
+      ...clerkBase?.signIn,
+      start: {
+        ...clerkBase?.signIn?.start,
+        title: "Welcome back",
+        subtitle: "Sign in to continue to Food Rescue",
+      },
+    },
+  };
   return (
     <ClerkProvider
       afterSignOutUrl="/"
       appearance={clerkAppearance}
-      localization={{
-        signIn: {
-          start: {
-            title: "Welcome back",
-            subtitle: "Sign in to continue to Food Rescue",
-          },
-        },
-      }}
+      localization={clerkLocalization}
     >
       <html lang={locale} suppressHydrationWarning>
         <head>
