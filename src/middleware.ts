@@ -6,6 +6,8 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/staff(.*)", // staff (admin/coordinator) sign-in entry; /admin itself still role-gated below
+  "/robots.txt", // SEO metadata routes — must not be auth-gated
+  "/sitemap.xml",
   "/api/inngest(.*)", // S2S — Inngest authenticates via signing-key signature, not Clerk
 ]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
