@@ -6,15 +6,22 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { markStopDone } from "@/features/runs/actions/runActions";
 import type { StopStatus } from "@/config/constants";
 
 export function MarkStopDoneButton({
   stopId,
   stopStatus,
+  size = "sm",
+  variant = "leaf",
+  className,
 }: {
   stopId: string;
   stopStatus: StopStatus;
+  size?: "sm" | "lg";
+  variant?: "leaf" | "primary";
+  className?: string;
 }) {
   const router = useRouter();
   const t = useTranslations("portal");
@@ -41,9 +48,9 @@ export function MarkStopDoneButton({
   return (
     <div className="space-y-1.5">
       <Button
-        variant="leaf"
-        size="sm"
-        className="w-full"
+        variant={variant}
+        size={size}
+        className={cn("w-full", className)}
         onClick={handleDone}
         disabled={isPending}
       >
