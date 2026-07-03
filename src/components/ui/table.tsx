@@ -1,10 +1,16 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
+// Worktable shell (APP-UI-CHARTER §3.4): no floating card — structure by hairlines
+// only. `border-y` on the table block, `divide-y` rows, 44px body rows, hover
+// `surface-2`. One elevation level per screen, maximum.
 export function Table({ className, ...props }: React.HTMLAttributes<HTMLTableElement>) {
   return (
-    <div className="relative w-full overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
-      <table className={cn("w-full caption-bottom text-sm", className)} {...props} />
+    <div className="relative w-full overflow-x-auto">
+      <table
+        className={cn("w-full caption-bottom border-y border-border text-sm", className)}
+        {...props}
+      />
     </div>
   );
 }
@@ -21,7 +27,7 @@ export function TableBody({
   ...props
 }: React.HTMLAttributes<HTMLTableSectionElement>) {
   return (
-    <tbody className={cn("[&_tr:last-child]:border-0", className)} {...props} />
+    <tbody className={cn("divide-y divide-border", className)} {...props} />
   );
 }
 
@@ -32,7 +38,7 @@ export function TableRow({
   return (
     <tr
       className={cn(
-        "border-b border-border transition-colors hover:bg-secondary/50 data-[state=selected]:bg-secondary",
+        "transition-colors hover:bg-surface-2 data-[state=selected]:bg-surface-2",
         className,
       )}
       {...props}
@@ -47,7 +53,7 @@ export function TableHead({
   return (
     <th
       className={cn(
-        "h-11 px-3 text-left align-middle text-xs font-semibold uppercase tracking-wide text-muted-foreground [&:has([role=checkbox])]:pr-0",
+        "px-3 py-2.5 text-left align-middle text-[11px] font-semibold uppercase tracking-[0.04em] text-muted-foreground [&:has([role=checkbox])]:pr-0",
         className,
       )}
       {...props}

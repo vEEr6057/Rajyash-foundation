@@ -14,7 +14,6 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TableEmpty,
 } from "@/components/ui/table";
 import {
   DropdownMenu,
@@ -67,7 +66,7 @@ function Row({ d, onEdit }: { d: Destination; onEdit: (d: Destination) => void }
           }
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+          className="inline-flex items-center gap-1 text-[13px] font-medium text-primary hover:underline"
         >
           <MapPin className="size-3" /> {t("destinations.openInMaps")}
         </a>
@@ -120,18 +119,16 @@ export function DestinationList({ destinations }: { destinations: Destination[] 
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>{t("destinations.form.name")}</TableHead>
-            <TableHead>{t("destinations.form.area")}</TableHead>
-            <TableHead className="hidden sm:table-cell">{t("destinations.form.address")}</TableHead>
+            <TableHead>{t("destinations.table.name")}</TableHead>
+            <TableHead>{t("destinations.table.area")}</TableHead>
+            <TableHead className="hidden sm:table-cell">{t("destinations.table.address")}</TableHead>
             <TableHead className="w-12 text-right" />
           </TableRow>
         </TableHeader>
         <TableBody>
-          {destinations.length === 0 ? (
-            <TableEmpty colSpan={4}>{t("destinations.noDestinations")}</TableEmpty>
-          ) : (
-            destinations.map((d) => <Row key={d.id} d={d} onEdit={setEditing} />)
-          )}
+          {destinations.map((d) => (
+            <Row key={d.id} d={d} onEdit={setEditing} />
+          ))}
         </TableBody>
       </Table>
 

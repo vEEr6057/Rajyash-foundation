@@ -10,6 +10,8 @@ import { AdminPickupFilters } from "@/features/admin/components/AdminPickupFilte
 import { PickupsTable } from "@/features/admin/components/PickupsTable";
 import { LogSurplusSheet } from "@/features/admin/components/LogSurplusSheet";
 import { Pagination } from "@/components/ui/pagination";
+import { PageHeader } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Pickups — Rajyash Food Rescue" };
@@ -58,17 +60,12 @@ export default async function AdminPickupsPage({
 
   return (
     <div className="mx-auto max-w-6xl space-y-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight">
-            {t("pickups.title")}
-          </h1>
-          <p className="text-sm text-muted-foreground">
-            {total.toLocaleString()}
-          </p>
-        </div>
-        <LogSurplusSheet partners={partners} />
-      </div>
+      <PageHeader
+        eyebrow={t("eyebrow")}
+        title={t("pickups.title")}
+        meta={t("pickups.meta", { total, page, pages: Math.max(1, totalPages) })}
+        action={<LogSurplusSheet partners={partners} />}
+      />
 
       <AdminPickupFilters
         current={{
@@ -80,9 +77,17 @@ export default async function AdminPickupsPage({
         }}
       />
 
-      <PickupsTable pickups={rows} volunteers={volunteers} sort={sort} dir={dir} />
-
-      <Pagination page={page} totalPages={totalPages} hrefForPage={hrefForPage} />
+      {rows.length === 0 ? (
+        <EmptyState
+          title={t("pickups.empty.title")}
+          body={t("pickups.empty.body")}
+        />
+      ) : (
+        <>
+          <PickupsTable pickups={rows} volunteers={volunteers} sort={sort} dir={dir} />
+          <Pagination page={page} totalPages={totalPages} hrefForPage={hrefForPage} />
+        </>
+      )}
     </div>
   );
 }

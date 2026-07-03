@@ -1,7 +1,13 @@
 {
+  "eyebrow": "Admin",
   "pickups": {
     "title": "Pickups",
     "noMatch": "No pickups match these filters.",
+    "meta": "{total, number} total · page {page} of {pages}",
+    "empty": {
+      "title": "No pickups match",
+      "body": "Try clearing the filters — surplus usually arrives after lunch and dinner service."
+    },
     "filters": {
       "status": "Status",
       "allStatuses": "All statuses",
@@ -23,8 +29,8 @@
       "createdAt": "Created",
       "deliveredAt": "Delivered",
       "actions": "Actions",
-      "assigned": "assigned",
-      "unassigned": "unassigned"
+      "assigned": "Assigned",
+      "unassigned": "Unassigned"
     },
     "assign": {
       "button": "Assign volunteer",
@@ -42,6 +48,11 @@
   },
   "users": {
     "title": "Users",
+    "meta": "{count, plural, one {# user} other {# users}}",
+    "empty": {
+      "title": "No users found",
+      "body": "People appear here after their first sign-in."
+    },
     "you": "(you)",
     "yourAccount": "Your account",
     "appliesNextSignIn": "applies on next sign-in",
@@ -75,6 +86,11 @@
   },
   "partners": {
     "title": "Partners",
+    "meta": "{count, plural, one {# partner} other {# partners}}",
+    "empty": {
+      "title": "No partners yet",
+      "body": "Add the first restaurant or kitchen you rescue from."
+    },
     "newButton": "Add partner",
     "allPartners": "All partners",
     "noDonors": "No donor users yet.",
@@ -148,12 +164,22 @@
   },
   "destinations": {
     "title": "Destinations",
+    "meta": "{count, plural, one {# destination} other {# destinations}}",
+    "empty": {
+      "title": "No destinations saved",
+      "body": "Save the regular drop points so runs can be built in seconds."
+    },
     "addDestination": "Add a destination",
     "allDestinations": "All destinations",
     "noDestinations": "No destinations yet.",
     "editClose": "Close",
     "seedNote": "Add the zones and shelters your drivers deliver to.",
     "openInMaps": "Open in Maps",
+    "table": {
+      "name": "Name",
+      "area": "Area",
+      "address": "Address / Maps"
+    },
     "form": {
       "name": "Name*",
       "area": "Area / locality",
@@ -173,9 +199,15 @@
   },
   "runs": {
     "title": "Dispatch Runs",
+    "meta": "{count, plural, one {# run} other {# runs}}",
+    "empty": {
+      "title": "No runs yet today",
+      "body": "Build the first run once pickups start coming in."
+    },
     "newButton": "New run",
     "emptyState": "No runs yet. Create one to start dispatching.",
     "stopCount": "stops",
+    "table": { "driver": "Driver" },
     "noDriver": "No driver assigned",
     "noStops": "No stops added yet. Add pickup and drop stops below.",
     "kindPickup": "Pickup",

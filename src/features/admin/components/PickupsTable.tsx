@@ -13,7 +13,6 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TableEmpty,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,6 +68,8 @@ export function PickupsTable({
   const fmtDate = (d: Date) =>
     new Intl.DateTimeFormat(locale, { timeZone: "Asia/Kolkata", day: "numeric", month: "short" }).format(d);
 
+  const volunteerName = (id: string) => volunteers.find((v) => v.id === id)?.name;
+
   // Sortable column header — toggles asc/desc via URL, resets to page 1, sets aria-sort.
   function SortHead({
     col,
@@ -109,7 +110,7 @@ export function PickupsTable({
           <TableRow>
             <SortHead col="status" label={t("pickups.table.status")} />
             <SortHead col="category" label={t("pickups.table.category")} />
-            <SortHead col="quantity" label={t("pickups.table.quantity")} />
+            <SortHead col="quantity" label={t("pickups.table.quantity")} className="text-right" />
             <TableHead className="hidden md:table-cell">{t("pickups.table.location")}</TableHead>
             <TableHead className="hidden sm:table-cell">{t("pickups.table.volunteer")}</TableHead>
             <SortHead col="createdAt" label={t("pickups.table.createdAt")} className="hidden lg:table-cell" />
@@ -117,53 +118,53 @@ export function PickupsTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {pickups.length === 0 ? (
-            <TableEmpty colSpan={7}>{t("pickups.noMatch")}</TableEmpty>
-          ) : (
-            pickups.map((p) => (
-              <TableRow key={p.id}>
-                <TableCell>
-                  <PickupStatusPill status={p.status} />
-                </TableCell>
-                <TableCell className="font-medium">
-                  {tCommon(`foodCategory.${p.category}`)}
-                </TableCell>
-                <TableCell className="whitespace-nowrap text-muted-foreground">
-                  {formatQuantity(p.quantity, p.quantityUnit)}
-                </TableCell>
-                <TableCell className="hidden max-w-[16rem] truncate text-muted-foreground md:table-cell">
-                  {p.address}
-                </TableCell>
-                <TableCell className="hidden text-muted-foreground sm:table-cell">
-                  {p.volunteerId
-                    ? t("pickups.table.assigned")
-                    : t("pickups.table.unassigned")}
-                </TableCell>
-                <TableCell className="hidden whitespace-nowrap text-muted-foreground lg:table-cell">
-                  {fmtDate(p.createdAt)}
-                </TableCell>
-                <TableCell className="text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="icon" aria-label={t("pickups.table.actions")}>
-                        <MoreHorizontal className="size-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => router.push(ROUTES.pickup(p.id))}>
-                        <Eye /> {tCommon("buttons.view")}
+          {pickups.map((p) => (
+            <TableRow key={p.id}>
+              <TableCell>
+                <PickupStatusPill status={p.status} />
+              </TableCell>
+              <TableCell className="font-medium">
+                {tCommon(`foodCategory.${p.category}`)}
+              </TableCell>
+              <TableCell className="whitespace-nowrap text-right text-muted-foreground">
+                {formatQuantity(p.quantity, p.quantityUnit)}
+              </TableCell>
+              <TableCell className="hidden max-w-[16rem] truncate text-muted-foreground md:table-cell">
+                {p.address}
+              </TableCell>
+              <TableCell className="hidden sm:table-cell">
+                {p.volunteerId ? (
+                  volunteerName(p.volunteerId) ?? t("pickups.table.assigned")
+                ) : (
+                  <span className="text-muted-foreground">
+                    {t("pickups.table.unassigned")}
+                  </span>
+                )}
+              </TableCell>
+              <TableCell className="hidden whitespace-nowrap text-muted-foreground lg:table-cell">
+                {fmtDate(p.createdAt)}
+              </TableCell>
+              <TableCell className="text-right">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" aria-label={t("pickups.table.actions")}>
+                      <MoreHorizontal className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={() => router.push(ROUTES.pickup(p.id))}>
+                      <Eye /> {tCommon("buttons.view")}
+                    </DropdownMenuItem>
+                    {p.status === "requested" && (
+                      <DropdownMenuItem onClick={() => setAssignFor(p)}>
+                        <UserPlus /> {t("pickups.assign.button")}
                       </DropdownMenuItem>
-                      {p.status === "requested" && (
-                        <DropdownMenuItem onClick={() => setAssignFor(p)}>
-                          <UserPlus /> {t("pickups.assign.button")}
-                        </DropdownMenuItem>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
 

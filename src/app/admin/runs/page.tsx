@@ -7,6 +7,8 @@ import { profilesRepo } from "@/server/db/repositories/profiles";
 import { ROUTES } from "@/config/constants";
 import { RunsTable } from "@/features/runs/components/RunsTable";
 import { NewRunSheet } from "@/features/runs/components/NewRunSheet";
+import { PageHeader } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Runs — Rajyash Food Rescue Admin" };
@@ -34,11 +36,21 @@ export default async function AdminRunsPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <header className="mb-6 flex items-center justify-between">
-        <h1 className="font-display text-2xl font-bold tracking-tight">{t("runs.title")}</h1>
-        <NewRunSheet drivers={drivers} />
-      </header>
-      <RunsTable runs={runs} stopCounts={stopCounts} driverNameById={driverNameById} />
+      <PageHeader
+        eyebrow={t("eyebrow")}
+        title={t("runs.title")}
+        meta={t("runs.meta", { count: runs.length })}
+        action={<NewRunSheet drivers={drivers} />}
+      />
+      {runs.length === 0 ? (
+        <EmptyState
+          title={t("runs.empty.title")}
+          body={t("runs.empty.body")}
+          action={<NewRunSheet drivers={drivers} />}
+        />
+      ) : (
+        <RunsTable runs={runs} stopCounts={stopCounts} driverNameById={driverNameById} />
+      )}
     </div>
   );
 }

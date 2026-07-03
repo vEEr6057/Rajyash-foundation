@@ -15,7 +15,6 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TableEmpty,
 } from "@/components/ui/table";
 import {
   DropdownMenu,
@@ -119,11 +118,9 @@ export function PartnerList({ partners }: { partners: Partner[] }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {partners.length === 0 ? (
-            <TableEmpty colSpan={5}>{t("partners.noPartners")}</TableEmpty>
-          ) : (
-            partners.map((p) => <Row key={p.id} p={p} onEdit={setEditing} />)
-          )}
+          {partners.map((p) => (
+            <Row key={p.id} p={p} onEdit={setEditing} />
+          ))}
         </TableBody>
       </Table>
 
