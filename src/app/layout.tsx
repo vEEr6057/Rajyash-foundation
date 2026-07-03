@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import {
-  Bricolage_Grotesque,
   Mukta,
   Noto_Sans_Devanagari,
   Roboto,
@@ -13,14 +12,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Providers } from "./providers";
 import { SkipLink } from "@/components/SkipLink";
+import { clerkAppearance } from "@/lib/clerkAppearance";
 import "./globals.css";
-
-const bricolage = Bricolage_Grotesque({
-  variable: "--font-bricolage",
-  subsets: ["latin"],
-  weight: ["600", "700", "800"],
-  display: "swap",
-});
 
 const mukta = Mukta({
   variable: "--font-mukta",
@@ -114,39 +107,13 @@ export default async function RootLayout({
   return (
     <ClerkProvider
       afterSignOutUrl="/"
-      appearance={{
-        variables: {
-          colorPrimary: "#2E7A47",
-          colorPrimaryForeground: "#FFFFFF",
-          colorBackground: "#FFFFFF",
-          colorForeground: "#1F2937",
-          colorMutedForeground: "#6B7280",
-          colorInput: "#FFFFFF",
-          colorInputForeground: "#1F2937",
-          colorDanger: "#C0341D",
-          borderRadius: "0.75rem",
-          fontFamily: "var(--font-mukta), system-ui, sans-serif",
-        },
-        elements: {
-          rootBox: "mx-auto w-full",
-          cardBox: "shadow-xl",
-          card: "border border-black/[0.06] bg-white",
-          headerTitle: "font-display text-xl font-bold text-gray-900",
-          headerSubtitle: "text-sm text-gray-500",
-          socialButtonsBlockButton:
-            "border border-black/10 bg-white text-gray-800 hover:bg-black/[0.03] justify-center gap-3",
-          // the provider label exists in the DOM but renders hidden for a single
-          // provider — force it visible so it reads "Continue with Google".
-          socialButtonsBlockButtonText: "!inline-block text-sm font-medium text-gray-800",
-          dividerLine: "bg-black/10",
-          dividerText: "text-gray-400",
-          formFieldLabel: "text-gray-700 font-medium",
-          formFieldInput:
-            "border border-black/15 bg-white text-gray-900 focus:border-[#2E7A47]",
-          formButtonPrimary:
-            "bg-[#2E7A47] text-white hover:bg-[#256b3c] shadow-sm normal-case font-semibold",
-          footerActionLink: "text-[#2E7A47] hover:text-[#256b3c] font-semibold",
-          identityPreviewEditButton: "text-[#2E7A47]",
+      appearance={clerkAppearance}
+      localization={{
+        signIn: {
+          start: {
+            title: "Welcome back",
+            subtitle: "Sign in to continue to Food Rescue",
+          },
         },
       }}
     >
@@ -171,7 +138,7 @@ export default async function RootLayout({
           />
         </head>
         <body
-          className={`${bricolage.variable} ${mukta.variable} ${notoDevanagari.variable} ${roboto.variable} ${robotoSlab.variable} ${balooBhai2.variable} ${baloo2.variable} antialiased`}
+          className={`${mukta.variable} ${notoDevanagari.variable} ${roboto.variable} ${robotoSlab.variable} ${balooBhai2.variable} ${baloo2.variable} antialiased`}
         >
           {/* PITFALL GUARD (RESEARCH §Pitfall 2): NextIntlClientProvider MUST be
               outside <Providers> (which is 'use client'). As a Server Component

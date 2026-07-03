@@ -10,6 +10,16 @@
     "heading": "Staff sign in",
     "hint": "Admin & coordinator access. Use your staff email and password."
   },
+  "auth": {
+    "headline": "We rise by <g>lifting</g> others.",
+    "subline": "Surplus food from Ahmedabad's kitchens, delivered to people who need it — the same evening.",
+    "stat": "300+ people fed daily",
+    "statNote": "Counted from deliveries logged in this app — not estimates.",
+    "staffHeadline": "Tonight's runs start here.",
+    "staffSubline": "Coordinate pickups, drivers and deliveries across the city.",
+    "staffStat": "9,000+ people a month",
+    "staffStatNote": "Reached by runs dispatched from this desk."
+  },
   "nav": {
     "home": "Home",
     "signIn": "Sign in",
