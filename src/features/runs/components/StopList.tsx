@@ -54,15 +54,17 @@ export function StopList({ stops, runId }: { stops: RunStop[]; runId: string }) 
   }
 
   return (
-    <div className="space-y-2">
+    <div className="divide-y divide-border border-y border-border">
       {stops.map((stop, i) => (
-        <div
-          key={stop.id}
-          className="flex items-center gap-2 rounded-lg border border-border px-3 py-3 text-sm"
-        >
-          <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+        <div key={stop.id} className="flex items-center gap-3 py-3">
+          <span className="w-6 shrink-0 font-display text-sm font-semibold tabular-nums text-gold-ink">
             {stop.seq}
           </span>
+          <span className="w-14 shrink-0 text-[11px] font-semibold uppercase tracking-[0.04em] text-muted-foreground">
+            {stop.kind === "pickup" ? t("runs.kindPickup") : t("runs.kindDrop")}
+          </span>
+          <span className="flex-1 truncate text-sm">{stop.address ?? "—"}</span>
+          <StopStatusPill status={stop.status} />
           <div className="flex flex-col">
             <button
               type="button"
@@ -83,23 +85,15 @@ export function StopList({ stops, runId }: { stops: RunStop[]; runId: string }) 
               <ArrowDown className="size-3.5" />
             </button>
           </div>
-          <span className="flex-1">
-            <span className="font-medium">
-              {stop.kind === "pickup" ? t("runs.kindPickup") : t("runs.kindDrop")}
-            </span>
-            {stop.address && (
-              <span className="ml-2 text-muted-foreground">{stop.address}</span>
-            )}
-          </span>
-          <StopStatusPill status={stop.status} />
           <Button
             size="icon"
             variant="ghost"
             disabled={pending}
             aria-label={t("runs.removeStop")}
             onClick={() => setRemoveId(stop.id)}
+            className="text-muted-foreground hover:text-destructive"
           >
-            <Trash2 className="size-4 text-destructive" />
+            <Trash2 className="size-4" />
           </Button>
         </div>
       ))}
