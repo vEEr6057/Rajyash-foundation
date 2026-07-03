@@ -310,3 +310,89 @@
   ::view-transition-old(root),
   ::view-transition-new(root) { animation: none !important; }
 }
+
+/* ============================================================================
+   Homepage brand layer (.rj-home) — scoped tokens for the public marketing site.
+   Mirrors the official Rajyash Foundation brand (green/gold/coral). DELIBERATELY
+   separate from the app's internal saffron @theme system. See docs/design/HOMEPAGE-SPEC.md.
+   ============================================================================ */
+.rj-home {
+  --rj-paper: #FAF7F1;
+  --rj-paper-2: #F2ECDF;
+  --rj-paper-3: #EBE3D2;
+  --rj-ink: #1E2A22;
+  --rj-ink-soft: #55605A;
+  --rj-green: #337048;
+  --rj-green-cta: #2A5C3C;
+  --rj-green-cta-hv: #234E33;
+  --rj-gold: #F6C445;
+  --rj-gold-ink: #8A6D1A;
+  --rj-coral: #FC615D;
+  --rj-coral-ink: #C93F3B;
+  --rj-hairline: rgba(30,42,34,.14);
+  --rj-hairline-2: rgba(30,42,34,.26);
+  --rj-shadow: 0 14px 38px rgba(40,32,18,.10), 0 3px 8px rgba(40,32,18,.05);
+
+  /* Per-locale type (Latin default; overridden by :lang below) */
+  --rj-display: var(--font-roboto-slab), Georgia, serif;
+  --rj-body: var(--font-roboto), system-ui, sans-serif;
+
+  --rj-wide: 78rem;
+  --rj-text: 40rem;
+}
+.dark .rj-home {
+  --rj-paper: #10201A;
+  --rj-paper-2: #16291F;
+  --rj-paper-3: #1D3327;
+  --rj-ink: #ECF2E9;
+  --rj-ink-soft: #A6B3AB;
+  --rj-green: #5AA974;
+  --rj-green-cta: #3E8B58;
+  --rj-green-cta-hv: #489A63;
+  --rj-gold: #F6C445;
+  --rj-gold-ink: #E7C15A;
+  --rj-coral: #FF6F6A;
+  --rj-coral-ink: #FF8A85;
+  --rj-hairline: rgba(236,242,233,.13);
+  --rj-hairline-2: rgba(236,242,233,.24);
+  --rj-shadow: 0 16px 40px rgba(0,0,0,.5);
+}
+/* Indic display/body faces per locale (Baloo has no glyphs above 500 that pair well) */
+.rj-home:lang(gu) { --rj-display: var(--font-baloo-bhai2), "Noto Sans Gujarati", sans-serif; --rj-body: var(--font-mukta), "Noto Sans Gujarati", sans-serif; }
+.rj-home:lang(hi) { --rj-display: var(--font-baloo2), var(--font-noto-devanagari), sans-serif; --rj-body: var(--font-mukta), var(--font-noto-devanagari), sans-serif; }
+
+.rj-home { font-family: var(--rj-body); background: var(--rj-paper); color: var(--rj-ink); }
+.rj-home .rj-display, .rj-home h1, .rj-home h2, .rj-home h3 { font-family: var(--rj-display); font-weight: 500; }
+/* Indic optical match — Baloo runs larger/heavier than Roboto Slab */
+.rj-home:lang(gu) h1, .rj-home:lang(gu) h2, .rj-home:lang(hi) h1, .rj-home:lang(hi) h2 { font-size: 0.92em; line-height: 1.15; }
+
+/* Repeatable photo grade — one look across every candid phone photo */
+.rj-graded { filter: saturate(0.88) contrast(0.96) brightness(1.03); }
+
+/* Section-entry rise — the ONLY ambient motion besides the rescue-line */
+@media (prefers-reduced-motion: no-preference) {
+  .rj-rise { opacity: 0; transform: translateY(12px); transition: opacity .5s var(--ease-out), transform .5s var(--ease-out); }
+  .rj-rise.rj-in { opacity: 1; transform: none; }
+}
+
+/* Homepage link + index-row hover language (HOMEPAGE-SPEC §8) */
+.rj-home .rj-underline {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+  transition: text-decoration-color .2s var(--ease-out);
+}
+.rj-home .rj-underline:hover { text-decoration-color: var(--rj-gold-ink); }
+.rj-home .rj-row { transition: background-color .2s var(--ease-out); }
+.rj-home .rj-row-thumb { transition: transform .25s var(--ease-out); }
+.rj-home .rj-row:hover { background: var(--rj-paper-3); }
+.rj-home .rj-row:hover .rj-row-thumb { transform: scale(1.04); }
+.rj-home .rj-row:hover .rj-row-name {
+  text-decoration: underline;
+  text-decoration-color: var(--rj-gold-ink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.rj-home a:focus-visible,
+.rj-home button:focus-visible { outline: 3px solid var(--rj-gold-ink); outline-offset: 2px; }

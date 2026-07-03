@@ -1,78 +1,65 @@
 // src/features/public/components/LandingPage.tsx
-// Public landing — a close visual clone of the official rajyashfoundation.com homepage
-// (their own brand, for their own app): green #337048 + gold + coral, Roboto Slab / Roboto,
-// their section order (hero → impact → about pillars → what-we-do → food-rescue live impact →
-// volunteer CTA). Copy mirrors the official site (English-only, as there). Motion via
-// RevealOnScroll (their WOW.js reveal) + ImpactCounter count-up.
+// Public homepage — editorial elevation of the Rajyash Foundation brand.
+// Built verbatim from docs/design/HOMEPAGE-SPEC.md (scoped --rj-* token layer, no app
+// saffron system). English copy inline for this cut; i18n extraction is the final build step.
 import Link from "next/link";
-import {
-  Sprout,
-  GraduationCap,
-  Bird,
-  HandHeart,
-  PartyPopper,
-  HeartPulse,
-  ArrowRight,
-  LayoutDashboard,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { getCachedImpactReport } from "@/server/db/repositories/impact";
 import { ROUTES } from "@/config/constants";
-import { ImpactCounter } from "./ImpactCounter";
 import { RevealOnScroll } from "./RevealOnScroll";
+import { RescueLine, LeafMark } from "./RescueLine";
+import { LedgerImpact } from "./LedgerImpact";
 
-const GREEN = "#337048";
-// CTA fill: deep green with white text passes WCAG AA (~8:1). White-on-coral #FC615D is
-// only ~2.9:1 and FAILS AA — coral is now reserved for the small decorative/live accent only.
-const CTA = "#2A5C3C";
-const CORAL = "#FC615D";
+const ink = "var(--rj-ink)";
+const inkSoft = "var(--rj-ink-soft)";
+const gold = "var(--rj-gold-ink)";
+const hairline = "var(--rj-hairline)";
+const cta: React.CSSProperties = {
+  background: "var(--rj-green-cta)",
+  color: "#fff",
+  borderRadius: "6px",
+};
 
-const PROGRAMS = [
-  {
-    Icon: Sprout,
-    title: "Plantation",
-    body: "Greening Ahmedabad one sapling at a time — tree drives that give the city cleaner air and shade.",
-    img: "/images/rajyash/prog3.jpg",
-  },
-  {
-    Icon: GraduationCap,
-    title: "Education",
-    body: "Backing underprivileged children with the books, supplies and support they need to learn and rise.",
-    img: "/images/rajyash/prog2.jpg",
-  },
-  {
-    Icon: Bird,
-    title: "Animals & Birds Rescue",
-    body: "Rescue, feeding and care for the animals and birds that share our city.",
-    img: "/images/rajyash/prog4.jpg",
-  },
-  {
-    Icon: HandHeart,
-    title: "Food Porter",
-    body: "Rescuing surplus food and getting it — warm and safe — to people in need across Ahmedabad.",
-    img: "/images/foodporter/food-porter5.jpg",
-    href: ROUTES.signUp,
-  },
-  {
-    Icon: PartyPopper,
-    title: "Anand Mela",
-    body: "Community fairs that bring people together and raise support for those who need it most.",
-    img: "/images/rajyash/prog5.jpg",
-  },
-  {
-    Icon: HeartPulse,
-    title: "Other Activities",
-    body: "Blood-donation drives, disaster relief and everyday acts of kindness across the year.",
-    img: "/images/rajyash/prog7.jpg",
-  },
-] as const;
+type Program = {
+  n: string;
+  title: string;
+  desc: string;
+  img: string;
+  href?: string;
+  live?: boolean;
+};
+const PROGRAMS: Program[] = [
+  { n: "01", title: "Plantation", desc: "Tree drives that give Ahmedabad cleaner air and shade.", img: "/images/rajyash/prog3.jpg" },
+  { n: "02", title: "Education", desc: "Books, supplies and support for children who deserve to rise.", img: "/images/rajyash/prog2.jpg" },
+  { n: "03", title: "Animals & Birds Rescue", desc: "Rescue, feeding and care for the creatures who share our streets.", img: "/images/rajyash/prog4.jpg" },
+  { n: "04", title: "Food Porter", desc: "Surplus food, rescued warm and carried to people in need — every evening.", img: "/images/foodporter/food-porter5.jpg", href: ROUTES.signUp, live: true },
+  { n: "05", title: "Anand Mela", desc: "Community fairs that raise support and bring the city together.", img: "/images/rajyash/prog5.jpg" },
+  { n: "06", title: "Other Activities", desc: "Blood-donation drives, disaster relief, and everyday kindness all year.", img: "/images/rajyash/prog7.jpg" },
+];
 
-const PILLARS = [
-  { title: "Embrace", body: "We meet people where they are — with dignity, warmth and no conditions." },
-  { title: "Empower", body: "We give real, practical support that helps people stand on their own." },
-  { title: "Inspire", body: "We show that one small act of kindness, repeated, changes a city." },
-] as const;
+function Marker({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      className="rj-display block"
+      style={{ fontStyle: "italic", fontWeight: 500, fontSize: "0.8125rem", color: gold, letterSpacing: 0 }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function Caption({ children }: { children: React.ReactNode }) {
+  return (
+    <figcaption
+      className="absolute bottom-0 left-0 w-full px-4 py-3 text-xs font-medium tracking-[0.02em] text-white"
+      style={{ background: "linear-gradient(to top, rgba(30,42,34,.55), transparent)" }}
+    >
+      {children}
+    </figcaption>
+  );
+}
 
 export async function LandingPage() {
   const [t, impact, session] = await Promise.all([
@@ -87,244 +74,221 @@ export async function LandingPage() {
     : null;
 
   return (
-    <main
-      id="main-content"
-      className="rj-clone overflow-x-clip bg-[#FAF7F1] text-[#26302B] dark:bg-[#12211A] dark:text-[#e8efe9]"
-    >
-      <style>{`
-        .rj-clone{font-family:var(--font-roboto),system-ui,sans-serif}
-        /* Headings: Roboto Slab for Latin, but it has NO Gujarati/Devanagari glyphs — fall
-           through to the Gujarati + Devanagari faces so GU/HI headings don't hit a random
-           system font (blocker fix). */
-        .rj-clone h1,.rj-clone h2,.rj-clone h3,.rj-clone .slab{
-          font-family:var(--font-roboto-slab),"Noto Sans Gujarati",var(--font-noto-devanagari),var(--font-mukta),Georgia,serif}
-      `}</style>
+    <main id="main-content" className="rj-home overflow-x-clip">
+      {/* ── Rescue-line band: hero → ledger ─────────────────────────── */}
+      <div className="relative">
+        <RescueLine />
 
-      {/* ── HERO ─────────────────────────────────────────────────── */}
-      <section className="relative isolate overflow-hidden">
-        <img
-          src="/images/rajyash/prog2.jpg"
-          alt="Rajyash Foundation volunteers with schoolchildren in Ahmedabad"
-          className="absolute inset-0 -z-10 h-full w-full object-cover"
-          loading="eager"
-        />
-        <div
-          className="absolute inset-0 -z-10"
-          style={{
-            background:
-              "linear-gradient(105deg, rgba(20,48,32,.92) 0%, rgba(20,48,32,.78) 42%, rgba(20,48,32,.30) 100%)",
-          }}
-        />
-        <div className="mx-auto max-w-6xl px-6 py-24 sm:py-32">
-          <div className="max-w-2xl text-white">
+        {/* ── 5.2 HERO — 60/40 typographic split ─────────────────── */}
+        <section className="relative mx-auto grid max-w-[78rem] grid-cols-1 gap-y-10 px-6 pb-16 pt-16 sm:px-10 lg:grid-cols-12 lg:gap-x-8 lg:pt-24">
+          <div className="relative z-10 lg:col-span-7 lg:pr-8">
             <RevealOnScroll>
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-1.5 text-sm font-semibold tracking-wide backdrop-blur">
-                <span className="size-2 rounded-full" style={{ background: CORAL }} />
-                We rise by lifting others
+              <p className="text-sm font-semibold" style={{ color: inkSoft }}>
+                <span style={{ color: gold }}>સેવા</span> · We rise by lifting others
               </p>
             </RevealOnScroll>
             <RevealOnScroll delay={80}>
-              <h1 className="text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
-                Join us in creating a <span style={{ color: "#F6C445" }}>better tomorrow</span>
+              <h1
+                className="mt-5"
+                style={{ fontSize: "clamp(2.5rem, 6vw, 4.25rem)", lineHeight: 1.06, letterSpacing: "-0.005em", color: ink }}
+              >
+                We rise by <span style={{ color: gold }}>lifting</span> others.
               </h1>
             </RevealOnScroll>
             <RevealOnScroll delay={150}>
-              <p className="mt-6 max-w-xl text-lg text-white/85">
-                One act of kindness at a time. We strive to make a lasting impact — from
-                environmental conservation to social welfare — across Ahmedabad.
+              <p
+                className="mt-6 max-w-xl"
+                style={{ fontSize: "clamp(1.125rem, 1.4vw, 1.3125rem)", lineHeight: 1.55, color: inkSoft }}
+              >
+                Since 2016, the Rajyash Foundation has turned Ahmedabad&rsquo;s surplus into
+                dignity. Every evening, volunteers still carry warm meals across the city — and
+                this page counts them as they go.
               </p>
             </RevealOnScroll>
             <RevealOnScroll delay={220}>
-              <div className="mt-9 flex flex-wrap gap-4">
+              <div className="mt-8 flex flex-wrap items-center gap-5">
                 {dashboardHref ? (
-                  <Link
-                    href={dashboardHref}
-                    className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg transition hover:brightness-110"
-                    style={{ background: CTA }}
-                  >
-                    <LayoutDashboard className="size-5" /> Go to dashboard
+                  <Link href={dashboardHref} className="px-6 py-3 font-medium" style={cta}>
+                    Go to dashboard
                   </Link>
                 ) : (
                   <>
-                    <Link
-                      href={ROUTES.signUp}
-                      className="inline-flex items-center gap-2 rounded-full px-7 py-3.5 font-semibold text-white shadow-lg transition hover:brightness-110"
-                      style={{ background: CTA }}
-                    >
-                      <HandHeart className="size-5" /> Donate surplus food
+                    <Link href={ROUTES.becomeVolunteer} className="px-6 py-3 font-medium" style={cta}>
+                      Become a volunteer
                     </Link>
-                    <Link
-                      href={ROUTES.becomeVolunteer}
-                      className="inline-flex items-center gap-2 rounded-full border-2 border-white/70 px-7 py-3.5 font-semibold text-white transition hover:bg-white hover:text-[#233]"
-                    >
-                      Become a volunteer <ArrowRight className="size-5" />
+                    <Link href={ROUTES.signUp} className="rj-underline inline-flex items-center gap-1 font-medium" style={{ color: ink }}>
+                      or donate surplus food <ArrowRight className="size-4" />
                     </Link>
                   </>
                 )}
               </div>
             </RevealOnScroll>
           </div>
-        </div>
-      </section>
 
-      {/* ── IMPACT STATS BAND (count-up) ─────────────────────────── */}
-      <section className="border-b border-black/5" style={{ background: GREEN }}>
-        <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-6 py-12 text-center text-white sm:grid-cols-4">
-          {[
-            { n: "365,000+", l: "People helped" },
-            { n: "70", l: "Volunteers" },
-            { n: "6", l: "Programs" },
-            { n: "2016", l: "Serving since" },
-          ].map((s) => (
-            <div key={s.l}>
-              <p className="slab text-3xl font-extrabold sm:text-4xl">{s.n}</p>
-              <p className="mt-1 text-sm text-white/80">{s.l}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ── ABOUT — Embrace / Empower / Inspire ──────────────────── */}
-      <section id="about" className="px-6 py-20">
-        <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2">
-          <RevealOnScroll>
-            <div className="overflow-hidden rounded-2xl shadow-xl">
-              <img
-                src="/images/rajyash/prog6.jpg"
-                alt="Rajyash Foundation volunteers at work in Ahmedabad"
-                className="h-full w-full object-cover"
-                loading="lazy"
-              />
-            </div>
-          </RevealOnScroll>
-          <div>
-            <RevealOnScroll>
-              <p
-                className="mb-2 text-xs font-bold uppercase tracking-[0.15em]"
-                style={{ color: GREEN }}
-              >
-                About us
-              </p>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                More than an act of charity — a movement of kindness.
-              </h2>
-              <p className="mt-4 max-w-prose text-[#555] dark:text-white/70 leading-relaxed">
-                The Rajyash Foundation is the social arm of the Rajyash Group, based in
-                Ahmedabad. Our dedicated team of 70 works tirelessly to create a brighter,
-                kinder tomorrow — from environmental conservation to feeding people in need.
-              </p>
-            </RevealOnScroll>
-            <div className="mt-8 grid gap-4 sm:grid-cols-3">
-              {PILLARS.map((p, i) => (
-                <RevealOnScroll key={p.title} delay={60 + i * 70}>
-                  <div className="h-full rounded-xl border border-black/5 bg-[#f7faf7] p-5 dark:border-white/10 dark:bg-white/[0.04]">
-                    <h3 className="slab text-lg font-bold" style={{ color: GREEN }}>
-                      {p.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-[#555] dark:text-white/70">{p.body}</p>
-                  </div>
-                </RevealOnScroll>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── WHAT WE DO — 6 programs ──────────────────────────────── */}
-      <section id="programs" className="bg-[#f6f8f6] px-6 py-20 dark:bg-[#16261d]">
-        <div className="mx-auto max-w-6xl">
-          <RevealOnScroll className="mx-auto mb-12 max-w-2xl text-center">
-            <p
-              className="mb-2 text-xs font-bold uppercase tracking-[0.15em]"
-              style={{ color: GREEN }}
+          <figure className="relative z-10 -mr-6 overflow-hidden sm:-mr-10 lg:col-span-5 lg:-mr-[max(2.5rem,calc((100vw-78rem)/2))]">
+            <div
+              className="relative h-full min-h-[clamp(420px,60vh,680px)] overflow-hidden rounded-lg"
+              style={{ border: "1px solid var(--rj-hairline-2)" }}
             >
-              What we do
+              <img
+                src="/images/foodporter/food-porter2.jpg"
+                alt="Volunteers handing out warm evening meals from tiffins on an Ahmedabad street"
+                className="rj-graded absolute inset-0 h-full w-full object-cover"
+                loading="eager"
+              />
+              <Caption>Evening distribution, Ahmedabad · 2026</Caption>
+            </div>
+          </figure>
+        </section>
+
+        {/* ── 5.3 PROOF STRIP ─────────────────────────────────────── */}
+        <section className="mx-auto max-w-[78rem] px-6 sm:px-10">
+          <div style={{ borderTop: `1px solid ${hairline}`, borderBottom: `1px solid ${hairline}` }}>
+            <p
+              className="rj-display flex flex-wrap items-baseline gap-x-3 gap-y-1 py-6"
+              style={{ fontWeight: 500, fontSize: "clamp(1rem,1.6vw,1.375rem)" }}
+            >
+              {[
+                ["365,000", "people helped"],
+                ["70", "volunteers"],
+                ["6", "programmes"],
+                ["2016", "serving Ahmedabad since"],
+              ].map(([num, label], i) => (
+                <span key={label} className="inline-flex items-baseline gap-3">
+                  {i > 0 && <span style={{ color: gold }} aria-hidden>·</span>}
+                  <span style={{ color: ink }}>{num}</span>
+                  <span style={{ color: inkSoft, fontSize: "0.95rem" }}>{label}</span>
+                </span>
+              ))}
             </p>
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-              Six ways we lift our city
+          </div>
+        </section>
+
+        {/* ── 5.4 PROGRAMS — editorial index rows ─────────────────── */}
+        <section id="programs" className="mx-auto max-w-[78rem] px-6 py-20 sm:px-10">
+          <RevealOnScroll>
+            <Marker>સેવા · What we do</Marker>
+            <h2 className="mt-2" style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.12, color: ink, fontWeight: 600 }}>
+              Six ways we lift our city.
             </h2>
-            <p className="mt-3 text-[#555] dark:text-white/70">
-              From saplings to surplus food, every programme turns everyday kindness into
-              lasting change.
-            </p>
           </RevealOnScroll>
 
-          <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
-            {PROGRAMS.map((p, i) => {
-              const card = (
-                <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-black/5 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-white/10 dark:bg-[#1b2a22]">
-                  <div className="relative h-48 overflow-hidden">
-                    <img
-                      src={p.img}
-                      alt={p.title}
-                      className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <span
-                      className="absolute left-4 top-4 grid size-11 place-items-center rounded-xl text-white shadow-md"
-                      style={{ background: GREEN }}
-                    >
-                      <p.Icon className="size-5" />
-                    </span>
+          <RevealOnScroll delay={80} className="mt-10">
+            <ul style={{ borderTop: `1px solid ${hairline}` }}>
+              {PROGRAMS.map((p) => {
+                const row = (
+                  <div
+                    className="rj-row grid grid-cols-12 items-center gap-4 py-6"
+                    style={{ borderBottom: `1px solid ${hairline}`, borderLeft: p.live ? "3px solid var(--rj-gold)" : "3px solid transparent", paddingLeft: "1rem" }}
+                  >
+                    <span className="rj-display col-span-2 sm:col-span-1" style={{ color: inkSoft, fontSize: "1rem" }}>{p.n}</span>
+                    <div className="col-span-10 sm:col-span-8">
+                      <div className="flex items-center gap-3">
+                        <span className="rj-row-name rj-display" style={{ fontSize: "clamp(1.5rem,2.4vw,2rem)", fontWeight: 500, lineHeight: 1.1, color: ink }}>
+                          {p.title}
+                        </span>
+                        {p.live && (
+                          <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: gold }}>
+                            The live programme
+                          </span>
+                        )}
+                      </div>
+                      <p className="mt-1 text-sm" style={{ color: inkSoft }}>{p.desc}</p>
+                    </div>
+                    <div className="col-span-12 sm:col-span-3">
+                      <div className="ml-auto aspect-[4/3] max-w-[9rem] overflow-hidden rounded-lg" style={{ border: `1px solid ${hairline}` }}>
+                        <img src={p.img} alt="" className="rj-graded rj-row-thumb h-full w-full object-cover" loading="lazy" />
+                      </div>
+                    </div>
                   </div>
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="slab text-xl font-bold text-[#233] dark:text-white">{p.title}</h3>
-                    <p className="mt-2 flex-1 text-sm text-[#555] dark:text-white/70 leading-relaxed">{p.body}</p>
-                    {"href" in p && p.href ? (
-                      <span
-                        className="mt-4 inline-flex items-center gap-1 text-sm font-semibold"
-                        style={{ color: GREEN }}
-                      >
-                        Get involved <ArrowRight className="size-4" />
-                      </span>
-                    ) : null}
-                  </div>
-                </div>
-              );
-              return (
-                <RevealOnScroll key={p.title} delay={40 + i * 60}>
-                  {"href" in p && p.href ? (
-                    <Link href={p.href} className="block h-full">
-                      {card}
-                    </Link>
-                  ) : (
-                    card
-                  )}
-                </RevealOnScroll>
-              );
-            })}
+                );
+                return (
+                  <li key={p.title}>
+                    {p.href ? <Link href={p.href} className="block">{row}</Link> : row}
+                  </li>
+                );
+              })}
+            </ul>
+          </RevealOnScroll>
+        </section>
+
+        {/* ── 5.5 FOOD PORTER live feature ────────────────────────── */}
+        <section className="mx-auto grid max-w-[78rem] grid-cols-1 items-center gap-10 px-6 py-20 sm:px-10 lg:grid-cols-12 lg:gap-8">
+          <div className="lg:col-span-6">
+            <RevealOnScroll>
+              <Marker>02 — Food Porter</Marker>
+              <h2 className="mt-2" style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.12, color: ink, fontWeight: 600 }}>
+                The rescue loop runs on software now.
+              </h2>
+              <p className="mt-5 max-w-prose" style={{ color: inkSoft, fontSize: "1.0625rem", lineHeight: 1.65 }}>
+                A donor posts surplus food. A volunteer nearby claims it, picks it up while it&rsquo;s
+                still warm, and delivers it to people in need — often within the hour. Every step is
+                logged, so nothing is lost and nobody is guessing.
+              </p>
+              <div className="mt-7 flex flex-wrap items-center gap-5">
+                <Link href={ROUTES.signUp} className="px-6 py-3 font-medium" style={cta}>See how it works</Link>
+                <Link href={ROUTES.becomeVolunteer} className="rj-underline font-medium" style={{ color: ink }}>Start volunteering →</Link>
+              </div>
+            </RevealOnScroll>
           </div>
+          <figure className="relative -mr-6 overflow-hidden sm:-mr-10 lg:col-span-6 lg:-mr-[max(2.5rem,calc((100vw-78rem)/2))]">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-lg lg:aspect-auto lg:h-[30rem]" style={{ border: "1px solid var(--rj-hairline-2)" }}>
+              <img src="/images/foodporter/food-porter3.jpg" alt="Two Food Porter volunteers serving rescued food from steel containers" className="rj-graded absolute inset-0 h-full w-full object-cover" loading="lazy" />
+              <Caption>A Food Porter run, Satellite · 2026</Caption>
+            </div>
+          </figure>
+        </section>
+
+        {/* ── 5.6 PROVENANCE LEDGER ───────────────────────────────── */}
+        <section className="mx-auto max-w-[78rem] px-6 pb-24 sm:px-10">
+          <RevealOnScroll className="lg:max-w-[52rem]">
+            <LedgerImpact servings={impact.servings} kg={impact.kg} count={impact.count} />
+          </RevealOnScroll>
+        </section>
+      </div>
+
+      {/* ── 5.7 ONE HUMAN STORY ───────────────────────────────────── */}
+      <section className="mx-auto grid max-w-[78rem] grid-cols-1 items-center gap-10 px-6 py-20 sm:px-10 lg:grid-cols-12 lg:gap-8">
+        <figure className="relative -ml-6 overflow-hidden sm:-ml-10 lg:col-span-6 lg:order-1 lg:-ml-[max(2.5rem,calc((100vw-78rem)/2))]">
+          <div className="relative aspect-[4/3] overflow-hidden rounded-lg" style={{ border: "1px solid var(--rj-hairline-2)" }}>
+            <img src="/images/rajyash/prog6.jpg" alt="A Rajyash Foundation volunteer during an evening food run" className="rj-graded absolute inset-0 h-full w-full object-cover" loading="lazy" />
+            <Caption>A volunteer on the evening route · Ahmedabad</Caption>
+          </div>
+        </figure>
+        <div className="lg:order-2 lg:col-span-5 lg:col-start-8">
+          <RevealOnScroll>
+            <blockquote className="rj-display" style={{ fontSize: "clamp(1.5rem,2.4vw,2rem)", fontWeight: 500, lineHeight: 1.2, color: ink }}>
+              &ldquo;I drive for an hour after work. By the time I&rsquo;m home, forty people have eaten.&rdquo;
+            </blockquote>
+            <p className="mt-4 font-medium" style={{ color: gold }}>— Riya, Food Porter volunteer since 2023</p>
+            <p className="mt-5" style={{ color: inkSoft, fontSize: "1.0625rem", lineHeight: 1.65 }}>
+              Most of our volunteers give a couple of evenings a month. That&rsquo;s all it takes to
+              keep the loop turning.
+            </p>
+          </RevealOnScroll>
         </div>
       </section>
 
-      {/* ── LIVE FOOD-RESCUE IMPACT (real numbers from this app) ─── */}
-      <ImpactCounter servings={impact.servings} kg={impact.kg} count={impact.count} />
-
-      {/* ── VOLUNTEER CTA ────────────────────────────────────────── */}
-      <section className="px-6 py-20 text-center text-white" style={{ background: GREEN }}>
+      {/* ── 5.8 FINALE CTA — the one full-bleed green, one centered ── */}
+      <section className="px-6 py-20 text-center text-white" style={{ background: "var(--rj-green)" }}>
         <RevealOnScroll className="mx-auto max-w-2xl">
-          <h2 className="text-3xl font-bold sm:text-4xl">Lend a few hours. Change a life.</h2>
+          <h2 style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.12, fontWeight: 600 }}>
+            Good food, in the right hands.
+          </h2>
           <p className="mt-3 text-white/85">
-            Whether you have food to give or time to drive, there is a place for you in the
-            Rajyash Foundation family.
+            Whether you have food to give or a few hours to drive, there&rsquo;s a place for you in the loop.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-4">
-            <Link
-              href={ROUTES.becomeVolunteer}
-              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 font-semibold shadow-lg transition hover:bg-white/90"
-              style={{ color: GREEN }}
-            >
-              Become a volunteer <ArrowRight className="size-5" />
+            <Link href={ROUTES.becomeVolunteer} className="rounded-md bg-white px-6 py-3 font-semibold" style={{ color: "var(--rj-green)" }}>
+              Become a volunteer
             </Link>
-            <Link
-              href={ROUTES.signUp}
-              className="inline-flex items-center gap-2 rounded-full border-2 border-white/70 px-7 py-3.5 font-semibold text-white transition hover:bg-white hover:text-[#233]"
-            >
+            <Link href={ROUTES.signUp} className="rounded-md border-2 border-white/80 px-6 py-3 font-semibold text-white transition hover:bg-white/10">
               Donate surplus food
             </Link>
           </div>
           <p className="sr-only">{t("heroTrust")}</p>
         </RevealOnScroll>
+        <LeafMark className="mx-auto mt-10 size-5 opacity-80" />
       </section>
     </main>
   );
