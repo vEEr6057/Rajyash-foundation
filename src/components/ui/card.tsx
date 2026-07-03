@@ -27,7 +27,7 @@ export function CardTitle({
   return (
     <h2
       className={cn(
-        "font-display text-2xl font-bold tracking-tight text-foreground",
+        "font-display text-2xl font-medium text-foreground",
         className,
       )}
       {...props}

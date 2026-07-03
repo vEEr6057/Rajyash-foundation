@@ -10,16 +10,25 @@ export const metadata = { title: "Staff sign in — Rajyash Food Rescue" };
 // a non-admin who signs in here is refused at /admin — this page is a staff-only
 // front door, linked only from the footer.
 export default async function StaffSignInPage() {
-  const t = await getTranslations("common");
+  const [ta, tc] = await Promise.all([
+    getTranslations("common.auth"),
+    getTranslations("common"),
+  ]);
   return (
-    <AuthSplitLayout headline={t("staff.title")} subline={t("staff.subtitle")}>
+    <AuthSplitLayout
+      eyebrow="Staff"
+      headline={ta("staffHeadline")}
+      subline={ta("staffSubline")}
+      stat={ta("staffStat")}
+      statNote={ta("staffStatNote")}
+    >
       <div className="w-full max-w-sm space-y-3">
         <div className="text-center lg:text-left">
           {/* h2, not h1 — Clerk's <SignIn> card already renders the page's <h1>. */}
-          <h2 className="font-display text-2xl font-bold text-foreground">
-            {t("staff.heading")}
+          <h2 className="font-display text-2xl font-medium text-foreground">
+            {tc("staff.heading")}
           </h2>
-          <p className="mt-1 text-sm text-muted-foreground">{t("staff.hint")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{tc("staff.hint")}</p>
         </div>
         <SignIn
           routing="path"

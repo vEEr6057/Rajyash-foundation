@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { ROUTES } from "@/config/constants";
 import { cn } from "@/lib/utils";
+import { LeafMark } from "@/components/LeafMark";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -68,8 +69,8 @@ function NavLinks({ onNavigate }: { onNavigate?: () => void }) {
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
               active
-                ? "bg-primary-soft text-primary-soft-foreground"
-                : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                ? "bg-primary-soft text-primary"
+                : "text-muted-foreground hover:bg-surface-2 hover:text-foreground",
             )}
           >
             <Icon className="size-4 shrink-0" />
@@ -89,9 +90,12 @@ export function AdminSidebar() {
       <div className="sticky top-0 flex h-screen flex-col gap-4 p-4">
         <Link
           href={ROUTES.adminDashboard}
-          className="px-2 font-display text-lg font-bold text-primary"
+          className="flex items-center gap-2 px-2 text-foreground"
         >
-          {t("dashboard.title")}
+          <LeafMark className="size-4 text-gold-ink" />
+          <span className="font-display text-sm font-semibold">
+            {t("dashboard.title")}
+          </span>
         </Link>
         <NavLinks />
       </div>
@@ -111,7 +115,12 @@ export function AdminMobileNav() {
         </Button>
       </SheetTrigger>
       <SheetContent side="left" className="w-64">
-        <SheetTitle className="text-primary">{t("dashboard.title")}</SheetTitle>
+        <SheetTitle className="flex items-center gap-2 text-foreground">
+          <LeafMark className="size-4 text-gold-ink" />
+          <span className="font-display text-sm font-semibold">
+            {t("dashboard.title")}
+          </span>
+        </SheetTitle>
         <NavLinks onNavigate={() => setOpen(false)} />
       </SheetContent>
     </Sheet>

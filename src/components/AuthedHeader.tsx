@@ -13,15 +13,14 @@ export async function AuthedHeader({ homeHref }: { homeHref: string }) {
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-2.5">
-        <Link
-          href={homeHref}
-          className="flex flex-col leading-tight"
-          aria-label={t("appName")}
-        >
-          <span className="font-display text-base font-bold text-primary">
-            {t("appName")}
-          </span>
-          <span className="text-xs text-muted-foreground">{t("appTagline")}</span>
+        <Link href={homeHref} aria-label={t("appName")} className="flex items-center">
+          <img
+            src="/images/rajyash/logo.png"
+            alt={t("appName")}
+            width={120}
+            height={32}
+            className="h-8 w-auto"
+          />
         </Link>
         <div className="flex items-center gap-2">
           <LanguageSwitcher />

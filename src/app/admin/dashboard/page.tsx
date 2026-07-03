@@ -15,6 +15,8 @@ import { partnersRepo } from "@/server/db/repositories/partners";
 import { logger } from "@/lib/logger";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { buttonVariants } from "@/components/ui/button";
+import { PageHeader } from "@/components/PageHeader";
+import { LedgerRow } from "@/components/LedgerRow";
 import { LogSurplusSheet } from "@/features/admin/components/LogSurplusSheet";
 import {
   DeliveriesTrendChart,
@@ -111,37 +113,41 @@ export default async function AdminOverviewPage() {
 
   return (
     <div className="mx-auto max-w-6xl space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="font-display text-2xl font-bold tracking-tight">{ov("title")}</h1>
-          <p className="text-xs text-muted-foreground">{ov("lastUpdated", { time: updated })}</p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <LogSurplusSheet partners={partners} />
-          <Link
-            href={`${ROUTES.adminRuns}/new`}
-            className={buttonVariants({ variant: "leaf", size: "sm" })}
-          >
-            <Route className="size-4" /> {t("runs.newButton")}
-          </Link>
-          <Link
-            href={ROUTES.adminPickups}
-            className={buttonVariants({ variant: "outline", size: "sm" })}
-          >
-            <PackageOpen className="size-4" /> {t("dashboard.pickupsLink")}
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        eyebrow={t("dashboard.title")}
+        title={ov("title")}
+        meta={ov("lastUpdated", { time: updated })}
+        action={
+          <>
+            <LogSurplusSheet partners={partners} />
+            <Link
+              href={`${ROUTES.adminRuns}/new`}
+              className={buttonVariants({ variant: "leaf", size: "sm" })}
+            >
+              <Route className="size-4" /> {t("runs.newButton")}
+            </Link>
+            <Link
+              href={ROUTES.adminPickups}
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+            >
+              <PackageOpen className="size-4" /> {t("dashboard.pickupsLink")}
+            </Link>
+          </>
+        }
+      />
 
-      {/* KPI row — impact */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        <Stat label={ov("servings")} value={o.impact.servings} />
-        <Stat label={ov("kg")} value={o.impact.kg} />
-        <Stat label={ov("deliveries")} value={o.impact.count} />
-        <Stat label={ov("openPickups")} value={o.pickups.open} />
-        <Stat label={ov("inProgress")} value={o.pickups.inProgress} />
-        <Stat label={ov("activeRuns")} value={o.runs.active} />
-      </div>
+      {/* Impact ledger — one hairline-ruled row, provenance stated (charter §3.3) */}
+      <LedgerRow
+        stats={[
+          { value: o.impact.servings.toLocaleString(), label: ov("servings") },
+          { value: o.impact.kg.toLocaleString(), label: ov("kg") },
+          { value: o.impact.count.toLocaleString(), label: ov("deliveries") },
+          { value: o.pickups.open.toLocaleString(), label: ov("openPickups") },
+          { value: o.pickups.inProgress.toLocaleString(), label: ov("inProgress") },
+          { value: o.runs.active.toLocaleString(), label: ov("activeRuns") },
+        ]}
+        provenance={ov("provenance")}
+      />
 
       {/* Trend + status composition */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">

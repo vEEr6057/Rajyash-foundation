@@ -261,6 +261,7 @@
       "statusTitle": "Pickup status",
       "topPartnersTitle": "Top partners (deliveries)",
       "topDestinationsTitle": "Top destinations (drops)",
+      "provenance": "Counted from deliveries logged in this app — not estimates.",
       "directoryTitle": "Directory",
       "partners": "Partners",
       "destinations": "Destinations",
