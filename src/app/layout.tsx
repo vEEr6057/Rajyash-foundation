@@ -34,7 +34,7 @@ const mukta = Mukta({
 const notoDevanagari = Noto_Sans_Devanagari({
   variable: "--font-noto-devanagari",
   subsets: ["devanagari", "latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
   display: "swap",
 });
 
@@ -42,7 +42,7 @@ const notoDevanagari = Noto_Sans_Devanagari({
 const roboto = Roboto({
   variable: "--font-roboto",
   subsets: ["latin"],
-  weight: ["300", "400", "500", "700", "900"],
+  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -64,14 +64,47 @@ const baloo2 = Baloo_2({
 const robotoSlab = Roboto_Slab({
   variable: "--font-roboto-slab",
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["500", "600"], // 700/800 are banned by HOMEPAGE-SPEC §3
   display: "swap",
 });
 
+const SITE_URL =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  "https://rajyash-food-rescue.shahveerkeaten.workers.dev";
+
 export const metadata: Metadata = {
-  title: "Rajyash Food Rescue",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "Rajyash Food Rescue — Surplus food to people in need, Ahmedabad",
+    template: "%s — Rajyash Food Rescue",
+  },
   description:
-    "Rescue surplus food and get it to people in need across Ahmedabad — Rajyash Foundation.",
+    "Every evening, Rajyash Foundation volunteers carry Ahmedabad's surplus food to people in need. Donate surplus or volunteer to drive a rescue.",
+  applicationName: "Rajyash Food Rescue",
+  openGraph: {
+    type: "website",
+    siteName: "Rajyash Food Rescue",
+    locale: "en_IN",
+    url: "/",
+    title: "Rajyash Food Rescue — Surplus food to people in need, Ahmedabad",
+    description:
+      "Every evening, Rajyash Foundation volunteers carry Ahmedabad's surplus food to people in need.",
+    images: [
+      {
+        url: "/og.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Rajyash Foundation volunteers distributing rescued food in Ahmedabad",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Rajyash Food Rescue",
+    description:
+      "Rescuing Ahmedabad's surplus food — carried warm to people in need, every evening.",
+    images: ["/og.jpg"],
+  },
 };
 
 export default async function RootLayout({
