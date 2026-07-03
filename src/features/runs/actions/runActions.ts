@@ -16,7 +16,12 @@ import {
   canStopTransition,
 } from "@/features/runs/lib/runStatusMachine";
 import { logger } from "@/lib/logger";
-import { ROUTES, type RunStatus, type StopStatus } from "@/config/constants";
+import { inngest } from "@/server/inngest/client";
+import {
+  buildRunAssignedEventId,
+  buildRunCompletedEventId,
+} from "@/server/notifications/events";
+import { ROUTES, NOTIFICATION_EVENTS, type RunStatus, type StopStatus } from "@/config/constants";
 import type { NewRun } from "@/server/db/schema";
 import {
   createRunSchema,
@@ -46,6 +51,32 @@ function revalidateRuns(id?: string) {
   if (id) revalidatePath(ROUTES.adminRun(id));
 }
 
+// ── Run notification emits (B3) ─────────────────────────────────────
+// After-commit, best-effort — a failed emit must never fail the write (mirrors the
+// pickupActions emit pattern). Idempotency + recipient/copy resolution live in the
+// Inngest function; here we only fire the event.
+async function emitRunAssigned(runId: string, driverId: string) {
+  try {
+    await inngest.send({
+      name: NOTIFICATION_EVENTS.runAssigned,
+      data: { runId, driverId, eventId: buildRunAssignedEventId(runId, driverId) },
+    });
+  } catch (e) {
+    logger.error("inngest emit run/assigned failed", { runId, driverId, err: String(e) });
+  }
+}
+
+async function emitRunCompleted(runId: string) {
+  try {
+    await inngest.send({
+      name: NOTIFICATION_EVENTS.runCompleted,
+      data: { runId, eventId: buildRunCompletedEventId(runId) },
+    });
+  } catch (e) {
+    logger.error("inngest emit run/completed failed", { runId, err: String(e) });
+  }
+}
+
 // ── RUN-01: create run ──────────────────────────────────────────────
 export async function createRun(input: CreateRunInput): Promise<Result<{ id: string }>> {
   let adminId: string;
@@ -67,6 +98,8 @@ export async function createRun(input: CreateRunInput): Promise<Result<{ id: str
       createdBy: adminId,
       status: "planned",
     });
+    // NOT (B3): if created with a driver, tell them right away (after-commit, best-effort).
+    if (d.driverId) await emitRunAssigned(row.id, d.driverId);
     revalidateRuns(row.id);
     return { ok: true, id: row.id };
   } catch (e) {
@@ -85,6 +118,8 @@ export async function assignDriver(runId: string, driverId: string): Promise<Res
   if (!runId || !driverId) return fail("VALIDATION", "Run ID and driver ID required.");
   const row = await runsRepo.assignDriver(runId, driverId);
   if (!row) return fail("NOT_FOUND", "Run not found.");
+  // NOT (B3): notify the assigned driver (after-commit, best-effort).
+  await emitRunAssigned(runId, driverId);
   revalidateRuns(runId);
   return { ok: true };
 }
@@ -104,8 +139,14 @@ export async function editRun(runId: string, input: EditRunInput): Promise<Resul
   if (parsed.data.slot !== undefined) update.slot = parsed.data.slot;
   if (parsed.data.runDate !== undefined) update.runDate = parsed.data.runDate;
   // "" (no driver) → null to satisfy the driver FK.
-  if (parsed.data.driverId !== undefined) update.driverId = parsed.data.driverId || null;
+  const newDriverId =
+    parsed.data.driverId !== undefined ? parsed.data.driverId || null : undefined;
+  if (newDriverId !== undefined) update.driverId = newDriverId;
   await runsRepo.update(runId, update);
+  // NOT (B3): only a CHANGE to a NEW (non-null) driver notifies — not clears or no-ops.
+  if (newDriverId && newDriverId !== run.driverId) {
+    await emitRunAssigned(runId, newDriverId);
+  }
   revalidateRuns(runId);
   return { ok: true };
 }
@@ -267,6 +308,7 @@ export async function markStopDone(
   if (runCompleted) {
     await runsRepo.setRunStatus(stop.runId, "completed");
     await runPingsRepo.purgeForRun(stop.runId); // TRK-05: ephemeral trail
+    await emitRunCompleted(stop.runId); // NOT (B3): admins learn of completion
   }
 
   revalidateRuns(stop.runId);
@@ -291,6 +333,7 @@ export async function overrideStopStatus(stopId: string, status: StopStatus): Pr
     if (run && canRunTransition(run.status, "completed")) {
       await runsRepo.setRunStatus(stop.runId, "completed");
       await runPingsRepo.purgeForRun(stop.runId); // TRK-05
+      await emitRunCompleted(stop.runId); // NOT (B3)
     }
   }
   revalidateRuns(stop.runId);
@@ -313,6 +356,8 @@ export async function setRunStatus(runId: string, status: RunStatus): Promise<Re
   if (status === "completed" || status === "cancelled") {
     await runPingsRepo.purgeForRun(runId); // TRK-05: ephemeral trail
   }
+  // NOT (B3): admins learn of completion (cancelled runs are not notified).
+  if (status === "completed") await emitRunCompleted(runId);
   revalidateRuns(runId);
   return { ok: true };
 }

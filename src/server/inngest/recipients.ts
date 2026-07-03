@@ -2,6 +2,7 @@ import "server-only";
 import type { NotificationChannelKey } from "@/config/constants";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { profilesRepo } from "@/server/db/repositories/profiles";
+import { runsRepo } from "@/server/db/repositories/runs";
 import { buildCopy } from "@/server/notifications/copy";
 import type {
   NotificationMessage,
@@ -97,28 +98,99 @@ export async function planRecipients(event: {
     toStatus: event.data.toStatus,
     volunteerIds,
   });
-  const copy = buildCopy({
-    eventName: event.name,
-    pickupId: pickup.id,
-    toStatus: event.data.toStatus,
-  });
-  const msg: NotificationMessage = {
-    type: event.name,
-    ...copy,
-    pickupId: pickup.id,
-  };
 
-  // Resolve emails only for recipients that actually use the email channel.
+  // B3: always fetch the profile — copy is now recipient-locale, and email needs it too.
+  // One query per recipient (≤ ~20/event), same cost as the old email-only path.
   const plans: RecipientPlan[] = [];
   for (const r of resolved) {
-    const needsEmail = r.channels.includes("email");
-    const profile = needsEmail
-      ? await profilesRepo.getById(r.recipientId)
-      : null;
+    const profile = await profilesRepo.getById(r.recipientId);
+    const copy = buildCopy(
+      event.name,
+      { pickupId: pickup.id, toStatus: event.data.toStatus },
+      profile?.locale ?? "en",
+    );
     plans.push({
       to: { userId: r.recipientId, email: profile?.email ?? null },
       channels: r.channels,
-      msg,
+      msg: { type: event.name, ...copy, pickupId: pickup.id },
+    });
+  }
+  return plans;
+}
+
+// ── Runs & dispatch (B3) ─────────────────────────────────────────────
+export type RunEventName = "run/assigned" | "run/completed";
+
+export interface ResolveRunInput {
+  eventName: RunEventName;
+  /** run/assigned target (the newly assigned driver). */
+  driverId?: string | null;
+  /** run/completed targets (all active admins). */
+  adminIds?: string[];
+}
+
+/**
+ * Run recipient + channel matrix (B3). Pure — no DB. A driver hears about their
+ * assignment on all three channels (~2 runs/day keeps email quota-safe); admins get
+ * a completion note in-app only.
+ */
+export function resolveRunRecipients(input: ResolveRunInput): ResolvedRecipient[] {
+  switch (input.eventName) {
+    case "run/assigned":
+      return input.driverId
+        ? [
+            {
+              recipientId: input.driverId,
+              channels: ["in_app", "web_push", "email"],
+            },
+          ]
+        : [];
+    case "run/completed":
+      return (input.adminIds ?? []).map((id) => ({
+        recipientId: id,
+        channels: ["in_app"],
+      }));
+    default:
+      return [];
+  }
+}
+
+/**
+ * Async wrapper (sibling of planRecipients) run inside an Inngest step: reads the run
+ * for its slot/date copy context, maps via the pure run matrix, and attaches per-event
+ * copy. Returns [] if the run is gone (defensive). driverId comes from the event (the
+ * assignment being notified) — falls back to the run's current driver.
+ */
+export async function planRunRecipients(event: {
+  name: RunEventName;
+  data: { runId: string; driverId?: string };
+}): Promise<RecipientPlan[]> {
+  const run = await runsRepo.getById(event.data.runId);
+  if (!run) return [];
+
+  const resolved =
+    event.name === "run/assigned"
+      ? resolveRunRecipients({
+          eventName: "run/assigned",
+          driverId: event.data.driverId ?? run.driverId,
+        })
+      : resolveRunRecipients({
+          eventName: "run/completed",
+          adminIds: await profilesRepo.listAdminIds(),
+        });
+
+  const plans: RecipientPlan[] = [];
+  for (const r of resolved) {
+    const profile = await profilesRepo.getById(r.recipientId);
+    const copy = buildCopy(
+      event.name,
+      { runId: run.id, slot: run.slot, runDate: run.runDate },
+      profile?.locale ?? "en",
+    );
+    plans.push({
+      to: { userId: r.recipientId, email: profile?.email ?? null },
+      channels: r.channels,
+      msg: { type: event.name, ...copy },
     });
   }
   return plans;

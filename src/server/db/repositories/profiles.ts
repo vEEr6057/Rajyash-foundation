@@ -27,6 +27,16 @@ export const profilesRepo = {
     return rows.map((r) => r.id);
   },
 
+  /** Ids of active (non-deactivated) admins — run/completed fan-out target (B3). */
+  async listAdminIds(): Promise<string[]> {
+    const db = getDb();
+    const rows = await db
+      .select({ id: profiles.id })
+      .from(profiles)
+      .where(and(eq(profiles.role, "admin"), isNull(profiles.deactivatedAt)));
+    return rows.map((r) => r.id);
+  },
+
   /** Insert-or-update a profile keyed by Clerk userId. */
   async upsert(input: NewProfile): Promise<Profile> {
     const db = getDb();
@@ -42,11 +52,23 @@ export const profilesRepo = {
           role: input.role,
           city: input.city,
           onboardingComplete: input.onboardingComplete,
+          // Stamp locale only when the caller supplied one — never clobber an
+          // existing preference back to the column default (B3).
+          ...(input.locale !== undefined ? { locale: input.locale } : {}),
           updatedAt: new Date(),
         },
       })
       .returning();
     return rows[0];
+  },
+
+  /** B3: best-effort write of the user's preferred locale (from setLocale). */
+  async setLocale(id: string, locale: string): Promise<void> {
+    const db = getDb();
+    await db
+      .update(profiles)
+      .set({ locale, updatedAt: new Date() })
+      .where(eq(profiles.id, id));
   },
 
   // ── Admin (Phase 6) ──────────────────────────────────────────────

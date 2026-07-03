@@ -1,5 +1,6 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { clerkClient } from "@clerk/nextjs/server";
 import { requireUser, AuthError } from "@/server/auth/session";
 import { profilesRepo } from "@/server/db/repositories/profiles";
@@ -7,6 +8,7 @@ import {
   onboardingSchema,
   type OnboardingInput,
 } from "@/features/auth/validations/onboarding";
+import { isValidLocale } from "@/i18n/request";
 import { logger } from "@/lib/logger";
 
 export type OnboardingResult =
@@ -55,6 +57,10 @@ export async function completeOnboarding(
       publicMetadata: { role, onboardingComplete: true },
     });
 
+    // B3: stamp the current UI locale onto the profile so notifications localize.
+    const rawLocale = (await cookies()).get("NEXT_LOCALE")?.value;
+    const locale = isValidLocale(rawLocale) ? rawLocale : "en";
+
     await profilesRepo.upsert({
       id: userId,
       name,
@@ -63,6 +69,7 @@ export async function completeOnboarding(
       role,
       city,
       onboardingComplete: true,
+      locale,
     });
 
     return { ok: true };

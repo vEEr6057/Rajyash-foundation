@@ -1,5 +1,5 @@
 import "server-only";
-import { and, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, desc, eq, isNull, isNotNull, lt, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import {
   notifications,
@@ -47,5 +47,25 @@ export const notificationsRepo = {
       .update(notifications)
       .set({ readAt: new Date() })
       .where(and(eq(notifications.userId, userId), isNull(notifications.readAt)));
+  },
+
+  /** B3 hygiene sweep: delete READ notifications older than `cutoff`. Returns the count. */
+  async purgeReadOlderThan(cutoff: Date): Promise<number> {
+    const db = getDb();
+    const rows = await db
+      .delete(notifications)
+      .where(and(isNotNull(notifications.readAt), lt(notifications.createdAt, cutoff)))
+      .returning({ id: notifications.id });
+    return rows.length;
+  },
+
+  /** B3 hygiene sweep: delete UNREAD notifications older than `cutoff`. Returns the count. */
+  async purgeUnreadOlderThan(cutoff: Date): Promise<number> {
+    const db = getDb();
+    const rows = await db
+      .delete(notifications)
+      .where(and(isNull(notifications.readAt), lt(notifications.createdAt, cutoff)))
+      .returning({ id: notifications.id });
+    return rows.length;
   },
 };

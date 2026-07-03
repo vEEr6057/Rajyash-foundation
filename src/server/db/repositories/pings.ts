@@ -1,5 +1,5 @@
 import "server-only";
-import { desc, eq, sql } from "drizzle-orm";
+import { desc, eq, lt, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import {
   locationPings,
@@ -63,5 +63,18 @@ export const pingsRepo = {
   async purgeForPickup(pickupId: string): Promise<void> {
     const db = getDb();
     await db.delete(locationPings).where(eq(locationPings.pickupId, pickupId));
+  },
+
+  /**
+   * B3 hygiene sweep: delete pings older than `cutoff` (stuck-active safety net for the
+   * rare case a pickup never reaches delivered/cancelled). Returns the count purged.
+   */
+  async purgeOlderThan(cutoff: Date): Promise<number> {
+    const db = getDb();
+    const rows = await db
+      .delete(locationPings)
+      .where(lt(locationPings.createdAt, cutoff))
+      .returning({ id: locationPings.id });
+    return rows.length;
   },
 };
