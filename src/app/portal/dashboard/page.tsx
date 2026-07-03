@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Plus, HeartHandshake, Map as MapIcon, PackageOpen } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
@@ -9,6 +9,10 @@ import { ROUTES, type PickupStatus } from "@/config/constants";
 import type { Pickup } from "@/server/db/schema";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
+import { LedgerRow } from "@/components/LedgerRow";
+import { APP_TIME_ZONE } from "@/features/pickups/lib/format";
 import { PickupCard } from "@/features/pickups/components/PickupCard";
 import { PushOptIn } from "@/features/notifications";
 
@@ -17,6 +21,7 @@ export const metadata = { title: "Dashboard — Rajyash Food Rescue" };
 
 const ACTIVE: PickupStatus[] = ["accepted", "en_route", "picked_up"];
 
+// Volunteer stat tile — batch 5 restyles the volunteer dashboard; donor uses LedgerRow.
 function Stat({ label, value }: { label: string; value: number }) {
   return (
     <Card>
@@ -37,23 +42,27 @@ export default async function PortalDashboardPage() {
   if (session.role === "admin") redirect(ROUTES.adminDashboard);
   if (session.role === "driver") redirect(ROUTES.driverRun);
 
-  const [t, profile] = await Promise.all([
+  const [t, locale, profile] = await Promise.all([
     getTranslations("portal"),
+    getLocale(),
     profilesRepo.getById(session.userId),
   ]);
   const name = profile?.name?.split(" ")[0] ?? "";
   const isDonor = session.role === "donor";
+  const istDate = new Intl.DateTimeFormat(`${locale}-IN`, {
+    timeZone: APP_TIME_ZONE,
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date());
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
-      <header className="mb-6">
-        <h1 className="font-display text-2xl font-bold tracking-tight">
-          {name ? t("dashboard.greeting", { name }) : t("dashboard.title")}
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {isDonor ? t("dashboard.donorCta") : t("dashboard.volunteerCta")}
-        </p>
-      </header>
+    <main className="mx-auto w-full max-w-4xl px-4 py-8">
+      <PageHeader
+        eyebrow={isDonor ? t("dashboard.donorEyebrow") : undefined}
+        title={name ? t("dashboard.greeting", { name }) : t("dashboard.title")}
+        meta={isDonor ? istDate : t("dashboard.volunteerCta")}
+      />
 
       {isDonor ? (
         <DonorDashboard userId={session.userId} />
@@ -78,12 +87,24 @@ async function DonorDashboard({ userId }: { userId: string }) {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Stat label={t("dashboard.stats.total")} value={mine.length} />
-        <Stat label={t("dashboard.stats.open")} value={count((p) => p.status === "requested")} />
-        <Stat label={t("dashboard.stats.active")} value={count((p) => ACTIVE.includes(p.status))} />
-        <Stat label={t("dashboard.stats.delivered")} value={count((p) => p.status === "delivered")} />
-      </div>
+      <LedgerRow
+        stats={[
+          { value: mine.length.toLocaleString(), label: t("dashboard.stats.total") },
+          {
+            value: count((p) => p.status === "requested").toLocaleString(),
+            label: t("dashboard.stats.open"),
+          },
+          {
+            value: count((p) => ACTIVE.includes(p.status)).toLocaleString(),
+            label: t("dashboard.stats.active"),
+          },
+          {
+            value: count((p) => p.status === "delivered").toLocaleString(),
+            label: t("dashboard.stats.delivered"),
+          },
+        ]}
+        provenance={t("dashboard.statsProvenance")}
+      />
 
       <div className="mt-6 flex flex-wrap gap-3">
         <Link href={ROUTES.newPickup} className={buttonVariants({ size: "lg" })}>
@@ -96,10 +117,14 @@ async function DonorDashboard({ userId }: { userId: string }) {
 
       <Section title={t("dashboard.recentTitle")}>
         {recent.length === 0 ? (
-          <Empty
-            text={t("pickup.donor.emptyState")}
-            ctaHref={ROUTES.newPickup}
-            ctaLabel={t("pickup.donor.firstPickupCta")}
+          <EmptyState
+            title={t("pickup.donor.emptyTitle")}
+            body={t("pickup.donor.emptyBody")}
+            action={
+              <Link href={ROUTES.newPickup} className={buttonVariants()}>
+                {t("pickup.donor.firstPickupCta")}
+              </Link>
+            }
           />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
@@ -141,10 +166,13 @@ async function VolunteerDashboard({ userId }: { userId: string }) {
 
       <Section title={t("dashboard.activeTitle")}>
         {active.length === 0 ? (
-          <Empty
-            text={t("dashboard.noActive")}
-            ctaHref={ROUTES.volunteerBoard}
-            ctaLabel={t("dashboard.browsePickups")}
+          <EmptyState
+            title={t("dashboard.noActive")}
+            action={
+              <Link href={ROUTES.volunteerBoard} className={buttonVariants()}>
+                {t("dashboard.browsePickups")}
+              </Link>
+            }
           />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2">
@@ -166,16 +194,5 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       </h2>
       {children}
     </section>
-  );
-}
-
-function Empty({ text, ctaHref, ctaLabel }: { text: string; ctaHref: string; ctaLabel: string }) {
-  return (
-    <div className="rounded-xl border border-dashed border-border-strong p-8 text-center">
-      <p className="text-muted-foreground">{text}</p>
-      <Link href={ctaHref} className={buttonVariants({ size: "sm" }) + " mt-4"}>
-        {ctaLabel}
-      </Link>
-    </div>
   );
 }
