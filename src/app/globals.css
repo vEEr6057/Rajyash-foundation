@@ -396,3 +396,11 @@
 }
 .rj-home a:focus-visible,
 .rj-home button:focus-visible { outline: 3px solid var(--rj-gold-ink); outline-offset: 2px; }
+
+/* Homepage masthead: transparent over hero → paper on scroll (HOMEPAGE-SPEC §5.1) */
+.rj-masthead { background: transparent; border-bottom: 1px solid transparent; }
+.rj-masthead[data-scrolled="true"] {
+  background: var(--rj-paper);
+  border-bottom-color: var(--rj-hairline);
+  box-shadow: var(--rj-shadow);
+}
