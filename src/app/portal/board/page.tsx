@@ -3,6 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { ROUTES } from "@/config/constants";
+import { PageHeader } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
 import { PickupCard } from "@/features/pickups/components/PickupCard";
 import { MapView } from "@/features/pickups/components/MapView";
 import { BoardTabs } from "@/features/pickups/components/BoardTabs";
@@ -23,24 +25,27 @@ export default async function VolunteerBoardPage() {
 
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
-      <h1 className="mb-4 font-display text-2xl font-bold tracking-tight">
-        {t("pickup.board.title")}
-      </h1>
+      <PageHeader
+        eyebrow={t("pickup.board.eyebrow")}
+        title={t("pickup.board.title")}
+        meta={t("pickup.board.waiting", { count: open.length })}
+      />
 
       {open.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-border-strong p-8 text-center text-muted-foreground">
-          {t("pickup.board.emptyState")}
-        </div>
+        <EmptyState
+          title={t("pickup.board.emptyTitle")}
+          body={t("pickup.board.emptyBody")}
+        />
       ) : (
         <BoardTabs
           listSlot={
-            <div className="space-y-3">
+            <div className="grid gap-3 md:grid-cols-2">
               {open.map((p) => (
                 <PickupCard key={p.id} pickup={p} />
               ))}
             </div>
           }
-          mapSlot={<MapView markers={markers} height={460} />}
+          mapSlot={<MapView markers={markers} height="min(70dvh, 640px)" />}
         />
       )}
     </main>

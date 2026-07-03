@@ -68,7 +68,11 @@
     },
     "board": {
       "title": "Available pickups",
+      "eyebrow": "Volunteer",
+      "waiting": "{count} waiting",
       "emptyState": "No open pickups right now. Check back soon.",
+      "emptyTitle": "All clear right now",
+      "emptyBody": "New surplus usually appears after lunch and dinner service — check back around then.",
       "listTab": "List",
       "mapTab": "Map",
       "mapButton": "Map"
@@ -108,7 +112,9 @@
   "dashboard": {
     "title": "Dashboard",
     "donorEyebrow": "My kitchen",
+    "volunteerEyebrow": "Volunteer",
     "statsProvenance": "Counted from your posts in this app.",
+    "volunteerStatsProvenance": "Counted from the live board and your claimed pickups.",
     "greeting": "Welcome back, {name}",
     "donorTitle": "Donor dashboard",
     "volunteerTitle": "Volunteer dashboard",
@@ -135,6 +141,8 @@
   },
   "run": {
     "title": "My Run",
+    "eyebrow": "Driver",
+    "completeTitle": "Run complete",
     "emptyTitle": "No run yet",
     "emptyState": "No run assigned to you yet. Check back later.",
     "help": "Questions? Call the coordinator:",

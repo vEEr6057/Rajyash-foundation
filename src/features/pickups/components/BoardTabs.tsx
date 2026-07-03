@@ -18,13 +18,17 @@ export function BoardTabs({
   mapSlot: React.ReactNode;
 }) {
   const t = useTranslations("portal");
+  // Segmented control (batch-5 §1.2): one height h-9, active = primary solid,
+  // inactive = outline — matches the batch-3 AddStopForm Pickup/Drop toggle.
+  const trigger =
+    "h-9 gap-1.5 rounded-lg border border-border-strong bg-surface px-3 text-sm font-medium text-foreground transition-colors hover:bg-secondary data-[state=active]:border-primary data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-none";
   return (
     <Tabs defaultValue="list">
-      <TabsList>
-        <TabsTrigger value="list">
+      <TabsList className="h-9 gap-2 bg-transparent p-0">
+        <TabsTrigger value="list" className={trigger}>
           <ListIcon className="size-4" /> {t("pickup.board.listTab")}
         </TabsTrigger>
-        <TabsTrigger value="map">
+        <TabsTrigger value="map" className={trigger}>
           <MapIcon className="size-4" /> {t("pickup.board.mapTab")}
         </TabsTrigger>
       </TabsList>
