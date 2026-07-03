@@ -80,7 +80,7 @@ export async function LandingPage() {
         <RescueLine />
 
         {/* ── 5.2 HERO — 60/40 typographic split ─────────────────── */}
-        <section className="relative mx-auto grid max-w-[78rem] grid-cols-1 gap-y-10 px-6 pb-16 pt-16 sm:px-10 lg:grid-cols-12 lg:gap-x-8 lg:pt-24">
+        <section className="relative mx-auto grid max-w-[78rem] grid-cols-1 gap-y-10 px-6 pb-16 pt-28 sm:px-10 lg:grid-cols-12 lg:gap-x-8 lg:pt-32">
           <div className="relative z-10 lg:col-span-7 lg:pr-8">
             <RevealOnScroll>
               <p className="text-sm font-semibold" style={{ color: inkSoft }}>
@@ -165,7 +165,7 @@ export async function LandingPage() {
         </section>
 
         {/* ── 5.4 PROGRAMS — editorial index rows ─────────────────── */}
-        <section id="programs" className="mx-auto max-w-[78rem] px-6 py-20 sm:px-10">
+        <section id="programs" className="mx-auto max-w-[78rem] scroll-mt-24 px-6 py-20 sm:px-10">
           <RevealOnScroll>
             <Marker>સેવા · What we do</Marker>
             <h2 className="mt-2" style={{ fontSize: "clamp(1.75rem,3vw,2.5rem)", lineHeight: 1.12, color: ink, fontWeight: 600 }}>
@@ -240,7 +240,7 @@ export async function LandingPage() {
         </section>
 
         {/* ── 5.6 PROVENANCE LEDGER ───────────────────────────────── */}
-        <section className="mx-auto max-w-[78rem] px-6 pb-24 sm:px-10">
+        <section id="impact" className="mx-auto max-w-[78rem] scroll-mt-24 px-6 pb-24 sm:px-10">
           <RevealOnScroll className="lg:max-w-[52rem]">
             <LedgerImpact servings={impact.servings} kg={impact.kg} count={impact.count} />
           </RevealOnScroll>

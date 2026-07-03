@@ -1,16 +1,22 @@
 // src/features/public/components/PublicHeader.tsx
-// Server component — public landing header with nav, LanguageSwitcher, CTAs.
-// The global sticky header in root layout.tsx is REMOVED so this is the only
-// header on the landing page (header reconciliation — 07-02 objective).
+// Homepage masthead (HOMEPAGE-SPEC §5.1). Server component (reads session);
+// the transparent-over-hero → paper-on-scroll behaviour lives in HeaderScroll (client).
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
-import { buttonVariants } from "@/components/ui/button";
 import { ROUTES } from "@/config/constants";
 import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { ThemeToggle } from "./ThemeToggle";
 import { PublicMobileMenu } from "./PublicMobileMenu";
+import { HeaderScroll } from "./HeaderScroll";
+
+const NAV: [string, string][] = [
+  ["#programs", "What we do"],
+  ["#impact", "Impact"],
+  ["/sign-up?role=volunteer", "Volunteer"],
+  ["#contact", "Contact"],
+];
 
 export async function PublicHeader() {
   const [t, tNav, session] = await Promise.all([
@@ -18,81 +24,61 @@ export async function PublicHeader() {
     getTranslations("common"),
     getSession(),
   ]);
-  // Auth-aware: a signed-in visitor sees Dashboard + account menu, not Sign in / Join.
   const dashboardHref = session
     ? session.role === "admin"
       ? ROUTES.adminDashboard
       : ROUTES.portalDashboard
     : null;
+
   return (
-    <header className="sticky top-0 z-40 border-b border-black/10 bg-white/95 backdrop-blur">
+    <HeaderScroll>
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-1.5 focus:text-sm"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded focus:bg-[var(--rj-paper)] focus:px-3 focus:py-1.5 focus:text-sm"
       >
         {t("skip")}
       </a>
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-3">
-        {/* Brand — official Rajyash Foundation logo */}
+      <div className="mx-auto flex h-[72px] max-w-[78rem] items-center justify-between gap-4 px-6 sm:px-10">
         <Link href={ROUTES.home} aria-label={t("brandName")} className="flex items-center">
-          <img
-            src="/images/rajyash/logo.png"
-            alt="Rajyash Foundation"
-            width={168}
-            height={44}
-            className="h-11 w-auto"
-          />
+          <img src="/images/rajyash/logo.png" alt="Rajyash Foundation" width={160} height={42} className="h-10 w-auto" />
         </Link>
 
-        {/* Desktop nav */}
-        <nav
-          className="hidden items-center gap-6 md:flex"
-          aria-label="Site navigation"
-        >
-          {[
-            ["#about", "About us"],
-            ["#programs", "What we do"],
-            ["/sign-up?role=volunteer", "Volunteer"],
-            ["#contact", "Contact"],
-          ].map(([href, label]) => (
+        <nav className="hidden items-center gap-6 md:flex" aria-label="Site navigation">
+          {NAV.map(([href, label]) => (
             <Link
               key={label}
               href={href}
-              className="text-sm font-medium text-[#3a4a3f] transition-colors hover:text-[#337048]"
+              className="rj-underline text-sm font-medium"
+              style={{ color: "var(--rj-ink)" }}
             >
               {label}
             </Link>
           ))}
         </nav>
 
-        {/* Right side: desktop cluster (hidden on mobile to prevent overflow) */}
-        <div className="hidden items-center gap-2 md:flex">
+        <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher />
           <ThemeToggle />
           {dashboardHref ? (
             <>
               <Link
                 href={dashboardHref}
-                className={buttonVariants({ size: "sm" })}
+                className="px-4 py-2 text-sm font-medium"
+                style={{ background: "var(--rj-green-cta)", color: "#fff", borderRadius: "6px" }}
               >
                 {tNav("nav.dashboard")}
               </Link>
-              <UserButton
-                appearance={{ elements: { avatarBox: "size-8" } }}
-                userProfileMode="modal"
-              />
+              <UserButton appearance={{ elements: { avatarBox: "size-8" } }} userProfileMode="modal" />
             </>
           ) : (
             <>
-              <Link
-                href={ROUTES.signIn}
-                className={buttonVariants({ variant: "ghost", size: "sm" })}
-              >
+              <Link href={ROUTES.signIn} className="rj-underline text-sm font-medium" style={{ color: "var(--rj-ink)" }}>
                 {t("signin")}
               </Link>
               <Link
                 href={ROUTES.becomeVolunteer}
-                className={buttonVariants({ size: "sm" })}
+                className="px-4 py-2 text-sm font-medium"
+                style={{ background: "var(--rj-green-cta)", color: "#fff", borderRadius: "6px" }}
               >
                 {t("becomeVol")}
               </Link>
@@ -100,9 +86,8 @@ export async function PublicHeader() {
           )}
         </div>
 
-        {/* Mobile: collapse everything into a Sheet menu */}
         <PublicMobileMenu dashboardHref={dashboardHref} />
       </div>
-    </header>
+    </HeaderScroll>
   );
 }
