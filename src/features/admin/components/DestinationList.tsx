@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { MoreHorizontal, Pencil, Trash2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
@@ -58,8 +58,19 @@ function Row({ d, onEdit }: { d: Destination; onEdit: (d: Destination) => void }
         {d.area ? `${d.area}, ` : ""}
         {d.city}
       </TableCell>
-      <TableCell className="hidden whitespace-nowrap text-muted-foreground sm:table-cell">
-        {d.lat.toFixed(4)}, {d.lng.toFixed(4)}
+      <TableCell className="hidden max-w-[22rem] text-muted-foreground sm:table-cell">
+        <span className="block truncate">{d.address ?? "—"}</span>
+        <a
+          href={
+            d.mapsLink ||
+            `https://www.google.com/maps/dir/?api=1&destination=${d.lat},${d.lng}`
+          }
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline"
+        >
+          <MapPin className="size-3" /> {t("destinations.openInMaps")}
+        </a>
       </TableCell>
       <TableCell className="text-right">
         <DropdownMenu>
@@ -111,7 +122,7 @@ export function DestinationList({ destinations }: { destinations: Destination[] 
           <TableRow>
             <TableHead>{t("destinations.form.name")}</TableHead>
             <TableHead>{t("destinations.form.area")}</TableHead>
-            <TableHead className="hidden sm:table-cell">{t("destinations.form.lat")}</TableHead>
+            <TableHead className="hidden sm:table-cell">{t("destinations.form.address")}</TableHead>
             <TableHead className="w-12 text-right" />
           </TableRow>
         </TableHeader>
@@ -136,6 +147,8 @@ export function DestinationList({ destinations }: { destinations: Destination[] 
               defaults={{
                 name: editing.name,
                 area: editing.area ?? "",
+                address: editing.address ?? "",
+                mapsLink: editing.mapsLink ?? "",
                 lat: editing.lat,
                 lng: editing.lng,
                 city: editing.city,

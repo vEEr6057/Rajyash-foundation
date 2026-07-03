@@ -37,6 +37,8 @@ export async function createDestination(
     const row = await destinationsRepo.create({
       name: d.name,
       area: d.area || null,
+      address: d.address,
+      mapsLink: d.mapsLink || null,
       lat: d.lat,
       lng: d.lng,
       city: d.city || undefined,
@@ -69,6 +71,8 @@ export async function updateDestination(
     const row = await destinationsRepo.update(id, {
       name: d.name,
       area: d.area || null,
+      address: d.address,
+      mapsLink: d.mapsLink || null,
       lat: d.lat,
       lng: d.lng,
       city: d.city || undefined,

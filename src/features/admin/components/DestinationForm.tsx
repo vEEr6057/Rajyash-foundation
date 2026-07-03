@@ -6,10 +6,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MapView } from "@/features/pickups/components/MapView";
+import { resolvePickupLocation } from "@/features/pickups/actions/pickupActions";
 import {
   destinationSchema,
   type DestinationInput,
@@ -17,7 +19,6 @@ import {
 import {
   createDestination,
   updateDestination,
-  geocodeDestinationAddress,
 } from "../actions/destinationActions";
 
 // Ahmedabad default pin.
@@ -39,8 +40,7 @@ export function DestinationForm({
   const tCommon = useTranslations("common");
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
-  const [geocodeAddr, setGeocodeAddr] = useState("");
-  const [geocoding, setGeocoding] = useState(false);
+  const [resolving, setResolving] = useState(false);
 
   const {
     register,
@@ -55,6 +55,8 @@ export function DestinationForm({
     defaultValues: {
       name: "",
       area: "",
+      address: "",
+      mapsLink: "",
       lat: defaults?.lat ?? DEFAULT_PIN.lat,
       lng: defaults?.lng ?? DEFAULT_PIN.lng,
       city: "",
@@ -65,6 +67,7 @@ export function DestinationForm({
 
   const lat = watch("lat");
   const lng = watch("lng");
+  const address = watch("address");
 
   const onSubmit = handleSubmit((values) => {
     setErr(null);
@@ -85,16 +88,20 @@ export function DestinationForm({
     });
   });
 
-  async function handleGeocode() {
-    if (!geocodeAddr.trim()) return;
-    setGeocoding(true);
-    const result = await geocodeDestinationAddress(geocodeAddr);
-    setGeocoding(false);
-    if (result) {
-      setValue("lat", result.lat, { shouldValidate: true });
-      setValue("lng", result.lng, { shouldValidate: true });
+  // Same resolver donors use on the pickup form: accepts an address OR a Google Maps
+  // link, drops the pin, and stashes the original link. No coordinates typed by hand.
+  async function handleFind() {
+    if (!address?.trim()) return;
+    setResolving(true);
+    setErr(null);
+    const res = await resolvePickupLocation(address.trim());
+    setResolving(false);
+    if (res.ok) {
+      setValue("lat", res.lat, { shouldValidate: true });
+      setValue("lng", res.lng, { shouldValidate: true });
+      setValue("mapsLink", res.googleMapsUrl ?? "");
     } else {
-      setErr("Address not found. Try a more specific address.");
+      setErr(res.message);
     }
   }
 
@@ -113,6 +120,37 @@ export function DestinationForm({
       </div>
 
       <div>
+        <Label htmlFor="dest-address">{t("destinations.form.address")}</Label>
+        <p className="mb-1 text-xs text-muted-foreground">
+          {t("destinations.form.addressHint")}
+        </p>
+        <div className="flex gap-2">
+          <Input
+            id="dest-address"
+            placeholder={t("destinations.form.addressPlaceholder")}
+            {...register("address")}
+          />
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            disabled={resolving || !address?.trim()}
+            onClick={handleFind}
+          >
+            {resolving ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <MapPin className="size-4" />
+            )}
+            {t("destinations.form.findButton")}
+          </Button>
+        </div>
+        {errors.address && (
+          <p className="mt-1 text-xs text-destructive">{errors.address.message}</p>
+        )}
+      </div>
+
+      <div>
         <p className="mb-1 text-xs text-muted-foreground">
           {t("destinations.form.pinInstruction")}
         </p>
@@ -125,50 +163,6 @@ export function DestinationForm({
           }}
           height={280}
         />
-      </div>
-
-      <div className="flex gap-2">
-        <Input
-          placeholder={t("destinations.form.geocodeAddress")}
-          value={geocodeAddr}
-          onChange={(e) => setGeocodeAddr(e.target.value)}
-        />
-        <Button
-          type="button"
-          variant="secondary"
-          size="sm"
-          disabled={geocoding}
-          onClick={handleGeocode}
-        >
-          {t("destinations.form.geocodeButton")}
-        </Button>
-      </div>
-
-      <div className="flex gap-3">
-        <div className="flex-1">
-          <Label htmlFor="dest-lat">{t("destinations.form.lat")}</Label>
-          <Input
-            id="dest-lat"
-            type="number"
-            step="any"
-            {...register("lat", { valueAsNumber: true })}
-          />
-          {errors.lat && (
-            <p className="mt-1 text-xs text-destructive">{errors.lat.message}</p>
-          )}
-        </div>
-        <div className="flex-1">
-          <Label htmlFor="dest-lng">{t("destinations.form.lng")}</Label>
-          <Input
-            id="dest-lng"
-            type="number"
-            step="any"
-            {...register("lng", { valueAsNumber: true })}
-          />
-          {errors.lng && (
-            <p className="mt-1 text-xs text-destructive">{errors.lng.message}</p>
-          )}
-        </div>
       </div>
 
       <div>
