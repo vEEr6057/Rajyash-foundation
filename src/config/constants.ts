@@ -154,6 +154,9 @@ export const NOTIFICATION_EVENTS = {
   pickupClaimed: "pickup/claimed",
   pickupStatusChanged: "pickup/status_changed",
   pickupCancelled: "pickup/cancelled",
+  // Runs & dispatch (B3): driver learns of an assignment; admins learn of completion.
+  runAssigned: "run/assigned",
+  runCompleted: "run/completed",
 } as const;
 
 // Channel keys (NOT-04 registry keys + notification_deliveries.channel values).

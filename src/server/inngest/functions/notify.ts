@@ -1,5 +1,9 @@
 import { inngest } from "@/server/inngest/client";
-import { planRecipients } from "@/server/inngest/recipients";
+import {
+  planRecipients,
+  planRunRecipients,
+  type RunEventName,
+} from "@/server/inngest/recipients";
 import { dispatchToChannel } from "@/server/notifications/dispatch";
 import type { ChannelKey } from "@/server/notifications/types";
 
@@ -40,6 +44,43 @@ export const notifyOnPickupEvent = inngest.createFunction(
     for (const plan of plans) {
       for (const channel of plan.channels) {
         // One step per (recipient, channel): independent retry + memoization (NOT-04 isolation).
+        await step.run(`send-${channel}-${plan.to.userId}`, () =>
+          dispatchToChannel(channel as ChannelKey, data.eventId, plan.msg, plan.to),
+        );
+      }
+    }
+  },
+);
+
+/**
+ * Sibling of notifyOnPickupEvent for the run/dispatch events (B3). A separate function
+ * (distinct Inngest `id`) so the pickup event data shape stays untouched; same
+ * claim→send→release machinery, same per-(recipient, channel) step isolation +
+ * function-level idempotency on event.data.eventId.
+ */
+export const notifyOnRunEvent = inngest.createFunction(
+  {
+    id: "notify-on-run-event",
+    retries: 4, // 5 attempts per step
+    idempotency: "event.data.eventId",
+    triggers: [{ event: "run/assigned" }, { event: "run/completed" }],
+  },
+  async ({ event, step }) => {
+    const data = event.data as {
+      eventId: string;
+      runId: string;
+      driverId?: string;
+    };
+
+    const plans = await step.run("plan-run-recipients", () =>
+      planRunRecipients({
+        name: event.name as RunEventName,
+        data: { runId: data.runId, driverId: data.driverId },
+      }),
+    );
+
+    for (const plan of plans) {
+      for (const channel of plan.channels) {
         await step.run(`send-${channel}-${plan.to.userId}`, () =>
           dispatchToChannel(channel as ChannelKey, data.eventId, plan.msg, plan.to),
         );

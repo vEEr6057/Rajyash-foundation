@@ -27,6 +27,16 @@ export const profilesRepo = {
     return rows.map((r) => r.id);
   },
 
+  /** Ids of active (non-deactivated) admins — run/completed fan-out target (B3). */
+  async listAdminIds(): Promise<string[]> {
+    const db = getDb();
+    const rows = await db
+      .select({ id: profiles.id })
+      .from(profiles)
+      .where(and(eq(profiles.role, "admin"), isNull(profiles.deactivatedAt)));
+    return rows.map((r) => r.id);
+  },
+
   /** Insert-or-update a profile keyed by Clerk userId. */
   async upsert(input: NewProfile): Promise<Profile> {
     const db = getDb();

@@ -23,6 +23,7 @@ const h = vi.hoisted(() => ({
   destGetById: vi.fn(),
   geocode: vi.fn(),
   purgeForRun: vi.fn(),
+  inngestSend: vi.fn(),
 }));
 
 vi.mock("@/server/auth/session", () => ({
@@ -73,10 +74,14 @@ vi.mock("@/server/db/repositories/runPings", () => ({
 vi.mock("@/features/admin/actions/destinationActions", () => ({
   geocodeDestinationAddress: (...a: unknown[]) => h.geocode(...a),
 }));
+vi.mock("@/server/inngest/client", () => ({
+  inngest: { send: (...a: unknown[]) => h.inngestSend(...a) },
+}));
 
 import {
   createRun,
   assignDriver,
+  editRun,
   addPickupStop,
   addDropStop,
   reorderStops,
@@ -198,6 +203,93 @@ describe("addDropStop — saved vs ad-hoc", () => {
     h.geocode.mockResolvedValue(null);
     const res = await addDropStop({ runId: "r1", seq: 2, address: "nowhere" } as never);
     expect(!res.ok && (res as { code: string }).code).toBe("GEOCODE_FAILED");
+  });
+});
+
+describe("run notification emits (B3)", () => {
+  it("assignDriver emits run/assigned for the driver", async () => {
+    h.runAssignDriver.mockResolvedValue({ id: "r1" });
+    await assignDriver("r1", "drv-9");
+    expect(h.inngestSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "run/assigned",
+        data: expect.objectContaining({
+          runId: "r1",
+          driverId: "drv-9",
+          eventId: "assigned:r1:drv-9",
+        }),
+      }),
+    );
+  });
+
+  it("createRun WITH a driver emits run/assigned", async () => {
+    h.runCreate.mockResolvedValue({ id: "r2" });
+    await createRun({ slot: "morning", runDate: new Date(), driverId: "drv-3" } as never);
+    expect(h.inngestSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "run/assigned",
+        data: expect.objectContaining({ runId: "r2", driverId: "drv-3" }),
+      }),
+    );
+  });
+
+  it("createRun WITHOUT a driver emits nothing", async () => {
+    h.runCreate.mockResolvedValue({ id: "r3" });
+    await createRun({ slot: "morning", runDate: new Date() } as never);
+    expect(h.inngestSend).not.toHaveBeenCalled();
+  });
+
+  it("editRun emits run/assigned only when the driver changes to a new one", async () => {
+    h.runGetById.mockResolvedValue({ id: "r4", driverId: "old", status: "planned" });
+    h.runUpdate.mockResolvedValue({ id: "r4" });
+    await editRun("r4", { driverId: "new" } as never);
+    expect(h.inngestSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "run/assigned",
+        data: expect.objectContaining({ driverId: "new" }),
+      }),
+    );
+  });
+
+  it("editRun does NOT emit when the driver is unchanged", async () => {
+    h.runGetById.mockResolvedValue({ id: "r5", driverId: "same", status: "planned" });
+    h.runUpdate.mockResolvedValue({ id: "r5" });
+    await editRun("r5", { driverId: "same" } as never);
+    expect(h.inngestSend).not.toHaveBeenCalled();
+  });
+
+  it("setRunStatus -> completed emits run/completed", async () => {
+    h.runGetById.mockResolvedValue({ id: "r6", status: "active" });
+    h.runSetStatus.mockResolvedValue({ id: "r6" });
+    await setRunStatus("r6", "completed");
+    expect(h.inngestSend).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: "run/completed",
+        data: expect.objectContaining({ runId: "r6", eventId: "run_completed:r6" }),
+      }),
+    );
+  });
+
+  it("setRunStatus -> cancelled emits nothing", async () => {
+    h.runGetById.mockResolvedValue({ id: "r6b", status: "active" });
+    h.runSetStatus.mockResolvedValue({ id: "r6b" });
+    await setRunStatus("r6b", "cancelled");
+    expect(h.inngestSend).not.toHaveBeenCalled();
+  });
+
+  it("markStopDone auto-complete emits run/completed", async () => {
+    h.getSession.mockResolvedValue({ userId: "drv-1", role: "driver" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r7", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r7", driverId: "drv-1", status: "active" });
+    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([
+      { id: "s1", status: "pending" },
+      { id: "s2", status: "done" },
+    ]);
+    await markStopDone("s1");
+    expect(h.inngestSend).toHaveBeenCalledWith(
+      expect.objectContaining({ name: "run/completed" }),
+    );
   });
 });
 
