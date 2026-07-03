@@ -7,7 +7,7 @@ import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
 import { getSignedDownloadUrl } from "@/lib/storage";
 import { ROUTES } from "@/config/constants";
-import { Card, CardContent } from "@/components/ui/card";
+import { PageHeader } from "@/components/PageHeader";
 import {
   formatQuantity,
   formatWindow,
@@ -73,45 +73,51 @@ export default async function PickupDetailPage({
   ]);
 
   return (
-    <main className="mx-auto max-w-2xl px-4 py-8">
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <h1 className="flex items-center gap-2 font-display text-2xl font-bold tracking-tight">
-          <Package className="size-5 text-primary" />
-          {tCommon(`foodCategory.${pickup.category}`)}
-        </h1>
-        <PickupStatusPill status={pickup.status} />
+    <main className="mx-auto w-full max-w-2xl px-4 py-8">
+      <PageHeader
+        eyebrow={tPortal("pickup.detail.eyebrow")}
+        title={
+          <span className="flex items-center gap-2">
+            <Package className="size-5 text-primary" />
+            {tCommon(`foodCategory.${pickup.category}`)}
+          </span>
+        }
+        action={<PickupStatusPill status={pickup.status} />}
+      />
+
+      {/* Info — hairline panel (charter: hairlines over boxes) */}
+      <div className="space-y-3 rounded-lg border border-border p-4">
+        <p className="text-lg font-semibold">
+          {formatQuantity(pickup.quantity, pickup.quantityUnit)}
+        </p>
+        {pickup.description && (
+          <p className="text-sm text-muted-foreground">{pickup.description}</p>
+        )}
+        <p className="flex items-center gap-1.5 text-sm">
+          <Clock className="size-4 text-muted-foreground" />
+          {formatWindow(pickup.windowStart, pickup.windowEnd)}
+        </p>
+        <p className="flex items-center gap-1.5 text-sm">
+          <MapPin className="size-4 text-muted-foreground" />
+          {pickup.address}
+        </p>
       </div>
 
-      <Card>
-        <CardContent className="space-y-3 pt-4">
-          <p className="text-lg font-semibold">
-            {formatQuantity(pickup.quantity, pickup.quantityUnit)}
-          </p>
-          {pickup.description && (
-            <p className="text-sm text-muted-foreground">{pickup.description}</p>
-          )}
-          <p className="flex items-center gap-1.5 text-sm">
-            <Clock className="size-4 text-muted-foreground" />
-            {formatWindow(pickup.windowStart, pickup.windowEnd)}
-          </p>
-          <p className="flex items-center gap-1.5 text-sm">
-            <MapPin className="size-4 text-muted-foreground" />
-            {pickup.address}
-          </p>
-          {(isDonorOwner || isAdmin) && isActive ? (
-            <LiveTrackingMap
-              pickupId={id}
-              active={isActive}
-              destination={{ lat: pickup.lat, lng: pickup.lng }}
-            />
-          ) : (
-            <MapView
-              markers={[{ id: pickup.id, lat: pickup.lat, lng: pickup.lng }]}
-              height={240}
-            />
-          )}
-        </CardContent>
-      </Card>
+      {/* Map — same hairline frame; tracking components untouched */}
+      <div className="mt-4 rounded-lg border border-border p-4">
+        {(isDonorOwner || isAdmin) && isActive ? (
+          <LiveTrackingMap
+            pickupId={id}
+            active={isActive}
+            destination={{ lat: pickup.lat, lng: pickup.lng }}
+          />
+        ) : (
+          <MapView
+            markers={[{ id: pickup.id, lat: pickup.lat, lng: pickup.lng }]}
+            height={240}
+          />
+        )}
+      </div>
 
       {(foodUrl || proofUrl) && (
         <div className="mt-4 grid grid-cols-2 gap-3">
@@ -170,7 +176,7 @@ export default async function PickupDetailPage({
             {events.map((e) => (
               <li key={e.id}>
                 → {tCommon(`status.${e.toStatus}`)}{" "}
-                <span className="text-subtle-foreground">
+                <span className="text-subtle-foreground tabular-nums">
                   {new Intl.DateTimeFormat("en-IN", {
                     timeZone: "Asia/Kolkata",
                     day: "numeric",

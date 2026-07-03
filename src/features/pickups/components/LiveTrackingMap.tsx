@@ -47,7 +47,10 @@ export function LiveTrackingMap({
           )}
         </div>
       )}
-      <div className="flex items-center justify-between text-xs">
+      {/* Provenance line (charter §1.5 voice) — pulses only while the pickup is
+          live in motion with a fresh ping; static dot otherwise (reduced-motion
+          stays static via the global .rj-dot-live override). */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground tabular-nums">
         <span className="flex items-center gap-1.5">
           {!stale && position ? (
             <span
@@ -68,10 +71,8 @@ export function LiveTrackingMap({
               : "Waiting for location…"}
           </span>
         </span>
-        {lastSeen && <span className="text-muted-foreground">updated {lastSeen}</span>}
-        {connection === "polling" && (
-          <span className="text-muted-foreground">reconnecting…</span>
-        )}
+        {lastSeen && <span>updated {lastSeen}</span>}
+        {connection === "polling" && <span>reconnecting…</span>}
       </div>
     </div>
   );

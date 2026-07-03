@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { RotateCcw } from "lucide-react";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ROUTES } from "@/config/constants";
@@ -51,23 +52,35 @@ export function DonorPickupActions({
   }
 
   return (
-    <div className="flex flex-wrap gap-2">
-      {editable && (
-        <Link
-          href={ROUTES.editPickup(pickupId)}
-          className={buttonVariants({ variant: "outline" })}
-        >
-          {tCommon("buttons.edit")}
-        </Link>
-      )}
-      {editable && (
-        <Button variant="destructive" onClick={() => setConfirmOpen(true)} disabled={isPending}>
-          {t("pickup.detail.cancelButton")}
+    <div>
+      <div className="flex flex-wrap gap-2">
+        {editable && (
+          <Link
+            href={ROUTES.editPickup(pickupId)}
+            className={buttonVariants({ variant: "outline", size: "sm" })}
+          >
+            {tCommon("buttons.edit")}
+          </Link>
+        )}
+        <Button variant="outline" size="sm" onClick={repost} disabled={isPending}>
+          <RotateCcw className="size-4" />
+          {t("pickup.detail.quickRepost")}
         </Button>
+      </div>
+
+      {/* Destructive action hairline-separated from the rest (charter §3.5) */}
+      {editable && (
+        <div className="mt-4 border-t border-border pt-4">
+          <Button
+            variant="destructive"
+            size="sm"
+            onClick={() => setConfirmOpen(true)}
+            disabled={isPending}
+          >
+            {t("pickup.detail.cancelButton")}
+          </Button>
+        </div>
       )}
-      <Button variant="secondary" onClick={repost} disabled={isPending}>
-        {t("pickup.detail.quickRepost")}
-      </Button>
 
       <ConfirmDialog
         open={confirmOpen}
