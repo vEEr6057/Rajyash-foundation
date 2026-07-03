@@ -23,13 +23,11 @@ export default async function NewRunPage() {
   const drivers = allProfiles.filter((p) => p.role === "driver" && !p.deactivatedAt);
 
   return (
-    <div className="mx-auto max-w-md">
-      <h1 className="mb-6 font-display text-2xl font-bold tracking-tight">
+    <div className="mx-auto max-w-[40rem]">
+      <h1 className="mb-6 font-display text-2xl font-medium tracking-tight">
         {t("runs.form.title")}
       </h1>
-      <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
-        <BuildRunForm drivers={drivers} />
-      </div>
+      <BuildRunForm drivers={drivers} />
     </div>
   );
 }

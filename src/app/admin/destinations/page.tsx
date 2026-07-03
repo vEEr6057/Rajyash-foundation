@@ -5,6 +5,8 @@ import { ROUTES } from "@/config/constants";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
 import { DestinationList } from "@/features/admin/components/DestinationList";
 import { AddDestinationDialog } from "@/features/admin/components/AddDestinationDialog";
+import { PageHeader } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Destinations — Rajyash Food Rescue" };
@@ -26,19 +28,22 @@ export default async function AdminDestinationsPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-bold tracking-tight">
-          {t("destinations.title")}
-        </h1>
-        <AddDestinationDialog />
-      </div>
+      <PageHeader
+        eyebrow={t("eyebrow")}
+        title={t("destinations.title")}
+        meta={t("destinations.meta", { count: destinations.length })}
+        action={<AddDestinationDialog />}
+      />
 
-      <section>
-        <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
-          {t("destinations.allDestinations")}
-        </h2>
+      {destinations.length === 0 ? (
+        <EmptyState
+          title={t("destinations.empty.title")}
+          body={t("destinations.empty.body")}
+          action={<AddDestinationDialog />}
+        />
+      ) : (
         <DestinationList destinations={destinations} />
-      </section>
+      )}
     </div>
   );
 }

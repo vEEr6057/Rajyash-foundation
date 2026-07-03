@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PartnerList } from "@/features/admin/components/PartnerList";
 import { LinkDonorControl } from "@/features/admin/components/LinkDonorControl";
 import { AddPartnerDialog } from "@/features/admin/components/AddPartnerDialog";
+import { PageHeader } from "@/components/PageHeader";
+import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Partners — Rajyash Food Rescue" };
@@ -34,17 +36,21 @@ export default async function AdminPartnersPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-2xl font-bold tracking-tight">{t("partners.title")}</h1>
-        <AddPartnerDialog />
-      </div>
+      <PageHeader
+        eyebrow={t("eyebrow")}
+        title={t("partners.title")}
+        meta={t("partners.meta", { count: partners.length })}
+        action={<AddPartnerDialog />}
+      />
 
-      <section>
-        <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
-          {t("partners.allPartners")}
-        </h2>
+      {partners.length === 0 ? (
+        <EmptyState
+          title={t("partners.empty.title")}
+          body={t("partners.empty.body")}
+        />
+      ) : (
         <PartnerList partners={partners} />
-      </section>
+      )}
 
       <Card>
         <CardHeader>

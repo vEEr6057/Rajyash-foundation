@@ -14,7 +14,6 @@ import {
   TableRow,
   TableHead,
   TableCell,
-  TableEmpty,
 } from "@/components/ui/table";
 import { ROLES, type Role } from "@/config/constants";
 import { setUserRole, deactivateUser, reactivateUser } from "@/features/admin";
@@ -125,11 +124,9 @@ export function UsersTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {users.length === 0 ? (
-          <TableEmpty colSpan={5}>{t("users.noUsers")}</TableEmpty>
-        ) : (
-          users.map((u) => <Row key={u.id} user={u} isSelf={u.id === currentAdminId} />)
-        )}
+        {users.map((u) => (
+          <Row key={u.id} user={u} isSelf={u.id === currentAdminId} />
+        ))}
       </TableBody>
     </Table>
   );

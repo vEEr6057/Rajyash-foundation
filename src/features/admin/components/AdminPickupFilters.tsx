@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   ROUTES,
   PICKUP_STATUSES,
@@ -16,8 +17,9 @@ type Filters = {
   to?: string;
 };
 
-const SELECT =
-  "rj-field h-9 rounded-lg border border-input bg-surface px-2 text-sm";
+// One control height, hairline-matched to the worktable shell (BATCH-2 §2).
+const FIELD =
+  "rj-field h-9 rounded-md border border-border bg-transparent px-3 text-sm";
 
 export function AdminPickupFilters({ current }: { current: Filters }) {
   const router = useRouter();
@@ -34,9 +36,9 @@ export function AdminPickupFilters({ current }: { current: Filters }) {
   };
 
   return (
-    <div className="mb-4 flex flex-wrap items-end gap-2">
+    <div className="mb-6 flex flex-wrap items-center gap-2">
       <select
-        className={SELECT}
+        className={FIELD}
         value={f.status ?? ""}
         onChange={(e) => setF({ ...f, status: e.target.value })}
         aria-label={t("pickups.filters.status")}
@@ -50,14 +52,14 @@ export function AdminPickupFilters({ current }: { current: Filters }) {
       </select>
       <input
         type="date"
-        className={SELECT}
+        className={FIELD}
         value={f.from ?? ""}
         onChange={(e) => setF({ ...f, from: e.target.value })}
         aria-label={t("pickups.filters.dateFrom")}
       />
       <input
         type="date"
-        className={SELECT}
+        className={FIELD}
         value={f.to ?? ""}
         onChange={(e) => setF({ ...f, to: e.target.value })}
         aria-label={t("pickups.filters.dateTo")}
@@ -69,7 +71,7 @@ export function AdminPickupFilters({ current }: { current: Filters }) {
         {t("pickups.filters.clearButton")}
       </Button>
       <a
-        className={buttonVariants({ size: "sm", variant: "outline" })}
+        className={cn(buttonVariants({ size: "sm", variant: "outline" }), "ml-auto")}
         href={`/admin/pickups/export?${queryString()}`}
       >
         {t("pickups.export.button")}
