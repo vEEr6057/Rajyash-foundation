@@ -73,6 +73,10 @@ export const profiles = pgTable("profiles", {
   role: roleEnum("role").notNull(),
   city: text("city").notNull().default("Ahmedabad"),
   onboardingComplete: boolean("onboarding_complete").notNull().default(false),
+  // Preferred UI language (B3): drives recipient-locale notification copy. Written
+  // best-effort by setLocale + stamped at onboarding; allowlist (en|gu|hi) enforced
+  // in the actions. Default 'en' so pre-B3 rows and missing values are safe.
+  locale: text("locale").notNull().default("en"),
   // Admin (Phase 6): optional link to a partner org (D-06) + soft-deactivate flag (D-05).
   partnerId: text("partner_id").references(() => partners.id), // nullable FK
   deactivatedAt: timestamp("deactivated_at", { withTimezone: true }), // null = active

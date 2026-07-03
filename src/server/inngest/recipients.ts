@@ -98,28 +98,21 @@ export async function planRecipients(event: {
     toStatus: event.data.toStatus,
     volunteerIds,
   });
-  const copy = buildCopy({
-    eventName: event.name,
-    pickupId: pickup.id,
-    toStatus: event.data.toStatus,
-  });
-  const msg: NotificationMessage = {
-    type: event.name,
-    ...copy,
-    pickupId: pickup.id,
-  };
 
-  // Resolve emails only for recipients that actually use the email channel.
+  // B3: always fetch the profile — copy is now recipient-locale, and email needs it too.
+  // One query per recipient (≤ ~20/event), same cost as the old email-only path.
   const plans: RecipientPlan[] = [];
   for (const r of resolved) {
-    const needsEmail = r.channels.includes("email");
-    const profile = needsEmail
-      ? await profilesRepo.getById(r.recipientId)
-      : null;
+    const profile = await profilesRepo.getById(r.recipientId);
+    const copy = buildCopy(
+      event.name,
+      { pickupId: pickup.id, toStatus: event.data.toStatus },
+      profile?.locale ?? "en",
+    );
     plans.push({
       to: { userId: r.recipientId, email: profile?.email ?? null },
       channels: r.channels,
-      msg,
+      msg: { type: event.name, ...copy, pickupId: pickup.id },
     });
   }
   return plans;
@@ -186,24 +179,18 @@ export async function planRunRecipients(event: {
           adminIds: await profilesRepo.listAdminIds(),
         });
 
-  const copy = buildCopy({
-    eventName: event.name,
-    runId: run.id,
-    slot: run.slot,
-    runDate: run.runDate,
-  });
-  const msg: NotificationMessage = { type: event.name, ...copy };
-
   const plans: RecipientPlan[] = [];
   for (const r of resolved) {
-    const needsEmail = r.channels.includes("email");
-    const profile = needsEmail
-      ? await profilesRepo.getById(r.recipientId)
-      : null;
+    const profile = await profilesRepo.getById(r.recipientId);
+    const copy = buildCopy(
+      event.name,
+      { runId: run.id, slot: run.slot, runDate: run.runDate },
+      profile?.locale ?? "en",
+    );
     plans.push({
       to: { userId: r.recipientId, email: profile?.email ?? null },
       channels: r.channels,
-      msg,
+      msg: { type: event.name, ...copy },
     });
   }
   return plans;
