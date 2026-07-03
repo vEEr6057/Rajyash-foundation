@@ -19,8 +19,8 @@ export default async function NewRunPage() {
   }
 
   const t = await getTranslations("admin");
-  const allProfiles = await profilesRepo.listAll();
-  const drivers = allProfiles.filter((p) => p.role === "driver" && !p.deactivatedAt);
+  // Build-run form only offers drivers — fetch just that role, not every profile.
+  const drivers = await profilesRepo.listByRole("driver");
 
   return (
     <div className="mx-auto max-w-[40rem]">
