@@ -70,7 +70,11 @@
     },
     "board": {
       "title": "उपलब्ध पिकअप",
+      "eyebrow": "स्वयंसेवक",
+      "waiting": "{count} प्रतीक्षा में",
       "emptyState": "अभी कोई खुला पिकअप नहीं. जल्द वापस जाँचें.",
+      "emptyTitle": "अभी सब साफ़ है",
+      "emptyBody": "नया सरप्लस खाना आमतौर पर लंच और डिनर सर्विस के बाद आता है — तब वापस जाँचें.",
       "listTab": "सूची",
       "mapTab": "नक्शा",
       "mapButton": "नक्शा"
@@ -110,7 +114,9 @@
   "dashboard": {
     "title": "डैशबोर्ड",
     "donorEyebrow": "मेरी रसोई",
+    "volunteerEyebrow": "स्वयंसेवक",
     "statsProvenance": "इस ऐप में आपकी पोस्ट से गिना गया.",
+    "volunteerStatsProvenance": "लाइव बोर्ड और आपके क्लेम किए पिकअप से गिना गया.",
     "greeting": "वापस आए, {name}",
     "donorTitle": "दाता डैशबोर्ड",
     "volunteerTitle": "स्वयंसेवक डैशबोर्ड",
@@ -138,6 +144,8 @@
   "run": {
     "_review": "pending",
     "title": "मेरी रन",
+    "eyebrow": "ड्राइवर",
+    "completeTitle": "रन पूरी हुई",
     "emptyTitle": "अभी कोई रन नहीं",
     "emptyState": "अभी तक कोई रन असाइन नहीं हुई है। बाद में जाँचें।",
     "help": "सवाल हैं? समन्वयक को कॉल करें:",
