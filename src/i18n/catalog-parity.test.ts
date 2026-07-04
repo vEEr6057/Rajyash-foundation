@@ -9,16 +9,19 @@ import enLanding from "./messages/en/landing.json";
 import enPortal from "./messages/en/portal.json";
 import enAdmin from "./messages/en/admin.json";
 import enOnboarding from "./messages/en/onboarding.json";
+import enPrivacy from "./messages/en/privacy.json";
 import guCommon from "./messages/gu/common.json";
 import guLanding from "./messages/gu/landing.json";
 import guPortal from "./messages/gu/portal.json";
 import guAdmin from "./messages/gu/admin.json";
 import guOnboarding from "./messages/gu/onboarding.json";
+import guPrivacy from "./messages/gu/privacy.json";
 import hiCommon from "./messages/hi/common.json";
 import hiLanding from "./messages/hi/landing.json";
 import hiPortal from "./messages/hi/portal.json";
 import hiAdmin from "./messages/hi/admin.json";
 import hiOnboarding from "./messages/hi/onboarding.json";
+import hiPrivacy from "./messages/hi/privacy.json";
 
 type MsgObj = Record<string, unknown>;
 
@@ -48,6 +51,7 @@ const cases: Array<{ name: string; en: MsgObj; gu: MsgObj; hi: MsgObj }> = [
   { name: "portal", en: enPortal, gu: guPortal, hi: hiPortal },
   { name: "admin", en: enAdmin, gu: guAdmin, hi: hiAdmin },
   { name: "onboarding", en: enOnboarding, gu: guOnboarding, hi: hiOnboarding },
+  { name: "privacy", en: enPrivacy, gu: guPrivacy, hi: hiPrivacy },
 ];
 
 describe("Catalog parity (GU/HI ⊇ EN — recursive deep key paths)", () => {

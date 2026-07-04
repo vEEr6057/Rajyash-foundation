@@ -9,6 +9,7 @@ import { LeafMark } from "./RescueLine";
 export async function PublicFooter() {
   const t = await getTranslations("landing");
   const commonT = await getTranslations("common");
+  const privacyT = await getTranslations("privacy");
 
   const link = "rj-underline text-sm";
   const linkStyle = { color: "var(--rj-ink-soft)" } as const;
@@ -40,6 +41,7 @@ export async function PublicFooter() {
               <li><Link href={ROUTES.becomeVolunteer} className={link} style={linkStyle}>{t("becomeVol")}</Link></li>
               <li><Link href={ROUTES.signIn} className={link} style={linkStyle}>{t("signin")}</Link></li>
               <li><Link href={ROUTES.staffSignIn} className={link} style={linkStyle}>{t("staffSignin")}</Link></li>
+              <li><Link href={ROUTES.privacy} className={link} style={linkStyle}>{privacyT("footLink")}</Link></li>
             </ul>
           </div>
 

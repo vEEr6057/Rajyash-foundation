@@ -21,6 +21,7 @@ export async function loadMessages(locale: Locale) {
     portal: (await import(`./messages/${locale}/portal.json`)).default,
     admin: (await import(`./messages/${locale}/admin.json`)).default,
     onboarding: (await import(`./messages/${locale}/onboarding.json`)).default,
+    privacy: (await import(`./messages/${locale}/privacy.json`)).default,
   };
 }
 

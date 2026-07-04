@@ -1,0 +1,23 @@
+{
+  "footLink": "Privacy",
+  "eyebrow": "Rajyash Food Rescue",
+  "title": "Privacy",
+  "effective": "Effective July 2026",
+  "intro": "This policy explains what we collect when you use the Rajyash Food Rescue website and app, why we collect it, and the choices you have. We keep it short and plain because our promise is simple: we take only what the rescue loop needs, and no more.",
+  "s1Title": "Who we are",
+  "s1Body": "Rajyash Food Rescue is the Food Porter programme of the Rajyash Foundation — the social initiative of the Rajyash Group, based in Satellite, Ahmedabad, and serving the city since 2016. When this policy says \"we\", it means the Foundation running this service.",
+  "s2Title": "What we collect",
+  "s2Body": "When you create an account, we receive your name and email address through our sign-in provider, including if you choose to sign in with Google. You may optionally add a phone number. If you post surplus food, we store the pickup details you enter — what the food is, the quantity, and the pickup address and time. If you use notifications, we store your in-app messages and, if you turn on push alerts, your browser's push subscription.",
+  "s3Title": "Volunteer and driver location",
+  "s3Body": "While you are actively working a pickup or a delivery run, the app records your GPS location so the donor and our coordinators can see the food on its way. We collect this location only during an active pickup or run, and it is purged as soon as the run is delivered, cancelled, or completed. It is never sold, and we do not track your location at any other time.",
+  "s4Title": "What we do not collect",
+  "s4Body": "We do not collect or store any payment or card data — monetary donations are not yet enabled on this service. We use no advertising trackers and no third-party marketing cookies. Our usage analytics are cookieless and aggregate only; they do not build a profile of you.",
+  "s5Title": "How we use your information",
+  "s5Body": "We use your information only to run the food-rescue service: to sign you in, to match pickups with volunteers, to show live tracking while a rescue is in progress, to send you notifications about your pickups and runs, and to measure the programme's overall impact. We do not use it for advertising.",
+  "s6Title": "Who processes your data",
+  "s6Body": "We rely on a small set of trusted providers to run the service: Clerk (sign-in and accounts), Supabase (our database), Resend (notification emails), Cloudflare (hosting and cookieless analytics), and OpenStreetMap with Nominatim (maps and address lookup). Each one processes data only to provide its part of the service.",
+  "s7Title": "How long we keep it",
+  "s7Body": "Live location is ephemeral and purged the moment a run ends, as described above. In-app notifications are swept automatically every night. Your account and pickup records are kept while your account is active, so the service works and impact can be counted — and removed when you close your account.",
+  "s8Title": "Your rights and contact",
+  "s8Body": "You can ask us to access, correct, or delete your personal data, or to close your account. To make a request or ask a question about this policy, contact the Rajyash Foundation:"
+}
