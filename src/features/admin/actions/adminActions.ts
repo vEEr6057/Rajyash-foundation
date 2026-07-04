@@ -306,13 +306,17 @@ export async function deletePartner(id: string): Promise<Result> {
     return { ok: true };
   } catch (e) {
     const msg = String(e);
-    // A linked donor (profiles.partnerId FK, no-action) blocks the delete — guide the admin.
+    // A linked donor (profiles.partnerId FK) OR a past run stop (run_stops.partnerId FK),
+    // both no-action, blocks the delete — guide the admin.
     if (
       msg.includes("23503") ||
       msg.includes("foreign key") ||
       msg.includes("violates")
     ) {
-      return fail("CONFLICT", "Unlink all donors from this partner first.");
+      return fail(
+        "CONFLICT",
+        "This partner is linked to donors or past run stops — remove those links first.",
+      );
     }
     logger.error("deletePartner failed", { id, err: msg });
     return fail("SERVER_ERROR", "Could not delete the partner.");

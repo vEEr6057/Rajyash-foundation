@@ -91,4 +91,10 @@ describe("deleteDestination", () => {
     expect(res.ok).toBe(true);
     expect(del).toHaveBeenCalledWith("d1");
   });
+  it("maps a FK violation to CONFLICT (used by past runs) instead of a generic error", async () => {
+    del.mockRejectedValue(new Error('update or delete violates foreign key constraint "23503"'));
+    const res = await deleteDestination("d1");
+    expect(!res.ok && res.code).toBe("CONFLICT");
+    expect(!res.ok && res.message).toMatch(/inactive/i);
+  });
 });
