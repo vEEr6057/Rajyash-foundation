@@ -112,7 +112,7 @@ describe("getRequestConfig (I18N-01 — cookie-based locale detection)", () => {
     // Guards against flat-spread regression where portal.dashboard and
     // admin.dashboard would collide at the top level.
     expect(Object.keys(result.messages).sort()).toEqual(
-      ["admin", "common", "donate", "landing", "onboarding", "portal", "privacy"].sort(),
+      ["admin", "common", "donate", "landing", "onboarding", "policies", "portal", "privacy"].sort(),
     );
     // Each namespace value is a truthy object (not a string or undefined)
     expect(result.messages.common).toBeTruthy();
@@ -121,6 +121,7 @@ describe("getRequestConfig (I18N-01 — cookie-based locale detection)", () => {
     expect(result.messages.admin).toBeTruthy();
     expect(result.messages.onboarding).toBeTruthy();
     expect(result.messages.privacy).toBeTruthy();
+    expect(result.messages.policies).toBeTruthy();
     expect(result.messages.donate).toBeTruthy();
   });
 });

@@ -22,6 +22,7 @@ export async function loadMessages(locale: Locale) {
     admin: (await import(`./messages/${locale}/admin.json`)).default,
     onboarding: (await import(`./messages/${locale}/onboarding.json`)).default,
     privacy: (await import(`./messages/${locale}/privacy.json`)).default,
+    policies: (await import(`./messages/${locale}/policies.json`)).default,
     donate: (await import(`./messages/${locale}/donate.json`)).default,
   };
 }

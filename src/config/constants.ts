@@ -45,6 +45,8 @@ export const ROUTES = {
   // Public site (Phase 7 — D-04: volunteer CTA reuses Clerk sign-up with role prefill)
   becomeVolunteer: "/sign-up?role=volunteer",
   privacy: "/privacy",
+  terms: "/terms",
+  refundPolicy: "/refund-policy",
   // Payments (Phase 5 / PAY-03) — public donate page, rendered only when the flag is on.
   donate: "/donate",
 } as const;

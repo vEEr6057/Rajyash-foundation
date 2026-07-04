@@ -14,6 +14,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { Providers } from "./providers";
 import { SkipLink } from "@/components/SkipLink";
+import { ClientErrorReporter } from "@/components/ClientErrorReporter";
 import { clerkAppearance } from "@/lib/clerkAppearance";
 import { guIN } from "@/lib/clerkGujarati";
 import { env } from "@/config/env";
@@ -177,6 +178,7 @@ export default async function RootLayout({
             {/* Global header removed — public landing has its own PublicHeader (plan 07-02).
                 Portal/admin shells add their own LanguageSwitcher in plan 07-03. */}
             <SkipLink />
+            <ClientErrorReporter />
             <Providers>{children}</Providers>
           </NextIntlClientProvider>
           {/* Cloudflare Web Analytics (B5) — cookieless, free. Rendered only when the
