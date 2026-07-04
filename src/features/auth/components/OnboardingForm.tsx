@@ -29,8 +29,11 @@ const ROLE_ICONS: Record<(typeof SELECTABLE_ROLES)[number], typeof Truck> = {
 // server action (AUTH-05 path) still validate the final role. (T-7-02-02, T-7-02-03)
 export function OnboardingForm({
   defaultRole,
+  isAdminInvite = false,
 }: {
   defaultRole?: "donor" | "volunteer" | "driver";
+  /** Admin-invited user: hide the role picker; completeOnboarding preserves their admin role. */
+  isAdminInvite?: boolean;
 }) {
   const router = useRouter();
   const t = useTranslations("onboarding");
@@ -47,7 +50,9 @@ export function OnboardingForm({
     resolver: zodResolver(onboardingSchema),
     defaultValues: {
       city: DEFAULT_CITY,
-      role: defaultRole, // pre-selects volunteer when coming from the landing page CTA
+      // Admin invitees don't pick a role — send a valid filler so the client schema passes;
+      // completeOnboarding overrides it back to "admin" server-side (never demotes an admin).
+      role: isAdminInvite ? "volunteer" : defaultRole,
     },
   });
 
@@ -70,52 +75,59 @@ export function OnboardingForm({
     }
     // Force a fresh JWT so the new role/onboarding claim is live before redirect.
     await user?.reload();
-    router.push(ROUTES.portalDashboard);
+    router.push(isAdminInvite ? ROUTES.adminDashboard : ROUTES.portalDashboard);
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" noValidate>
-      <div>
-        <Label>{t("roleLabel")}</Label>
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          {SELECTABLE_ROLES.map((key) => {
-            const Icon = ROLE_ICONS[key];
-            const selected = role === key;
-            return (
-              <button
-                type="button"
-                key={key}
-                onClick={() =>
-                  setValue("role", key, { shouldValidate: true })
-                }
-                className={cn(
-                  "rj-press flex flex-col items-start gap-2 rounded-xl border p-4 text-left",
-                  selected
-                    ? "border-primary bg-primary-soft"
-                    : "border-border bg-surface hover:bg-secondary",
-                )}
-                aria-pressed={selected}
-              >
-                <Icon
-                  className={cn(
-                    "size-6",
-                    selected ? "text-primary" : "text-muted-foreground",
-                  )}
-                />
-                <span className="font-semibold text-foreground">
-                  {t(`${key}.title`)}
-                </span>
-                <span className="text-sm text-muted-foreground">
-                  {t(`${key}.blurb`)}
-                </span>
-              </button>
-            );
-          })}
+      {isAdminInvite ? (
+        <div className="rounded-xl border border-primary bg-primary-soft p-4">
+          <p className="font-semibold text-foreground">{t("adminSetupTitle")}</p>
+          <p className="mt-1 text-sm text-muted-foreground">{t("adminSetupBlurb")}</p>
         </div>
-        {errors.role && (
-          <p className="mt-1.5 text-sm text-destructive">{errors.role.message}</p>
-        )}
-      </div>
+      ) : (
+        <div>
+          <Label>{t("roleLabel")}</Label>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {SELECTABLE_ROLES.map((key) => {
+              const Icon = ROLE_ICONS[key];
+              const selected = role === key;
+              return (
+                <button
+                  type="button"
+                  key={key}
+                  onClick={() =>
+                    setValue("role", key, { shouldValidate: true })
+                  }
+                  className={cn(
+                    "rj-press flex flex-col items-start gap-2 rounded-xl border p-4 text-left",
+                    selected
+                      ? "border-primary bg-primary-soft"
+                      : "border-border bg-surface hover:bg-secondary",
+                  )}
+                  aria-pressed={selected}
+                >
+                  <Icon
+                    className={cn(
+                      "size-6",
+                      selected ? "text-primary" : "text-muted-foreground",
+                    )}
+                  />
+                  <span className="font-semibold text-foreground">
+                    {t(`${key}.title`)}
+                  </span>
+                  <span className="text-sm text-muted-foreground">
+                    {t(`${key}.blurb`)}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+          {errors.role && (
+            <p className="mt-1.5 text-sm text-destructive">{errors.role.message}</p>
+          )}
+        </div>
+      )}
 
       <div>
         <Label htmlFor="name">{t("nameLabel")}</Label>

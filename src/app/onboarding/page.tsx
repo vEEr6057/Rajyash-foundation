@@ -25,6 +25,10 @@ export default async function OnboardingPage({
   // param). Admin is never selectable here, so an admin-metadata role falls through to undefined.
   const session = await getSession();
   const defaultRole = asSelectable(role) ?? asSelectable(session?.role);
+  // An admin-invited user arrives here with role="admin" already in Clerk metadata.
+  // Hide the (donor/volunteer/driver) role picker for them — completeOnboarding preserves
+  // their admin role regardless of what the form sends; they only confirm name/city/phone.
+  const isAdminInvite = session?.role === "admin";
 
   return (
     <main className="mx-auto flex min-h-dvh max-w-lg flex-col justify-center px-4 py-10">
@@ -34,7 +38,7 @@ export default async function OnboardingPage({
           <CardDescription>{t("description")}</CardDescription>
         </CardHeader>
         <CardContent>
-          <OnboardingForm defaultRole={defaultRole} />
+          <OnboardingForm defaultRole={defaultRole} isAdminInvite={isAdminInvite} />
         </CardContent>
       </Card>
     </main>

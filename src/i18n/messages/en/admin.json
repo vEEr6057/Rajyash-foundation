@@ -81,7 +81,8 @@
       "email": "Email",
       "role": "Role",
       "send": "Send invite",
-      "sent": "Invitation sent to {email}."
+      "sent": "Invitation sent to {email}.",
+      "adminHint": "Admins get full access — pickups, dispatch, users, and reports."
     }
   },
   "partners": {
