@@ -48,6 +48,10 @@ export const env = createEnv({
     // VAPID *public* key (Phase 4) — safe in the browser; it's the applicationServerKey
     // the service worker's pushManager.subscribe() needs. Private key stays server-only.
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: z.string().min(1),
+    // Cloudflare Web Analytics beacon token (B5) — OPTIONAL. Cookieless, free. When
+    // unset the beacon is not rendered. Owner creates the Web Analytics site in the
+    // CF dashboard and sets this as a build-time var in the GitHub Action.
+    NEXT_PUBLIC_CF_BEACON_TOKEN: z.string().optional(),
   },
   // Next.js inlines NEXT_PUBLIC_* at build time, so they must be listed explicitly.
   experimental__runtimeEnv: {
@@ -62,6 +66,7 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
+    NEXT_PUBLIC_CF_BEACON_TOKEN: process.env.NEXT_PUBLIC_CF_BEACON_TOKEN,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
