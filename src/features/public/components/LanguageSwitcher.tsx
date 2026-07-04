@@ -45,15 +45,23 @@ export function LanguageSwitcher({ className }: { className?: string }) {
           onClick={() => handleLocaleChange(l)}
           disabled={isPending}
           aria-pressed={locale === l}
+          // ≥44px tap target (a11y): the button box is the hit area; the visible pill
+          // (inner span) keeps its compact size so the header doesn't bloat.
           className={cn(
-            "rounded px-2 py-0.5 text-sm font-medium transition-colors",
-            locale === l
-              ? "bg-primary text-white"
-              : "text-muted-foreground hover:text-foreground",
+            "group inline-flex min-h-11 min-w-11 items-center justify-center rounded",
             "disabled:cursor-not-allowed disabled:opacity-50",
           )}
         >
-          {LOCALE_LABELS[l]}
+          <span
+            className={cn(
+              "rounded px-2 py-0.5 text-sm font-medium transition-colors",
+              locale === l
+                ? "bg-primary text-white"
+                : "text-muted-foreground group-hover:text-foreground",
+            )}
+          >
+            {LOCALE_LABELS[l]}
+          </span>
         </button>
       ))}
     </div>
