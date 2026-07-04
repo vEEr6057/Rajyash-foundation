@@ -1,5 +1,5 @@
 import { notFound, redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
 import { partnersRepo } from "@/server/db/repositories/partners";
@@ -46,7 +46,9 @@ export default async function AdminRunDetailPage({
     nextPending && nextPending.lat !== null && nextPending.lng !== null
       ? { lat: nextPending.lat, lng: nextPending.lng }
       : null;
-  const runDate = new Date(runWithStops.runDate).toLocaleDateString("en-IN", {
+  const locale = await getLocale();
+  const runDate = new Date(runWithStops.runDate).toLocaleDateString(`${locale}-IN`, {
+    timeZone: "Asia/Kolkata",
     day: "numeric",
     month: "short",
     year: "numeric",

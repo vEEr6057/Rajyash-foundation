@@ -178,7 +178,7 @@ export default async function PickupDetailPage({
               <li key={e.id}>
                 → {tCommon(`status.${e.toStatus}`)}{" "}
                 <span className="text-subtle-foreground tabular-nums">
-                  {new Intl.DateTimeFormat("en-IN", {
+                  {new Intl.DateTimeFormat(`${locale}-IN`, {
                     timeZone: "Asia/Kolkata",
                     day: "numeric",
                     month: "short",
