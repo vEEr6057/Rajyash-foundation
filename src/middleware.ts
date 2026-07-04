@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   "/robots.txt", // SEO metadata routes — must not be auth-gated
   "/sitemap.xml",
   "/api/inngest(.*)", // S2S — Inngest authenticates via signing-key signature, not Clerk
+  "/api/health", // B5 — uptime probe; must answer without auth
 ]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
