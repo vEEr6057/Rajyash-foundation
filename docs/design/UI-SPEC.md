@@ -1,5 +1,10 @@
 # UI-SPEC — Rajyash Food-Rescue Design System
 
+> **⚠️ PARTIALLY SUPERSEDED (2026-07-04):** the color + typography sections below are historical —
+> the app is now **green+gold with Roboto Slab display** (Bricolage retired, saffron demoted).
+> Canonical for anything visual: [APP-UI-CHARTER.md](APP-UI-CHARTER.md) (+ HOMEPAGE-SPEC.md for `/`).
+> Still current here: status-pill tokens, motion budgets, component inventory, radius/spacing scale.
+
 Binding design contract for **all phases**. Imported from claude.ai/design
 (`0e5ea7a4-…`). Source of truth:
 

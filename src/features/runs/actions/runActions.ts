@@ -51,6 +51,26 @@ function revalidateRuns(id?: string) {
   if (id) revalidatePath(ROUTES.adminRun(id));
 }
 
+/**
+ * B4 integrity guard: a run's stop list may only change while the run is `planned`
+ * or `active`. Mutating the stops of a completed/cancelled run silently corrupts
+ * reports (run/completed was already emitted). Returns a fail Result to short-circuit
+ * on, or null when the run is mutable. Fetches the run row once so callers reuse it.
+ */
+async function guardRunMutable(
+  runId: string,
+): Promise<{ ok: false; code: string; message: string } | null> {
+  const run = await runsRepo.getById(runId);
+  if (!run) return fail("NOT_FOUND", "Run not found.");
+  if (run.status !== "planned" && run.status !== "active") {
+    return fail(
+      "CONFLICT",
+      "This run is completed/cancelled — stops can no longer change.",
+    );
+  }
+  return null;
+}
+
 // ── Run notification emits (B3) ─────────────────────────────────────
 // After-commit, best-effort — a failed emit must never fail the write (mirrors the
 // pickupActions emit pattern). Idempotency + recipient/copy resolution live in the
@@ -161,6 +181,8 @@ export async function addPickupStop(input: AddPickupStopInput): Promise<Result<{
   const parsed = addPickupStopSchema.safeParse(input);
   if (!parsed.success) return fail("VALIDATION", parsed.error.issues[0]?.message ?? "Invalid input");
   const d = parsed.data;
+  const guard = await guardRunMutable(d.runId);
+  if (guard) return guard;
   const partner = await partnersRepo.getById(d.partnerId);
   if (!partner) return fail("NOT_FOUND", "Partner not found.");
   try {
@@ -192,6 +214,8 @@ export async function addDropStop(input: AddDropStopInput): Promise<Result<{ id:
   const parsed = addDropStopSchema.safeParse(input);
   if (!parsed.success) return fail("VALIDATION", parsed.error.issues[0]?.message ?? "Invalid input");
   const d = parsed.data;
+  const guard = await guardRunMutable(d.runId);
+  if (guard) return guard;
 
   let lat: number | null = d.lat ?? null;
   let lng: number | null = d.lng ?? null;
@@ -242,6 +266,8 @@ export async function reorderStops(input: ReorderInput): Promise<Result> {
   }
   const parsed = reorderSchema.safeParse(input);
   if (!parsed.success) return fail("VALIDATION", parsed.error.issues[0]?.message ?? "Invalid input");
+  const guard = await guardRunMutable(parsed.data.runId);
+  if (guard) return guard;
   try {
     await runStopsRepo.reorder(parsed.data.items);
     revalidateRuns(parsed.data.runId);
@@ -260,6 +286,8 @@ export async function removeStop(stopId: string, runId: string): Promise<Result>
     return fail("FORBIDDEN", "Admins only.");
   }
   if (!stopId) return fail("VALIDATION", "Stop ID required.");
+  const guard = await guardRunMutable(runId);
+  if (guard) return guard;
   await runStopsRepo.remove(stopId);
   revalidateRuns(runId);
   return { ok: true };
@@ -325,12 +353,18 @@ export async function overrideStopStatus(stopId: string, status: StopStatus): Pr
   }
   const stop = await runStopsRepo.getById(stopId);
   if (!stop) return fail("NOT_FOUND", "Stop not found.");
+  // B4: a closed run's stop statuses are final. Reverting a stop to `pending` on a
+  // completed run would strand it (VALID_RUN_TRANSITIONS.completed = [] — no reopen).
+  const run = await runsRepo.getById(stop.runId);
+  if (!run) return fail("NOT_FOUND", "Run not found.");
+  if (run.status === "completed" || run.status === "cancelled") {
+    return fail("CONFLICT", "This run is closed — stop statuses are final.");
+  }
   await runStopsRepo.setStopStatus(stopId, status, status === "done" ? new Date() : null);
   const allStops = await runStopsRepo.getByRunId(stop.runId);
   const updated = allStops.map((s) => (s.id === stopId ? { ...s, status } : s));
   if (allStopsDone(updated) && status !== "pending") {
-    const run = await runsRepo.getById(stop.runId);
-    if (run && canRunTransition(run.status, "completed")) {
+    if (canRunTransition(run.status, "completed")) {
       await runsRepo.setRunStatus(stop.runId, "completed");
       await runPingsRepo.purgeForRun(stop.runId); // TRK-05
       await emitRunCompleted(stop.runId); // NOT (B3)
@@ -371,7 +405,12 @@ export async function deleteRun(runId: string): Promise<Result> {
   }
   const run = await runsRepo.getById(runId);
   if (!run) return fail("NOT_FOUND", "Run not found.");
-  if (run.status !== "planned") return fail("CONFLICT", "Only planned runs can be deleted.");
+  // Only planned or cancelled runs are deletable. An active run must be cancelled
+  // first (its driver is mid-drive); a completed run is a permanent record (B4).
+  if (run.status === "active")
+    return fail("CONFLICT", "Cancel the run before deleting it.");
+  if (run.status === "completed")
+    return fail("CONFLICT", "Completed runs are kept for reporting.");
   await runsRepo.delete(runId);
   revalidatePath(ROUTES.adminRuns);
   return { ok: true };

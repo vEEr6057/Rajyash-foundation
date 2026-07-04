@@ -99,7 +99,20 @@ export async function deleteDestination(id: string): Promise<Result> {
     revalidatePath(ROUTES.adminDestinations);
     return { ok: true };
   } catch (e) {
-    logger.error("deleteDestination failed", { id, err: String(e) });
+    const msg = String(e);
+    // run_stops.destination_id is a NO-ACTION FK — a referenced destination blocks the
+    // delete. Mirror deletePartner: guide the admin to the `active` flag instead (DEST-01).
+    if (
+      msg.includes("23503") ||
+      msg.includes("foreign key") ||
+      msg.includes("violates")
+    ) {
+      return fail(
+        "CONFLICT",
+        "This destination is used by past runs — mark it inactive instead of deleting.",
+      );
+    }
+    logger.error("deleteDestination failed", { id, err: msg });
     return fail("SERVER_ERROR", "Could not delete the destination.");
   }
 }

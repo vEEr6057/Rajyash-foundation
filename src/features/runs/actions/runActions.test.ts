@@ -90,11 +90,15 @@ import {
   setRunStatus,
   markStopDone,
   getRunRoute,
+  deleteRun,
 } from "./runActions";
 
 beforeEach(() => {
   Object.values(h).forEach((fn) => fn.mockReset());
   h.requireRole.mockResolvedValue({ userId: "admin-1", role: "admin" });
+  // Default: a mutable (active) run, so stop-mutation actions pass the B4 run-status
+  // guard. Tests that assert the guard override this with a closed/missing run.
+  h.runGetById.mockResolvedValue({ id: "r1", status: "active" });
 });
 
 describe("admin auth gates — FORBIDDEN without admin role", () => {
@@ -290,6 +294,120 @@ describe("run notification emits (B3)", () => {
     expect(h.inngestSend).toHaveBeenCalledWith(
       expect.objectContaining({ name: "run/completed" }),
     );
+  });
+});
+
+describe("run-status guards on stop mutations (B4)", () => {
+  it("addPickupStop is blocked on a completed run (CONFLICT, no stop written)", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "completed" });
+    const res = await addPickupStop({ runId: "r1", partnerId: "p1", seq: 1 } as never);
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.stopAdd).not.toHaveBeenCalled();
+    expect(h.partnerGetById).not.toHaveBeenCalled();
+  });
+
+  it("addDropStop is blocked on a cancelled run (CONFLICT, no geocode/write)", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "cancelled" });
+    const res = await addDropStop({ runId: "r1", seq: 1, address: "Naroda" } as never);
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.geocode).not.toHaveBeenCalled();
+    expect(h.stopAdd).not.toHaveBeenCalled();
+  });
+
+  it("removeStop is blocked on a completed run (CONFLICT, no delete)", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "completed" });
+    const res = await removeStop("s1", "r1");
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.stopRemove).not.toHaveBeenCalled();
+  });
+
+  it("reorderStops is blocked on a cancelled run (CONFLICT, no reorder)", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "cancelled" });
+    const res = await reorderStops({ runId: "r1", items: [{ id: "s1", seq: 1 }] });
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.stopReorder).not.toHaveBeenCalled();
+  });
+
+  it("removeStop still works on an active run", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "active" });
+    const res = await removeStop("s1", "r1");
+    expect(res.ok).toBe(true);
+    expect(h.stopRemove).toHaveBeenCalledWith("s1");
+  });
+
+  it("addPickupStop returns NOT_FOUND when the run is gone", async () => {
+    h.runGetById.mockResolvedValue(null);
+    const res = await addPickupStop({ runId: "gone", partnerId: "p1", seq: 1 } as never);
+    expect(!res.ok && (res as { code: string }).code).toBe("NOT_FOUND");
+  });
+});
+
+describe("overrideStopStatus — closed-run rejection (B4)", () => {
+  it("rejects an override on a completed run (CONFLICT, no mutation)", async () => {
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "done" });
+    h.runGetById.mockResolvedValue({ id: "r1", status: "completed" });
+    const res = await overrideStopStatus("s1", "pending");
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.stopSetStatus).not.toHaveBeenCalled();
+  });
+
+  it("rejects an override on a cancelled run", async () => {
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", status: "cancelled" });
+    const res = await overrideStopStatus("s1", "done");
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.stopSetStatus).not.toHaveBeenCalled();
+  });
+
+  it("allows an override on an active run", async () => {
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", status: "active" });
+    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([
+      { id: "s1", status: "pending" },
+      { id: "s2", status: "pending" },
+    ]);
+    const res = await overrideStopStatus("s1", "skipped");
+    expect(res.ok).toBe(true);
+    expect(h.stopSetStatus).toHaveBeenCalled();
+  });
+});
+
+describe("deleteRun — status matrix (B4)", () => {
+  it("deletes a planned run", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "planned" });
+    h.runDelete.mockResolvedValue(undefined);
+    const res = await deleteRun("r1");
+    expect(res.ok).toBe(true);
+    expect(h.runDelete).toHaveBeenCalledWith("r1");
+  });
+
+  it("deletes a cancelled run", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "cancelled" });
+    h.runDelete.mockResolvedValue(undefined);
+    const res = await deleteRun("r1");
+    expect(res.ok).toBe(true);
+    expect(h.runDelete).toHaveBeenCalledWith("r1");
+  });
+
+  it("blocks deleting an active run (CONFLICT — cancel first)", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "active" });
+    const res = await deleteRun("r1");
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.runDelete).not.toHaveBeenCalled();
+  });
+
+  it("blocks deleting a completed run (CONFLICT — kept for reporting)", async () => {
+    h.runGetById.mockResolvedValue({ id: "r1", status: "completed" });
+    const res = await deleteRun("r1");
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.runDelete).not.toHaveBeenCalled();
+  });
+
+  it("returns NOT_FOUND when the run is missing", async () => {
+    h.runGetById.mockResolvedValue(null);
+    const res = await deleteRun("gone");
+    expect(!res.ok && (res as { code: string }).code).toBe("NOT_FOUND");
   });
 });
 
