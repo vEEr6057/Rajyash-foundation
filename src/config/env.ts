@@ -33,6 +33,19 @@ export const env = createEnv({
     VAPID_PUBLIC_KEY: z.string().min(1),
     VAPID_PRIVATE_KEY: z.string().min(1),
     VAPID_SUBJECT: z.string().min(1), // e.g. "mailto:rajyashfoundation@rajyashgroup.com"
+    // ── Payments / Razorpay donation scaffold (Phase 5, PAY-01..04) ────────────
+    // Master switch. The ENTIRE payments surface (the /donate page, the
+    // createDonationOrder action, the webhook route) is dark until this is truthy.
+    // Default false so the app ships to prod inert and lights up later with zero
+    // code change. z.coerce.boolean semantics: UNSET (or empty) → false; ANY
+    // non-empty string → true. To KEEP IT DARK leave it UNSET; to LIGHT IT UP set
+    // PAYMENTS_ENABLED=1 (see docs/backend/RAZORPAY-SCAFFOLD-SPEC.md go-live steps).
+    PAYMENTS_ENABLED: z.coerce.boolean().default(false),
+    // Razorpay credentials are OPTIONAL — only read when PAYMENTS_ENABLED is on, so
+    // the app boots fine with them unset (KYC not cleared, no live keys yet).
+    RAZORPAY_KEY_ID: z.string().optional(),
+    RAZORPAY_KEY_SECRET: z.string().optional(),
+    RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).startsWith("pk_"),
@@ -52,6 +65,13 @@ export const env = createEnv({
     // unset the beacon is not rendered. Owner creates the Web Analytics site in the
     // CF dashboard and sets this as a build-time var in the GitHub Action.
     NEXT_PUBLIC_CF_BEACON_TOKEN: z.string().optional(),
+    // Payments (Phase 5) — client mirror of the master switch: gates the donate
+    // CTA/link and the /donate entry point in the browser. Same default-OFF semantics
+    // as the server PAYMENTS_ENABLED. Keep the two in lock-step.
+    NEXT_PUBLIC_PAYMENTS_ENABLED: z.coerce.boolean().default(false),
+    // Razorpay *public* key id — safe in the browser (the Checkout widget needs it).
+    // OPTIONAL: only read when the flag is on; the secret + webhook secret stay server-only.
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().optional(),
   },
   // Next.js inlines NEXT_PUBLIC_* at build time, so they must be listed explicitly.
   experimental__runtimeEnv: {
@@ -67,6 +87,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
     NEXT_PUBLIC_CF_BEACON_TOKEN: process.env.NEXT_PUBLIC_CF_BEACON_TOKEN,
+    NEXT_PUBLIC_PAYMENTS_ENABLED: process.env.NEXT_PUBLIC_PAYMENTS_ENABLED,
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
