@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { MapPin, Clock, Package } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import type { Pickup } from "@/server/db/schema";
 import { ROUTES } from "@/config/constants";
 import { formatQuantity, formatWindow } from "@/features/pickups/lib/format";
@@ -8,7 +8,7 @@ import { PickupStatusPill } from "./PickupStatusPill";
 
 /** Presentational pickup summary card (links to detail). */
 export async function PickupCard({ pickup }: { pickup: Pickup }) {
-  const t = await getTranslations("common");
+  const [t, locale] = await Promise.all([getTranslations("common"), getLocale()]);
   return (
     <Link
       href={ROUTES.pickup(pickup.id)}
@@ -26,7 +26,7 @@ export async function PickupCard({ pickup }: { pickup: Pickup }) {
       </p>
       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
         <Clock className="size-3.5" />
-        {formatWindow(pickup.windowStart, pickup.windowEnd)}
+        {formatWindow(pickup.windowStart, pickup.windowEnd, locale)}
       </p>
       <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
         <MapPin className="size-3.5" />

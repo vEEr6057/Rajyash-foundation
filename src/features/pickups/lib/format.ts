@@ -34,8 +34,24 @@ export function formatQuantity(
 // otherwise shifted every window 5h30 early — see E2E-AUDIT 🟠 2).
 export const APP_TIME_ZONE = "Asia/Kolkata";
 
-export function formatWindow(start: Date, end: Date): string {
-  const fmt = new Intl.DateTimeFormat("en-IN", {
+// Map a next-intl locale → a BCP-47 tag Intl understands, so month names localize
+// (e.g. "जुल" / "જુલાઈ" instead of "Jul") while the region stays India (12h clock,
+// numerals). Full-ICU is required at runtime for the Indic names to differ — asserted
+// by format.test.ts.
+const INTL_LOCALE: Record<string, string> = {
+  en: "en-IN",
+  gu: "gu-IN",
+  hi: "hi-IN",
+};
+
+/** Resolve a next-intl locale ("en" | "gu" | "hi") to its Intl tag; defaults to en-IN. */
+export function intlLocale(locale: string): string {
+  return INTL_LOCALE[locale] ?? "en-IN";
+}
+
+export function formatWindow(start: Date, end: Date, locale = "en"): string {
+  const tag = intlLocale(locale);
+  const fmt = new Intl.DateTimeFormat(tag, {
     timeZone: APP_TIME_ZONE,
     day: "numeric",
     month: "short",
@@ -43,7 +59,8 @@ export function formatWindow(start: Date, end: Date): string {
     minute: "2-digit",
     hour12: true,
   });
-  // Compare day boundaries IN IST, not the runtime tz.
+  // Compare day boundaries IN IST, not the runtime tz. dayKey stays en-CA — it's a
+  // machine comparison key, never shown to the user.
   const dayKey = (d: Date) =>
     new Intl.DateTimeFormat("en-CA", {
       timeZone: APP_TIME_ZONE,
@@ -53,7 +70,7 @@ export function formatWindow(start: Date, end: Date): string {
     }).format(d);
   const sameDay = dayKey(start) === dayKey(end);
   if (sameDay) {
-    const timeFmt = new Intl.DateTimeFormat("en-IN", {
+    const timeFmt = new Intl.DateTimeFormat(tag, {
       timeZone: APP_TIME_ZONE,
       hour: "numeric",
       minute: "2-digit",

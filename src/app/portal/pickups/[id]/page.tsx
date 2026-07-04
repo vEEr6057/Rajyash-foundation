@@ -1,7 +1,7 @@
 import { notFound, redirect } from "next/navigation";
 import Image from "next/image";
 import { Clock, MapPin, Package } from "lucide-react";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
@@ -41,9 +41,10 @@ export default async function PickupDetailPage({
   const { id } = await params;
   const session = await getSession();
   if (!session) redirect(ROUTES.signIn);
-  const [tPortal, tCommon] = await Promise.all([
+  const [tPortal, tCommon, locale] = await Promise.all([
     getTranslations("portal"),
     getTranslations("common"),
+    getLocale(),
   ]);
 
   const pickup = await pickupsRepo.getById(id);
@@ -95,7 +96,7 @@ export default async function PickupDetailPage({
         )}
         <p className="flex items-center gap-1.5 text-sm">
           <Clock className="size-4 text-muted-foreground" />
-          {formatWindow(pickup.windowStart, pickup.windowEnd)}
+          {formatWindow(pickup.windowStart, pickup.windowEnd, locale)}
         </p>
         <p className="flex items-center gap-1.5 text-sm">
           <MapPin className="size-4 text-muted-foreground" />
