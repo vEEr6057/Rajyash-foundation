@@ -221,10 +221,14 @@ describe("inviteUser", () => {
     );
   });
 
-  it("refuses to invite an admin (admins are seeded from the dashboard, not invited)", async () => {
+  it("invites an admin — carries role in metadata; they onboard + stay admin (completeOnboarding preserves it)", async () => {
     const r = await inviteUser("boss@example.com", "admin");
-    expect(r.ok).toBe(false);
-    if (!r.ok) expect(r.code).toBe("VALIDATION");
-    expect(createInvitation).not.toHaveBeenCalled();
+    expect(r.ok).toBe(true);
+    expect(createInvitation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        emailAddress: "boss@example.com",
+        publicMetadata: { role: "admin" },
+      }),
+    );
   });
 });

@@ -23,7 +23,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { SELECTABLE_ROLES, type Role } from "@/config/constants";
+import { ROLES, type Role } from "@/config/constants";
 import { inviteUser } from "@/features/admin";
 
 export function AddUserDialog() {
@@ -85,13 +85,18 @@ export function AddUserDialog() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {SELECTABLE_ROLES.map((r) => (
+                  {ROLES.map((r) => (
                     <SelectItem key={r} value={r}>
                       {tCommon(`role.${r}`)}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+              {role === "admin" && (
+                <p className="mt-1.5 text-xs text-muted-foreground">
+                  {t("users.invite.adminHint")}
+                </p>
+              )}
             </div>
             {err && <p className="text-sm text-destructive">{err}</p>}
           </div>

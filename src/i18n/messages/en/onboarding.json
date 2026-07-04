@@ -1,6 +1,8 @@
 {
   "title": "Welcome to Rajyash Food Rescue",
   "description": "A couple of details and you're in. You can change these later.",
+  "adminSetupTitle": "Setting up your admin account",
+  "adminSetupBlurb": "You've been invited as an admin — just confirm your details below and you'll get full coordinator access.",
   "roleLabel": "How would you like to help?",
   "donor": {
     "title": "Donate food",
