@@ -4,6 +4,7 @@ import { runPingsRepo } from "@/server/db/repositories/runPings";
 import { notificationsRepo } from "@/server/db/repositories/notifications";
 import { deliveriesRepo } from "@/server/db/repositories/deliveries";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
+import { profilesRepo } from "@/server/db/repositories/profiles";
 import { logger } from "@/lib/logger";
 
 const HOURS = 60 * 60 * 1000;
@@ -80,6 +81,37 @@ export const hygieneSweep = inngest.createFunction(
         });
       }
       return count;
+    });
+
+    // Escalation (production-discipline §3): a WARN log nobody reads isn't an alert.
+    // When claimed-but-stale pickups exist, put an in-app notification in front of
+    // every active admin — a volunteer is sitting on food past its window and only a
+    // human can un-claim it. Deduped to once per day per admin by reusing the
+    // exactly-once delivery ledger with a date-keyed event id.
+    await step.run("escalate-stale-claimed", async () => {
+      const count = await pickupsRepo.countStaleClaimed(cutoff72h);
+      if (count === 0) return 0;
+      const istDay = new Date(now + 5.5 * HOURS).toISOString().slice(0, 10);
+      const eventId = `ops/stale_claimed:${istDay}`;
+      const adminIds = await profilesRepo.listAdminIds();
+      let notified = 0;
+      for (const userId of adminIds) {
+        const fresh = await deliveriesRepo.claim(eventId, userId, "in_app");
+        if (!fresh) continue; // already escalated today (sweep retry)
+        await notificationsRepo.insert({
+          userId,
+          type: "ops/stale_claimed",
+          title: `${count} claimed pickup${count === 1 ? "" : "s"} past the window`,
+          body: "Claimed pickups are past their pickup window and need a human decision — reassign or cancel them from the admin pickups screen.",
+          data: { count },
+        });
+        notified++;
+      }
+      logger.info("hygiene sweep: escalated stale-claimed to admins", {
+        count,
+        notified,
+      });
+      return notified;
     });
   },
 );

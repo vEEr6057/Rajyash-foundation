@@ -139,7 +139,9 @@
     "metrics": {
       "servings": "બચાવેલ ભોજન",
       "kg": "બચાવ્યા કિ.ગ્રા.",
-      "deliveries": "પૂર્ણ ડિલિવરી"
+      "deliveries": "પૂર્ણ ડિલિવરી",
+      "avgRescue": "સરેરાશ બચાવ સમય",
+      "p90Rescue": "90% આટલા સમયમાં"
     },
     "exportButton": "ફ઼િલ્ટર કરેલ પિકઅપ ડાઉનલોડ (CSV)",
     "exportButtonShort": "પિકઅપ CSV",

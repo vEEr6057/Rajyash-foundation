@@ -85,6 +85,13 @@ describe("receipt numbering", () => {
     expect(financialYear(new Date("2026-12-31T00:00:00Z"))).toBe("2026-27");
   });
 
+  it("switches FY at IST midnight, not UTC (80G receipts are IST documents)", () => {
+    // 18:29 UTC Mar 31 = 23:59 IST Mar 31 → still the old FY.
+    expect(financialYear(new Date("2026-03-31T18:29:00Z"))).toBe("2025-26");
+    // 18:30 UTC Mar 31 = 00:00 IST Apr 1 → the new FY (UTC math would say 2025-26).
+    expect(financialYear(new Date("2026-03-31T18:30:00Z"))).toBe("2026-27");
+  });
+
   it("formats a receipt number as RJ-FY<year>-<short>", () => {
     const r = generateReceiptNumber(new Date("2026-07-01T00:00:00Z"));
     expect(r).toMatch(/^RJ-FY2026-27-[0-9A-F]{6}$/);

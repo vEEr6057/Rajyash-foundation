@@ -1,4 +1,6 @@
 import "server-only";
+import { env } from "@/config/env";
+import { logger } from "@/lib/logger";
 import { CHANNELS } from "./registry";
 import { deliveriesRepo } from "@/server/db/repositories/deliveries";
 import type { ChannelKey, NotificationMessage, Recipient } from "./types";
@@ -15,6 +17,13 @@ export async function dispatchToChannel(
   msg: NotificationMessage,
   to: Recipient,
 ): Promise<void> {
+  // Kill switch (production-discipline §3): NOTIFICATIONS_ENABLED=0 silences every
+  // channel at this single choke point — no claim is made, so re-enabling lets a
+  // retried event deliver normally instead of being deduped into a lost notification.
+  if (!env.NOTIFICATIONS_ENABLED) {
+    logger.warn("notifications disabled, skipping send", { eventId, channelKey });
+    return;
+  }
   const fresh = await deliveriesRepo.claim(eventId, to.userId, channelKey);
   if (!fresh) return; // already delivered this (event, recipient, channel) -> skip (NOT-05)
   try {

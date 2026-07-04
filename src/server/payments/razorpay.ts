@@ -100,13 +100,19 @@ export async function createRazorpayOrder(input: {
   return (await res.json()) as RazorpayOrder;
 }
 
+/** IST offset — 80G receipts are Indian tax documents; the FY boundary is IST midnight. */
+const IST_OFFSET_MS = 5.5 * 3_600_000;
+
 /**
- * Indian financial-year label (Apr 1 – Mar 31) for a receipt, e.g. "2026-27".
+ * Indian financial-year label (Apr 1 – Mar 31, **IST**) for a receipt, e.g. "2026-27".
  * April onward belongs to the year that just started; Jan–Mar to the prior FY.
+ * Computed in IST, not UTC: a donation at 00:30 IST on Apr 1 is 19:00 UTC Mar 31 —
+ * UTC math would stamp the PRIOR financial year on the receipt.
  */
 export function financialYear(date = new Date()): string {
-  const y = date.getUTCFullYear();
-  const startYear = date.getUTCMonth() >= 3 ? y : y - 1; // month is 0-indexed; 3 = April
+  const ist = new Date(date.getTime() + IST_OFFSET_MS);
+  const y = ist.getUTCFullYear();
+  const startYear = ist.getUTCMonth() >= 3 ? y : y - 1; // month is 0-indexed; 3 = April
   const endYY = String((startYear + 1) % 100).padStart(2, "0");
   return `${startYear}-${endYY}`;
 }

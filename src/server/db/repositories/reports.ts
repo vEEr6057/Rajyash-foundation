@@ -28,6 +28,12 @@ export interface PartnerBreakdownRow {
   count: number;
 }
 
+export interface RescueTimeRow {
+  avgMinutes: number;
+  p90Minutes: number;
+  count: number;
+}
+
 export const reportsRepo = {
   /**
    * RPT-01: Per-run summary — pickup-stop count, drop-stop count, completed-drop count.
@@ -111,5 +117,30 @@ export const reportsRepo = {
       .groupBy(pickups.partnerId, partners.name)
       .orderBy(sql`count(*) desc`);
     return rows;
+  },
+
+  /**
+   * Rescue time (production-discipline §2 / food-safety SLA): posted→delivered
+   * duration over DELIVERED pickups in [from, to] by delivered_at. avg + p90 in
+   * minutes — p90 shows the tail a mean hides (one 8-hour rescue among quick ones).
+   * epoch diff in seconds / 60; percentile_cont needs a WITHIN GROUP ordered-set.
+   */
+  async rescueTime(from: Date, to: Date): Promise<RescueTimeRow> {
+    const db = getDb();
+    const [row] = await db
+      .select({
+        avgMinutes: sql<number>`coalesce(round(avg(extract(epoch from (${pickups.deliveredAt} - ${pickups.createdAt})) / 60)), 0)`.mapWith(Number),
+        p90Minutes: sql<number>`coalesce(round(percentile_cont(0.9) within group (order by extract(epoch from (${pickups.deliveredAt} - ${pickups.createdAt})) / 60)::numeric), 0)`.mapWith(Number),
+        count: sql<number>`count(*)`.mapWith(Number),
+      })
+      .from(pickups)
+      .where(
+        and(
+          eq(pickups.status, "delivered"),
+          gte(pickups.deliveredAt, from),
+          lte(pickups.deliveredAt, to),
+        ),
+      );
+    return row;
   },
 };

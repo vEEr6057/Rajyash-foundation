@@ -49,6 +49,20 @@ export const env = createEnv({
     RAZORPAY_KEY_ID: z.string().optional(),
     RAZORPAY_KEY_SECRET: z.string().optional(),
     RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
+    // ── Kill switches (production-discipline §3) ────────────────────────────────
+    // Default ON (opposite of PAYMENTS_ENABLED, which is dark-by-default): unset or
+    // anything except an explicit "0"/"false" keeps the feature running. Flip via
+    // `wrangler secret put` — applies to the live Worker without a redeploy.
+    // NOTIFICATIONS_ENABLED=0 → the dispatch layer no-ops (all channels, one choke point).
+    NOTIFICATIONS_ENABLED: z
+      .string()
+      .optional()
+      .transform((v) => !(v === "0" || v === "false")),
+    // INTAKE_ENABLED=0 → new pickup requests are paused; existing ones keep flowing.
+    INTAKE_ENABLED: z
+      .string()
+      .optional()
+      .transform((v) => !(v === "0" || v === "false")),
   },
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).startsWith("pk_"),

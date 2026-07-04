@@ -30,6 +30,7 @@ export async function PublicFooter() {
   const t = await getTranslations("landing");
   const commonT = await getTranslations("common");
   const privacyT = await getTranslations("privacy");
+  const policiesT = await getTranslations("policies");
   const donateT = await getTranslations("donate");
   // PAY-03: donate link appears only when payments are enabled (dark by default).
   const paymentsOn = env.NEXT_PUBLIC_PAYMENTS_ENABLED;
@@ -68,6 +69,8 @@ export async function PublicFooter() {
               <li><Link href={ROUTES.signIn} className={link} style={linkStyle}>{t("signin")}</Link></li>
               <li><Link href={ROUTES.staffSignIn} className={link} style={linkStyle}>{t("staffSignin")}</Link></li>
               <li><Link href={ROUTES.privacy} className={link} style={linkStyle}>{privacyT("footLink")}</Link></li>
+              <li><Link href={ROUTES.terms} className={link} style={linkStyle}>{policiesT("termsFootLink")}</Link></li>
+              <li><Link href={ROUTES.refundPolicy} className={link} style={linkStyle}>{policiesT("refundFootLink")}</Link></li>
             </ul>
           </div>
 

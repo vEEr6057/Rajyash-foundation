@@ -4,6 +4,8 @@ import { NextResponse } from "next/server";
 const isPublicRoute = createRouteMatcher([
   "/",
   "/privacy", // public policy page (in the (public) group, but the Clerk matcher still runs)
+  "/terms", // public legal pages — Razorpay website-compliance checks these
+  "/refund-policy",
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/staff(.*)", // staff (admin/coordinator) sign-in entry; /admin itself still role-gated below
@@ -12,6 +14,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/inngest(.*)", // S2S — Inngest authenticates via signing-key signature, not Clerk
   "/api/health", // B5 — uptime probe; must answer without auth
   "/api/csp-report", // B5 — browser POSTs CSP violations here; never auth-gate/redirect it
+  "/api/client-error", // §3 — browser error reports; errors happen signed-out too
   "/api/razorpay/webhook", // PAY-02 — Razorpay authenticates via HMAC signature, not Clerk
   "/donate", // PAY-03 — public donate page (flag-gated to notFound() when payments are off)
 ]);

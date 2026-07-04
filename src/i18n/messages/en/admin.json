@@ -136,7 +136,9 @@
     "metrics": {
       "servings": "Servings rescued",
       "kg": "kg rescued",
-      "deliveries": "Deliveries completed"
+      "deliveries": "Deliveries completed",
+      "avgRescue": "Avg rescue time",
+      "p90Rescue": "90% within"
     },
     "exportButton": "Download filtered pickups (CSV)",
     "exportButtonShort": "Pickups CSV",
