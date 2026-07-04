@@ -20,5 +20,5 @@ CREATE TABLE "webhook_events" (
 	"processed_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
-CREATE INDEX "donations_order_idx" ON "donations" USING btree ("razorpay_order_id");--> statement-breakpoint
-CREATE INDEX "donations_payment_idx" ON "donations" USING btree ("razorpay_payment_id");
+CREATE INDEX "donations_razorpay_order_idx" ON "donations" USING btree ("razorpay_order_id");--> statement-breakpoint
+CREATE INDEX "donations_razorpay_payment_idx" ON "donations" USING btree ("razorpay_payment_id");

@@ -3,6 +3,7 @@
 // the transparent-over-hero → paper-on-scroll behaviour lives in HeaderScroll (client).
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
+import { env } from "@/config/env";
 import { ROUTES } from "@/config/constants";
 import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
@@ -21,11 +22,14 @@ const NAV: [href: string, labelKey: "nav.whatWeDo" | "nav.impact" | "nav.volunte
 ];
 
 export async function PublicHeader() {
-  const [t, tNav, session] = await Promise.all([
+  const [t, tNav, donateT, session] = await Promise.all([
     getTranslations("landing"),
     getTranslations("common"),
+    getTranslations("donate"),
     getSession(),
   ]);
+  // PAY-03: donate CTA appears only when payments are enabled (dark by default).
+  const paymentsOn = env.NEXT_PUBLIC_PAYMENTS_ENABLED;
   const dashboardHref = session
     ? session.role === "admin"
       ? ROUTES.adminDashboard
@@ -56,6 +60,15 @@ export async function PublicHeader() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          {paymentsOn && (
+            <Link
+              href={ROUTES.donate}
+              className="rj-underline text-sm font-medium"
+              style={{ color: "var(--rj-gold-ink)" }}
+            >
+              {donateT("navLabel")}
+            </Link>
+          )}
           <LanguageSwitcher />
           <ThemeToggle />
           {dashboardHref ? (

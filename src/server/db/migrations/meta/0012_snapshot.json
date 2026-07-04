@@ -1,5 +1,5 @@
 {
-  "id": "f0bd4a60-2528-4b10-80f9-a126a2859626",
+  "id": "5f6274ea-53da-4ee7-b688-0fa83435ad0f",
   "prevId": "b6f441fd-74d5-410e-80a7-3b84441bddc5",
   "version": "7",
   "dialect": "postgresql",
@@ -163,8 +163,8 @@
         }
       },
       "indexes": {
-        "donations_order_idx": {
-          "name": "donations_order_idx",
+        "donations_razorpay_order_idx": {
+          "name": "donations_razorpay_order_idx",
           "columns": [
             {
               "expression": "razorpay_order_id",
@@ -178,8 +178,8 @@
           "method": "btree",
           "with": {}
         },
-        "donations_payment_idx": {
-          "name": "donations_payment_idx",
+        "donations_razorpay_payment_idx": {
+          "name": "donations_razorpay_payment_idx",
           "columns": [
             {
               "expression": "razorpay_payment_id",
