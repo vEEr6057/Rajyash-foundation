@@ -1,0 +1,60 @@
+name: CI
+
+# PR gate (production-discipline §4): a PR that would break the deploy fails BEFORE
+# merge. Mirrors deploy.yml's validate steps exactly, plus a plain `next build`
+# (opennext packaging stays deploy-only). deploy.yml still re-validates on main.
+
+on:
+  pull_request: {}
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true # superseded pushes to the same PR cancel the older run
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-latest
+    env:
+      # Server env vars are Worker secrets, validated at runtime — skip boot validation
+      # during build/checks (same as deploy.yml).
+      SKIP_ENV_VALIDATION: "1"
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      NEXT_PUBLIC_VAPID_PUBLIC_KEY: ${{ secrets.NEXT_PUBLIC_VAPID_PUBLIC_KEY }}
+      NEXT_PUBLIC_CLERK_SIGN_IN_URL: /sign-in
+      NEXT_PUBLIC_CLERK_SIGN_UP_URL: /sign-up
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /portal/dashboard
+      NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /onboarding
+      NEXT_PUBLIC_CF_BEACON_TOKEN: "22ff4d173055492fa0dff67fb4b9d64f"
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.33.2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Tests
+        run: pnpm test:run
+
+      - name: Build
+        run: pnpm build

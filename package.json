@@ -20,7 +20,7 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:push": "drizzle-kit push",
+    "db:push:dev": "drizzle-kit push",
     "test": "vitest",
     "test:run": "vitest --run"
   },

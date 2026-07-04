@@ -1,0 +1,52 @@
+name: DB Backup
+
+# Nightly encrypted pg_dump of the production database (production-discipline §1).
+# On the Supabase FREE tier this is the ONLY backup that exists. It also doubles as
+# the free-tier keepalive (a dump is database activity; free projects pause after
+# 7 idle days). Restore procedure: docs/runbook.md §Backups & restore.
+#
+# Required repo secrets:
+#   DIRECT_URL         — Supabase DIRECT connection string (port 5432, NOT the 6543 pooler)
+#   BACKUP_PASSPHRASE  — gpg symmetric passphrase; copy lives in the foundation password
+#                        manager (an encrypted backup nobody can decrypt is not a backup)
+
+on:
+  schedule:
+    - cron: "30 21 * * *" # 21:30 UTC = 03:00 IST, quiet hours
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  backup:
+    name: dump + encrypt + upload
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install PostgreSQL 17 client
+        run: |
+          sudo sh -c 'echo "deb https://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
+          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/pgdg.gpg
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq postgresql-client-17
+
+      - name: Dump database
+        env:
+          DIRECT_URL: ${{ secrets.DIRECT_URL }}
+        run: pg_dump "$DIRECT_URL" -Fc --no-owner --no-privileges -f backup.dump
+
+      - name: Encrypt
+        env:
+          BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+        run: |
+          gpg --batch --symmetric --cipher-algo AES256 \
+            --passphrase "$BACKUP_PASSPHRASE" backup.dump
+          rm backup.dump
+
+      - name: Upload artifact (90-day retention)
+        uses: actions/upload-artifact@v4
+        with:
+          name: db-backup-${{ github.run_id }}
+          path: backup.dump.gpg
+          retention-days: 90
+          if-no-files-found: error
