@@ -32,7 +32,9 @@ const CSP_REPORT_ONLY = [
   "frame-src 'self' https://*.clerk.com https://challenges.cloudflare.com",
   "worker-src 'self' blob:",
   "report-uri /api/csp-report",
-  "upgrade-insecure-requests",
+  // NOTE: `upgrade-insecure-requests` is intentionally omitted — Chrome ignores it in a
+  // report-only policy and logs a console error on every page. Add it back only when the
+  // CSP flips to enforcing (Content-Security-Policy).
 ].join("; ");
 
 function secure(res: NextResponse): NextResponse {
