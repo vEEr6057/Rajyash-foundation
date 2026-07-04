@@ -99,9 +99,25 @@ export async function geocodeAddress(
  * embedded coords. Returns the final URL, or null on any failure. The body is
  * never read — we only need res.url after redirects (Workers fetch follows them).
  */
-export async function resolveShortMapsUrl(url: string): Promise<string | null> {
+const ALLOWED_SHORT_MAPS_HOSTS = new Set(["maps.app.goo.gl", "goo.gl"]);
+
+function toAllowedShortMapsUrl(rawUrl: string): string | null {
   try {
-    const res = await fetch(url, {
+    const parsed = new URL(rawUrl);
+    if (parsed.protocol !== "https:") return null;
+    if (!ALLOWED_SHORT_MAPS_HOSTS.has(parsed.hostname)) return null;
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
+export async function resolveShortMapsUrl(url: string): Promise<string | null> {
+  const safeUrl = toAllowedShortMapsUrl(url);
+  if (!safeUrl) return null;
+
+  try {
+    const res = await fetch(safeUrl, {
       redirect: "follow",
       headers: { "User-Agent": USER_AGENT },
       cache: "no-store",
