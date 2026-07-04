@@ -12,6 +12,8 @@ const isPublicRoute = createRouteMatcher([
   "/api/inngest(.*)", // S2S — Inngest authenticates via signing-key signature, not Clerk
   "/api/health", // B5 — uptime probe; must answer without auth
   "/api/csp-report", // B5 — browser POSTs CSP violations here; never auth-gate/redirect it
+  "/api/razorpay/webhook", // PAY-02 — Razorpay authenticates via HMAC signature, not Clerk
+  "/donate", // PAY-03 — public donate page (flag-gated to notFound() when payments are off)
 ]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
@@ -27,9 +29,9 @@ const CSP_REPORT_ONLY = [
   "img-src 'self' data: blob: https:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com https://static.cloudflareinsights.com",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com https://static.cloudflareinsights.com https://checkout.razorpay.com https://api.razorpay.com",
   "connect-src 'self' https: wss: https://static.cloudflareinsights.com",
-  "frame-src 'self' https://*.clerk.com https://challenges.cloudflare.com",
+  "frame-src 'self' https://*.clerk.com https://challenges.cloudflare.com https://checkout.razorpay.com https://api.razorpay.com",
   "worker-src 'self' blob:",
   "report-uri /api/csp-report",
   // NOTE: `upgrade-insecure-requests` is intentionally omitted — Chrome ignores it in a

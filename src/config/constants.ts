@@ -45,7 +45,22 @@ export const ROUTES = {
   // Public site (Phase 7 — D-04: volunteer CTA reuses Clerk sign-up with role prefill)
   becomeVolunteer: "/sign-up?role=volunteer",
   privacy: "/privacy",
+  // Payments (Phase 5 / PAY-03) — public donate page, rendered only when the flag is on.
+  donate: "/donate",
 } as const;
+
+// ── Payments / Razorpay (Phase 5, PAY-01..04) ────────────────────────
+// 80G tax-exemption registration number printed on donation receipts. INTENTIONALLY
+// EMPTY — never invent a real number. The owner fills this in as a go-live step; the
+// receipt email hides the 80G line while it is blank.
+// TODO(owner): set the Foundation's real 80G registration number before enabling receipts.
+export const NGO_80G_NUMBER = "";
+// Legal name printed on receipts (single source; safe to ship — public info).
+export const NGO_LEGAL_NAME = "Rajyash Foundation";
+// Donation amount bounds (paise). Min ₹10 (1000 paise); ceiling ₹1,00,000 (10,000,000
+// paise) — a sane upper guard so a fat-fingered / hostile amount is rejected server-side.
+export const DONATION_MIN_PAISE = 1000;
+export const DONATION_MAX_PAISE = 10_000_000;
 
 // Official Rajyash Foundation social profiles. Single source of truth — referenced
 // by both the public footer (visible icon links) and the homepage ORG_JSONLD `sameAs`
@@ -166,6 +181,8 @@ export const NOTIFICATION_EVENTS = {
   // Runs & dispatch (B3): driver learns of an assignment; admins learn of completion.
   runAssigned: "run/assigned",
   runCompleted: "run/completed",
+  // Payments (Phase 5 / PAY-04): a webhook-verified capture fires the receipt email.
+  donationCaptured: "donation/captured",
 } as const;
 
 // Channel keys (NOT-04 registry keys + notification_deliveries.channel values).
