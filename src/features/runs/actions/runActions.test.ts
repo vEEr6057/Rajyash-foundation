@@ -342,6 +342,37 @@ describe("run-status guards on stop mutations (B4)", () => {
   });
 });
 
+describe("overrideStopStatus — closed-run rejection (B4)", () => {
+  it("rejects an override on a completed run (CONFLICT, no mutation)", async () => {
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "done" });
+    h.runGetById.mockResolvedValue({ id: "r1", status: "completed" });
+    const res = await overrideStopStatus("s1", "pending");
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.stopSetStatus).not.toHaveBeenCalled();
+  });
+
+  it("rejects an override on a cancelled run", async () => {
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", status: "cancelled" });
+    const res = await overrideStopStatus("s1", "done");
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.stopSetStatus).not.toHaveBeenCalled();
+  });
+
+  it("allows an override on an active run", async () => {
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", status: "active" });
+    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([
+      { id: "s1", status: "pending" },
+      { id: "s2", status: "pending" },
+    ]);
+    const res = await overrideStopStatus("s1", "skipped");
+    expect(res.ok).toBe(true);
+    expect(h.stopSetStatus).toHaveBeenCalled();
+  });
+});
+
 describe("deleteRun — status matrix (B4)", () => {
   it("deletes a planned run", async () => {
     h.runGetById.mockResolvedValue({ id: "r1", status: "planned" });

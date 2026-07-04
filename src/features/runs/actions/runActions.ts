@@ -353,12 +353,18 @@ export async function overrideStopStatus(stopId: string, status: StopStatus): Pr
   }
   const stop = await runStopsRepo.getById(stopId);
   if (!stop) return fail("NOT_FOUND", "Stop not found.");
+  // B4: a closed run's stop statuses are final. Reverting a stop to `pending` on a
+  // completed run would strand it (VALID_RUN_TRANSITIONS.completed = [] — no reopen).
+  const run = await runsRepo.getById(stop.runId);
+  if (!run) return fail("NOT_FOUND", "Run not found.");
+  if (run.status === "completed" || run.status === "cancelled") {
+    return fail("CONFLICT", "This run is closed — stop statuses are final.");
+  }
   await runStopsRepo.setStopStatus(stopId, status, status === "done" ? new Date() : null);
   const allStops = await runStopsRepo.getByRunId(stop.runId);
   const updated = allStops.map((s) => (s.id === stopId ? { ...s, status } : s));
   if (allStopsDone(updated) && status !== "pending") {
-    const run = await runsRepo.getById(stop.runId);
-    if (run && canRunTransition(run.status, "completed")) {
+    if (canRunTransition(run.status, "completed")) {
       await runsRepo.setRunStatus(stop.runId, "completed");
       await runPingsRepo.purgeForRun(stop.runId); // TRK-05
       await emitRunCompleted(stop.runId); // NOT (B3)
