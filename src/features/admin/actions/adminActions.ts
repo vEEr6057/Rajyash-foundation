@@ -133,7 +133,13 @@ export async function inviteUser(email: string, role: Role): Promise<Result> {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
     return fail("VALIDATION", "Enter a valid email address.");
   }
-  if (!ROLES.includes(role)) return fail("VALIDATION", "Invalid role.");
+  // Admin is granted only by seeding Clerk metadata directly (dashboard/backend) with
+  // onboardingComplete=true — never via an email invite. An invited admin would land in
+  // onboarding (which offers only donor/volunteer/driver) and get demoted, so refuse it
+  // here. Mirrors AddUserDialog, which only offers SELECTABLE_ROLES.
+  if (role === "admin") {
+    return fail("VALIDATION", "Only donor, volunteer, or driver can be invited. Grant admin from the Clerk dashboard.");
+  }
   try {
     const client = await clerkClient();
     await client.invitations.createInvitation({

@@ -192,6 +192,7 @@ describe("assignPickup (ADM-02)", () => {
 describe("inviteUser", () => {
   beforeEach(() => {
     requireRole.mockResolvedValue({ userId: "admin-1", role: "admin" });
+    createInvitation.mockClear();
   });
 
   it("returns FORBIDDEN for non-admin and does not invite", async () => {
@@ -218,5 +219,12 @@ describe("inviteUser", () => {
         publicMetadata: { role: "driver" },
       }),
     );
+  });
+
+  it("refuses to invite an admin (admins are seeded from the dashboard, not invited)", async () => {
+    const r = await inviteUser("boss@example.com", "admin");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("VALIDATION");
+    expect(createInvitation).not.toHaveBeenCalled();
   });
 });
