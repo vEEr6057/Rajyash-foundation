@@ -36,11 +36,14 @@ export const env = createEnv({
     // ── Payments / Razorpay donation scaffold (Phase 5, PAY-01..04) ────────────
     // Master switch. The ENTIRE payments surface (the /donate page, the
     // createDonationOrder action, the webhook route) is dark until this is truthy.
-    // Default false so the app ships to prod inert and lights up later with zero
-    // code change. z.coerce.boolean semantics: UNSET (or empty) → false; ANY
-    // non-empty string → true. To KEEP IT DARK leave it UNSET; to LIGHT IT UP set
+    // Explicit-truthy parse (NOT z.coerce.boolean — that treats the string "false" as
+    // TRUE, an unsafe footgun for a payment kill-switch): enables ONLY on "1" or "true".
+    // UNSET / "false" / "0" / "" / anything-else all → false. To LIGHT IT UP set
     // PAYMENTS_ENABLED=1 (see docs/backend/RAZORPAY-SCAFFOLD-SPEC.md go-live steps).
-    PAYMENTS_ENABLED: z.coerce.boolean().default(false),
+    PAYMENTS_ENABLED: z
+      .string()
+      .optional()
+      .transform((v) => v === "1" || v === "true"),
     // Razorpay credentials are OPTIONAL — only read when PAYMENTS_ENABLED is on, so
     // the app boots fine with them unset (KYC not cleared, no live keys yet).
     RAZORPAY_KEY_ID: z.string().optional(),
@@ -66,9 +69,13 @@ export const env = createEnv({
     // CF dashboard and sets this as a build-time var in the GitHub Action.
     NEXT_PUBLIC_CF_BEACON_TOKEN: z.string().optional(),
     // Payments (Phase 5) — client mirror of the master switch: gates the donate
-    // CTA/link and the /donate entry point in the browser. Same default-OFF semantics
-    // as the server PAYMENTS_ENABLED. Keep the two in lock-step.
-    NEXT_PUBLIC_PAYMENTS_ENABLED: z.coerce.boolean().default(false),
+    // CTA/link and the /donate entry point in the browser. Same explicit-truthy parse
+    // as the server PAYMENTS_ENABLED (enables ONLY on "1"/"true"; "false"/"0"/unset →
+    // false). Keep the two in lock-step.
+    NEXT_PUBLIC_PAYMENTS_ENABLED: z
+      .string()
+      .optional()
+      .transform((v) => v === "1" || v === "true"),
     // Razorpay *public* key id — safe in the browser (the Checkout widget needs it).
     // OPTIONAL: only read when the flag is on; the secret + webhook secret stay server-only.
     NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().optional(),
