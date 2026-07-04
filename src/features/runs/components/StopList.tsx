@@ -57,8 +57,9 @@ export function StopList({
       { id: b.id, seq: a.seq },
     ];
     start(async () => {
-      await reorderStops({ runId, items });
-      router.refresh();
+      const res = await reorderStops({ runId, items });
+      if (res.ok) router.refresh();
+      else toast.error(res.message ?? tCommon("toast.error"));
     });
   }
 
