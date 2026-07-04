@@ -1,7 +1,12 @@
 import "server-only";
-import { and, asc, desc, eq, gte, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, inArray, lt, lte, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
-import { pickups, type NewPickup, type Pickup } from "@/server/db/schema";
+import {
+  pickups,
+  statusEvents,
+  type NewPickup,
+  type Pickup,
+} from "@/server/db/schema";
 import type { PickupStatus } from "@/config/constants";
 
 /** Columns the admin pickups table can sort by (server-side). */
@@ -306,6 +311,57 @@ export const pickupsRepo = {
       .where(eq(pickups.id, id))
       .returning();
     return rows[0] ?? null;
+  },
+
+  // ── Hygiene (B4) ────────────────────────────────────────────────────
+  /**
+   * B4: auto-cancel every `requested` pickup whose window closed before `cutoff`
+   * (the nightly sweeper passes now − 48h). Each cancelled pickup gets a
+   * `status_events` audit row (actor = the pickup's own donor, since actor_id FKs
+   * to profiles). Update + event insert run in one transaction so a mid-way failure
+   * (the sweeper retries) never leaves cancelled rows without their audit trail.
+   * NEVER touches claimed pickups (accepted/en_route/picked_up) — that's a human call.
+   * Returns the number cancelled.
+   */
+  async cancelStaleRequested(cutoff: Date): Promise<number> {
+    const db = getDb();
+    return db.transaction(async (tx) => {
+      const rows = await tx
+        .update(pickups)
+        .set({ status: "cancelled", updatedAt: new Date() })
+        .where(and(eq(pickups.status, "requested"), lt(pickups.windowEnd, cutoff)))
+        .returning({ id: pickups.id, donorId: pickups.donorId });
+      if (rows.length > 0) {
+        await tx.insert(statusEvents).values(
+          rows.map((r) => ({
+            pickupId: r.id,
+            actorId: r.donorId,
+            fromStatus: "requested" as const,
+            toStatus: "cancelled" as const,
+          })),
+        );
+      }
+      return rows.length;
+    });
+  },
+
+  /**
+   * B4: count claimed-but-stale pickups (accepted/en_route/picked_up whose window
+   * closed before `cutoff` — the sweeper passes now − 72h). NOT auto-cancelled (a
+   * volunteer holds them); the sweeper logs this as an ops breadcrumb.
+   */
+  async countStaleClaimed(cutoff: Date): Promise<number> {
+    const db = getDb();
+    const [row] = await db
+      .select({ count: sql<number>`count(*)`.mapWith(Number) })
+      .from(pickups)
+      .where(
+        and(
+          inArray(pickups.status, ["accepted", "en_route", "picked_up"]),
+          lt(pickups.windowEnd, cutoff),
+        ),
+      );
+    return row?.count ?? 0;
   },
 
   /** INT-03: coordinator clears the verified flag. */
