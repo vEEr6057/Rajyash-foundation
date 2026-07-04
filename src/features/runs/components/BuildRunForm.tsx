@@ -74,7 +74,11 @@ export function BuildRunForm({ drivers }: { drivers: Profile[] }) {
         className={SELECT}
         errorClassName={ERR}
         placeholder={t("runs.form.noDriver")}
-        options={drivers.map((d) => ({ value: d.id, label: d.name }))}
+        // Append the email when present so two same-named drivers are distinguishable.
+        options={drivers.map((d) => ({
+          value: d.id,
+          label: d.email ? `${d.name} (${d.email})` : d.name,
+        }))}
       />
       {err && (
         <p className="text-sm text-destructive" role="alert">

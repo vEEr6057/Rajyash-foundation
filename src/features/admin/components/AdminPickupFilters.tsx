@@ -67,7 +67,16 @@ export function AdminPickupFilters({ current }: { current: Filters }) {
       <Button size="sm" onClick={() => router.push(`${ROUTES.adminPickups}?${queryString()}`)}>
         {t("pickups.filters.applyButton")}
       </Button>
-      <Button size="sm" variant="ghost" onClick={() => router.push(ROUTES.adminPickups)}>
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={() => {
+          // Reset the local field state too, or the <select> stays visually stuck on
+          // the old status even though the URL (and data) cleared.
+          setF({});
+          router.push(ROUTES.adminPickups);
+        }}
+      >
         {t("pickups.filters.clearButton")}
       </Button>
       <a

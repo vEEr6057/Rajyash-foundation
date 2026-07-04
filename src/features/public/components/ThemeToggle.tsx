@@ -21,8 +21,10 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   const isDark = resolvedTheme === "dark";
 
+  // Visible circle stays size-9; a centered ≥44px pseudo-element extends the tap
+  // target (a11y) without enlarging the button visually.
   const base =
-    "inline-flex size-9 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground transition-colors hover:bg-surface-2";
+    "relative inline-flex size-9 items-center justify-center rounded-full border border-border-strong bg-surface text-foreground transition-colors hover:bg-surface-2 before:absolute before:left-1/2 before:top-1/2 before:size-11 before:-translate-x-1/2 before:-translate-y-1/2 before:content-['']";
 
   if (!mounted) {
     // Placeholder with identical box so layout doesn't shift; aria-hidden until live.

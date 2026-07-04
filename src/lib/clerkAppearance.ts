@@ -47,5 +47,9 @@ export const clerkAppearance: Appearance = {
       "bg-[#2A5C3C] text-white hover:bg-[#234E33] shadow-sm text-sm normal-case font-semibold",
     footerActionLink: "text-[#2A5C3C] hover:text-[#234E33] font-semibold",
     identityPreviewEditButton: "text-[#2A5C3C]",
+    // ≥44px tap target (a11y) for the header avatar without enlarging the avatar
+    // itself (avatarBox stays size-8/9 per instance) — the trigger button carries
+    // the hit area. Applied globally so every <UserButton> inherits it.
+    userButtonTrigger: "min-h-11 min-w-11 justify-center",
   },
 };
