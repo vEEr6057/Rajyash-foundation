@@ -28,7 +28,8 @@ export function RunStatusControls({
   const [confirm, setConfirm] = useState<null | "cancel" | "delete">(null);
 
   const nextStatuses = VALID_RUN_TRANSITIONS[status];
-  const canDelete = status === "planned";
+  // deleteRun allows planned OR cancelled — keep the Delete button in parity.
+  const canDelete = status === "planned" || status === "cancelled";
 
   if (nextStatuses.length === 0 && !canDelete) return null;
 

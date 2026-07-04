@@ -38,6 +38,10 @@ export default async function AdminRunDetailPage({
   ]);
   if (!runWithStops) notFound();
 
+  // B4 parity: the stop list is only mutable while the run is planned/active — mirror
+  // the server guardRunMutable so the UI never offers edits the server will reject.
+  const editable =
+    runWithStops.status === "planned" || runWithStops.status === "active";
   const nextSeq = (runWithStops.stops.at(-1)?.seq ?? 0) + 1;
   const nextPending = runWithStops.stops
     .filter((s) => s.status === "pending" && s.lat !== null && s.lng !== null)
@@ -85,18 +89,20 @@ export default async function AdminRunDetailPage({
 
       <section className="mb-6 border-t border-border pt-6">
         <h2 className="mb-3 font-display text-[15px] font-semibold">{t("runs.stopsSection")}</h2>
-        <StopList stops={runWithStops.stops} runId={runWithStops.id} />
+        <StopList stops={runWithStops.stops} runId={runWithStops.id} editable={editable} />
       </section>
 
-      <section className="border-t border-border pt-6">
-        <h2 className="mb-3 font-display text-[15px] font-semibold">{t("runs.addStop")}</h2>
-        <AddStopForm
-          runId={runWithStops.id}
-          nextSeq={nextSeq}
-          partners={partners}
-          destinations={destinations}
-        />
-      </section>
+      {editable && (
+        <section className="border-t border-border pt-6">
+          <h2 className="mb-3 font-display text-[15px] font-semibold">{t("runs.addStop")}</h2>
+          <AddStopForm
+            runId={runWithStops.id}
+            nextSeq={nextSeq}
+            partners={partners}
+            destinations={destinations}
+          />
+        </section>
+      )}
     </div>
   );
 }
