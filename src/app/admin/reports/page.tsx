@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/table";
 import { ImpactReport } from "@/features/admin/components/ImpactReport";
 import { TopBar } from "@/features/admin/components/AnalyticsCharts";
+import { formatReportRange } from "@/features/admin/lib/reportRange";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Reports — Rajyash Food Rescue" };
@@ -82,21 +83,7 @@ export default async function AdminReportsPage({
 
   // Human range for the header meta — format the raw YYYY-MM-DD (UTC-anchored so
   // the day never drifts across timezones) rather than the query-mutated `to`.
-  const dFrom = new Date(`${fromStr}T00:00:00Z`);
-  const dTo = new Date(`${toStr}T00:00:00Z`);
-  const dfDay = new Intl.DateTimeFormat(locale, { day: "numeric", timeZone: "UTC" });
-  const dfFull = new Intl.DateTimeFormat(locale, {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-    timeZone: "UTC",
-  });
-  const sameMonth =
-    dFrom.getUTCFullYear() === dTo.getUTCFullYear() &&
-    dFrom.getUTCMonth() === dTo.getUTCMonth();
-  const rangeMeta = sameMonth
-    ? `${dfDay.format(dFrom)}–${dfFull.format(dTo)}`
-    : `${dfFull.format(dFrom)} – ${dfFull.format(dTo)}`;
+  const rangeMeta = formatReportRange(fromStr, toStr, locale);
 
   const stats = [
     { label: t("reports.metrics.servings"), value: report.servings },
