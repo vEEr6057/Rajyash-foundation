@@ -10,6 +10,7 @@ const isPublicRoute = createRouteMatcher([
   "/sitemap.xml",
   "/api/inngest(.*)", // S2S — Inngest authenticates via signing-key signature, not Clerk
   "/api/health", // B5 — uptime probe; must answer without auth
+  "/api/csp-report", // B5 — browser POSTs CSP violations here; never auth-gate/redirect it
 ]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
@@ -29,6 +30,7 @@ const CSP_REPORT_ONLY = [
   "connect-src 'self' https: wss:",
   "frame-src 'self' https://*.clerk.com https://challenges.cloudflare.com",
   "worker-src 'self' blob:",
+  "report-uri /api/csp-report",
   "upgrade-insecure-requests",
 ].join("; ");
 
