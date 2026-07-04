@@ -1,5 +1,5 @@
 import "server-only";
-import { eq } from "drizzle-orm";
+import { and, eq, ne } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import {
   donations,
@@ -96,6 +96,11 @@ export const donationsRepo = {
         .returning({ eventId: webhookEvents.eventId });
       if (claimed.length === 0) return { outcome: "dedup" };
 
+      // status != 'paid': one Razorpay order can see several payment ATTEMPTS (UPI
+      // timeout → retry → success). Each failed attempt emits its own payment.failed
+      // with its own event id, and delivery order is not guaranteed — a late 'failed'
+      // for attempt 1 arriving after the 'captured' for attempt 2 must never downgrade
+      // a paid donation (the donor paid; the receipt exists).
       await tx
         .update(donations)
         .set({
@@ -103,7 +108,12 @@ export const donationsRepo = {
           razorpayPaymentId: razorpayPaymentId ?? undefined,
           updatedAt: new Date(),
         })
-        .where(eq(donations.razorpayOrderId, razorpayOrderId));
+        .where(
+          and(
+            eq(donations.razorpayOrderId, razorpayOrderId),
+            ne(donations.status, "paid"),
+          ),
+        );
       return { outcome: "recorded" };
     });
   },
