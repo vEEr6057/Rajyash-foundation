@@ -435,3 +435,58 @@ export const runPings = pgTable(
 );
 export type RunPing = typeof runPings.$inferSelect;
 export type NewRunPing = typeof runPings.$inferInsert;
+
+// ── Donations / Razorpay (Phase 5, PAY-01..04 — DARK behind PAYMENTS_ENABLED) ──
+/**
+ * donations — one row per monetary donation attempt (PAY-01). Created with
+ * status:'created' the moment we mint a Razorpay order; ONLY the HMAC-verified
+ * webhook flips it to 'paid' (or 'failed'). The client callback never writes here —
+ * the webhook is the single source of truth (hard security constraint).
+ *
+ * `amount` is in PAISE (integer) — Razorpay's smallest-unit convention; never a float.
+ * razorpayOrderId is the lookup key the webhook uses to find the row; razorpayPaymentId
+ * + receiptNumber are set at capture. Both provider ids are UNIQUE (idempotent capture).
+ */
+export const donations = pgTable(
+  "donations",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    razorpayOrderId: text("razorpay_order_id").notNull().unique(),
+    razorpayPaymentId: text("razorpay_payment_id").unique(), // set at capture
+    amount: integer("amount").notNull(), // paise
+    currency: text("currency").notNull().default("INR"),
+    status: text("status").notNull().default("created"), // created | paid | failed
+    donorName: text("donor_name"),
+    donorEmail: text("donor_email"),
+    receiptNumber: text("receipt_number").unique(), // RJ-FY<year>-<short id>, set at capture
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [
+    index("donations_razorpay_order_idx").on(t.razorpayOrderId),
+    index("donations_razorpay_payment_idx").on(t.razorpayPaymentId),
+  ],
+);
+export type Donation = typeof donations.$inferSelect;
+export type NewDonation = typeof donations.$inferInsert;
+
+/**
+ * webhook_events — exactly-once ledger for Razorpay webhooks (PAY-02). The PK is
+ * Razorpay's `x-razorpay-event-id`; the dispatcher INSERTs on-conflict-do-nothing
+ * BEFORE any mutation, so a redelivered event (Razorpay retries aggressively) is a
+ * cheap no-op. This is the idempotency guarantee for capture side effects.
+ */
+export const webhookEvents = pgTable("webhook_events", {
+  eventId: text("event_id").primaryKey(), // Razorpay x-razorpay-event-id
+  processedAt: timestamp("processed_at", { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
+export type WebhookEvent = typeof webhookEvents.$inferSelect;
+export type NewWebhookEvent = typeof webhookEvents.$inferInsert;
