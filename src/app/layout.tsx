@@ -7,6 +7,7 @@ import {
   Baloo_Bhai_2,
   Baloo_2,
 } from "next/font/google";
+import { headers } from "next/headers";
 import { ClerkProvider } from "@clerk/nextjs";
 import { hiIN } from "@clerk/localizations";
 import { NextIntlClientProvider } from "next-intl";
@@ -14,8 +15,23 @@ import { getLocale } from "next-intl/server";
 import { Providers } from "./providers";
 import { SkipLink } from "@/components/SkipLink";
 import { clerkAppearance } from "@/lib/clerkAppearance";
+import { guIN } from "@/lib/clerkGujarati";
 import { env } from "@/config/env";
 import "./globals.css";
+
+// Locale-aware sign-in card header. Applied OVER the base localization package so
+// our brand copy wins in every language (hiIN/guIN don't carry this exact wording).
+const SIGN_IN_START: Record<string, { title: string; subtitle: string }> = {
+  en: { title: "Welcome back", subtitle: "Sign in to continue to Food Rescue" },
+  hi: {
+    title: "वापसी पर स्वागत है",
+    subtitle: "Food Rescue जारी रखने के लिए साइन इन करें",
+  },
+  gu: {
+    title: "પાછા સ્વાગત છે",
+    subtitle: "Food Rescue ચાલુ રાખવા સાઇન ઇન કરો",
+  },
+};
 
 const mukta = Mukta({
   variable: "--font-mukta",
@@ -106,18 +122,21 @@ export default async function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const locale = await getLocale();
+  const host = (await headers()).get("host") ?? "";
   // Clerk widgets follow the app locale. @clerk/localizations ships Hindi (hiIN)
-  // but NOT Gujarati (no guIN in v4.12) — gu falls back to English. Custom brand
-  // overrides are merged OVER the package (spread package first) so our copy wins.
-  const clerkBase = locale === "hi" ? hiIN : undefined;
+  // but NOT Gujarati — we supply a hand-authored guIN (src/lib/clerkGujarati.ts).
+  // Custom brand overrides are merged OVER the base (spread base first) so our copy
+  // wins; the per-locale start title/subtitle then lands on top.
+  const clerkBase = locale === "hi" ? hiIN : locale === "gu" ? guIN : undefined;
+  const startCopy = SIGN_IN_START[locale] ?? SIGN_IN_START.en;
   const clerkLocalization = {
     ...clerkBase,
     signIn: {
       ...clerkBase?.signIn,
       start: {
         ...clerkBase?.signIn?.start,
-        title: "Welcome back",
-        subtitle: "Sign in to continue to Food Rescue",
+        title: startCopy.title,
+        subtitle: startCopy.subtitle,
       },
     },
   };
@@ -161,8 +180,12 @@ export default async function RootLayout({
             <Providers>{children}</Providers>
           </NextIntlClientProvider>
           {/* Cloudflare Web Analytics (B5) — cookieless, free. Rendered only when the
-              beacon token is configured; absent in local/dev where it's unset. */}
-          {env.NEXT_PUBLIC_CF_BEACON_TOKEN && (
+              beacon token is configured (absent in local/dev where it's unset) AND we're
+              not on a *.workers.dev host: the JS beacon's RUM POST to
+              cloudflareinsights.com/cdn-cgi/rum CORS-fails without a proxied CF zone, so
+              on workers.dev it only logs a console error + wastes a request. Auto-activates
+              once a real (non-workers.dev) domain is used — no code change needed then. */}
+          {env.NEXT_PUBLIC_CF_BEACON_TOKEN && !host.endsWith(".workers.dev") && (
             <script
               defer
               src="https://static.cloudflareinsights.com/beacon.min.js"
