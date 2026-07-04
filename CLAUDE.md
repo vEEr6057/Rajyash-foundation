@@ -59,6 +59,7 @@ Borrowed + adapted from the Quixera/`kaka` workspace, trimmed to our Next.js + P
 - [.claude/rules/frontend-practices.md](.claude/rules/frontend-practices.md) — reuse-first, thin pages, feature modules, forms (RHF+Zod), service/mock parity, adapter+mapper layer, state split.
 - [.claude/rules/testing-practices.md](.claude/rules/testing-practices.md) — test only what could really break; Vitest + Testing Library; what NOT to test.
 - [.claude/rules/git-workflow.md](.claude/rules/git-workflow.md) — branch naming, conventional commits, definition of done, and what kaka rules we deliberately dropped (RLS, Spring, microservices, Orval, Firebase).
+- [.claude/rules/production-discipline.md](.claude/rules/production-discipline.md) — **binding once we serve rajyashfoundation.com**: data safety (backups, migrations-not-push, env split, no prod data on laptops), dispatch-correctness patterns (state machine, atomic claims, idempotency, ownership≠role), availability (health, kill switches, degrade-don't-die), change management (protected main, PR CI, CI-only deploys), vendor ownership + free-tier watchlist. End goal it serves: [docs/FOOD-PORTER-END-GOAL.md](docs/FOOD-PORTER-END-GOAL.md).
 
 ## Self-improving layer (lessons + auto-context)
 
