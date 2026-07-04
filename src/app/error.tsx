@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { logger } from "@/lib/logger";
+import { reportClientError } from "@/server/observability/reportClientError";
 
 /**
  * Global error boundary (System layer — "error" state). Client component, as
@@ -21,6 +22,13 @@ export default function Error({
       err: String(error),
       digest: error.digest,
     });
+    // Fire-and-forget to the server so the client error PERSISTS in Workers Logs
+    // (B5). Never let a reporting failure surface — the retry UI is what matters.
+    void reportClientError({
+      message: String(error),
+      digest: error.digest,
+      url: typeof window !== "undefined" ? window.location.href : undefined,
+    }).catch(() => {});
   }, [error]);
 
   return (
