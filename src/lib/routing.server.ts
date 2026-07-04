@@ -3,6 +3,17 @@ import type { LatLng } from "@/lib/routing";
 
 const OSRM = "https://router.project-osrm.org/route/v1/driving";
 
+function isValidLatLng({ lat, lng }: LatLng): boolean {
+  return (
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    lat >= -90 &&
+    lat <= 90 &&
+    lng >= -180 &&
+    lng <= 180
+  );
+}
+
 /**
  * Real road route via the free OSRM demo server. Returns Leaflet-ordered
  * [lat,lng] coords + duration, or null on any failure (caller falls back to a
@@ -14,7 +25,15 @@ export async function fetchOsrmRoute(
   from: LatLng,
   to: LatLng,
 ): Promise<{ coords: [number, number][]; durationSec: number } | null> {
-  const url = `${OSRM}/${from.lng},${from.lat};${to.lng},${to.lat}?overview=full&geometries=geojson`;
+  if (!isValidLatLng(from) || !isValidLatLng(to)) return null;
+
+  const coordinates = `${String(Number(from.lng))},${String(Number(from.lat))};${String(
+    Number(to.lng),
+  )},${String(Number(to.lat))}`;
+  const url = new URL(`${OSRM}/${coordinates}`);
+  url.searchParams.set("overview", "full");
+  url.searchParams.set("geometries", "geojson");
+
   try {
     const res = await fetch(url, { signal: AbortSignal.timeout(3500), cache: "no-store" });
     if (!res.ok) return null;
