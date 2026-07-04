@@ -160,6 +160,20 @@ describe("markStopDone — auto-complete", () => {
     await markStopDone("s1");
     expect(h.runSetStatus).not.toHaveBeenCalled();
   });
+
+  it("does NOT auto-complete a PLANNED run (invalid transition) but still marks the stop done", async () => {
+    h.getSession.mockResolvedValue({ userId: "drv-1", role: "driver" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    // A driver may act on a planned run; planned→completed skips `active` (invalid).
+    h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "planned" });
+    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([{ id: "s1", status: "pending" }, { id: "s2", status: "done" }]);
+    const res = await markStopDone("s1");
+    expect(res.ok).toBe(true);
+    expect(h.stopSetStatus).toHaveBeenCalled(); // stop still marked done
+    expect(h.runSetStatus).not.toHaveBeenCalled(); // but run is NOT completed
+    expect(res.ok && (res as { runCompleted: boolean }).runCompleted).toBe(false);
+  });
 });
 
 describe("markStopDone — volunteer path (DEL-02)", () => {

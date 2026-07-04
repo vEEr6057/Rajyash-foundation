@@ -106,11 +106,12 @@ export function AdminSidebar() {
 /** Mobile drawer trigger + sheet — shown only below lg. */
 export function AdminMobileNav() {
   const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const [open, setOpen] = useState(false);
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Menu">
+        <Button variant="ghost" size="icon" className="lg:hidden" aria-label={tCommon("aria.menu")}>
           <Menu className="size-5" />
         </Button>
       </SheetTrigger>

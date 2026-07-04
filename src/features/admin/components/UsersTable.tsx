@@ -57,7 +57,7 @@ function Row({ user, isSelf }: { user: Profile; isSelf: boolean }) {
             className={SELECT}
             defaultValue={user.role}
             disabled={pending}
-            aria-label={`Role for ${user.name}`}
+            aria-label={tCommon("aria.roleFor", { name: user.name })}
             onChange={(e) => run(() => setUserRole(user.id, e.target.value as Role), tCommon("toast.updated"))}
           >
             {ROLES.map((r) => (

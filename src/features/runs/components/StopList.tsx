@@ -11,7 +11,16 @@ import { StopStatusPill } from "./StopStatusPill";
 import { removeStop, reorderStops } from "@/features/runs/actions/runActions";
 import type { RunStop } from "@/server/db/schema";
 
-export function StopList({ stops, runId }: { stops: RunStop[]; runId: string }) {
+export function StopList({
+  stops,
+  runId,
+  editable = true,
+}: {
+  stops: RunStop[];
+  runId: string;
+  // B4 parity: a completed/cancelled run's stops are read-only (server rejects edits).
+  editable?: boolean;
+}) {
   const t = useTranslations("admin");
   const tCommon = useTranslations("common");
   const router = useRouter();
@@ -48,8 +57,9 @@ export function StopList({ stops, runId }: { stops: RunStop[]; runId: string }) 
       { id: b.id, seq: a.seq },
     ];
     start(async () => {
-      await reorderStops({ runId, items });
-      router.refresh();
+      const res = await reorderStops({ runId, items });
+      if (res.ok) router.refresh();
+      else toast.error(res.message ?? tCommon("toast.error"));
     });
   }
 
@@ -65,49 +75,55 @@ export function StopList({ stops, runId }: { stops: RunStop[]; runId: string }) 
           </span>
           <span className="flex-1 truncate text-sm">{stop.address ?? "—"}</span>
           <StopStatusPill status={stop.status} />
-          <div className="flex flex-col">
-            <button
-              type="button"
-              disabled={pending || i === 0}
-              aria-label={t("runs.moveUp")}
-              onClick={() => move(i, -1)}
-              className="text-muted-foreground disabled:opacity-30"
-            >
-              <ArrowUp className="size-3.5" />
-            </button>
-            <button
-              type="button"
-              disabled={pending || i === stops.length - 1}
-              aria-label={t("runs.moveDown")}
-              onClick={() => move(i, 1)}
-              className="text-muted-foreground disabled:opacity-30"
-            >
-              <ArrowDown className="size-3.5" />
-            </button>
-          </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            disabled={pending}
-            aria-label={t("runs.removeStop")}
-            onClick={() => setRemoveId(stop.id)}
-            className="text-muted-foreground hover:text-destructive"
-          >
-            <Trash2 className="size-4" />
-          </Button>
+          {editable && (
+            <>
+              <div className="flex flex-col">
+                <button
+                  type="button"
+                  disabled={pending || i === 0}
+                  aria-label={t("runs.moveUp")}
+                  onClick={() => move(i, -1)}
+                  className="text-muted-foreground disabled:opacity-30"
+                >
+                  <ArrowUp className="size-3.5" />
+                </button>
+                <button
+                  type="button"
+                  disabled={pending || i === stops.length - 1}
+                  aria-label={t("runs.moveDown")}
+                  onClick={() => move(i, 1)}
+                  className="text-muted-foreground disabled:opacity-30"
+                >
+                  <ArrowDown className="size-3.5" />
+                </button>
+              </div>
+              <Button
+                size="icon"
+                variant="ghost"
+                disabled={pending}
+                aria-label={t("runs.removeStop")}
+                onClick={() => setRemoveId(stop.id)}
+                className="text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="size-4" />
+              </Button>
+            </>
+          )}
         </div>
       ))}
 
-      <ConfirmDialog
-        open={!!removeId}
-        onOpenChange={(o) => !o && setRemoveId(null)}
-        title={tCommon("confirm.removeStopTitle")}
-        description={tCommon("confirm.removeStopBody")}
-        confirmLabel={tCommon("confirm.removeStopConfirm")}
-        cancelLabel={tCommon("confirm.keep")}
-        pending={pending}
-        onConfirm={() => removeId && doRemove(removeId)}
-      />
+      {editable && (
+        <ConfirmDialog
+          open={!!removeId}
+          onOpenChange={(o) => !o && setRemoveId(null)}
+          title={tCommon("confirm.removeStopTitle")}
+          description={tCommon("confirm.removeStopBody")}
+          confirmLabel={tCommon("confirm.removeStopConfirm")}
+          cancelLabel={tCommon("confirm.keep")}
+          pending={pending}
+          onConfirm={() => removeId && doRemove(removeId)}
+        />
+      )}
     </div>
   );
 }

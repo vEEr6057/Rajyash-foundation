@@ -8,7 +8,11 @@ import { PickupForm } from "@/features/pickups/components/PickupForm";
 import { toDatetimeLocal } from "@/features/pickups/lib/format";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Edit pickup — Rajyash Food Rescue" };
+
+export async function generateMetadata() {
+  const t = await getTranslations("portal");
+  return { title: t("pickup.form.editMetaTitle") };
+}
 
 export default async function EditPickupPage({
   params,

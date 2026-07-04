@@ -47,6 +47,9 @@ function runWhen(loc: Loc, slot: RunSlot | undefined, runDate: Date | string | u
   const date = typeof runDate === "string" ? new Date(runDate) : runDate;
   if (Number.isNaN(date.getTime())) return label;
   const when = date.toLocaleDateString(DATE_TAG[loc], {
+    // Pin IST — Workers run in UTC, so an unpinned formatter shifts the run date a
+    // day for late-evening runs (the app is single-city, Asia/Kolkata).
+    timeZone: "Asia/Kolkata",
     day: "numeric",
     month: "short",
     year: "numeric",

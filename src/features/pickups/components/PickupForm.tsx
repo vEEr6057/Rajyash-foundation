@@ -198,7 +198,7 @@ export function PickupForm({
         <p className="mb-1.5 text-xs text-muted-foreground">{t("pickup.form.locationLinkHint")}</p>
         <input type="hidden" {...register("googleMapsUrl")} />
         <div className="flex gap-2">
-          <Input id="address" placeholder="Area, landmark, or Google Maps link" {...register("address")} />
+          <Input id="address" placeholder={t("pickup.form.addressPlaceholder")} {...register("address")} />
           <Button
             type="button"
             variant="outline"

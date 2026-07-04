@@ -9,7 +9,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { setRunStatus, deleteRun } from "@/features/runs/actions/runActions";
 import {
   VALID_RUN_TRANSITIONS,
-  RUN_STATUS_LABELS,
+  RUN_STATUS_LABEL_KEYS,
   ROUTES,
   type RunStatus,
 } from "@/config/constants";
@@ -28,7 +28,8 @@ export function RunStatusControls({
   const [confirm, setConfirm] = useState<null | "cancel" | "delete">(null);
 
   const nextStatuses = VALID_RUN_TRANSITIONS[status];
-  const canDelete = status === "planned";
+  // deleteRun allows planned OR cancelled — keep the Delete button in parity.
+  const canDelete = status === "planned" || status === "cancelled";
 
   if (nextStatuses.length === 0 && !canDelete) return null;
 
@@ -63,7 +64,7 @@ export function RunStatusControls({
           disabled={pending}
           onClick={() => (to === "cancelled" ? setConfirm("cancel") : advance(to))}
         >
-          {t("runs.status.advance", { status: RUN_STATUS_LABELS[to] })}
+          {t("runs.status.advance", { status: tCommon(RUN_STATUS_LABEL_KEYS[to]) })}
         </Button>
       ))}
       {canDelete && (

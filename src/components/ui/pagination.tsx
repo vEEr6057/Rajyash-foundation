@@ -14,12 +14,18 @@ export function Pagination({
   hrefForPage,
   className,
   label = "Pagination",
+  prevLabel = "Previous page",
+  nextLabel = "Next page",
 }: {
   page: number;
   totalPages: number;
   hrefForPage: (p: number) => string;
   className?: string;
+  // aria labels — pass localized strings from the call site (this primitive has no
+  // translator so it stays usable in both server and client trees).
   label?: string;
+  prevLabel?: string;
+  nextLabel?: string;
 }) {
   if (totalPages <= 1) return null;
 
@@ -47,7 +53,7 @@ export function Pagination({
       className={cn("flex items-center justify-end gap-1", className)}
     >
       {page > 1 ? (
-        <Link href={hrefForPage(page - 1)} className={linkCls(false)} aria-label="Previous page">
+        <Link href={hrefForPage(page - 1)} className={linkCls(false)} aria-label={prevLabel}>
           <ChevronLeft className="size-4" />
         </Link>
       ) : (
@@ -74,7 +80,7 @@ export function Pagination({
       )}
 
       {page < totalPages ? (
-        <Link href={hrefForPage(page + 1)} className={linkCls(false)} aria-label="Next page">
+        <Link href={hrefForPage(page + 1)} className={linkCls(false)} aria-label={nextLabel}>
           <ChevronRight className="size-4" />
         </Link>
       ) : (

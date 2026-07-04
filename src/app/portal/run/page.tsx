@@ -14,7 +14,11 @@ import { RunTracker } from "@/features/runs/components/RunTracker";
 import { RunLiveMap } from "@/features/runs/components/RunLiveMap";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "My Run — Rajyash Food Rescue" };
+
+export async function generateMetadata() {
+  const t = await getTranslations("portal");
+  return { title: t("run.metaTitle") };
+}
 
 export default async function DriverRunPage() {
   const session = await getSession();

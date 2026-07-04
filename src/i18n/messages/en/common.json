@@ -120,6 +120,20 @@
     "completed": "Completed",
     "cancelled": "Cancelled"
   },
+  "photo": {
+    "added": "Photo added",
+    "uploading": "Uploading…",
+    "failed": "Upload failed",
+    "failedRetry": "Upload failed — try again."
+  },
+  "aria": {
+    "prev": "Previous page",
+    "next": "Next page",
+    "openRun": "Open run",
+    "primaryNav": "Primary",
+    "menu": "Menu",
+    "roleFor": "Role for {name}"
+  },
   "unknownPartner": "Unknown partner",
   "adHocDestination": "Ad-hoc"
 }

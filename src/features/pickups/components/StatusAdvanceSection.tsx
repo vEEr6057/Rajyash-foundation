@@ -71,7 +71,7 @@ export function StatusAdvanceSection({
           ) : (
             <>
               <p className="mb-1.5 text-xs text-muted-foreground">{t("pickup.detail.proofOptional")}</p>
-              <PhotoUploader kind="proof" label="Add proof photo" onUploaded={onProofUploaded} />
+              <PhotoUploader kind="proof" label={t("pickup.form.addProofPhoto")} onUploaded={onProofUploaded} />
             </>
           )}
         </div>

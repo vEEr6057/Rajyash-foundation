@@ -124,6 +124,20 @@
     "completed": "पूर्ण",
     "cancelled": "रद्द"
   },
+  "photo": {
+    "added": "फ़ोटो जोड़ा गया",
+    "uploading": "अपलोड हो रहा है…",
+    "failed": "अपलोड विफल",
+    "failedRetry": "अपलोड विफल — फिर से प्रयास करें."
+  },
+  "aria": {
+    "prev": "पिछला पृष्ठ",
+    "next": "अगला पृष्ठ",
+    "openRun": "रन खोलें",
+    "primaryNav": "मुख्य",
+    "menu": "मेनू",
+    "roleFor": "{name} के लिए भूमिका"
+  },
   "unknownPartner": "अज्ञात साझेदार",
   "adHocDestination": "अन्य स्थान"
 }

@@ -309,16 +309,15 @@ export async function markStopDone(
   const stop = await runStopsRepo.getById(stopId);
   if (!stop) return fail("NOT_FOUND", "Stop not found.");
 
-  if (isDriver) {
-    const run = await runsRepo.getById(stop.runId);
-    if (!run) return fail("NOT_FOUND", "Run not found.");
-    if (run.driverId !== session.userId) return fail("FORBIDDEN", "Not your run.");
+  const run = await runsRepo.getById(stop.runId);
+  if (!run) return fail("NOT_FOUND", "Run not found.");
+
+  if (isDriver && run.driverId !== session.userId) {
+    return fail("FORBIDDEN", "Not your run.");
   }
   // DEL-02: any volunteer present can confirm a drop on an ACTIVE run.
-  if (isVolunteer) {
-    const run = await runsRepo.getById(stop.runId);
-    if (!run) return fail("NOT_FOUND", "Run not found.");
-    if (run.status !== "active") return fail("FORBIDDEN", "Run is not active.");
+  if (isVolunteer && run.status !== "active") {
+    return fail("FORBIDDEN", "Run is not active.");
   }
 
   if (!canStopTransition(stop.status, "done")) {
@@ -327,12 +326,15 @@ export async function markStopDone(
 
   await runStopsRepo.setStopStatus(stopId, "done", new Date());
 
-  // Auto-complete the run when all stops are done/skipped.
+  // Auto-complete the run when all stops are done/skipped — but only via a legal run
+  // transition. A driver can mark stops on a `planned` run; planned→completed skips
+  // `active` and isn't valid, so the stop is marked done without auto-completing.
   const allStops = await runStopsRepo.getByRunId(stop.runId);
   const updated = allStops.map((s) =>
     s.id === stopId ? { ...s, status: "done" as const } : s,
   );
-  const runCompleted = allStopsDone(updated);
+  const runCompleted =
+    allStopsDone(updated) && canRunTransition(run.status, "completed");
   if (runCompleted) {
     await runsRepo.setRunStatus(stop.runId, "completed");
     await runPingsRepo.purgeForRun(stop.runId); // TRK-05: ephemeral trail

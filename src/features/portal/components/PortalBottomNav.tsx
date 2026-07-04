@@ -28,6 +28,7 @@ const ITEMS: Record<"donor" | "volunteer", Item[]> = {
  */
 export function PortalBottomNav({ role }: { role: "donor" | "volunteer" | "driver" | "admin" }) {
   const t = useTranslations("portal");
+  const tCommon = useTranslations("common");
   const pathname = usePathname();
   const path = pathname.replace(/^\/(en|gu|hi)(?=\/|$)/, "") || "/";
 
@@ -38,7 +39,7 @@ export function PortalBottomNav({ role }: { role: "donor" | "volunteer" | "drive
     <nav
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 lg:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-      aria-label="Primary"
+      aria-label={tCommon("aria.primaryNav")}
     >
       <ul className="mx-auto flex max-w-md items-stretch justify-around">
         {items.map(({ href, labelKey, icon: Icon }) => {

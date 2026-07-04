@@ -24,6 +24,7 @@ export async function RunsTable({
   driverNameById: Record<string, string>;
 }) {
   const t = await getTranslations("admin");
+  const tCommon = await getTranslations("common");
   const locale = await getLocale();
   const fmt = (d: Date | string) =>
     new Date(d).toLocaleDateString(`${locale}-IN`, { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" });
@@ -62,7 +63,7 @@ export async function RunsTable({
               <Link
                 href={ROUTES.adminRun(run.id)}
                 className={buttonVariants({ variant: "ghost", size: "icon" })}
-                aria-label="Open run"
+                aria-label={tCommon("aria.openRun")}
               >
                 <ChevronRight className="size-4" />
               </Link>
