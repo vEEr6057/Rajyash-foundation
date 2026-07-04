@@ -2,6 +2,13 @@
   "name": "rajyash-food-rescue",
   "version": "0.1.0",
   "private": true,
+  "pnpm": {
+    "//overrides": "Dependabot moderate advisories, patched via selective (version-gated) overrides so only the vulnerable transitive instances are bumped — already-patched copies are left untouched. postcss GHSA-qx2v-qp2m-jg93 (XSS via unescaped </style>), esbuild GHSA-67mh-4wv8-2f99 (dev-server request leak). Both are build/dev-time deps, not runtime.",
+    "overrides": {
+      "postcss@<8.5.10": ">=8.5.10",
+      "esbuild@<0.25.0": ">=0.25.0"
+    }
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",

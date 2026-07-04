@@ -44,6 +44,15 @@ export const ROUTES = {
   volunteerBoardMap: "/portal/board/map",
   // Public site (Phase 7 — D-04: volunteer CTA reuses Clerk sign-up with role prefill)
   becomeVolunteer: "/sign-up?role=volunteer",
+  privacy: "/privacy",
+} as const;
+
+// Official Rajyash Foundation social profiles. Single source of truth — referenced
+// by both the public footer (visible icon links) and the homepage ORG_JSONLD `sameAs`
+// array, so the two never drift.
+export const SOCIAL_LINKS = {
+  facebook: "https://www.facebook.com/RajyashFoundation",
+  instagram: "https://www.instagram.com/rajyashfoundation",
 } as const;
 
 // ── Pickups (Phase 2) ────────────────────────────────────────────────

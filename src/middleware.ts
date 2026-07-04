@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
   "/",
+  "/privacy", // public policy page (in the (public) group, but the Clerk matcher still runs)
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/staff(.*)", // staff (admin/coordinator) sign-in entry; /admin itself still role-gated below

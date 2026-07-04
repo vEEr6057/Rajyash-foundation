@@ -408,6 +408,13 @@
   text-decoration-thickness: 2px;
   text-underline-offset: 4px;
 }
+/* Footer social icon links (FINISH-STANDARDS §2): --rj-ink-soft → hover --rj-green.
+   A CSS rule (not a Tailwind hover class) because the resting color would otherwise
+   need an inline style, which wins over any hover utility. Focus ring is handled by
+   the shared `.rj-home a:focus-visible` rule below. */
+.rj-home .rj-social { color: var(--rj-ink-soft); transition: color .2s var(--ease-out); }
+.rj-home .rj-social:hover { color: var(--rj-green); }
+
 .rj-home a:focus-visible,
 .rj-home button:focus-visible { outline: 3px solid var(--rj-gold-ink); outline-offset: 2px; }
 /* On the full-bleed green finale the gold ring has no contrast — use white (SPEC §8). */
