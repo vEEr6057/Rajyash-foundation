@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
 import { ROUTES, RUN_SLOT_LABEL_KEYS } from "@/config/constants";
@@ -67,7 +67,8 @@ export default async function DriverRunPage() {
       ? { lat: currentStop.lat, lng: currentStop.lng }
       : null;
 
-  const runDate = new Date(activeRun.runDate).toLocaleDateString("en-IN", {
+  const locale = await getLocale();
+  const runDate = new Date(activeRun.runDate).toLocaleDateString(`${locale}-IN`, {
     timeZone: APP_TIME_ZONE,
     day: "numeric",
     month: "short",

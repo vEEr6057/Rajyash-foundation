@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { ChevronRight } from "lucide-react";
 import { ROUTES, RUN_SLOT_LABEL_KEYS } from "@/config/constants";
 import {
@@ -24,8 +24,9 @@ export async function RunsTable({
   driverNameById: Record<string, string>;
 }) {
   const t = await getTranslations("admin");
+  const locale = await getLocale();
   const fmt = (d: Date | string) =>
-    new Date(d).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" });
+    new Date(d).toLocaleDateString(`${locale}-IN`, { timeZone: "Asia/Kolkata", day: "numeric", month: "short", year: "numeric" });
 
   return (
     <Table>
