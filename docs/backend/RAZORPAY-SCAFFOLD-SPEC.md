@@ -48,10 +48,19 @@ These record how the LOCKED contract above was realized and the one deliberate d
   (validations, actions, components), `src/app/api/razorpay/webhook/route.ts`,
   `src/server/inngest/functions/donations.ts`, `src/app/(public)/donate/page.tsx`,
   `src/i18n/messages/{en,gu,hi}/donate.json`, migration `0012_add_donations.sql`.
-- **Boolean flag semantics (note, not a deviation):** `z.coerce.boolean()` treats an
-  UNSET/empty var as `false` (via `emptyStringAsUndefined` → default) and ANY non-empty
-  string as `true`. To keep the scaffold dark, leave the flags UNSET; to light up, set
-  them to `1`. Do NOT set them to the literal string `false` (that coerces to `true`).
+- **Boolean flag semantics (hardened):** both `PAYMENTS_ENABLED` and
+  `NEXT_PUBLIC_PAYMENTS_ENABLED` use an explicit-truthy parse
+  `z.string().optional().transform((v) => v === "1" || v === "true")` — NOT
+  `z.coerce.boolean()`, which treats the string `"false"` as `true`
+  (`Boolean("false") === true`), an unsafe footgun for a payment kill-switch. Now ONLY
+  `"1"` or `"true"` enables; UNSET / `"false"` / `"0"` / `""` / anything-else → `false`.
+  Go-live still sets `=1`; setting `=false` to be explicit is also safe.
+- **Webhook idempotency is ATOMIC:** the `webhook_events` claim and the donation mutation
+  commit or roll back together inside a single `db.transaction` (`donationsRepo.recordCapture`
+  / `recordFailed`). A transient failure during the mutation rolls back the claim, so a
+  Razorpay re-delivery re-processes rather than being deduped away into a lost payment. The
+  Inngest receipt event is emitted OUTSIDE the transaction, only after it commits with
+  outcome `paid`.
 - **CSP:** only `checkout.razorpay.com` + `api.razorpay.com` were added to `script-src`
   and `frame-src`; the rest of the report-only CSP is untouched. `connect-src` already
   allowed `https:` so the widget's XHR to `api.razorpay.com` needs no further change.

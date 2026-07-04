@@ -8,14 +8,12 @@ const env = vi.hoisted(() => ({
 vi.mock("@/config/env", () => ({ env }));
 vi.mock("@/lib/logger", () => ({ logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
 
-const claim = vi.fn();
-const markPaid = vi.fn();
-const markFailed = vi.fn();
+const recordCapture = vi.fn();
+const recordFailed = vi.fn();
 vi.mock("@/server/db/repositories/donations", () => ({
   donationsRepo: {
-    claimWebhookEvent: (...a: unknown[]) => claim(...a),
-    markPaid: (...a: unknown[]) => markPaid(...a),
-    markFailed: (...a: unknown[]) => markFailed(...a),
+    recordCapture: (...a: unknown[]) => recordCapture(...a),
+    recordFailed: (...a: unknown[]) => recordFailed(...a),
   },
 }));
 
@@ -28,66 +26,113 @@ const CAPTURED = JSON.stringify({
   event: "payment.captured",
   payload: { payment: { entity: { id: "pay_1", order_id: "order_1" } } },
 });
+const FAILED = JSON.stringify({
+  event: "payment.failed",
+  payload: { payment: { entity: { id: "pay_2", order_id: "order_2" } } },
+});
+const UNKNOWN = JSON.stringify({ event: "payment.authorized", payload: {} });
+
 const sign = (body: string, secret = "whsec_test") =>
   createHmac("sha256", secret).update(body).digest("hex");
 
 function req(body: string, headers: Record<string, string>) {
   return new Request("https://x/api/razorpay/webhook", { method: "POST", body, headers });
 }
+const hdr = (body: string, evt = "evt_1") => ({
+  "x-razorpay-signature": sign(body),
+  "x-razorpay-event-id": evt,
+});
 
 beforeEach(() => {
   env.PAYMENTS_ENABLED = true;
   env.RAZORPAY_WEBHOOK_SECRET = "whsec_test";
-  claim.mockReset().mockResolvedValue(true);
-  markPaid.mockReset().mockResolvedValue({ id: "don_1" });
-  markFailed.mockReset().mockResolvedValue(undefined);
+  recordCapture.mockReset().mockResolvedValue({ outcome: "paid", donation: { id: "don_1" } });
+  recordFailed.mockReset().mockResolvedValue({ outcome: "recorded" });
   send.mockReset().mockResolvedValue(undefined);
 });
 
 describe("razorpay webhook (PAY-02)", () => {
   it("404s while PAYMENTS_ENABLED is off — no body read, no side effects", async () => {
     env.PAYMENTS_ENABLED = false;
-    const res = await POST(req(CAPTURED, { "x-razorpay-signature": sign(CAPTURED), "x-razorpay-event-id": "evt_1" }));
+    const res = await POST(req(CAPTURED, hdr(CAPTURED)));
     expect(res.status).toBe(404);
-    expect(claim).not.toHaveBeenCalled();
-    expect(markPaid).not.toHaveBeenCalled();
+    expect(recordCapture).not.toHaveBeenCalled();
   });
 
   it("400s on an invalid signature — no mutation", async () => {
-    const res = await POST(req(CAPTURED, { "x-razorpay-signature": "deadbeef", "x-razorpay-event-id": "evt_1" }));
+    const res = await POST(
+      req(CAPTURED, { "x-razorpay-signature": "deadbeef", "x-razorpay-event-id": "evt_1" }),
+    );
     expect(res.status).toBe(400);
-    expect(claim).not.toHaveBeenCalled();
-    expect(markPaid).not.toHaveBeenCalled();
+    expect(recordCapture).not.toHaveBeenCalled();
   });
 
-  it("marks paid + emits the receipt event on a valid payment.captured", async () => {
-    const res = await POST(req(CAPTURED, { "x-razorpay-signature": sign(CAPTURED), "x-razorpay-event-id": "evt_1" }));
+  it("400s when x-razorpay-event-id is missing on a captured event", async () => {
+    const res = await POST(req(CAPTURED, { "x-razorpay-signature": sign(CAPTURED) }));
+    expect(res.status).toBe(400);
+    expect(recordCapture).not.toHaveBeenCalled();
+  });
+
+  it("records the capture + emits the receipt event on a valid payment.captured", async () => {
+    const res = await POST(req(CAPTURED, hdr(CAPTURED)));
     expect(res.status).toBe(200);
-    expect(markPaid).toHaveBeenCalledOnce();
-    const [orderId, fields] = markPaid.mock.calls[0];
+    expect(recordCapture).toHaveBeenCalledOnce();
+    const [eventId, orderId, fields] = recordCapture.mock.calls[0];
+    expect(eventId).toBe("evt_1");
     expect(orderId).toBe("order_1");
     expect(fields.razorpayPaymentId).toBe("pay_1");
     expect(fields.receiptNumber).toMatch(/^RJ-FY/);
     expect(send).toHaveBeenCalledOnce();
   });
 
-  it("is idempotent — a replayed event id is a dedup no-op with no second mutation", async () => {
-    claim.mockResolvedValueOnce(false); // event already recorded
-    const res = await POST(req(CAPTURED, { "x-razorpay-signature": sign(CAPTURED), "x-razorpay-event-id": "evt_1" }));
+  it("is idempotent — a dedup outcome is a 200 no-op with no receipt email", async () => {
+    recordCapture.mockResolvedValueOnce({ outcome: "dedup" });
+    const res = await POST(req(CAPTURED, hdr(CAPTURED)));
     expect(res.status).toBe(200);
     expect(await res.json()).toMatchObject({ dedup: true });
-    expect(markPaid).not.toHaveBeenCalled();
     expect(send).not.toHaveBeenCalled();
   });
 
-  it("marks failed on payment.failed", async () => {
-    const failed = JSON.stringify({
-      event: "payment.failed",
-      payload: { payment: { entity: { id: "pay_2", order_id: "order_2" } } },
-    });
-    const res = await POST(req(failed, { "x-razorpay-signature": sign(failed), "x-razorpay-event-id": "evt_2" }));
+  it("logs + 200 (no receipt) when the captured order is not found", async () => {
+    recordCapture.mockResolvedValueOnce({ outcome: "not_found" });
+    const res = await POST(req(CAPTURED, hdr(CAPTURED)));
     expect(res.status).toBe(200);
-    expect(markFailed).toHaveBeenCalledWith("order_2", "pay_2");
-    expect(markPaid).not.toHaveBeenCalled();
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it("500s when recordCapture throws (tx rolled back) so Razorpay retries", async () => {
+    recordCapture.mockRejectedValueOnce(new Error("transient db error"));
+    const res = await POST(req(CAPTURED, hdr(CAPTURED)));
+    expect(res.status).toBe(500);
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it("a failed delivery that 500s re-processes cleanly on the retry (no dedup swallow)", async () => {
+    // 1st delivery: the atomic record throws → 500, nothing emitted.
+    recordCapture.mockRejectedValueOnce(new Error("transient db error"));
+    const first = await POST(req(CAPTURED, hdr(CAPTURED)));
+    expect(first.status).toBe(500);
+    expect(send).not.toHaveBeenCalled();
+    // Razorpay re-delivers the SAME event id: because the earlier claim rolled back,
+    // recordCapture now succeeds and the receipt is emitted (not deduped away).
+    recordCapture.mockResolvedValueOnce({ outcome: "paid", donation: { id: "don_1" } });
+    const retry = await POST(req(CAPTURED, hdr(CAPTURED)));
+    expect(retry.status).toBe(200);
+    expect(recordCapture).toHaveBeenCalledTimes(2);
+    expect(send).toHaveBeenCalledOnce();
+  });
+
+  it("records failed on payment.failed", async () => {
+    const res = await POST(req(FAILED, hdr(FAILED, "evt_2")));
+    expect(res.status).toBe(200);
+    expect(recordFailed).toHaveBeenCalledWith("evt_2", "order_2", "pay_2");
+    expect(recordCapture).not.toHaveBeenCalled();
+  });
+
+  it("no-ops an unknown event WITHOUT claiming (200, no repo call)", async () => {
+    const res = await POST(req(UNKNOWN, hdr(UNKNOWN, "evt_9")));
+    expect(res.status).toBe(200);
+    expect(recordCapture).not.toHaveBeenCalled();
+    expect(recordFailed).not.toHaveBeenCalled();
   });
 });

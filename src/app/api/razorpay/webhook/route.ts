@@ -8,11 +8,17 @@ import { NOTIFICATION_EVENTS } from "@/config/constants";
 
 /**
  * Razorpay webhook (PAY-02) — the ONLY writer of a 'paid' donation. Webhook-first,
- * HMAC-verified, idempotent. The client callback is cosmetic; truth lands here.
+ * HMAC-verified, ATOMICALLY idempotent. The client callback is cosmetic; truth lands here.
  *
  * force-dynamic: must run per-request (raw body + signature); never cached/prerendered.
  * The route is added to isPublicRoute in middleware (Razorpay authenticates via the
  * HMAC signature, not a Clerk session). Dark until PAYMENTS_ENABLED → 404 while off.
+ *
+ * Idempotency is atomic: the dedup claim and the donation mutation commit-or-rollback
+ * together inside donationsRepo.recordCapture/recordFailed. A transient DB failure during
+ * the mutation rolls back the claim, so a Razorpay re-delivery re-processes instead of
+ * being deduped into a lost payment. The Inngest receipt event is emitted OUTSIDE the
+ * transaction, only after it commits with outcome 'paid'.
  */
 export const dynamic = "force-dynamic";
 
@@ -54,64 +60,84 @@ export async function POST(req: Request) {
     return new NextResponse("Bad request", { status: 400 });
   }
 
-  // 3. Idempotency: claim the event id BEFORE any mutation. A replay is a no-op.
-  const eventId = req.headers.get("x-razorpay-event-id");
-  if (!eventId) {
-    logger.warn("razorpay webhook: missing event id");
-    return new NextResponse("Bad request", { status: 400 });
-  }
-  let fresh: boolean;
-  try {
-    fresh = await donationsRepo.claimWebhookEvent(eventId);
-  } catch (e) {
-    // A DB error here means we cannot guarantee exactly-once — return 500 so Razorpay
-    // retries later rather than dropping the event silently.
-    logger.error("razorpay webhook: claim failed", { eventId, err: String(e) });
-    return new NextResponse("Server error", { status: 500 });
-  }
-  if (!fresh) {
-    return NextResponse.json({ ok: true, dedup: true });
-  }
-
-  // 4. Handle the event. Always 200 on a validly-signed + idempotent-handled event so
-  //    Razorpay stops retrying.
+  // 3. Branch on event type FIRST. Only the mutating events (captured/failed) claim the
+  //    webhook_events id — an unknown event is a no-op and must NOT consume a claim (a
+  //    replayed no-op is still a no-op).
   const event = body.event;
   const payment = body.payload?.payment?.entity;
   const orderId = payment?.order_id;
   const paymentId = payment?.id;
 
-  try {
-    if (event === "payment.captured" && orderId && paymentId) {
+  if (event === "payment.captured") {
+    const eventId = req.headers.get("x-razorpay-event-id");
+    if (!eventId) {
+      logger.warn("razorpay webhook: missing event id");
+      return new NextResponse("Bad request", { status: 400 });
+    }
+    if (!orderId || !paymentId) {
+      // Signed but malformed captured payload — cannot process; log and 200 (retries
+      // won't change the payload). Manual reconciliation via the Razorpay dashboard.
+      logger.warn("razorpay webhook: captured payload missing ids", { eventId });
+      return NextResponse.json({ ok: true });
+    }
+    try {
       const receiptNumber = generateReceiptNumber();
-      const donation = await donationsRepo.markPaid(orderId, {
+      const result = await donationsRepo.recordCapture(eventId, orderId, {
         razorpayPaymentId: paymentId,
         receiptNumber,
       });
-      if (donation) {
-        // Best-effort receipt email — a send hiccup must not fail the webhook (the
-        // payment is already recorded; Razorpay must not retry over an email blip).
-        try {
-          await inngest.send({
-            name: NOTIFICATION_EVENTS.donationCaptured,
-            data: { donationId: donation.id, eventId },
-          });
-        } catch (e) {
-          logger.error("inngest emit donation/captured failed", {
-            donationId: donation.id,
-            err: String(e),
-          });
-        }
-      } else {
-        logger.warn("razorpay webhook: captured order not found", { orderId });
+      if (result.outcome === "dedup") {
+        return NextResponse.json({ ok: true, dedup: true });
       }
-    } else if (event === "payment.failed" && orderId) {
-      await donationsRepo.markFailed(orderId, paymentId ?? null);
+      if (result.outcome === "not_found") {
+        logger.warn("razorpay webhook: captured order not found", { orderId });
+        return NextResponse.json({ ok: true });
+      }
+      // outcome === 'paid' — the claim + mutation are committed. Emit the receipt event
+      // OUTSIDE the transaction, best-effort: a send hiccup must not fail the webhook
+      // (the payment is recorded; Razorpay must not retry over an email blip).
+      try {
+        await inngest.send({
+          name: NOTIFICATION_EVENTS.donationCaptured,
+          data: { donationId: result.donation.id, eventId },
+        });
+      } catch (e) {
+        logger.error("inngest emit donation/captured failed", {
+          donationId: result.donation.id,
+          err: String(e),
+        });
+      }
+      return NextResponse.json({ ok: true });
+    } catch (e) {
+      // The transaction rolled back (claim + mutation both undone) — 500 so Razorpay
+      // retries and the re-delivery re-processes cleanly.
+      logger.error("razorpay webhook: recordCapture failed", { eventId, err: String(e) });
+      return new NextResponse("Server error", { status: 500 });
     }
-    // Any other event → no-op (still 200).
-  } catch (e) {
-    logger.error("razorpay webhook: handler failed", { event, err: String(e) });
-    return new NextResponse("Server error", { status: 500 });
   }
 
+  if (event === "payment.failed") {
+    const eventId = req.headers.get("x-razorpay-event-id");
+    if (!eventId) {
+      logger.warn("razorpay webhook: missing event id");
+      return new NextResponse("Bad request", { status: 400 });
+    }
+    if (!orderId) {
+      logger.warn("razorpay webhook: failed payload missing order id", { eventId });
+      return NextResponse.json({ ok: true });
+    }
+    try {
+      const result = await donationsRepo.recordFailed(eventId, orderId, paymentId ?? null);
+      if (result.outcome === "dedup") {
+        return NextResponse.json({ ok: true, dedup: true });
+      }
+      return NextResponse.json({ ok: true });
+    } catch (e) {
+      logger.error("razorpay webhook: recordFailed failed", { eventId, err: String(e) });
+      return new NextResponse("Server error", { status: 500 });
+    }
+  }
+
+  // Unknown event → 200 no-op, no claim consumed.
   return NextResponse.json({ ok: true });
 }
