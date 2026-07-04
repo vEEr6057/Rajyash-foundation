@@ -17,6 +17,16 @@ export const donationsRepo = {
     return rows[0];
   },
 
+  async getById(id: string): Promise<Donation | null> {
+    const db = getDb();
+    const rows = await db
+      .select()
+      .from(donations)
+      .where(eq(donations.id, id))
+      .limit(1);
+    return rows[0] ?? null;
+  },
+
   async getByOrderId(razorpayOrderId: string): Promise<Donation | null> {
     const db = getDb();
     const rows = await db
