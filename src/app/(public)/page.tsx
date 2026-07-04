@@ -5,6 +5,7 @@
 import { PublicHeader } from "@/features/public/components/PublicHeader";
 import { LandingPage } from "@/features/public/components/LandingPage";
 import { PublicFooter } from "@/features/public/components/PublicFooter";
+import { SOCIAL_LINKS } from "@/config/constants";
 
 export const metadata = {
   alternates: { canonical: "/" },
@@ -36,10 +37,9 @@ const ORG_JSONLD = {
     email: "rajyashfoundation@rajyashgroup.com",
     telephone: "+91-9875041206",
   },
-  sameAs: [
-    "https://www.facebook.com/RajyashFoundation",
-    "https://www.instagram.com/rajyashfoundation",
-  ],
+  // Single-sourced from SOCIAL_LINKS (also rendered as the footer icon links) so the
+  // structured-data profiles and the visible links can never drift. Output is identical.
+  sameAs: [SOCIAL_LINKS.facebook, SOCIAL_LINKS.instagram],
 };
 
 export default function HomePage() {
