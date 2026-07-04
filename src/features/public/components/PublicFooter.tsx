@@ -2,6 +2,7 @@
 // Homepage footer (HOMEPAGE-SPEC §5.9) — legitimacy + contact, on the --rj-* layer.
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { env } from "@/config/env";
 import { ROUTES, SOCIAL_LINKS } from "@/config/constants";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 import { LeafMark } from "./RescueLine";
@@ -29,6 +30,9 @@ export async function PublicFooter() {
   const t = await getTranslations("landing");
   const commonT = await getTranslations("common");
   const privacyT = await getTranslations("privacy");
+  const donateT = await getTranslations("donate");
+  // PAY-03: donate link appears only when payments are enabled (dark by default).
+  const paymentsOn = env.NEXT_PUBLIC_PAYMENTS_ENABLED;
 
   const link = "rj-underline text-sm";
   const linkStyle = { color: "var(--rj-ink-soft)" } as const;
@@ -58,6 +62,9 @@ export async function PublicFooter() {
               <li><Link href="#programs" className={link} style={linkStyle}>{t("nav.whatWeDo")}</Link></li>
               <li><Link href="#impact" className={link} style={linkStyle}>{t("nav.impact")}</Link></li>
               <li><Link href={ROUTES.becomeVolunteer} className={link} style={linkStyle}>{t("becomeVol")}</Link></li>
+              {paymentsOn && (
+                <li><Link href={ROUTES.donate} className={link} style={linkStyle}>{donateT("navLabel")}</Link></li>
+              )}
               <li><Link href={ROUTES.signIn} className={link} style={linkStyle}>{t("signin")}</Link></li>
               <li><Link href={ROUTES.staffSignIn} className={link} style={linkStyle}>{t("staffSignin")}</Link></li>
               <li><Link href={ROUTES.privacy} className={link} style={linkStyle}>{privacyT("footLink")}</Link></li>
