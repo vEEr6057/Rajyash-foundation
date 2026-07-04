@@ -53,8 +53,15 @@ export async function completeOnboarding(
       user.primaryPhoneNumber?.phoneNumber ??
       null;
 
+    // Never let onboarding DEMOTE an admin. Admins are backend-seeded with
+    // onboardingComplete=true so they normally never reach this action, but if one ever
+    // does (e.g. the flag wasn't stamped), preserve their admin role instead of
+    // overwriting it with the form's donor/volunteer/driver selection.
+    const isExistingAdmin = user.publicMetadata?.role === "admin";
+    const finalRole = isExistingAdmin ? "admin" : role;
+
     await client.users.updateUserMetadata(userId, {
-      publicMetadata: { role, onboardingComplete: true },
+      publicMetadata: { role: finalRole, onboardingComplete: true },
     });
 
     // B3: stamp the current UI locale onto the profile so notifications localize.
@@ -66,7 +73,7 @@ export async function completeOnboarding(
       name,
       email,
       phone,
-      role,
+      role: finalRole,
       city,
       onboardingComplete: true,
       locale,
