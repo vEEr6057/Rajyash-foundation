@@ -20,7 +20,7 @@ import { TopBar } from "@/features/admin/components/AnalyticsCharts";
 import { formatReportRange } from "@/features/admin/lib/reportRange";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Admin · Reports — Rajyash Food Rescue" };
+export const metadata = { title: "Admin · Reports — Rajyash Food Porter" };
 
 const ymd = (d: Date) => d.toISOString().slice(0, 10);
 

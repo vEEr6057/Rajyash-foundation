@@ -9,7 +9,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Admin · Destinations — Rajyash Food Rescue" };
+export const metadata = { title: "Admin · Destinations — Rajyash Food Porter" };
 
 export default async function AdminDestinationsPage() {
   const session = await getSession();

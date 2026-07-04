@@ -2,7 +2,7 @@ import { SignIn } from "@clerk/nextjs";
 import { getTranslations } from "next-intl/server";
 import { AuthSplitLayout } from "@/features/auth/components/AuthSplitLayout";
 
-export const metadata = { title: "Staff sign in — Rajyash Food Rescue" };
+export const metadata = { title: "Staff sign in — Rajyash Food Porter" };
 
 // Dedicated staff (admin/coordinator) entry. Same Clerk auth as everyone, and it
 // lands on the admin console. Admin role is granted manually via Clerk metadata

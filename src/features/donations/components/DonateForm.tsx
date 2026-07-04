@@ -100,7 +100,7 @@ export function DonateForm() {
         order_id: res.orderId,
         amount: res.amount,
         currency: "INR",
-        name: "Rajyash Food Rescue",
+        name: "Rajyash Food Porter",
         description: t("title"),
         prefill: { name: name.trim() || undefined, email: email.trim() || undefined },
         theme: { color: "#2E7D46" },

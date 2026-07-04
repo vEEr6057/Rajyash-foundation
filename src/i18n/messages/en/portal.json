@@ -11,7 +11,7 @@
       "subtitle": "Tell us what's available and where — a volunteer will pick it up.",
       "eyebrow": "Donate",
       "editTitle": "Edit pickup",
-      "editMetaTitle": "Edit pickup — Rajyash Food Rescue",
+      "editMetaTitle": "Edit pickup — Rajyash Food Porter",
       "sectionWhat": "What you're sharing",
       "sectionWhen": "When to pick up",
       "sectionWhere": "Where",
@@ -144,7 +144,7 @@
   },
   "run": {
     "title": "My Run",
-    "metaTitle": "My Run — Rajyash Food Rescue",
+    "metaTitle": "My Run — Rajyash Food Porter",
     "eyebrow": "Driver",
     "completeTitle": "Run complete",
     "emptyTitle": "No run yet",

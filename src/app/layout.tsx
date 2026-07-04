@@ -23,14 +23,14 @@ import "./globals.css";
 // Locale-aware sign-in card header. Applied OVER the base localization package so
 // our brand copy wins in every language (hiIN/guIN don't carry this exact wording).
 const SIGN_IN_START: Record<string, { title: string; subtitle: string }> = {
-  en: { title: "Welcome back", subtitle: "Sign in to continue to Food Rescue" },
+  en: { title: "Welcome back", subtitle: "Sign in to continue to Food Porter" },
   hi: {
     title: "वापसी पर स्वागत है",
-    subtitle: "Food Rescue जारी रखने के लिए साइन इन करें",
+    subtitle: "Food Porter जारी रखने के लिए साइन इन करें",
   },
   gu: {
     title: "પાછા સ્વાગત છે",
-    subtitle: "Food Rescue ચાલુ રાખવા સાઇન ઇન કરો",
+    subtitle: "Food Porter ચાલુ રાખવા સાઇન ઇન કરો",
   },
 };
 
@@ -87,18 +87,18 @@ const SITE_URL =
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "Rajyash Food Rescue — Surplus food to people in need, Ahmedabad",
-    template: "%s — Rajyash Food Rescue",
+    default: "Rajyash Food Porter — Surplus food to people in need, Ahmedabad",
+    template: "%s — Rajyash Food Porter",
   },
   description:
     "Every evening, Rajyash Foundation volunteers carry Ahmedabad's surplus food to people in need. Donate surplus or volunteer to drive a rescue.",
-  applicationName: "Rajyash Food Rescue",
+  applicationName: "Rajyash Food Porter",
   openGraph: {
     type: "website",
-    siteName: "Rajyash Food Rescue",
+    siteName: "Rajyash Food Porter",
     locale: "en_IN",
     url: "/",
-    title: "Rajyash Food Rescue — Surplus food to people in need, Ahmedabad",
+    title: "Rajyash Food Porter — Surplus food to people in need, Ahmedabad",
     description:
       "Every evening, Rajyash Foundation volunteers carry Ahmedabad's surplus food to people in need.",
     images: [
@@ -112,7 +112,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Rajyash Food Rescue",
+    title: "Rajyash Food Porter",
     description:
       "Rescuing Ahmedabad's surplus food — carried warm to people in need, every evening.",
     images: ["/og.jpg"],

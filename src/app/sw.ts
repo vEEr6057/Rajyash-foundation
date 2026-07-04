@@ -33,7 +33,7 @@ self.addEventListener("push", (event) => {
     d = {};
   }
   event.waitUntil(
-    self.registration.showNotification(d.title ?? "Food Rescue", {
+    self.registration.showNotification(d.title ?? "Food Porter", {
       body: d.body ?? "",
       data: { url: d.url ?? "/portal/dashboard" },
       icon: "/icon-192.png",

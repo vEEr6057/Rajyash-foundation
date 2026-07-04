@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { OnboardingForm } from "@/features/auth/components/OnboardingForm";
 import { getSession } from "@/server/auth/session";
 
-export const metadata = { title: "Welcome — Rajyash Food Rescue" };
+export const metadata = { title: "Welcome — Rajyash Food Porter" };
 
 type SelectableRole = "volunteer" | "donor" | "driver";
 const asSelectable = (r: string | undefined): SelectableRole | undefined =>

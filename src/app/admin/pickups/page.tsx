@@ -14,7 +14,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Admin · Pickups — Rajyash Food Rescue" };
+export const metadata = { title: "Admin · Pickups — Rajyash Food Porter" };
 
 export default async function AdminPickupsPage({
   searchParams,

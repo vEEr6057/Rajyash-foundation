@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { PickupForm } from "@/features/pickups/components/PickupForm";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "New pickup — Rajyash Food Rescue" };
+export const metadata = { title: "New pickup — Rajyash Food Porter" };
 
 export default async function NewPickupPage() {
   const session = await getSession();
