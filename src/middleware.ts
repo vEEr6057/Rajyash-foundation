@@ -9,6 +9,8 @@ const isPublicRoute = createRouteMatcher([
   "/robots.txt", // SEO metadata routes — must not be auth-gated
   "/sitemap.xml",
   "/api/inngest(.*)", // S2S — Inngest authenticates via signing-key signature, not Clerk
+  "/api/health", // B5 — uptime probe; must answer without auth
+  "/api/csp-report", // B5 — browser POSTs CSP violations here; never auth-gate/redirect it
 ]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
@@ -24,10 +26,11 @@ const CSP_REPORT_ONLY = [
   "img-src 'self' data: blob: https:",
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' https://fonts.gstatic.com data:",
-  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com",
-  "connect-src 'self' https: wss:",
+  "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://*.clerk.com https://challenges.cloudflare.com https://static.cloudflareinsights.com",
+  "connect-src 'self' https: wss: https://static.cloudflareinsights.com",
   "frame-src 'self' https://*.clerk.com https://challenges.cloudflare.com",
   "worker-src 'self' blob:",
+  "report-uri /api/csp-report",
   "upgrade-insecure-requests",
 ].join("; ");
 

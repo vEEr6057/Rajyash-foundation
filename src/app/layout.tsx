@@ -14,6 +14,7 @@ import { getLocale } from "next-intl/server";
 import { Providers } from "./providers";
 import { SkipLink } from "@/components/SkipLink";
 import { clerkAppearance } from "@/lib/clerkAppearance";
+import { env } from "@/config/env";
 import "./globals.css";
 
 const mukta = Mukta({
@@ -159,6 +160,17 @@ export default async function RootLayout({
             <SkipLink />
             <Providers>{children}</Providers>
           </NextIntlClientProvider>
+          {/* Cloudflare Web Analytics (B5) — cookieless, free. Rendered only when the
+              beacon token is configured; absent in local/dev where it's unset. */}
+          {env.NEXT_PUBLIC_CF_BEACON_TOKEN && (
+            <script
+              defer
+              src="https://static.cloudflareinsights.com/beacon.min.js"
+              data-cf-beacon={JSON.stringify({
+                token: env.NEXT_PUBLIC_CF_BEACON_TOKEN,
+              })}
+            />
+          )}
         </body>
       </html>
     </ClerkProvider>
