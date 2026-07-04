@@ -71,7 +71,7 @@ export default async function AdminReportsPage({
   const to = new Date(toStr);
   to.setHours(23, 59, 59, 999);
 
-  const [t, tCommon, locale, report, runRows, destRows, partnerRows] = await Promise.all([
+  const [t, tCommon, locale, report, runRows, destRows, partnerRows, rescue] = await Promise.all([
     getTranslations("admin"),
     getTranslations("common"),
     getLocale(),
@@ -79,16 +79,26 @@ export default async function AdminReportsPage({
     reportsRepo.runSummary(from, to),
     reportsRepo.destinationBreakdown(from, to),
     reportsRepo.partnerBreakdown(from, to),
+    reportsRepo.rescueTime(from, to),
   ]);
 
   // Human range for the header meta — format the raw YYYY-MM-DD (UTC-anchored so
   // the day never drifts across timezones) rather than the query-mutated `to`.
   const rangeMeta = formatReportRange(fromStr, toStr, locale);
 
+  // Food-safety SLA: posted→delivered duration. p90 shows the tail an average hides.
+  const fmtMinutes = (m: number) =>
+    m >= 60 ? `${Math.floor(m / 60)}h ${m % 60}m` : `${m}m`;
   const stats = [
-    { label: t("reports.metrics.servings"), value: report.servings },
-    { label: t("reports.metrics.kg"), value: report.kg },
-    { label: t("reports.metrics.deliveries"), value: report.count },
+    { label: t("reports.metrics.servings"), value: report.servings.toLocaleString() },
+    { label: t("reports.metrics.kg"), value: report.kg.toLocaleString() },
+    { label: t("reports.metrics.deliveries"), value: report.count.toLocaleString() },
+    ...(rescue.count > 0
+      ? [
+          { label: t("reports.metrics.avgRescue"), value: fmtMinutes(rescue.avgMinutes) },
+          { label: t("reports.metrics.p90Rescue"), value: fmtMinutes(rescue.p90Minutes) },
+        ]
+      : []),
   ];
 
   const exportUrl = `/admin/reports/export?from=${fromStr}&to=${toStr}`;
@@ -126,7 +136,7 @@ export default async function AdminReportsPage({
 
       {/* Top-line metrics — ledger with provenance (batch-3 §2.3) */}
       <LedgerRow
-        stats={stats.map((s) => ({ value: s.value.toLocaleString(), label: s.label }))}
+        stats={stats.map((s) => ({ value: s.value, label: s.label }))}
         provenance={t("reports.totalsNote")}
       />
 

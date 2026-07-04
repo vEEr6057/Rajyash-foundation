@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { env } from "@/config/env";
 import { requireRole, AuthError, getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { profilesRepo } from "@/server/db/repositories/profiles";
@@ -135,6 +136,11 @@ export async function createPickup(
     ({ userId } = await donor());
   } catch {
     return fail("FORBIDDEN", "Only donors can post pickups.");
+  }
+  // Kill switch (production-discipline §3): pause NEW intake without a deploy;
+  // already-posted pickups keep flowing through claim/track/deliver untouched.
+  if (!env.INTAKE_ENABLED) {
+    return fail("DISABLED", "New pickup requests are paused right now. Please try again later.");
   }
   const parsed = pickupFormSchema.safeParse(input);
   if (!parsed.success) {

@@ -139,7 +139,9 @@
     "metrics": {
       "servings": "बचाए गए परोसे",
       "kg": "बचाए गए कि.ग्रा.",
-      "deliveries": "पूरी हुई डिलीवरी"
+      "deliveries": "पूरी हुई डिलीवरी",
+      "avgRescue": "औसत बचाव समय",
+      "p90Rescue": "90% इतने समय में"
     },
     "exportButton": "फ़िल्टर किए पिकअप डाउनलोड (CSV)",
     "exportButtonShort": "पिकअप CSV",

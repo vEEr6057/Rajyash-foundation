@@ -18,6 +18,9 @@ vi.mock("@/server/notifications/registry", () => ({
     web_push: { key: "web_push", send: vi.fn() },
   },
 }));
+// Kill switch defaults ON in tests; mutable so the switch-off case can flip it.
+const envState = vi.hoisted(() => ({ NOTIFICATIONS_ENABLED: true }));
+vi.mock("@/config/env", () => ({ env: envState }));
 
 // RED until 04-02 creates dispatch.ts.
 import { dispatchToChannel } from "./dispatch";
@@ -36,6 +39,15 @@ describe("dispatchToChannel (NOT-04 isolation + NOT-05 dedup)", () => {
     sendEmail.mockClear();
     claim.mockReset();
     release.mockClear();
+    envState.NOTIFICATIONS_ENABLED = true;
+  });
+
+  it("kill switch: NOTIFICATIONS_ENABLED=off skips without consuming a dedup claim", async () => {
+    envState.NOTIFICATIONS_ENABLED = false;
+    await dispatchToChannel("in_app", "pk1:claimed", msg, to);
+    // No claim consumed → re-enabling lets a retried event deliver instead of deduping.
+    expect(claim).not.toHaveBeenCalled();
+    expect(sendInApp).not.toHaveBeenCalled();
   });
 
   it("sends when the delivery row is fresh (claim returns truthy)", async () => {

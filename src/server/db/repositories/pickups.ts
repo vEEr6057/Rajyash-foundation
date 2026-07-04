@@ -162,10 +162,18 @@ export const pickupsRepo = {
     path: string,
   ): Promise<Pickup | null> {
     const db = getDb();
+    // Status guard: proof only makes sense once the food is in hand — never on a
+    // requested/accepted/en_route/cancelled pickup.
     const rows = await db
       .update(pickups)
       .set({ proofPhotoPath: path, updatedAt: new Date() })
-      .where(and(eq(pickups.id, id), eq(pickups.volunteerId, volunteerId)))
+      .where(
+        and(
+          eq(pickups.id, id),
+          eq(pickups.volunteerId, volunteerId),
+          inArray(pickups.status, ["picked_up", "delivered"]),
+        ),
+      )
       .returning();
     return rows[0] ?? null;
   },
