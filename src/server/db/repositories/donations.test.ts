@@ -11,6 +11,7 @@ const claimed = vi.hoisted(() => new Set<string>());
 const control = vi.hoisted(() => ({
   updateThrows: false,
   updateRows: [{ id: "don_1", status: "paid" }] as unknown[],
+  lastUpdateWhere: undefined as unknown,
 }));
 
 vi.mock("@/server/db/client", () => {
@@ -30,7 +31,8 @@ vi.mock("@/server/db/client", () => {
       set: () => ({
         // where() returns a thenable that ALSO has .returning() — so it works both for
         // recordFailed (awaits where() directly) and recordCapture (chains .returning()).
-        where: () => {
+        where: (cond: unknown) => {
+          control.lastUpdateWhere = cond;
           const exec = async () => {
             if (control.updateThrows) throw new Error("transient db error");
             return control.updateRows;
@@ -69,7 +71,24 @@ beforeEach(() => {
   claimed.clear();
   control.updateThrows = false;
   control.updateRows = [{ id: "don_1", status: "paid" }];
+  control.lastUpdateWhere = undefined;
 });
+
+/**
+ * Walk a drizzle SQL condition tree collecting bound Param values. Lets the tests
+ * assert on WHAT the WHERE clause constrains (its literal params) without a real DB.
+ */
+function collectParamValues(node: unknown, out: unknown[] = []): unknown[] {
+  if (!node || typeof node !== "object") return out;
+  const rec = node as Record<string, unknown>;
+  if ("value" in rec && rec.brand === undefined && !("queryChunks" in rec)) {
+    out.push(rec.value);
+  }
+  if (Array.isArray(rec.queryChunks)) {
+    for (const c of rec.queryChunks) collectParamValues(c, out);
+  }
+  return out;
+}
 
 describe("donationsRepo.recordCapture (atomic idempotency)", () => {
   it("claims the event and returns { outcome: 'paid', donation } on first delivery", async () => {
@@ -123,5 +142,15 @@ describe("donationsRepo.recordFailed (atomic idempotency)", () => {
       donationsRepo.recordFailed("evt_f2", "order_f2", "pay_f2"),
     ).rejects.toThrow();
     expect(claimed.has("evt_f2")).toBe(false);
+  });
+
+  it("never downgrades a paid donation — the failed UPDATE is guarded by status != 'paid'", async () => {
+    // Out-of-order delivery: attempt 1's payment.failed lands AFTER attempt 2's
+    // payment.captured (distinct event ids, so dedup can't save us). The WHERE clause
+    // itself must exclude paid rows — assert the guard is really in the condition.
+    await donationsRepo.recordFailed("evt_late_fail", "order_1", "pay_attempt1");
+    const params = collectParamValues(control.lastUpdateWhere);
+    expect(params).toContain("order_1"); // matches on the order…
+    expect(params).toContain("paid"); // …and carries the status != 'paid' exclusion
   });
 });
