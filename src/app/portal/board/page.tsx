@@ -10,7 +10,7 @@ import { MapView } from "@/features/pickups/components/MapView";
 import { BoardTabs } from "@/features/pickups/components/BoardTabs";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Pickup board — Rajyash Food Rescue" };
+export const metadata = { title: "Pickup board — Rajyash Food Porter" };
 
 export default async function VolunteerBoardPage() {
   const session = await getSession();

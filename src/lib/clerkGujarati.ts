@@ -9,7 +9,7 @@ type Localization = NonNullable<ComponentProps<typeof ClerkProvider>["localizati
  * Minimal hand-authored Gujarati localization for Clerk. @clerk/localizations
  * ships Hindi (hiIN) but NOT Gujarati (no guIN as of v4.12), so the GU sign-in /
  * sign-up card would otherwise render fully in English. This covers the essentials
- * only; brand terms ("Food Rescue", provider names) stay in Latin. Use it as the
+ * only; brand terms ("Food Porter", provider names) stay in Latin. Use it as the
  * base when locale === "gu" (exactly like hiIN is used for hi).
  */
 export const guIN: Localization = {
@@ -21,7 +21,7 @@ export const guIN: Localization = {
   signIn: {
     start: {
       title: "પાછા સ્વાગત છે",
-      subtitle: "Food Rescue ચાલુ રાખવા સાઇન ઇન કરો",
+      subtitle: "Food Porter ચાલુ રાખવા સાઇન ઇન કરો",
       actionText: "ખાતું નથી?",
       actionLink: "સાઇન અપ કરો",
     },
@@ -29,7 +29,7 @@ export const guIN: Localization = {
   signUp: {
     start: {
       title: "ખાતું બનાવો",
-      subtitle: "Food Rescue શરૂ કરવા સાઇન અપ કરો",
+      subtitle: "Food Porter શરૂ કરવા સાઇન અપ કરો",
       actionText: "પહેલેથી ખાતું છે?",
       actionLink: "સાઇન ઇન કરો",
     },

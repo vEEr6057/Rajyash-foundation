@@ -11,7 +11,7 @@ import { EmptyState } from "@/components/EmptyState";
 import { PickupCard } from "@/features/pickups/components/PickupCard";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "My pickups — Rajyash Food Rescue" };
+export const metadata = { title: "My pickups — Rajyash Food Porter" };
 
 export default async function DonorPickupsPage() {
   const session = await getSession();

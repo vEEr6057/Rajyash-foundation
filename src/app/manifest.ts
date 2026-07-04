@@ -4,8 +4,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Rajyash Food Rescue",
-    short_name: "Food Rescue",
+    name: "Rajyash Food Porter",
+    short_name: "Food Porter",
     description:
       "Rescue surplus food and get it to people in need across Ahmedabad.",
     start_url: "/",

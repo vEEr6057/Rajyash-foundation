@@ -32,7 +32,7 @@ function receiptHtml(d: {
       <h2 style="color:#2E7D46">Thank you for your donation</h2>
       <p>Dear ${d.donorName ? d.donorName : "friend"},</p>
       <p>We gratefully acknowledge your generous contribution to ${NGO_LEGAL_NAME}'s
-         Food Rescue programme.</p>
+         Food Porter programme.</p>
       <table style="margin:16px 0;border-collapse:collapse">
         <tr><td style="padding:4px 12px 4px 0;color:#555">Amount</td><td style="font-weight:600">${formatRupees(d.amount)}</td></tr>
         <tr><td style="padding:4px 12px 4px 0;color:#555">Receipt no.</td><td style="font-weight:600">${d.receiptNumber}</td></tr>
@@ -76,7 +76,7 @@ export const sendDonationReceipt = inngest.createFunction(
       }).format(donation.createdAt);
       await sendEmail(
         donation.donorEmail,
-        `Your donation receipt — ${donation.receiptNumber ?? "Rajyash Food Rescue"}`,
+        `Your donation receipt — ${donation.receiptNumber ?? "Rajyash Food Porter"}`,
         receiptHtml({
           donorName: donation.donorName,
           amount: donation.amount,

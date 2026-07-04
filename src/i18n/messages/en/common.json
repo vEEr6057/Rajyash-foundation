@@ -1,11 +1,11 @@
 {
   "appName": "Rajyash Foundation",
-  "appTagline": "Food Rescue",
+  "appTagline": "Food Porter",
   "a11y": {
     "skipToContent": "Skip to content"
   },
   "staff": {
-    "title": "Rajyash Food Rescue — staff console",
+    "title": "Rajyash Food Porter — staff console",
     "subtitle": "Coordinate runs, donors and volunteers from one place.",
     "heading": "Staff sign in",
     "hint": "Admin & coordinator access. Use your staff email and password."

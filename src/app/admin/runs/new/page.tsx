@@ -6,7 +6,7 @@ import { ROUTES } from "@/config/constants";
 import { BuildRunForm } from "@/features/runs/components/BuildRunForm";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "New Run — Rajyash Food Rescue Admin" };
+export const metadata = { title: "New Run — Rajyash Food Porter Admin" };
 
 export default async function NewRunPage() {
   const session = await getSession();

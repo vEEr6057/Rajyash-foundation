@@ -22,7 +22,7 @@ export default function Loading() {
           <HandHeart className="relative size-9" aria-hidden />
         </span>
         <span className="font-display text-lg font-semibold text-white">
-          Rajyash Food Rescue
+          Rajyash Food Porter
         </span>
       </div>
     </div>

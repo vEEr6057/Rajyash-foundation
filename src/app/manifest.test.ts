@@ -4,8 +4,8 @@ import manifest from "./manifest";
 describe("manifest() — PWA manifest route handler (PUB-04)", () => {
   const result = manifest();
 
-  it("test 1: name === 'Rajyash Food Rescue'", () => {
-    expect(result.name).toBe("Rajyash Food Rescue");
+  it("test 1: name === 'Rajyash Food Porter'", () => {
+    expect(result.name).toBe("Rajyash Food Porter");
   });
 
   it("test 2: display === 'standalone'", () => {
