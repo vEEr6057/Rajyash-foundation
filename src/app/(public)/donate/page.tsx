@@ -1,9 +1,10 @@
 // src/app/(public)/donate/page.tsx
 // Public donation page (PAY-03). Runs on the homepage --rj-* brand layer, mirroring
-// privacy/page.tsx. DARK BY DEFAULT: when PAYMENTS_ENABLED is off this route 404s
-// (notFound()), so no donate entry point exists until the owner lights it up. Public
-// route (added to isPublicRoute in middleware) — no auth check.
-import { notFound } from "next/navigation";
+// privacy/page.tsx. DARK BY DEFAULT: when PAYMENTS_ENABLED is off this route redirects
+// home (a clean 302), so no donate entry point exists until the owner lights it up.
+// (opennext serves notFound() with a 200, so we prefer an explicit redirect over a
+// soft-404.) Public route (added to isPublicRoute in middleware) — no auth check.
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { env } from "@/config/env";
 import { PublicHeader } from "@/features/public/components/PublicHeader";
@@ -16,8 +17,8 @@ export const metadata = {
 };
 
 export default async function DonatePage() {
-  // Master switch: the entire page is inert while payments are disabled.
-  if (!env.PAYMENTS_ENABLED) notFound();
+  // Master switch: the entire page is inert while payments are disabled → send home.
+  if (!env.PAYMENTS_ENABLED) redirect("/");
 
   const t = await getTranslations("donate");
 
