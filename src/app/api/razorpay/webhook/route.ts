@@ -25,6 +25,7 @@ export const dynamic = "force-dynamic";
 interface RazorpayPaymentEntity {
   id?: string;
   order_id?: string;
+  amount?: number; // paise, as captured by Razorpay
 }
 interface RazorpayWebhookBody {
   event?: string;
@@ -92,6 +93,21 @@ export async function POST(req: Request) {
       if (result.outcome === "not_found") {
         logger.warn("razorpay webhook: captured order not found", { orderId });
         return NextResponse.json({ ok: true });
+      }
+      // Reconciliation guard: the captured amount should equal what the order was
+      // minted for. A mismatch never blocks the payment (Razorpay captured what it
+      // captured — the donation IS paid); the ERROR log is the audit trail for
+      // manual reconciliation via the Razorpay dashboard.
+      if (
+        typeof payment?.amount === "number" &&
+        payment.amount !== result.donation.amount
+      ) {
+        logger.error("razorpay amount mismatch", {
+          donationId: result.donation.id,
+          orderId,
+          expected: result.donation.amount,
+          captured: payment.amount,
+        });
       }
       // outcome === 'paid' — the claim + mutation are committed. Emit the receipt event
       // OUTSIDE the transaction, best-effort: a send hiccup must not fail the webhook
