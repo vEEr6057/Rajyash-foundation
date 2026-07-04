@@ -33,6 +33,16 @@ export const env = createEnv({
     VAPID_PUBLIC_KEY: z.string().min(1),
     VAPID_PRIVATE_KEY: z.string().min(1),
     VAPID_SUBJECT: z.string().min(1), // e.g. "mailto:rajyashfoundation@rajyashgroup.com"
+    // ── Payments / Razorpay donations (Phase 5, PAY-01..04) ──────────────
+    // Master switch. Ships DARK: OFF by default so the app boots with every
+    // Razorpay var below UNSET. Only "true"/"1" enable it — never set the literal
+    // string "false" (z.coerce.boolean coerces any non-empty string to true).
+    PAYMENTS_ENABLED: z.coerce.boolean().default(false),
+    // OPTIONAL creds — read only when the flag is on. Left unset in the dark state,
+    // so they must NOT be required or the app refuses to boot.
+    RAZORPAY_KEY_ID: z.string().optional(),
+    RAZORPAY_KEY_SECRET: z.string().optional(),
+    RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1).startsWith("pk_"),
@@ -52,6 +62,13 @@ export const env = createEnv({
     // unset the beacon is not rendered. Owner creates the Web Analytics site in the
     // CF dashboard and sets this as a build-time var in the GitHub Action.
     NEXT_PUBLIC_CF_BEACON_TOKEN: z.string().optional(),
+    // Payments (Phase 5) — client mirror of the master switch, so the public UI
+    // (donate link, /donate) can gate at build/render time. Same OFF-by-default.
+    NEXT_PUBLIC_PAYMENTS_ENABLED: z.coerce.boolean().default(false),
+    // Razorpay public key id — safe in the browser (it's the checkout key, not the
+    // secret). OPTIONAL: unset in the dark state. The create-order action also
+    // returns it, so the widget never depends on this being inlined.
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().optional(),
   },
   // Next.js inlines NEXT_PUBLIC_* at build time, so they must be listed explicitly.
   experimental__runtimeEnv: {
@@ -67,6 +84,8 @@ export const env = createEnv({
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     NEXT_PUBLIC_VAPID_PUBLIC_KEY: process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY,
     NEXT_PUBLIC_CF_BEACON_TOKEN: process.env.NEXT_PUBLIC_CF_BEACON_TOKEN,
+    NEXT_PUBLIC_PAYMENTS_ENABLED: process.env.NEXT_PUBLIC_PAYMENTS_ENABLED,
+    NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
