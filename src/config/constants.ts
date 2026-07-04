@@ -45,6 +45,8 @@ export const ROUTES = {
   // Public site (Phase 7 — D-04: volunteer CTA reuses Clerk sign-up with role prefill)
   becomeVolunteer: "/sign-up?role=volunteer",
   privacy: "/privacy",
+  // Donations (Phase 5 / PAY-01..04). Public, flag-gated — notFound() when payments off.
+  donate: "/donate",
 } as const;
 
 // Official Rajyash Foundation social profiles. Single source of truth — referenced
@@ -235,3 +237,25 @@ export const VALID_STOP_TRANSITIONS: Record<StopStatus, readonly StopStatus[]> =
   done: [],
   skipped: [],
 };
+
+// ── Donations / 80G receipts (Phase 5, PAY-01..04) ──────────────────────────
+// Payment lifecycle. A donation is born `created` (order placed, unpaid); ONLY the
+// HMAC-verified webhook flips it to `paid` or `failed`. The client callback never does.
+export const DONATION_STATUSES = ["created", "paid", "failed"] as const;
+export type DonationStatus = (typeof DONATION_STATUSES)[number];
+
+// Amount bounds in paise (Razorpay's unit). Min ₹10; max ₹5,00,000 — a sane ceiling
+// that rejects fat-finger / abuse amounts. Raise when a real campaign needs it.
+export const DONATION_MIN_PAISE = 1_000;
+export const DONATION_MAX_PAISE = 50_000_000;
+
+// Suggested amounts (₹) shown as presets on /donate; custom entry still allowed.
+export const DONATION_PRESETS_INR = [100, 500, 1000, 2500] as const;
+
+// 80G tax-exemption registration number printed on donation receipts. EMPTY until the
+// Foundation's certificate is in hand — the receipt email OMITS the 80G line when blank.
+// TODO(owner): set the real 80G registration number here before going live.
+export const NGO_80G_NUMBER = "";
+// Legal entity name on the receipt (single source; kept out of the localized copy so
+// the legal name is never mistranslated).
+export const NGO_LEGAL_NAME = "Rajyash Foundation";
