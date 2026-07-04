@@ -5,10 +5,6 @@
   // 2025-05-05 required for FinalizationRegistry support that postgres-js needs.
   "compatibility_date": "2025-05-05",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
-  // Cloudflare Workers Logs (B5): persistent, queryable invocation logs on the free
-  // plan (3-day retention). Every structured `logger.*` JSON line becomes searchable
-  // in the dashboard. Takes effect on next deploy — no dashboard action needed.
-  "observability": { "enabled": true, "head_sampling_rate": 1 },
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
