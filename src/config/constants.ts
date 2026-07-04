@@ -217,6 +217,14 @@ export const RUN_STATUS_LABELS: Record<RunStatus, string> = {
   completed: "Completed",
   cancelled: "Cancelled",
 };
+// i18n key (in the `common` namespace) for each run status — routed through next-intl
+// so status words localize in gu/hi. Single source: common.runStatus.* (shared with reports).
+export const RUN_STATUS_LABEL_KEYS: Record<RunStatus, string> = {
+  planned: "runStatus.planned",
+  active: "runStatus.active",
+  completed: "runStatus.completed",
+  cancelled: "runStatus.cancelled",
+};
 
 export const RUN_SLOTS = ["morning", "night"] as const;
 export type RunSlot = (typeof RUN_SLOTS)[number];

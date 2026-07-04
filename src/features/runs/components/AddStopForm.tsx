@@ -56,6 +56,7 @@ export function AddStopForm({
   destinations: Destination[];
 }) {
   const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const router = useRouter();
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
@@ -132,7 +133,7 @@ export function AddStopForm({
               <SelectContent>
                 {partners.map((p) => (
                   <SelectItem key={p.id} value={p.id}>
-                    {p.name} · {p.type}
+                    {p.name} · {tCommon(`partnerType.${p.type}`)}
                   </SelectItem>
                 ))}
               </SelectContent>

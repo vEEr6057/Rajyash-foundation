@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import imageCompression from "browser-image-compression";
 import { Upload, Check, Loader2 } from "lucide-react";
 import { requestPhotoUpload } from "@/features/pickups/actions/pickupActions";
@@ -19,6 +20,7 @@ export function PhotoUploader({
   label: string;
   onUploaded: (path: string) => void;
 }) {
+  const t = useTranslations("common");
   const inputRef = useRef<HTMLInputElement>(null);
   const [state, setState] = useState<"idle" | "working" | "done" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
@@ -39,11 +41,11 @@ export function PhotoUploader({
         body: compressed,
         headers: { "content-type": "image/jpeg" },
       });
-      if (!put.ok) throw new Error("Upload failed — try again.");
+      if (!put.ok) throw new Error(t("photo.failedRetry"));
       onUploaded(prep.path);
       setState("done");
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Upload failed");
+      setError(e instanceof Error ? e.message : t("photo.failed"));
       setState("error");
     }
   }
@@ -77,7 +79,7 @@ export function PhotoUploader({
         ) : (
           <Upload className="size-4" />
         )}
-        {state === "done" ? "Photo added" : state === "working" ? "Uploading…" : label}
+        {state === "done" ? t("photo.added") : state === "working" ? t("photo.uploading") : label}
       </button>
       {error && <p className="mt-1.5 text-sm text-destructive">{error}</p>}
     </div>

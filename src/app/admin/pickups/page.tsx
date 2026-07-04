@@ -44,8 +44,9 @@ export default async function AdminPickupsPage({
     : "createdAt";
   const dir = params.get("dir") === "asc" ? "asc" : "desc";
 
-  const [t, { rows, total }, volunteers, partners] = await Promise.all([
+  const [t, tCommon, { rows, total }, volunteers, partners] = await Promise.all([
     getTranslations("admin"),
+    getTranslations("common"),
     pickupsRepo.listForAdminPaged(filters, page, ADMIN_PAGE_SIZE, sort, dir),
     profilesRepo.listAssignableVolunteers(),
     partnersRepo.list(),
@@ -85,7 +86,13 @@ export default async function AdminPickupsPage({
       ) : (
         <>
           <PickupsTable pickups={rows} volunteers={volunteers} sort={sort} dir={dir} />
-          <Pagination page={page} totalPages={totalPages} hrefForPage={hrefForPage} />
+          <Pagination
+            page={page}
+            totalPages={totalPages}
+            hrefForPage={hrefForPage}
+            prevLabel={tCommon("aria.prev")}
+            nextLabel={tCommon("aria.next")}
+          />
         </>
       )}
     </div>

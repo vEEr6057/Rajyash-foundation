@@ -9,7 +9,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { setRunStatus, deleteRun } from "@/features/runs/actions/runActions";
 import {
   VALID_RUN_TRANSITIONS,
-  RUN_STATUS_LABELS,
+  RUN_STATUS_LABEL_KEYS,
   ROUTES,
   type RunStatus,
 } from "@/config/constants";
@@ -64,7 +64,7 @@ export function RunStatusControls({
           disabled={pending}
           onClick={() => (to === "cancelled" ? setConfirm("cancel") : advance(to))}
         >
-          {t("runs.status.advance", { status: RUN_STATUS_LABELS[to] })}
+          {t("runs.status.advance", { status: tCommon(RUN_STATUS_LABEL_KEYS[to]) })}
         </Button>
       ))}
       {canDelete && (
