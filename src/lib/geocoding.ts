@@ -106,7 +106,15 @@ export async function resolveShortMapsUrl(url: string): Promise<string | null> {
       headers: { "User-Agent": USER_AGENT },
       cache: "no-store",
     });
-    return res.url || null;
+    // SSRF hardening (security-review LOW-2): the shortener's redirect can point anywhere.
+    // Private-range fetches are already blocked by the Worker's global_fetch_strictly_public
+    // flag; here we additionally refuse to hand back any final URL that isn't a Google Maps
+    // host, so a crafted goo.gl link can't turn this into a blind fetch of an arbitrary
+    // public origin whose URL we then parse/store.
+    if (!res.url) return null;
+    const host = new URL(res.url).hostname;
+    const isGoogleHost = /(^|\.)google\.[a-z.]+$/i.test(host) || /(^|\.)goo\.gl$/i.test(host);
+    return isGoogleHost ? res.url : null;
   } catch {
     return null;
   }

@@ -12,6 +12,13 @@ export const dynamic = "force-dynamic";
 
 const MAX_BODY = 8_192; // an error report is small; anything bigger is noise/abuse
 
+// Flood guard (security-review LOW-1): the client reporter self-caps at 5/page-load, but
+// that's bypassable by POSTing here directly. Cap logging per Worker isolate so a script
+// can't spam Workers Logs / burn requests; the count resets when the isolate recycles.
+// Mirrors the /api/csp-report pattern. Over the cap → 204, no log (cheap + boring).
+const MAX_LOGS_PER_ISOLATE = 50;
+let logged = 0;
+
 interface ClientErrorReport {
   message?: string;
   stack?: string;
@@ -24,12 +31,17 @@ export async function POST(req: Request) {
   if (raw.length > MAX_BODY) {
     return new NextResponse("Payload too large", { status: 413 });
   }
+  // Over the per-isolate cap → accept but drop silently (no parse, no log).
+  if (logged >= MAX_LOGS_PER_ISOLATE) {
+    return NextResponse.json({ ok: true });
+  }
   let report: ClientErrorReport;
   try {
     report = JSON.parse(raw) as ClientErrorReport;
   } catch {
     return new NextResponse("Bad request", { status: 400 });
   }
+  logged++;
   logger.error("client error", {
     message: String(report.message ?? "").slice(0, 500),
     stack: String(report.stack ?? "").slice(0, 2000),

@@ -17,5 +17,6 @@
   "errorAmount": "Please enter an amount of at least ₹10.",
   "thanksTitle": "Thank you",
   "thanksBody": "We've received your payment request. If it went through, your receipt is on its way to your email — no need to do anything else.",
-  "thanksDone": "Back to home"
+  "thanksDone": "Back to home",
+  "errorVerify": "Please complete the verification below and try again."
 }

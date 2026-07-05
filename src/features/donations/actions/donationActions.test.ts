@@ -7,6 +7,16 @@ const env = vi.hoisted(() => ({
 }));
 vi.mock("@/config/env", () => ({ env }));
 vi.mock("@/lib/logger", () => ({ logger: { error: vi.fn(), warn: vi.fn(), info: vi.fn() } }));
+vi.mock("next/headers", () => ({
+  headers: async () => ({ get: () => null }),
+}));
+
+// Turnstile gate — default PASS so the amount/flag tests exercise their own paths; one
+// test flips it to false to prove the gate blocks minting.
+const verifyHuman = vi.fn().mockResolvedValue(true);
+vi.mock("@/server/payments/turnstile", () => ({
+  verifyTurnstile: (...a: unknown[]) => verifyHuman(...a),
+}));
 
 const createOrder = vi.fn();
 vi.mock("@/server/payments/razorpay", () => ({
@@ -23,6 +33,7 @@ import { createDonationOrder } from "./donationActions";
 beforeEach(() => {
   env.PAYMENTS_ENABLED = true;
   env.NEXT_PUBLIC_RAZORPAY_KEY_ID = "rzp_test_key";
+  verifyHuman.mockReset().mockResolvedValue(true);
   createOrder.mockReset().mockResolvedValue({ id: "order_1", amount: 50000, currency: "INR" });
   createRow.mockReset().mockResolvedValue({ id: "don_1" });
 });
@@ -52,6 +63,16 @@ describe("createDonationOrder — amount validation", () => {
     const res = await createDonationOrder({ amount: 10_000_001 });
     expect(!res.ok && res.code).toBe("VALIDATION");
     expect(createOrder).not.toHaveBeenCalled();
+  });
+});
+
+describe("createDonationOrder — Turnstile abuse gate (MED-1)", () => {
+  it("refuses to mint when the bot-check fails (TURNSTILE, no order, no row)", async () => {
+    verifyHuman.mockResolvedValue(false);
+    const res = await createDonationOrder({ amount: 50000 }, "bad-token");
+    expect(!res.ok && res.code).toBe("TURNSTILE");
+    expect(createOrder).not.toHaveBeenCalled();
+    expect(createRow).not.toHaveBeenCalled();
   });
 });
 

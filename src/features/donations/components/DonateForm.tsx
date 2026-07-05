@@ -1,9 +1,55 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { ROUTES } from "@/config/constants";
+import { env } from "@/config/env";
 import { createDonationOrder } from "../actions/donationActions";
+
+// Cloudflare Turnstile (security-review MED-1). Minimal shape of the global api.js
+// exposes — explicit render so we own the container + capture the token.
+interface TurnstileAPI {
+  render: (
+    el: HTMLElement,
+    opts: {
+      sitekey: string;
+      callback: (token: string) => void;
+      "expired-callback"?: () => void;
+      "error-callback"?: () => void;
+      theme?: "light" | "dark" | "auto";
+    },
+  ) => string;
+  reset: (widgetId?: string) => void;
+}
+declare global {
+  interface Window {
+    turnstile?: TurnstileAPI;
+  }
+}
+
+const TURNSTILE_SRC = "https://challenges.cloudflare.com/turnstile/v0/api.js";
+
+/** Load Turnstile api.js once; resolve when window.turnstile is ready. */
+function loadTurnstile(): Promise<boolean> {
+  return new Promise((resolve) => {
+    if (window.turnstile) return resolve(true);
+    const existing = document.querySelector<HTMLScriptElement>(
+      `script[src="${TURNSTILE_SRC}"]`,
+    );
+    if (existing) {
+      existing.addEventListener("load", () => resolve(!!window.turnstile));
+      existing.addEventListener("error", () => resolve(false));
+      return;
+    }
+    const s = document.createElement("script");
+    s.src = TURNSTILE_SRC;
+    s.async = true;
+    s.defer = true;
+    s.onload = () => resolve(!!window.turnstile);
+    s.onerror = () => resolve(false);
+    document.head.appendChild(s);
+  });
+}
 
 // Razorpay Checkout is loaded from a script tag at runtime; this is the minimal shape
 // we call. Kept local — no @types dependency for a scaffold that ships dark.
@@ -68,6 +114,32 @@ export function DonateForm() {
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
+  // Turnstile (MED-1): only active when the owner has set a site key. When unset, the
+  // widget never renders and the server gate skips — donations work exactly as before.
+  const turnstileSiteKey = env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const widgetRef = useRef<HTMLDivElement | null>(null);
+  const renderedRef = useRef(false);
+
+  useEffect(() => {
+    if (!turnstileSiteKey || renderedRef.current) return;
+    let cancelled = false;
+    void loadTurnstile().then((ok) => {
+      if (cancelled || !ok || !widgetRef.current || renderedRef.current) return;
+      renderedRef.current = true;
+      window.turnstile!.render(widgetRef.current, {
+        sitekey: turnstileSiteKey,
+        theme: "auto",
+        callback: (token) => setTurnstileToken(token),
+        "expired-callback": () => setTurnstileToken(null),
+        "error-callback": () => setTurnstileToken(null),
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [turnstileSiteKey]);
+
   const rupees = preset === "custom" ? Number(custom) : preset;
   const validAmount = Number.isFinite(rupees) && rupees >= MIN_RUPEES;
 
@@ -77,15 +149,32 @@ export function DonateForm() {
       setError(t("errorAmount"));
       return;
     }
+    // MED-1: when Turnstile is armed, require a token before we call the server.
+    if (turnstileSiteKey && !turnstileToken) {
+      setError(t("errorVerify"));
+      return;
+    }
     setBusy(true);
     try {
-      const res = await createDonationOrder({
-        amount: Math.round(rupees * 100), // ₹ → paise
-        name: name.trim() || undefined,
-        email: email.trim() || undefined,
-      });
+      const res = await createDonationOrder(
+        {
+          amount: Math.round(rupees * 100), // ₹ → paise
+          name: name.trim() || undefined,
+          email: email.trim() || undefined,
+        },
+        turnstileToken ?? undefined,
+      );
       if (!res.ok) {
-        setError(res.code === "VALIDATION" ? t("errorAmount") : t("errorGeneric"));
+        // Turnstile tokens are single-use — reset the widget so a retry gets a fresh one.
+        if (renderedRef.current) window.turnstile?.reset();
+        setTurnstileToken(null);
+        setError(
+          res.code === "VALIDATION"
+            ? t("errorAmount")
+            : res.code === "TURNSTILE"
+              ? t("errorVerify")
+              : t("errorGeneric"),
+        );
         setBusy(false);
         return;
       }
@@ -224,6 +313,9 @@ export function DonateForm() {
           />
         </div>
       </div>
+
+      {/* Turnstile widget (MED-1) — rendered only when a site key is configured. */}
+      {turnstileSiteKey && <div ref={widgetRef} className="mt-6" />}
 
       {error && (
         <p className="mt-4 text-sm" style={{ color: "var(--rj-danger, #b3261e)" }} role="alert">
