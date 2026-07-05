@@ -6,6 +6,7 @@ import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher"
 import { ThemeToggle } from "@/features/public/components/ThemeToggle";
 import { NotificationBell } from "@/features/notifications";
 import { AdminSidebar, AdminMobileNav } from "@/features/admin/components/AdminNav";
+import { InstallNudgeBanner } from "@/features/pwa";
 
 export default function AdminLayout({
   children,
@@ -23,6 +24,9 @@ export default function AdminLayout({
             <UserButton />
           </div>
         </header>
+        {/* UX-17: this layout is admin-only (middleware + page-level requireRole),
+            so no extra session check is needed here — never rendered on public pages. */}
+        <InstallNudgeBanner />
         <main
           id="main-content"
           tabIndex={-1}

@@ -139,5 +139,11 @@
     "roleFor": "{name} માટે ભૂમિકા"
   },
   "unknownPartner": "અજ્ઞાત ભાગીદાર",
-  "adHocDestination": "અન્ય સ્થળ"
+  "adHocDestination": "અન્ય સ્થળ",
+  "pwa": {
+    "installTitle": "એક-ટૅપ ઍક્સેસ માટે ફૂડ પોર્ટર ઇન્સ્ટોલ કરો",
+    "installButton": "ઇન્સ્ટોલ કરો",
+    "iosHint": "Share પર ટૅપ કરો, પછી \"Add to Home Screen\".",
+    "dismissAriaLabel": "ઇન્સ્ટોલ પ્રોમ્પ્ટ બંધ કરો"
+  }
 }
