@@ -6,10 +6,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { HeartHandshake, Truck, Bike } from "lucide-react";
+import { HeartHandshake, HandHelping, Truck, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { FormField } from "@/components/forms";
 import { cn } from "@/lib/utils";
 import { ROUTES, DEFAULT_CITY, SELECTABLE_ROLES } from "@/config/constants";
 import {
@@ -18,10 +18,12 @@ import {
 } from "@/features/auth/validations/onboarding";
 import { completeOnboarding } from "@/features/auth/actions/onboardingActions";
 
+// Icons pick the role's real-world action — donor gives, volunteer distributes
+// on-site (never picks up), driver drives the collection + delivery leg.
 const ROLE_ICONS: Record<(typeof SELECTABLE_ROLES)[number], typeof Truck> = {
   donor: HeartHandshake,
-  volunteer: Truck,
-  driver: Bike,
+  volunteer: HandHelping,
+  driver: Truck,
 };
 
 // PUB-03: defaultRole pre-selects volunteer role when "Become a volunteer" CTA is clicked.
@@ -41,7 +43,7 @@ export function OnboardingForm({
   const [serverError, setServerError] = useState<string | null>(null);
 
   const {
-    register,
+    control,
     handleSubmit,
     watch,
     setValue,
@@ -88,7 +90,7 @@ export function OnboardingForm({
       ) : (
         <div>
           <Label>{t("roleLabel")}</Label>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {SELECTABLE_ROLES.map((key) => {
               const Icon = ROLE_ICONS[key];
               const selected = role === key;
@@ -100,20 +102,24 @@ export function OnboardingForm({
                     setValue("role", key, { shouldValidate: true })
                   }
                   className={cn(
-                    "rj-press flex flex-col items-start gap-2 rounded-xl border p-4 text-left",
+                    "rj-press relative flex flex-col items-start gap-2 rounded-xl border p-4 text-left",
+                    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40",
                     selected
                       ? "border-primary bg-primary-soft"
-                      : "border-border bg-surface hover:bg-secondary",
+                      : "border-border bg-surface hover:bg-surface-2",
                   )}
                   aria-pressed={selected}
                 >
+                  {selected && (
+                    <CheckCircle2 className="absolute top-3 right-3 size-4 text-primary" />
+                  )}
                   <Icon
                     className={cn(
                       "size-6",
                       selected ? "text-primary" : "text-muted-foreground",
                     )}
                   />
-                  <span className="font-semibold text-foreground">
+                  <span className="font-display font-medium text-foreground">
                     {t(`${key}.title`)}
                   </span>
                   <span className="text-sm text-muted-foreground">
@@ -129,45 +135,30 @@ export function OnboardingForm({
         </div>
       )}
 
-      <div>
-        <Label htmlFor="name">{t("nameLabel")}</Label>
-        <Input
-          id="name"
-          autoComplete="name"
-          placeholder={t("namePlaceholder")}
-          aria-invalid={!!errors.name}
-          className={cn(errors.name && "rj-field--error border-destructive")}
-          {...register("name")}
-        />
-        {errors.name && (
-          <p className="mt-1.5 text-sm text-destructive">{errors.name.message}</p>
-        )}
-      </div>
+      <FormField
+        control={control}
+        name="name"
+        label={t("nameLabel")}
+        autoComplete="name"
+        placeholder={t("namePlaceholder")}
+      />
 
-      <div>
-        <Label htmlFor="phone">
-          {t("phoneLabel")}{" "}
-          <span className="font-normal text-muted-foreground">{t("phoneOptional")}</span>
-        </Label>
-        <Input
-          id="phone"
-          type="tel"
-          inputMode="numeric"
-          autoComplete="tel"
-          placeholder={t("phonePlaceholder")}
-          aria-invalid={!!errors.phone}
-          className={cn(errors.phone && "rj-field--error border-destructive")}
-          {...register("phone")}
-        />
-        {errors.phone && (
-          <p className="mt-1.5 text-sm text-destructive">{errors.phone.message}</p>
-        )}
-      </div>
+      <FormField
+        control={control}
+        name="phone"
+        label={
+          <>
+            {t("phoneLabel")}{" "}
+            <span className="font-normal text-muted-foreground">{t("phoneOptional")}</span>
+          </>
+        }
+        type="tel"
+        inputMode="numeric"
+        autoComplete="tel"
+        placeholder={t("phonePlaceholder")}
+      />
 
-      <div>
-        <Label htmlFor="city">{t("cityLabel")}</Label>
-        <Input id="city" {...register("city")} />
-      </div>
+      <FormField control={control} name="city" label={t("cityLabel")} autoComplete="address-level2" />
 
       {serverError && (
         <p className="text-sm text-destructive" role="alert">

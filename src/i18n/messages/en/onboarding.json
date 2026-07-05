@@ -1,4 +1,7 @@
 {
+  "eyebrow": "Get started",
+  "headline": "One quick step before you dive in.",
+  "subline": "Tell us how you'd like to help — we'll have you set up in under a minute.",
   "title": "Welcome to Rajyash Food Porter",
   "description": "A couple of details and you're in. You can change these later.",
   "adminSetupTitle": "Setting up your admin account",
@@ -6,15 +9,15 @@
   "roleLabel": "How would you like to help?",
   "donor": {
     "title": "Donate food",
-    "blurb": "I have surplus food to give — restaurant, event, or home."
+    "blurb": "I have surplus food to share"
   },
   "volunteer": {
     "title": "Volunteer",
-    "blurb": "I help hand out food to people at the drop-off points."
+    "blurb": "I'll help distribute food"
   },
   "driver": {
     "title": "Driver",
-    "blurb": "I drive (rickshaw) — I collect food and bring it to the drop-off points."
+    "blurb": "I drive collections & deliveries"
   },
   "nameLabel": "Your name",
   "namePlaceholder": "e.g. Rajeshbhai Patel",
