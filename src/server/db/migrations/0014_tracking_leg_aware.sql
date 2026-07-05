@@ -32,7 +32,9 @@ AS $$
           WHERE pr.id = p_uid AND pr.role = 'admin' AND pr.deactivated_at IS NULL
         )
         -- Donor-owner: pickup leg only — the view ends once the food is collected.
-        OR (p.donor_id = p_uid AND p.status = 'en_route'::pickup_status)
+        -- NB: schema-qualified cast — this function runs with SET search_path TO '',
+        -- so a bare `::pickup_status` fails with 42704 "type does not exist".
+        OR (p.donor_id = p_uid AND p.status = 'en_route'::public.pickup_status)
         -- Any active volunteer: trusted distribution helper, sees every leg (v1 scope;
         -- per-run scoping is a later refinement — see spec "Open assumptions").
         OR EXISTS (
