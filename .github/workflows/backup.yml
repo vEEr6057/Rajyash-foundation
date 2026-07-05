@@ -33,7 +33,9 @@ jobs:
       - name: Dump database
         env:
           DIRECT_URL: ${{ secrets.DIRECT_URL }}
-        run: pg_dump "$DIRECT_URL" -Fc --no-owner --no-privileges -f backup.dump
+        # Versioned binary path: the runner's preinstalled pg_dump (16) wins PATH over
+        # the pgdg-installed 17 and aborts with "server version mismatch" (server 17.x).
+        run: /usr/lib/postgresql/17/bin/pg_dump "$DIRECT_URL" -Fc --no-owner --no-privileges -f backup.dump
 
       - name: Encrypt
         env:
