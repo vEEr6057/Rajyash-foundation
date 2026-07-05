@@ -8,6 +8,11 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: ["./src/test/setup.ts"],
     globals: true,
+    // Only the repo's own tests. Without the .claude exclusion, agent worktrees
+    // under .claude/worktrees/ (each a full checkout) get swept into the run and
+    // fail against the root setup — 6 phantom failures, zero real ones.
+    include: ["src/**/*.test.{ts,tsx}"],
+    exclude: ["**/node_modules/**", ".claude/**"],
     // Unit tests never have real runtime secrets; skip env boot-validation so
     // importing server code (env.ts) doesn't throw. Real validation still runs
     // at app boot / build. (Was previously passed ad-hoc as SKIP_ENV_VALIDATION=1.)

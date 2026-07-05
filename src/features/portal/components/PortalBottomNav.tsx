@@ -3,28 +3,37 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Home, Plus, PackageOpen, LayoutList } from "lucide-react";
+import { Home, Plus, PackageOpen, LayoutList, Route as RouteIcon } from "lucide-react";
 import { ROUTES } from "@/config/constants";
 import { cn } from "@/lib/utils";
 
 type Item = { href: string; labelKey: string; icon: typeof Home };
 
-const ITEMS: Record<"donor" | "volunteer", Item[]> = {
+const ITEMS: Record<"donor" | "volunteer" | "driver", Item[]> = {
   donor: [
     { href: ROUTES.portalDashboard, labelKey: "home", icon: Home },
     { href: ROUTES.newPickup, labelKey: "post", icon: Plus },
     { href: ROUTES.donorPickups, labelKey: "pickups", icon: PackageOpen },
   ],
+  // dispatch-model-v2: volunteers are distribution helpers, not collectors —
+  // they get read-only board awareness + the "join a run" distributions list.
   volunteer: [
     { href: ROUTES.portalDashboard, labelKey: "home", icon: Home },
+    { href: ROUTES.distributions, labelKey: "runs", icon: RouteIcon },
+    { href: ROUTES.volunteerBoard, labelKey: "board", icon: LayoutList },
+  ],
+  // dispatch-model-v2: drivers claim from the board too (not just admin-
+  // assigned runs), so they now have two screens.
+  driver: [
+    { href: ROUTES.driverRun, labelKey: "myRun", icon: Home },
     { href: ROUTES.volunteerBoard, labelKey: "board", icon: LayoutList },
   ],
 };
 
 /**
- * Mobile bottom navigation for portal roles (donor/volunteer) — thumb-zone,
- * one-tap, always visible. Hidden on lg+ (desktop uses the header). Driver has a
- * single screen, so no bottom nav. Honors the bottom safe-area inset.
+ * Mobile bottom navigation for portal roles (donor/volunteer/driver) — thumb-
+ * zone, one-tap, always visible. Hidden on lg+ (desktop uses the header).
+ * Honors the bottom safe-area inset.
  */
 export function PortalBottomNav({ role }: { role: "donor" | "volunteer" | "driver" | "admin" }) {
   const t = useTranslations("portal");
@@ -32,7 +41,7 @@ export function PortalBottomNav({ role }: { role: "donor" | "volunteer" | "drive
   const pathname = usePathname();
   const path = pathname.replace(/^\/(en|gu|hi)(?=\/|$)/, "") || "/";
 
-  if (role !== "donor" && role !== "volunteer") return null;
+  if (role !== "donor" && role !== "volunteer" && role !== "driver") return null;
   const items = ITEMS[role];
 
   return (

@@ -3,7 +3,9 @@
     "home": "Home",
     "post": "Post",
     "pickups": "Pickups",
-    "board": "Board"
+    "board": "Board",
+    "myRun": "My Run",
+    "runs": "Runs"
   },
   "pickup": {
     "form": {
@@ -78,7 +80,8 @@
       "emptyBody": "New surplus usually appears after lunch and dinner service — check back around then.",
       "listTab": "List",
       "mapTab": "Map",
-      "mapButton": "Map"
+      "mapButton": "Map",
+      "volunteerNote": "The foundation's driver collects these — you'll help distribute the food once it reaches the drop point."
     },
     "donor": {
       "title": "My pickups",
@@ -117,12 +120,12 @@
     "donorEyebrow": "My kitchen",
     "volunteerEyebrow": "Volunteer",
     "statsProvenance": "Counted from your posts in this app.",
-    "volunteerStatsProvenance": "Counted from the live board and your claimed pickups.",
+    "volunteerStatsProvenance": "Counted from the live board and today's active runs.",
     "greeting": "Welcome back, {name}",
     "donorTitle": "Donor dashboard",
     "volunteerTitle": "Volunteer dashboard",
     "donorCta": "Got surplus food?",
-    "volunteerCta": "Ready to rescue?",
+    "volunteerCta": "Ready to help today?",
     "welcomeFallback": "Welcome",
     "postPickup": "Post a pickup",
     "myPickups": "My pickups",
@@ -130,17 +133,24 @@
     "mapView": "Map view",
     "adminDashboard": "Admin dashboard",
     "recentTitle": "Recent pickups",
-    "activeTitle": "Your active pickups",
-    "noActive": "You have no active pickups. Browse the board to claim one.",
+    "activeTitle": "Today's distributions",
+    "noActive": "No distributions running right now — check back after lunch or dinner service.",
     "stats": {
       "total": "Total posted",
       "open": "Open",
       "active": "In progress",
       "delivered": "Delivered",
       "openNow": "Open now",
-      "myActive": "My active",
+      "myActive": "Active now",
       "deliveredByMe": "Delivered by me"
     }
+  },
+  "distributions": {
+    "title": "Today's distributions",
+    "metaCount": "{count} active now",
+    "emptyTitle": "Nothing active right now",
+    "emptyBody": "Distributions go live once a driver starts a run — check back after lunch or dinner service.",
+    "noDropStops": "No drop stops added to this run yet."
   },
   "run": {
     "title": "My Run",

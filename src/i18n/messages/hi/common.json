@@ -67,7 +67,7 @@
     "cancelRunBody": "रन और इसके स्टॉप रद्द के रूप में चिह्नित होंगे.",
     "cancelRunConfirm": "रन रद्द करें",
     "cancelPickupTitle": "यह पिकअप रद्द करें?",
-    "cancelPickupBody": "स्वयंसेवक अब इसे नहीं देखेंगे.",
+    "cancelPickupBody": "ड्राइवर अब इसे नहीं देखेंगे.",
     "cancelPickupConfirm": "पिकअप रद्द करें",
     "removeStopTitle": "यह स्टॉप हटाएं?",
     "removeStopBody": "यह रन से हटा दिया जाएगा.",
