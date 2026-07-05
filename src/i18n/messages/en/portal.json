@@ -149,6 +149,8 @@
     "recentTitle": "Recent pickups",
     "activeTitle": "Today's distributions",
     "noActive": "No distributions running right now — check back after lunch or dinner service.",
+    "whatsCookingTitle": "What's cooking",
+    "whatsCookingBody": "{count} pickups on the board right now.",
     "stats": {
       "total": "Total posted",
       "open": "Open",
@@ -156,6 +158,7 @@
       "delivered": "Delivered",
       "openNow": "Open now",
       "myActive": "Active now",
+      "dropStops": "Drop stops today",
       "deliveredByMe": "Delivered by me"
     }
   },
