@@ -48,6 +48,12 @@
     "export": {
       "button": "CSV નિકાસ",
       "filename": "pickups-export"
+    },
+    "detail": {
+      "eyebrow": "એડમિન · પિકઅપ",
+      "historyTitle": "ઇતિહાસ ({count})",
+      "actorUnknown": "અજ્ઞાત",
+      "partnerLabel": "ભાગીદાર"
     }
   },
   "users": {
@@ -181,6 +187,7 @@
     "editClose": "બંધ",
     "seedNote": "ડ્રાઇવર જ્યાં ડિલિવરી કરે છે તે ઝોન અને આશ્રયો ઉમેરો.",
     "openInMaps": "નકશામાં ખોલો",
+    "inactiveBadge": "નિષ્ક્રિય",
     "meta": "{count, plural, one {# સ્થળ} other {# સ્થળો}}",
     "empty": {
       "title": "કોઈ સ્થળ સાચવ્યું નથી",
@@ -205,7 +212,9 @@
       "geocodeAddress": "સરનામું (Geocode)",
       "geocodeButton": "Geocode",
       "saveButton": "સ્થળ સાચવો",
-      "addButton": "સ્થળ ઉમેરો"
+      "addButton": "સ્થળ ઉમેરો",
+      "active": "સક્રિય",
+      "activeHint": "નિષ્ક્રિય સ્થળો રન બનાવવાના પિકરમાંથી છુપાયેલા રહે છે પણ જૂના રિપોર્ટ માટે રખાય છે."
     }
   },
   "runs": {
@@ -219,6 +228,9 @@
     "newButton": "નવી રન",
     "emptyState": "હજી સુધી કોઈ રન નથી. ડિસ્પેચ શરૂ કરવા માટે એક બનાવો.",
     "detailEyebrow": "એડમિન · ડિસ્પેચ",
+    "detail": {
+      "historyTitle": "ઇતિહાસ ({count})"
+    },
     "stopCount": "સ્ટોપ",
     "stopCountMeta": "{count, plural, one {# સ્ટોપ} other {# સ્ટોપ}}",
     "table": { "driver": "ડ્રાઇવર" },

@@ -76,6 +76,20 @@ describe("updateDestination", () => {
     const res = await updateDestination("nope", VALID);
     expect(!res.ok && res.code).toBe("NOT_FOUND");
   });
+
+  // UX-15: the Active switch (DestinationForm, edit mode) round-trips through
+  // this action — a false value must reach the repo, not get lost to `?? true`.
+  it("persists active:false when the form toggles a destination inactive", async () => {
+    update.mockResolvedValue({ id: "d1" });
+    await updateDestination("d1", { ...VALID, active: false });
+    expect(update).toHaveBeenCalledWith("d1", expect.objectContaining({ active: false }));
+  });
+
+  it("defaults active to true when the input omits it", async () => {
+    update.mockResolvedValue({ id: "d1" });
+    await updateDestination("d1", VALID);
+    expect(update).toHaveBeenCalledWith("d1", expect.objectContaining({ active: true }));
+  });
 });
 
 describe("deleteDestination", () => {

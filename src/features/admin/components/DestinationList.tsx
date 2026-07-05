@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { MoreHorizontal, Pencil, Trash2, MapPin } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Table,
@@ -47,7 +48,14 @@ function Row({ d, onEdit }: { d: Destination; onEdit: (d: Destination) => void }
 
   return (
     <TableRow>
-      <TableCell className="font-medium">{d.name}</TableCell>
+      <TableCell className="font-medium">
+        <span className="flex items-center gap-2">
+          {d.name}
+          {/* UX-15: the delete-conflict guidance ("mark it inactive instead") only
+              helps if the list actually shows which destinations are already inactive. */}
+          {!d.active && <Badge variant="outline">{t("destinations.inactiveBadge")}</Badge>}
+        </span>
+      </TableCell>
       <TableCell className="text-muted-foreground">
         {d.area ? `${d.area}, ` : ""}
         {d.city}
