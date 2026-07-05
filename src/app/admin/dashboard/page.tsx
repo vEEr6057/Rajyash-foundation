@@ -18,6 +18,7 @@ import {
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { logger } from "@/lib/logger";
+import { withTimeout } from "@/lib/withTimeout";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { LedgerRow } from "@/components/LedgerRow";
@@ -87,6 +88,13 @@ export default async function AdminOverviewPage() {
   // reason — neither batch depends on the other. Each analytics promise below
   // catches its OWN failure (previously one failure discarded all four), so a
   // single slow/broken aggregate degrades just that panel, not the page.
+  // Each DB read is bounded (withTimeout): the aggregates are sub-millisecond on real
+  // data, but a cold/contended connection can stall one read long enough to block the
+  // whole SSR (a 74s render was observed against a cold remote DB during load). The
+  // timeout caps each read's contribution so a slow moment degrades ONE panel to its
+  // empty state instead of hanging the page (production-discipline §3). .catch() still
+  // handles genuine errors; the timeout only guards latency.
+  const DB_BUDGET_MS = 8000;
   const [t, tCommon, locale, partners, drivers, o, trend, partnerRows, destRows] =
     await Promise.all([
       getTranslations("admin"),
@@ -94,24 +102,49 @@ export default async function AdminOverviewPage() {
       getLocale(),
       // Partners power the Log-surplus popup; drivers power the New-run popup
       // (both rendered in the header, not a separate page).
-      partnersRepo.list().catch(() => []),
-      profilesRepo.listByRole("driver").catch(() => []),
-      getAdminOverview().catch((e: unknown) => {
-        logger.error("admin overview stats failed", { err: String(e) });
-        return EMPTY_OVERVIEW;
-      }),
-      getDeliveriesTrend(30).catch((e: unknown) => {
-        logger.error("admin deliveries trend failed", { err: String(e) });
-        return [] as TrendPoint[];
-      }),
-      reportsRepo.partnerBreakdown(ALL_TIME_FROM, ALL_TIME_TO).catch((e: unknown) => {
-        logger.error("admin partner breakdown failed", { err: String(e) });
-        return [] as PartnerBreakdownRow[];
-      }),
-      reportsRepo.destinationBreakdown(ALL_TIME_FROM, ALL_TIME_TO).catch((e: unknown) => {
-        logger.error("admin destination breakdown failed", { err: String(e) });
-        return [] as DestinationBreakdownRow[];
-      }),
+      withTimeout(partnersRepo.list().catch(() => []), DB_BUDGET_MS, [], "dashboard.partners"),
+      withTimeout(
+        profilesRepo.listByRole("driver").catch(() => []),
+        DB_BUDGET_MS,
+        [],
+        "dashboard.drivers",
+      ),
+      withTimeout(
+        getAdminOverview().catch((e: unknown) => {
+          logger.error("admin overview stats failed", { err: String(e) });
+          return EMPTY_OVERVIEW;
+        }),
+        DB_BUDGET_MS,
+        EMPTY_OVERVIEW,
+        "dashboard.overview",
+      ),
+      withTimeout(
+        getDeliveriesTrend(30).catch((e: unknown) => {
+          logger.error("admin deliveries trend failed", { err: String(e) });
+          return [] as TrendPoint[];
+        }),
+        DB_BUDGET_MS,
+        [] as TrendPoint[],
+        "dashboard.trend",
+      ),
+      withTimeout(
+        reportsRepo.partnerBreakdown(ALL_TIME_FROM, ALL_TIME_TO).catch((e: unknown) => {
+          logger.error("admin partner breakdown failed", { err: String(e) });
+          return [] as PartnerBreakdownRow[];
+        }),
+        DB_BUDGET_MS,
+        [] as PartnerBreakdownRow[],
+        "dashboard.partnerBreakdown",
+      ),
+      withTimeout(
+        reportsRepo.destinationBreakdown(ALL_TIME_FROM, ALL_TIME_TO).catch((e: unknown) => {
+          logger.error("admin destination breakdown failed", { err: String(e) });
+          return [] as DestinationBreakdownRow[];
+        }),
+        DB_BUDGET_MS,
+        [] as DestinationBreakdownRow[],
+        "dashboard.destinationBreakdown",
+      ),
     ]);
 
   const topPartners: BarDatum[] = partnerRows.slice(0, 5).map((p) => ({
