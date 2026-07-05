@@ -186,6 +186,10 @@
       <li><a href="#s6">Admin &amp; staff guide</a></li>
       <li><a href="#s7">Appendix</a></li>
     </ol>
+    <div style="margin-top:1.6rem;padding-top:1.2rem;border-top:1px solid var(--hairline);font-size:.74rem;color:var(--ink-faint);line-height:1.5;">
+      Every action in this handbook exists in the live app — the notification bell, run-driver
+      reassignment, run editing, and per-stop override all closed earlier gaps.
+    </div>
   </nav>
 
   <main>
@@ -194,13 +198,14 @@
         <p class="eyebrow">Rajyash Foundation · Food Rescue</p>
         <h1 class="title slab">Food Porter — Complete User Handbook</h1>
         <p class="lede">A screen-by-screen guide to the whole platform, for everyone who uses it:
-          donors who share surplus food, volunteers who help distribute it, drivers who run the
-          deliveries, and foundation staff who coordinate it all.</p>
+          donors who share surplus food, volunteers who help distribute it, drivers who collect
+          the food and run the deliveries, and foundation staff who coordinate it all.</p>
         <div class="model">
           <strong>How the rescue works.</strong> A donor posts surplus food. The foundation's
-          <strong>driver collects it</strong>, and <strong>volunteers ride along as helping hands
-          to distribute</strong> it to people in need. Staff coordinate pickups into delivery
-          <strong>runs</strong> and watch everything live on one dashboard.
+          <strong>driver collects it</strong> — claimed from a board or assigned by staff — and
+          <strong>volunteers never collect</strong>; they ride along or meet the run at the drop
+          to help <strong>distribute</strong> it to people in need. Staff coordinate pickups into
+          delivery <strong>runs</strong>, adjust them live, and watch everything on one dashboard.
         </div>
       </header>
 
@@ -214,31 +219,43 @@
           <thead><tr><th>Role</th><th>Who they are</th><th>What they do in the app</th></tr></thead>
           <tbody>
             <tr><td><strong>Donor</strong></td><td>A restaurant, hostel, family, or event host with surplus food</td><td>Posts food for pickup; tracks it to delivery</td></tr>
-            <tr><td><strong>Volunteer</strong></td><td>A helper who assists with distribution</td><td>Sees available pickups; helps deliver alongside the driver</td></tr>
-            <tr><td><strong>Driver</strong></td><td>The foundation's driver</td><td>Runs the assigned collection &amp; delivery route</td></tr>
-            <tr><td><strong>Admin (staff)</strong></td><td>Foundation coordinators</td><td>Coordinate pickups, build runs, manage people &amp; places, read reports</td></tr>
+            <tr><td><strong>Volunteer</strong></td><td>A helper who assists with distribution</td><td>Browses for awareness only; joins active runs to confirm drops — <strong>never claims or collects</strong></td></tr>
+            <tr><td><strong>Driver</strong></td><td>The foundation's driver</td><td>Claims or is assigned pickups; runs the collection &amp; delivery route; shares live location while active</td></tr>
+            <tr><td><strong>Admin (staff)</strong></td><td>Foundation coordinators</td><td>Coordinate pickups, build &amp; adjust runs, manage people &amp; places, read reports</td></tr>
           </tbody>
         </table></div>
         <p>Your role is set once, the first time you sign in. Admin access is granted by the
-          foundation — you can't choose it yourself.</p>
+          foundation via an <strong>invite</strong> — you can't choose it yourself at sign-up.</p>
 
         <h3>Signing in</h3>
         <ul>
-          <li><strong>Donors, volunteers, drivers:</strong> choose <strong>Sign in</strong> or <strong>Become a volunteer</strong>, then enter the code we email you — no password to remember.</li>
-          <li><strong>Foundation staff:</strong> use the <strong>Staff sign-in</strong> page (footer link, or <code>/staff</code>).</li>
+          <li><strong>Donors, volunteers, drivers:</strong> choose <strong>Sign in</strong> or <strong>Become a volunteer</strong> (or the donor/driver equivalent), then enter the one-time code we email you — no password to remember.</li>
+          <li><strong>Foundation staff:</strong> use the <strong>Staff sign-in</strong> page (footer link, or <code>/staff</code>) — a separately branded front door over the same account system; your <strong>admin</strong> role, not the door you used, is what actually unlocks the admin area.</li>
         </ul>
+
+        <h3>Onboarding (first sign-in only)</h3>
+        <figure><img src="{{IMG:05-onboarding}}" alt="Onboarding — role cards and profile form" /><figcaption>Pick a role — Donate food, Volunteer, or Driver — then complete name, phone, and city.</figcaption></figure>
+        <ol>
+          <li><strong>Pick a role</strong> — three cards: <em>Donate food</em> ("I have surplus food to share"), <em>Volunteer</em> ("I'll help distribute food"), <em>Driver</em> ("I drive collections &amp; deliveries"). Not a dropdown — tap a card. May arrive pre-selected from a link.</li>
+          <li><strong>Complete your profile</strong> — name (pre-filled from your account when available), phone <em>(optional)</em>, city.</li>
+        </ol>
+        <div class="callout"><strong>Admin-invited users skip the role picker.</strong> If staff invited you with the admin role already set, onboarding only asks for your profile and lands you on the admin dashboard — the three role cards never appear.</div>
 
         <h3>The top bar</h3>
         <ul>
-          <li><strong>EN · ગુ · हि</strong> — switch language (English, Gujarati, Hindi) any time; the whole app follows.</li>
-          <li><strong>Moon / Sun</strong> — light or dark theme.</li>
-          <li><strong>Your avatar</strong> — account menu and sign-out.</li>
+          <li><strong>EN · ગુ · हि</strong> — switch language (English, Gujarati, Hindi) any time; saved as a cookie and mirrored to your profile, so notification copy follows it too.</li>
+          <li><strong>Moon / Sun</strong> — light or dark theme, instantly.</li>
+          <li><strong>Your avatar</strong> — Clerk's own account menu and sign-out (not a custom app screen).</li>
+          <li><strong>Bell</strong> — your notifications (below).</li>
         </ul>
+        <p>Language, theme, and the account menu also exist for anyone on the public site, before signing in.</p>
 
         <h3>Notifications</h3>
+        <figure><img src="{{IMG:41-notification-feed}}" alt="Notification bell open, showing the feed" /><figcaption>The bell — on every signed-in page, portal and admin alike — opens the feed with a "Mark all read" shortcut.</figcaption></figure>
         <ul>
-          <li><strong>Phone / browser push</strong> (the main channel) — tap <strong>Enable notifications</strong> and choose <strong>Allow</strong>. This is what lets alerts reach your phone when the app is closed.</li>
-          <li><strong>Email</strong> (secondary) — receipts and some updates.</li>
+          <li><strong>The notification bell</strong> — tap to open the feed: recent notifications, newest first, timestamped. Tap an unread one to mark it read; <strong>Mark all read</strong> clears the badge in one tap. An empty inbox shows a simple empty state instead of a blank list.</li>
+          <li><strong>Phone / browser push</strong> (the main channel) — tap <strong>Enable notifications</strong> and choose <strong>Allow</strong>. This is what lets alerts reach your phone when the app is closed. Shared by donor and volunteer dashboards; drivers land on My Run instead, so they don't currently see this card there.</li>
+          <li><strong>Email</strong> (secondary) — receipts and some updates, once the foundation's email domain is fully set up.</li>
         </ul>
         <div class="callout"><strong>Not getting alerts?</strong> The usual reason is that "Allow notifications" was never tapped in the browser. Push only works after you allow it.</div>
       </section>
@@ -249,20 +266,29 @@
         <p>Anyone can visit without signing in. This is the foundation's public face and the donation entry point.</p>
 
         <h3>Homepage</h3>
-        <figure><img src="{{IMG:01-home-full}}" alt="Food Porter homepage" /><figcaption>The homepage — mission, live impact stats, and the calls to volunteer or donate.</figcaption></figure>
+        <figure><img src="{{IMG:01-home-full}}" alt="Food Porter homepage" /><figcaption>Programme cards with images, "driver collects / volunteers distribute" copy, and the live-impact panel.</figcaption></figure>
         <ul>
-          <li><strong>Hero</strong> — the mission and two calls to action: <em>Become a volunteer</em> and <em>donate surplus food</em>.</li>
-          <li><strong>Live impact stats</strong> — people helped, volunteers, programmes, and the year the work began.</li>
+          <li><strong>Hero</strong> — the mission and calls to action: <em>Become a volunteer</em> and <em>donate surplus food</em> (the same pattern routes to donor/driver sign-up depending on where it's clicked).</li>
+          <li><strong>Programme cards</strong> — every programme, each with its own image.</li>
+          <li><strong>Corrected copy</strong> — "our driver will collect it, volunteers help distribute" language, not "volunteers pick up."</li>
+          <li><strong>Live impact panel</strong> — meals, kg, deliveries, volunteers, and founding year, each with a provenance note (real records, not hand-typed).</li>
+          <li><strong>Mobile menu</strong> — hamburger icon opens a sheet with nav, language, theme, and sign-in/up links.</li>
           <li><strong>Footer</strong> — contact, social links, and the legal pages (Privacy, Terms, Refund &amp; Cancellation).</li>
         </ul>
-        <div class="callout"><strong>For staff:</strong> the homepage numbers come from real delivery records — not hand-typed — so they stay honest as the work grows.</div>
 
         <h3>Signing in &amp; creating an account</h3>
         <figure><img src="{{IMG:02-signin}}" alt="Sign in screen" /><figcaption>Sign in with your email and a one-time code.</figcaption></figure>
-        <figure><img src="{{IMG:03-signup}}" alt="Create account screen" /><figcaption>New users create an account, then answer one question — how they want to help — which sets their role.</figcaption></figure>
+        <figure><img src="{{IMG:03-signup}}" alt="Create account screen" /><figcaption>New users create an account, then complete onboarding, which sets their role.</figcaption></figure>
+        <p>Both are Clerk's own widgets, not custom app screens — new users continue into onboarding, returning users land on their dashboard.</p>
 
         <h3>Staff sign-in</h3>
-        <figure><img src="{{IMG:04-staff-signin}}" alt="Staff sign-in screen" /><figcaption>Foundation coordinators sign in here.</figcaption></figure>
+        <figure><img src="{{IMG:04-staff-signin}}" alt="Staff sign-in screen" /><figcaption>A distinct front door at /staff — same underlying account system, still role-checked server-side.</figcaption></figure>
+
+        <h3>Donate (money)</h3>
+        <p>A <strong>Donate</strong> link appears in the header/footer only when the foundation's payments flag is on — off, and <code>/donate</code> redirects home with no link anywhere (a deliberate kill switch). When on: pick a preset or custom amount, add optional name/email for the receipt, pass the Turnstile check, then confirm in the Razorpay Checkout modal. Success shows a "receipt is on its way" screen that makes <strong>no claim of success itself</strong> — only Razorpay's server-side webhook actually confirms payment.</p>
+
+        <h3>Legal pages</h3>
+        <p><strong>Privacy</strong>, <strong>Terms &amp; Conditions</strong>, and <strong>Refund &amp; Cancellation Policy</strong> — footer links, all three languages, required for online payments.</p>
       </section>
 
       <section id="s3">
@@ -275,61 +301,90 @@
         <ul>
           <li><strong>Total posted · Open · In progress · Delivered</strong> — your tally at a glance.</li>
           <li><strong>Post a pickup</strong> — start here to share food.</li>
+          <li><strong>My pickups</strong> — a shortcut to everything you've posted.</li>
           <li><strong>Recent pickups</strong> — your latest posts and their status.</li>
+          <li><strong>Enable notifications</strong> — push alerts for claims and delivery.</li>
         </ul>
 
-        <h3>Posting a pickup — step by step</h3>
-        <figure><img src="{{IMG:12-donor-new-pickup}}" alt="Post surplus food form" /><figcaption>One short form: what, how much, when, and where.</figcaption></figure>
+        <h3>Posting a pickup</h3>
+        <figure><img src="{{IMG:13-donor-postpickup-sheet}}" alt="Post surplus food sheet" /><figcaption>The Post surplus food sheet — "our driver will pick it up," with all fields.</figcaption></figure>
+        <p>Tap <strong>Post a pickup</strong> — a sheet slides in with the <strong>"our driver will pick it up"</strong> copy, so the model is clear immediately. Three sections:</p>
         <ol>
           <li><strong>Food type</strong> — cooked meal, bakery, packaged, raw produce…</li>
-          <li><strong>Quantity + Unit</strong> — how much, in <em>servings</em> or <em>kg</em>.</li>
+          <li><strong>Quantity + Unit</strong> — how much, in <em>servings</em> or <em>kg</em> (never converted between the two — see the appendix).</li>
           <li><strong>Description</strong> <em>(optional)</em> — e.g. "40 veg thalis from a wedding."</li>
-          <li><strong>When to pick up</strong> — the <em>from</em> and <em>until</em> times. Choose a realistic window; food safety depends on it.</li>
-          <li><strong>Pickup address</strong> — paste a Google Maps link or type an area/landmark, then tap <strong>Find</strong> to drop the pin.</li>
-          <li><strong>Food photo</strong> <em>(optional)</em> — helps, and is nice for the records.</li>
-          <li><strong>Confirm</strong> the food is fresh and safe, then <strong>Post pickup</strong>.</li>
+          <li><strong>Pickup window</strong> — <em>from</em> and <em>until</em> times. Choose a realistic window; food safety depends on it.</li>
+          <li><strong>Pickup address</strong> — paste a Google Maps link or type an area/landmark, tap <strong>Find</strong> — a spinner runs, then a draggable pin appears on a map below.</li>
+          <li><strong>Food photo</strong> <em>(optional)</em> — native camera picker, client-compressed, progress + checkmark.</li>
+          <li><strong>Safety checkbox</strong> — confirm the food is fresh and fit to share.</li>
+          <li><strong>Post pickup.</strong></li>
         </ol>
         <div class="callout"><strong>Food-safety promise.</strong> The confirmation checkbox is a real commitment: only post food that is fresh and safe to eat at pickup time.</div>
 
-        <h3>My pickups &amp; tracking</h3>
+        <h3>My pickups</h3>
         <figure><img src="{{IMG:11-donor-pickups}}" alt="My pickups list" /><figcaption>Everything you've posted, with live status.</figcaption></figure>
-        <p>Open any pickup to see its details and, once it's on the way, <strong>track it live on a map</strong>. When it turns <span class="pill done">Delivered</span>, your food reached someone. You can <strong>edit or cancel</strong> a pickup only while it's still <span class="pill req">Requested</span> — once claimed, it's in motion.</p>
+
+        <h3>Editing, cancelling, reposting</h3>
+        <ul>
+          <li><strong>Edit</strong> — shown only while <span class="pill req">Requested</span>; opens the same form pre-filled in a sheet.</li>
+          <li><strong>Cancel</strong> — also <span class="pill req">Requested</span>-only, destructive, confirms first; purges any GPS trail as a side effect.</li>
+          <li><strong>Repost</strong> — available at <em>any</em> status, no confirmation, navigates straight to the new pickup it creates.</li>
+        </ul>
+
+        <h3>Tracking a pickup live</h3>
+        <p>While status is <span class="pill prog">En route</span>, the detail page swaps its static map for a live tracking map of the driver's position.</p>
+        <div class="callout"><strong>Your live view ends once the food is collected</strong> — deliberate leg-aware tracking (see the appendix). Status text keeps updating after the map view ends.</div>
+
+        <h3>Status history (your receipt)</h3>
+        <p>Scroll to <strong>History</strong> on a pickup's detail page: every status transition, timestamped, generated automatically — the closest thing to a receipt for the food itself.</p>
       </section>
 
       <section id="s4">
         <p class="eyebrow">Section 4 · Volunteer</p>
         <h2 class="slab">Volunteer guide</h2>
-        <p>You help get rescued food to people who need it. Here's your side of the app.</p>
+        <p>You help get rescued food to people who need it — never by collecting it yourself. Here's your side of the app.</p>
 
         <h3>Your dashboard</h3>
-        <figure><img src="{{IMG:20-volunteer-dashboard}}" alt="Volunteer dashboard" /><figcaption>Your portal home, with a shortcut to the pickup board.</figcaption></figure>
+        <figure><img src="{{IMG:20-volunteer-dashboard}}" alt="Volunteer dashboard" /><figcaption>Your portal home, with shortcuts to the board and Today's Distributions.</figcaption></figure>
 
-        <h3>The pickup board</h3>
-        <figure><img src="{{IMG:21-volunteer-board}}" alt="Available pickups board" /><figcaption>Everything waiting to be collected — switch between List and Map.</figcaption></figure>
-        <p>A card per pickup shows the food type, quantity, time window, and area, with a <span class="pill req">Requested</span> pill until it's collected. A counter shows how many are waiting.</p>
+        <h3>The pickup board (read-only)</h3>
+        <figure><img src="{{IMG:27-volunteer-board-readonly}}" alt="Volunteer board, read-only" /><figcaption>The same board drivers claim from — volunteers get a note explaining browsing-only, in place of a claim button.</figcaption></figure>
+        <p>List/Map tabs, a card per open pickup. <strong>There is no claim button</strong> — a quiet note explains this screen is for awareness only. This is intentional (not a bug): dispatch-model-v2 removed the volunteer claim button, since collecting is the driver's job. Tap a card to view any active pickup's detail for awareness.</p>
 
-        <h3>A pickup up close</h3>
-        <figure><img src="{{IMG:22-volunteer-pickup-detail}}" alt="Pickup detail with map and claim button" /><figcaption>Full details, the location on a live map, and <em>Claim this pickup</em>.</figcaption></figure>
-        <p>Claiming assigns the pickup so two people never turn up for the same food. Once active, it moves through <em>accepted → en route → picked up → delivered</em>, and the donor can watch it live. Volunteers ride with the driver to hand out the food and confirm the drop.</p>
-        <div class="callout"><strong>Tip:</strong> if you can't collect it after all, don't claim it — leave it for someone who can.</div>
+        <h3>Today's Distributions</h3>
+        <figure><img src="{{IMG:26-volunteer-distributions}}" alt="Today's distributions" /><figcaption>Active runs' drop stops, with Mark done on each.</figcaption></figure>
+        <p><strong>Runs</strong> (bottom nav) lists every currently active run and, for each, only its <strong>drop stops</strong> — the pickup leg is the driver's job and isn't shown here. <strong>Mark done</strong> confirms a drop; <em>any</em> volunteer can confirm one on an active run, not just an "assigned" volunteer, since whoever is physically present is the one who can see food handed over.</p>
+        <div class="callout"><strong>Tip:</strong> because you never claim anything, there's no "leave it for someone else" decision on the board — browse for awareness, act from Today's Distributions when a run is active.</div>
       </section>
 
       <section id="s5">
         <p class="eyebrow">Section 5 · Driver</p>
         <h2 class="slab">Driver guide</h2>
-        <p>You collect the food and run the delivery route. The app gives you today's run and lets you tick off each stop.</p>
+        <p>You collect the food and run the delivery route. The app gives you a claim board, today's run, and lets you tick off each stop.</p>
+
+        <h3>The pickup board</h3>
+        <figure><img src="{{IMG:23-driver-board}}" alt="Driver's available pickups board" /><figcaption>The claim surface — the same board volunteers see, but with a claim control.</figcaption></figure>
+
+        <h3>Claiming a pickup</h3>
+        <figure><img src="{{IMG:24-driver-pickup-claim}}" alt="Driver pickup detail with map and Claim this pickup" /><figcaption>Full details, live map, and Claim this pickup.</figcaption></figure>
+        <p>Open any <span class="pill req">Requested</span> pickup to reach <strong>Claim this pickup</strong> — atomic, so a second driver claiming the same food gets a clear "already taken" error and a refresh instead of a double booking.</p>
+
+        <h3>Advancing status &amp; proof photo</h3>
+        <p>An <strong>"Advance to &lt;next status&gt;"</strong> button walks a claimed pickup through <em>Accepted → En route → Picked up → Delivered</em> — only you, the assigned driver, see it; it disappears at a terminal state. A <strong>proof-of-delivery photo</strong> upload appears only on the delivering step and is <strong>optional, not a gate</strong> — distribution is confirmed by whoever is present.</p>
+
+        <h3>Navigate &amp; share location</h3>
+        <p><strong>Navigate</strong> opens Google Maps with directions already loaded — a free deep link, no in-app dialog. <strong>Location sharing</strong> starts automatically (no button) while a pickup is en route/picked up or a run is active — a "Sharing your location…" banner confirms it, and the trail is deleted the moment you mark delivered. If location access is denied, a muted note explains sharing is off and the pickup still works normally.</p>
 
         <h3>My Run</h3>
         <figure><img src="{{IMG:25-driver-run}}" alt="Driver's My Run screen with a pickup stop and live map" /><figcaption>Your assigned route — stops in order, "Mark done", and live location sharing on the map.</figcaption></figure>
-        <p>My Run is your working checklist for the shift:</p>
         <ul>
-          <li><strong>Each stop in order</strong> — a <em>Pickup</em> to collect or a <em>Drop</em> to deliver, with its area and a <strong>Pending</strong> marker until done.</li>
-          <li><strong>Mark done</strong> — tap it as you finish each stop; the run auto-completes when every stop is done.</li>
-          <li><strong>Sharing your location</strong> — while the run is active, your live location shows on the map for coordinators and donors, and is deleted the moment you mark delivered. Keep your screen on during the run.</li>
-          <li>Volunteers riding with you can also confirm drops.</li>
+          <li><strong>Each stop in order</strong> — a <em>Pickup</em> to collect or a <em>Drop</em> to deliver, with a <strong>Pending</strong> marker until done.</li>
+          <li><strong>Mark done</strong> — tap it as you finish each stop; the run auto-completes when every stop is done, purging your GPS trail.</li>
+          <li><strong>Live map</strong> — route toward the next stop, road-routed when possible.</li>
+          <li>Volunteers riding with you can also confirm drops on the same run.</li>
         </ul>
         <p><em>Before a run is assigned, this screen reads "No run assigned to you yet — check back later," with the coordinator's number.</em></p>
-        <p>The structure of a run — its ordered pickup and drop stops — is the same one staff build; see <a href="#s6">the run detail screen</a> in the admin guide.</p>
+        <p>The structure of a run — its ordered pickup and drop stops — is exactly what staff build; see <a href="#s6">Inside a run</a> in the admin guide, including how a coordinator can reassign you mid-run or override a stop.</p>
       </section>
 
       <section id="s6">
@@ -343,72 +398,130 @@
           <li><strong>Top-line tiles</strong> — meals &amp; kg rescued, deliveries, open pickups, in-progress, active runs.</li>
           <li><strong>Deliveries (30 days)</strong>, <strong>Pickup status</strong> donut, <strong>Top partners &amp; destinations</strong>, and directory counts.</li>
         </ul>
-        <div class="callout"><strong>Use it to</strong> spot a pile-up of <em>Open pickups</em> that need dispatching, or <em>In progress</em> items that have stalled.</div>
+        <h4>How meals and kg are counted</h4>
+        <p>A small <strong>"?"</strong> hint sits by each tile, because they're deliberately <strong>never converted</strong> into one another: <strong>Meals rescued</strong> = delivered pickups logged in servings (one serving = one meal); <strong>Kg rescued</strong> = delivered pickups logged by weight, counted completely separately. A pickup is logged in whichever unit was chosen at post time — never both.</p>
+        <div class="callout"><strong>Use Overview to</strong> spot a pile-up of <em>Open</em> pickups that need dispatching, or <em>In progress</em> items that look stalled.</div>
 
         <h3>Pickups</h3>
-        <figure><img src="{{IMG:31-admin-pickups}}" alt="Admin pickups list" /><figcaption>The master list — filter, sort, assign, and open any record.</figcaption></figure>
-        <p><strong>What to do when:</strong> a pickup sits <span class="pill req">Open</span> too long → assign it (or it auto-cancels after its window lapses). Need a specific person on it → open and assign the volunteer/driver.</p>
+        <figure><img src="{{IMG:31-admin-pickups}}" alt="Admin pickups list" /><figcaption>The master list — filter, sort, assign to a driver, and open any record.</figcaption></figure>
+        <ul>
+          <li><strong>Filter &amp; sort</strong> — status/date filters plus a sortable table; any change resets to page 1.</li>
+          <li><strong>Assign a pickup to a driver</strong> — row menu → Assign, shown only on <span class="pill req">Requested</span> rows; the picker is scoped to <strong>drivers only</strong> (assigning a volunteer here would leave the pickup stuck, since only the assigned driver role can advance it).</li>
+          <li><strong>View</strong> a pickup — the same detail page everyone uses, with an admin-only <strong>Verify / Unverify</strong> toggle (bookkeeping only, never blocks dispatch).</li>
+          <li><strong>Export CSV</strong> — carries the active filters.</li>
+        </ul>
+        <p><strong>What to do when:</strong> a pickup sits <span class="pill req">Open</span> too long → assign it to a driver (or a nightly job auto-cancels it once its window lapses). Need a specific person → open it and assign a driver.</p>
 
         <h3>Dispatch Runs</h3>
         <figure><img src="{{IMG:32-admin-runs}}" alt="Admin runs list" /><figcaption>Every delivery run with its date, slot, status, and driver.</figcaption></figure>
         <p>A <strong>run</strong> is a driver's route — a set of pickup and drop stops done in one trip.</p>
 
-        <h4>Building a new run</h4>
-        <figure><img src="{{IMG:37-admin-new-run}}" alt="New run form" /><figcaption>Pick a date &amp; slot, assign a driver, add pickup and drop stops.</figcaption></figure>
-        <p>Assigning a driver notifies them.</p>
+        <h4>Creating a new run</h4>
+        <figure><img src="{{IMG:37-admin-new-run}}" alt="New run form" /><figcaption>Pick a slot &amp; date, optionally pick a driver; stops are added afterward on the run's own page.</figcaption></figure>
+        <p>Choose the slot and date, optionally pick a driver right away (or leave it for later). Stops aren't added here — you land on the new run's detail page to add them.</p>
 
         <h4>Inside a run</h4>
-        <figure><img src="{{IMG:39-admin-run-detail}}" alt="Run detail screen" /><figcaption>Live control for one route — its ordered stops and their status.</figcaption></figure>
-        <p>Reorder, add, or remove stops, override a stop's status, and follow the driver's progress. This is exactly what the driver sees as their checklist.</p>
+        <figure><img src="{{IMG:39-admin-run-detail}}" alt="Run detail screen — reassign driver, edit run, stop override" /><figcaption>Live control for one route: driver reassign, Edit run, per-stop status override, and the driver's live map.</figcaption></figure>
+        <ul>
+          <li><strong>Advance / cancel</strong> the run via status buttons (legal transitions only); <strong>Cancel</strong> and <strong>Delete</strong> confirm first.</li>
+          <li><strong>Delete</strong> — only while Planned or Cancelled.</li>
+          <li><strong>Edit run</strong> button — a sheet for slot + date only (see below); driver is separate.</li>
+          <li><strong>Assign / reassign the driver</strong> — a dedicated picker + Save, shown while the run is editable — this is how you change a run's driver <em>after</em> it exists.</li>
+          <li><strong>Live map</strong> — appears once the run is Active.</li>
+          <li><strong>Stops</strong> — reorder with up/down arrows, <strong>override a stop's status</strong> via an admin-only dropdown (Pending/Done/Skipped — a deliberate escape hatch for correcting a missed mark-done in the field), or remove a stop (confirms first). All editable only while Planned/Active.</li>
+          <li><strong>Add a stop</strong> — Pickup/Drop toggle; pickups pick a partner, drops pick a saved destination or a free-text ad-hoc address (geocoded automatically).</li>
+        </ul>
+
+        <h4>Edit-run sheet</h4>
+        <figure><img src="{{IMG:40-admin-edit-run}}" alt="Edit run sheet" /><figcaption>Slot and date only — reassigning the driver is its own control on the run detail page.</figcaption></figure>
 
         <h3>Destinations</h3>
         <figure><img src="{{IMG:33-admin-destinations}}" alt="Admin destinations" /><figcaption>The places rescued food is delivered to.</figcaption></figure>
-        <p>Shelters, night zones, community points. They become the <strong>drop stops</strong> you choose when building runs.</p>
+        <figure><img src="{{IMG:33b-admin-add-destination}}" alt="Add a destination sheet" /><figcaption>Name, area, address + Find, a draggable pin, and city.</figcaption></figure>
+        <p>Shelters, night zones, community points; they become the <strong>drop stops</strong> chosen when building runs. Delete is blocked with a conflict message if the destination was used by a past run.</p>
+        <div class="callout"><strong>Known limitation:</strong> the delete-conflict message suggests marking a destination inactive instead — but no such toggle exists anywhere in the UI today. There's no way to hide a destination from the picker short of deleting it (which the conflict guard may block).</div>
 
         <h3>Partners</h3>
         <figure><img src="{{IMG:34-admin-partners}}" alt="Admin partners" /><figcaption>The restaurants, hostels, and organisations that regularly donate.</figcaption></figure>
-        <p>Linking a donor to a partner lets the foundation <strong>attribute rescued food to that partner</strong> in reports.</p>
+        <p>Add/edit/delete partners (delete blocked if linked to donors or past run stops). <strong>Link a donor to a partner</strong> — a separate card with two plain dropdowns — attributes a donor's posts to that partner in reports.</p>
 
         <h3>Users</h3>
-        <figure><img src="{{IMG:35-admin-users}}" alt="Admin users" /><figcaption>Everyone in the system — change roles, invite, deactivate.</figcaption></figure>
-        <p><strong>What to do when:</strong> onboard a coordinator → invite by email with the admin role. Someone should lose access → deactivate them (immediate). Safeguards prevent removing the last admin.</p>
+        <figure><img src="{{IMG:35-admin-users}}" alt="Admin users" /><figcaption>Per-row Role dropdown, Deactivate, and Add user.</figcaption></figure>
+        <ul>
+          <li><strong>Change role</strong> — the row's dropdown fires immediately, no confirm dialog; your own row shows a static badge; the server blocks demoting the last active admin.</li>
+          <li><strong>Invite a user</strong> — email + preset role; selecting Admin shows a hint — <strong>this is how you make someone an admin</strong>, there's no separate "promote" control.</li>
+          <li><strong>Deactivate</strong> — confirms first; blocked on the last admin or your own account.</li>
+          <li><strong>Reactivate</strong> — shown only on deactivated rows, fires immediately, no confirm (asymmetric on purpose).</li>
+        </ul>
+        <figure><img src="{{IMG:35b-admin-invite-user}}" alt="Invite a user modal" /><figcaption>Email + preset role — selecting Admin is how you make someone an admin.</figcaption></figure>
 
         <h3>Reports</h3>
-        <figure><img src="{{IMG:36-admin-reports}}" alt="Admin reports" /><figcaption>The numbers donors, CSR partners, and auditors ask for — over any date range.</figcaption></figure>
+        <figure><img src="{{IMG:36-admin-reports}}" alt="Admin reports" /><figcaption>Meals/kg/deliveries, rescue-time metrics, breakdowns, and CSV export.</figcaption></figure>
         <ul>
-          <li><strong>Meals / kg rescued and deliveries</strong> for the period.</li>
+          <li><strong>Meals / kg rescued and deliveries</strong> for the period — same never-converted split as Overview.</li>
           <li><strong>Average and 90%-within rescue time</strong> (posted → delivered) — the food-safety and impact headline.</li>
-          <li>Breakdowns by run, destination, and partner, with <strong>CSV export</strong>.</li>
+          <li><strong>Date range</strong> — inline inputs, applies via shareable URL params.</li>
+          <li>Breakdowns by run, destination, and partner, with <strong>CSV export</strong> (runs, and pickups carrying the current filters).</li>
         </ul>
 
         <h3>Log surplus</h3>
-        <figure><img src="{{IMG:38-admin-log-surplus}}" alt="Log surplus" /><figcaption>Record a pickup directly, for food that came in by phone or in person.</figcaption></figure>
+        <figure><img src="{{IMG:38-admin-log-surplus}}" alt="Log restaurant surplus sheet" /><figcaption>Partner picker + the same food form, for pickups recorded on a partner's behalf.</figcaption></figure>
+        <p>For food that came in by phone or in person rather than a partner posting it themselves — tagged "logged by a coordinator" so it's distinguishable in reports.</p>
       </section>
 
       <section id="s7">
         <p class="eyebrow">Section 7</p>
         <h2 class="slab">Appendix</h2>
 
-        <h3>The rescue loop</h3>
+        <h3>The rescue loop (corrected model)</h3>
         <div class="flow">
           <div class="step"><b>1 · Post</b>Donor posts surplus food</div>
           <div class="step"><b>2 · Dispatch</b>Staff build it into a run</div>
-          <div class="step"><b>3 · Pickup</b>Driver collects the food</div>
+          <div class="step"><b>3 · Pickup</b>Driver claims/is assigned it, collects</div>
           <div class="step"><b>4 · Distribute</b>Driver + volunteers deliver</div>
           <div class="step"><b>5 · Delivered</b>Reached people in need ✓</div>
         </div>
-        <p>Every step is recorded with who did it and when. Nothing is marked delivered without going through the proper stages.</p>
+        <p>A <strong>driver</strong> collects — by claiming an open pickup or being assigned into a run. Volunteers are never the collector; they ride along or meet the run at the drop to help distribute and confirm it. <strong>Staff</strong> build runs, adjust them live, and can manually assign a specific driver outside the normal claim flow. Every step is recorded — who did it and when — via an audited status-event trail; nothing is marked delivered without going through the proper stages.</p>
+
+        <h3>Live tracking — who sees what</h3>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Leg</th><th>Pickup status</th><th>Admin</th><th>Donor (owner)</th><th>Volunteer</th></tr></thead>
+          <tbody>
+            <tr><td>Pickup (→ collect)</td><td><span class="pill prog">En route</span></td><td>✅</td><td>✅</td><td>✅</td></tr>
+            <tr><td>Distribution (→ drop)</td><td><span class="pill prog">Picked up</span></td><td>✅</td><td>❌ view ends here</td><td>✅</td></tr>
+          </tbody>
+        </table></div>
+        <p>The donor's status text keeps updating after their live view ends; they just stop seeing the moving pin once their food is collected. Any active volunteer can view a driver's location on both legs — acceptable in this single-organisation app; a future refinement could scope it per-run.</p>
 
         <h3>Pickup statuses</h3>
         <div class="tablewrap"><table>
           <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
           <tbody>
             <tr><td><span class="pill req">Requested</span></td><td>Posted, waiting to be collected (donor can still edit/cancel)</td></tr>
-            <tr><td><span class="pill prog">Accepted</span></td><td>Claimed/assigned — someone is on it</td></tr>
-            <tr><td><span class="pill prog">En route</span></td><td>On the way to collect</td></tr>
+            <tr><td><span class="pill prog">Accepted</span></td><td>Claimed or assigned to a driver — someone is on it</td></tr>
+            <tr><td><span class="pill prog">En route</span></td><td>Driver on the way to collect</td></tr>
             <tr><td><span class="pill prog">Picked up</span></td><td>Food collected, heading to the destination</td></tr>
             <tr><td><span class="pill done">Delivered</span></td><td>Reached people in need — done</td></tr>
-            <tr><td><span class="pill">Cancelled</span></td><td>Called off, or auto-cancelled after its window lapsed</td></tr>
+            <tr><td><span class="pill">Cancelled</span></td><td>Called off, or auto-cancelled after its pickup window lapsed</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>Run &amp; stop statuses</h3>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Run status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill req">Planned</span></td><td>Built, not yet started — stops fully editable</td></tr>
+            <tr><td><span class="pill prog">Active</span></td><td>Underway — live map on, driver reassignable</td></tr>
+            <tr><td><span class="pill done">Completed</span></td><td>Every stop done (auto) — read-only</td></tr>
+            <tr><td><span class="pill">Cancelled</span></td><td>Called off by staff — read-only</td></tr>
+          </tbody>
+        </table></div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Stop status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill req">Pending</span></td><td>Not yet done</td></tr>
+            <tr><td><span class="pill done">Done</span></td><td>Confirmed by a driver, a volunteer, or an admin override</td></tr>
+            <tr><td><span class="pill">Skipped</span></td><td>Deliberately bypassed via the admin override control</td></tr>
           </tbody>
         </table></div>
 
