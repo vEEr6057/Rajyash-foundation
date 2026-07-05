@@ -23,6 +23,12 @@ export default async function OnboardingPage({
   // Priority: explicit ?role= (homepage CTA intent) → the role an admin INVITED them as
   // (carried in Clerk metadata via inviteUser, since invite links don't carry a query
   // param). Admin is never selectable here, so an admin-metadata role falls through to undefined.
+  // NOTE: admin-invited users (inviteUser stamps onboardingComplete: true) never actually
+  // reach this page anymore — middleware's onboarding gate redirects them straight to
+  // /portal/dashboard, and their profile is provisioned lazily by getSession's
+  // ensureInvitedProfile. The isAdminInvite/defaultRole-from-session branches below are
+  // effectively unreachable dead paths for that flow now; left in place as a harmless
+  // fallback and because the ?role= (self sign-up CTA) flow below still uses this logic.
   const session = await getSession();
   const defaultRole = asSelectable(role) ?? asSelectable(session?.role);
   // An admin-invited user arrives here with role="admin" already in Clerk metadata.

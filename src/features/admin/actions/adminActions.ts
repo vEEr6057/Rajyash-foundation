@@ -14,6 +14,7 @@ import {
   ROLES,
   ROUTES,
   NOTIFICATION_EVENTS,
+  DEFAULT_CITY,
   type Role,
 } from "@/config/constants";
 import { partnerSchema, type PartnerInput } from "../validations/partner";
@@ -126,12 +127,25 @@ export async function setUserRole(
   }
 }
 
+const INVITE_PHONE_RE = /^(\+91)?[6-9]\d{9}$/;
+
 /**
- * Invite a new user by email with a preset role. Creates a Clerk invitation;
- * the role rides along in publicMetadata and is applied to the user on sign-up,
- * so onboarding picks it up and the profile is created with the right role.
+ * Invite a new user of ANY role (donor/volunteer/driver/admin — this is the ONE
+ * place an admin may be assigned; onboarding never offers it). The admin supplies
+ * name + optional phone/city up front. The invitation's publicMetadata carries
+ * onboardingComplete: true, so the invited user SKIPS onboarding entirely — on
+ * their first sign-in, getSession()'s ensureInvitedProfile lazily provisions their
+ * DB profile row from this metadata (see src/server/auth/session.ts). Role stays
+ * server-authoritative: it's the admin's validated pick, never anything from the
+ * invitee.
  */
-export async function inviteUser(email: string, role: Role): Promise<Result> {
+export async function inviteUser(
+  email: string,
+  role: Role,
+  name: string,
+  phone?: string,
+  city?: string,
+): Promise<Result> {
   try {
     await admin();
   } catch {
@@ -142,15 +156,29 @@ export async function inviteUser(email: string, role: Role): Promise<Result> {
     return fail("VALIDATION", "Enter a valid email address.");
   }
   if (!ROLES.includes(role)) return fail("VALIDATION", "Invalid role.");
+  const trimmedName = name.trim();
+  if (trimmedName.length < 2 || trimmedName.length > 80) {
+    return fail("VALIDATION", "Enter a name between 2 and 80 characters.");
+  }
+  const trimmedPhone = phone?.trim() ?? "";
+  if (trimmedPhone.length > 0 && !INVITE_PHONE_RE.test(trimmedPhone)) {
+    return fail("VALIDATION", "Enter a valid 10-digit Indian mobile number.");
+  }
+  const trimmedCity = city?.trim() || DEFAULT_CITY;
   try {
     const client = await clerkClient();
-    // The invitation carries the role in Clerk metadata. Admins (like everyone) still
-    // complete onboarding on first sign-in — that's what creates their profile row + name,
-    // and completeOnboarding PRESERVES an existing admin role (never demotes). So an
-    // admin invite is safe: they confirm their details, stay admin, land on /admin.
+    // onboardingComplete: true is what makes middleware skip /onboarding for this
+    // user entirely. The seeded name/phone/city ride along so ensureInvitedProfile
+    // can provision the DB profile on first authed request — no onboarding form.
     await client.invitations.createInvitation({
       emailAddress: trimmed,
-      publicMetadata: { role },
+      publicMetadata: {
+        role,
+        onboardingComplete: true,
+        invitedName: trimmedName,
+        invitedPhone: trimmedPhone.length > 0 ? trimmedPhone : null,
+        invitedCity: trimmedCity,
+      },
       ignoreExisting: true,
     });
     return { ok: true };
