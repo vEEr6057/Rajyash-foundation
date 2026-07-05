@@ -32,6 +32,7 @@ jobs:
       NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /portal/dashboard
       NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /onboarding
       NEXT_PUBLIC_CF_BEACON_TOKEN: "22ff4d173055492fa0dff67fb4b9d64f"
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: "0x4AAAAAADvw_PneE6vlgLyv"
     steps:
       - uses: actions/checkout@v4
 
