@@ -49,8 +49,10 @@ follow them:
 - **Degrade, don't die** — a third-party outage (Clerk, Supabase, Razorpay, Resend) must never
   500 a whole page. Feature shows its own "temporarily unavailable" state; the rest of the app
   works.
-- **Error visibility** — Sentry (free tier) on client and server. Volunteers' phone-browser
-  errors are invisible in Worker logs; Sentry is the only place they surface.
+- **Error visibility** — a client-error reporter (`ClientErrorReporter` → `/api/client-error`)
+  ships browser errors to Cloudflare Workers Logs; phone-browser errors are otherwise invisible
+  server-side. Sentry was deliberately NOT adopted (this fallback covers the need at ₹0); add it
+  later only if richer tracking is wanted.
 - **Notifications** — web-push is the primary channel (free, unlimited); email is secondary
   (Resend: 100/day cap). All sends go through the dispatch layer (`src/server/notifications/`),
   which is the seam where WhatsApp (Stage 2) plugs in — never call a provider SDK directly from
