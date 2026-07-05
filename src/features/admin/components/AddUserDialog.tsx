@@ -31,14 +31,20 @@ export function AddUserDialog() {
   const tCommon = useTranslations("common");
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [role, setRole] = useState<Role>("volunteer");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [done, setDone] = useState(false);
   const [pending, start] = useTransition();
 
   function reset() {
     setEmail("");
+    setName("");
     setRole("volunteer");
+    setPhone("");
+    setCity("");
     setErr(null);
     setDone(false);
   }
@@ -79,6 +85,15 @@ export function AddUserDialog() {
               />
             </div>
             <div>
+              <Label htmlFor="invite-name">{t("users.invite.name")}</Label>
+              <Input
+                id="invite-name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder={t("users.invite.namePlaceholder")}
+              />
+            </div>
+            <div>
               <Label htmlFor="invite-role">{t("users.invite.role")}</Label>
               <Select value={role} onValueChange={(v) => setRole(v as Role)}>
                 <SelectTrigger id="invite-role">
@@ -98,6 +113,25 @@ export function AddUserDialog() {
                 </p>
               )}
             </div>
+            <div>
+              <Label htmlFor="invite-phone">{t("users.invite.phone")}</Label>
+              <Input
+                id="invite-phone"
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder={t("users.invite.phoneOptional")}
+              />
+            </div>
+            <div>
+              <Label htmlFor="invite-city">{t("users.invite.city")}</Label>
+              <Input
+                id="invite-city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder={t("users.invite.cityOptional")}
+              />
+            </div>
             {err && <p className="text-sm text-destructive">{err}</p>}
           </div>
         )}
@@ -113,11 +147,11 @@ export function AddUserDialog() {
                 <Button variant="ghost">{tCommon("buttons.cancel")}</Button>
               </DialogClose>
               <Button
-                disabled={!email || pending}
+                disabled={!email || !name || pending}
                 onClick={() => {
                   setErr(null);
                   start(async () => {
-                    const res = await inviteUser(email, role);
+                    const res = await inviteUser(email, role, name, phone, city);
                     if (res.ok) setDone(true);
                     else setErr(res.message);
                   });

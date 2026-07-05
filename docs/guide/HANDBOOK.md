@@ -40,7 +40,9 @@ others.
 | **Admin (staff)** | Foundation coordinators | Coordinate pickups, build delivery runs, manage people & places, read reports |
 
 Your role is set once, when you first sign in (see onboarding below). Admins are appointed by
-the foundation — you can't pick "admin" yourself.
+the foundation — you can't pick "admin" yourself. If foundation staff invited you directly (see
+the admin Users screen below), your role and profile are already set — you skip onboarding and
+land straight on your dashboard.
 
 ### Signing in
 
@@ -310,13 +312,18 @@ lets the foundation **attribute rescued food to that partner** in reports.
 
 ![Admin users](assets/35-admin-users.png)
 
-Everyone in the system. From here staff can **change a user's role**, **invite a new user by
-email with a preset role**, and **deactivate** someone. (Safeguards prevent removing the last
-admin.)
+Everyone in the system. From here staff can **change a user's role**, **invite a new user of any
+role** (donor/volunteer/driver/admin — admin can *only* be assigned here, never self-selected),
+and **deactivate** someone. (Safeguards prevent removing the last admin.)
+
+Inviting a user takes their **name** (and optional phone/city) up front, then sends the email
+invite. Invited users **skip onboarding entirely** — there's no sign-up form to fill in. They
+sign in via the emailed link and land straight on their dashboard; their profile (name, role,
+phone, city) is provisioned automatically from what the admin entered.
 
 **What to do when:**
-- *Onboard a new coordinator* → invite by email with the admin role; they land in the admin area
-  after signing up.
+- *Onboard a new coordinator* → invite by email with the admin role; they sign in via the link and
+  land directly in the admin area — no onboarding step.
 - *Someone should no longer have access* → deactivate them (takes effect immediately).
 
 ### Reports
