@@ -41,7 +41,8 @@
       "notes": "Notes (optional)",
       "attestation": "I confirm this food is fresh, safely stored, and fit to share.",
       "submitCreate": "Post pickup",
-      "submitEdit": "Save changes"
+      "submitEdit": "Save changes",
+      "repeatLast": "Repeat last pickup"
     },
     "card": {
       "postedBy": "Posted by {name}",
@@ -70,7 +71,18 @@
       "needsProofHint": "Add the proof photo to enable delivery.",
       "navigate": "Navigate",
       "etaAway": "~{minutes} min away",
-      "etaEstimate": "estimate"
+      "etaEstimate": "estimate",
+      "timeline": {
+        "posted": "Posted",
+        "claimed": "Claimed",
+        "enRoute": "En route",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "proofBack": {
+        "title": "Your food reached families in need",
+        "alt": "Proof of delivery photo"
+      }
     },
     "board": {
       "title": "Available pickups",
