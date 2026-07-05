@@ -4,6 +4,7 @@
 import { UserButton } from "@clerk/nextjs";
 import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher";
 import { ThemeToggle } from "@/features/public/components/ThemeToggle";
+import { NotificationBell } from "@/features/notifications";
 import { AdminSidebar, AdminMobileNav } from "@/features/admin/components/AdminNav";
 
 export default function AdminLayout({
@@ -16,6 +17,7 @@ export default function AdminLayout({
         <header className="sticky top-0 z-30 flex items-center justify-between gap-2 border-b border-border bg-background/90 px-4 py-2.5 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <AdminMobileNav />
           <div className="ml-auto flex items-center gap-2">
+            <NotificationBell />
             <LanguageSwitcher />
             <ThemeToggle />
             <UserButton />

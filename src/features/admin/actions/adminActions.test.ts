@@ -28,9 +28,9 @@ const setRole = vi.fn().mockResolvedValue({ id: "u2" });
 const deactivate = vi.fn().mockResolvedValue({ id: "u2" });
 const getById = vi.fn();
 const countActiveAdmins = vi.fn();
-const listAssignableVolunteers = vi
+const listAssignableDrivers = vi
   .fn()
-  .mockResolvedValue([{ id: "v1", name: "V" }]);
+  .mockResolvedValue([{ id: "d1", name: "D" }]);
 vi.mock("@/server/db/repositories/profiles", () => ({
   profilesRepo: {
     setRole: (...a: unknown[]) => setRole(...a),
@@ -39,7 +39,7 @@ vi.mock("@/server/db/repositories/profiles", () => ({
     countActiveAdmins: (...a: unknown[]) => countActiveAdmins(...a),
     reactivate: vi.fn().mockResolvedValue({ id: "u2" }),
     setPartner: vi.fn().mockResolvedValue({ id: "u2" }),
-    listAssignableVolunteers: (...a: unknown[]) => listAssignableVolunteers(...a),
+    listAssignableDrivers: (...a: unknown[]) => listAssignableDrivers(...a),
   },
 }));
 
@@ -159,18 +159,23 @@ describe("deactivateUser (ADM-03)", () => {
   });
 });
 
-describe("assignPickup (ADM-02)", () => {
-  it("rejects a volunteer not in the assignable set", async () => {
+describe("assignPickup (ADM-02, dispatch-model-v2)", () => {
+  it("rejects a driver not in the assignable set", async () => {
     const r = await assignPickup("pk1", "ghost");
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.code).toBe("VALIDATION");
     expect(assignToVolunteer).not.toHaveBeenCalled();
   });
+  it("sources the assignable set from listAssignableDrivers, not volunteers", async () => {
+    assignToVolunteer.mockResolvedValue({ id: "pk1", status: "accepted" });
+    await assignPickup("pk1", "d1");
+    expect(listAssignableDrivers).toHaveBeenCalled();
+  });
   it("assigns, records a status event (actor=admin), and emits pickup/claimed", async () => {
     assignToVolunteer.mockResolvedValue({ id: "pk1", status: "accepted" });
-    const r = await assignPickup("pk1", "v1");
+    const r = await assignPickup("pk1", "d1");
     expect(r.ok).toBe(true);
-    expect(assignToVolunteer).toHaveBeenCalledWith("pk1", "v1");
+    expect(assignToVolunteer).toHaveBeenCalledWith("pk1", "d1");
     expect(record).toHaveBeenCalledWith(
       expect.objectContaining({
         pickupId: "pk1",
@@ -183,7 +188,7 @@ describe("assignPickup (ADM-02)", () => {
   });
   it("returns CONFLICT when the pickup is already taken (assign returns null)", async () => {
     assignToVolunteer.mockResolvedValue(null);
-    const r = await assignPickup("pk1", "v1");
+    const r = await assignPickup("pk1", "d1");
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.code).toBe("CONFLICT");
   });

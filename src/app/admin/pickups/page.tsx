@@ -44,11 +44,13 @@ export default async function AdminPickupsPage({
     : "createdAt";
   const dir = params.get("dir") === "asc" ? "asc" : "desc";
 
-  const [t, tCommon, { rows, total }, volunteers, partners] = await Promise.all([
+  const [t, tCommon, { rows, total }, drivers, partners] = await Promise.all([
     getTranslations("admin"),
     getTranslations("common"),
     pickupsRepo.listForAdminPaged(filters, page, ADMIN_PAGE_SIZE, sort, dir),
-    profilesRepo.listAssignableVolunteers(),
+    // dispatch-model-v2: the collector role is the driver — the Assign dialog
+    // (and the collector-name column) source drivers, not volunteers.
+    profilesRepo.listAssignableDrivers(),
     partnersRepo.list(),
   ]);
 
@@ -85,7 +87,7 @@ export default async function AdminPickupsPage({
         />
       ) : (
         <>
-          <PickupsTable pickups={rows} volunteers={volunteers} sort={sort} dir={dir} />
+          <PickupsTable pickups={rows} drivers={drivers} sort={sort} dir={dir} />
           <Pagination
             page={page}
             totalPages={totalPages}

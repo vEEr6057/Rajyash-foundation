@@ -43,17 +43,19 @@ import { assignPickup } from "@/features/admin";
 import { ROUTES } from "@/config/constants";
 import type { Pickup } from "@/server/db/schema";
 
-type Volunteer = { id: string; name: string };
+type Driver = { id: string; name: string };
 type SortKey = "status" | "category" | "quantity" | "createdAt";
 
 export function PickupsTable({
   pickups,
-  volunteers,
+  drivers,
   sort,
   dir,
 }: {
   pickups: Pickup[];
-  volunteers: Volunteer[];
+  // dispatch-model-v2: the collector role is the driver — pickup.volunteerId
+  // holds the assigned driver's id (column name kept to avoid a migration).
+  drivers: Driver[];
   sort: SortKey;
   dir: "asc" | "desc";
 }) {
@@ -68,7 +70,7 @@ export function PickupsTable({
   const fmtDate = (d: Date) =>
     new Intl.DateTimeFormat(locale, { timeZone: "Asia/Kolkata", day: "numeric", month: "short" }).format(d);
 
-  const volunteerName = (id: string) => volunteers.find((v) => v.id === id)?.name;
+  const driverName = (id: string) => drivers.find((d) => d.id === id)?.name;
 
   // Sortable column header — toggles asc/desc via URL, resets to page 1, sets aria-sort.
   function SortHead({
@@ -112,7 +114,7 @@ export function PickupsTable({
             <SortHead col="category" label={t("pickups.table.category")} />
             <SortHead col="quantity" label={t("pickups.table.quantity")} className="text-right" />
             <TableHead className="hidden md:table-cell">{t("pickups.table.location")}</TableHead>
-            <TableHead className="hidden sm:table-cell">{t("pickups.table.volunteer")}</TableHead>
+            <TableHead className="hidden sm:table-cell">{t("pickups.table.driver")}</TableHead>
             <SortHead col="createdAt" label={t("pickups.table.createdAt")} className="hidden lg:table-cell" />
             <TableHead className="w-12 text-right">{t("pickups.table.actions")}</TableHead>
           </TableRow>
@@ -134,7 +136,7 @@ export function PickupsTable({
               </TableCell>
               <TableCell className="hidden sm:table-cell">
                 {p.volunteerId ? (
-                  volunteerName(p.volunteerId) ?? t("pickups.table.assigned")
+                  driverName(p.volunteerId) ?? t("pickups.table.assigned")
                 ) : (
                   <span className="text-muted-foreground">
                     {t("pickups.table.unassigned")}
@@ -170,7 +172,7 @@ export function PickupsTable({
 
       <AssignDialog
         pickup={assignFor}
-        volunteers={volunteers}
+        drivers={drivers}
         onClose={() => setAssignFor(null)}
         onAssigned={() => {
           setAssignFor(null);
@@ -183,17 +185,17 @@ export function PickupsTable({
 
 function AssignDialog({
   pickup,
-  volunteers,
+  drivers,
   onClose,
   onAssigned,
 }: {
   pickup: Pickup | null;
-  volunteers: Volunteer[];
+  drivers: Driver[];
   onClose: () => void;
   onAssigned: () => void;
 }) {
   const t = useTranslations("admin");
-  const [vol, setVol] = useState("");
+  const [driverId, setDriverId] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
@@ -202,7 +204,7 @@ function AssignDialog({
       open={!!pickup}
       onOpenChange={(o) => {
         if (!o) {
-          setVol("");
+          setDriverId("");
           setErr(null);
           onClose();
         }
@@ -214,19 +216,19 @@ function AssignDialog({
           <DialogDescription>{t("pickups.assign.label")}</DialogDescription>
         </DialogHeader>
 
-        {volunteers.length === 0 ? (
+        {drivers.length === 0 ? (
           <p className="text-sm text-muted-foreground">
-            {t("pickups.assign.noVolunteers")}
+            {t("pickups.assign.noDrivers")}
           </p>
         ) : (
-          <Select value={vol} onValueChange={setVol}>
+          <Select value={driverId} onValueChange={setDriverId}>
             <SelectTrigger>
               <SelectValue placeholder={t("pickups.assign.placeholder")} />
             </SelectTrigger>
             <SelectContent>
-              {volunteers.map((v) => (
-                <SelectItem key={v.id} value={v.id}>
-                  {v.name}
+              {drivers.map((d) => (
+                <SelectItem key={d.id} value={d.id}>
+                  {d.name}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -240,12 +242,12 @@ function AssignDialog({
             <Button variant="ghost">{t("pickups.filters.clearButton")}</Button>
           </DialogClose>
           <Button
-            disabled={!vol || pending || !pickup}
+            disabled={!driverId || pending || !pickup}
             onClick={() => {
               if (!pickup) return;
               setErr(null);
               start(async () => {
-                const res = await assignPickup(pickup.id, vol);
+                const res = await assignPickup(pickup.id, driverId);
                 if (!res.ok) {
                   setErr(res.message ?? t("pickups.assign.errorMessage"));
                   toast.error(res.message ?? t("pickups.assign.errorMessage"));

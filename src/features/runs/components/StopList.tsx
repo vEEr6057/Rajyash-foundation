@@ -7,8 +7,16 @@ import { toast } from "sonner";
 import { Trash2, ArrowUp, ArrowDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 import { StopStatusPill } from "./StopStatusPill";
-import { removeStop, reorderStops } from "@/features/runs/actions/runActions";
+import { removeStop, reorderStops, overrideStopStatus } from "@/features/runs/actions/runActions";
+import { STOP_STATUSES, type StopStatus } from "@/config/constants";
 import type { RunStop } from "@/server/db/schema";
 
 export function StopList({
@@ -46,6 +54,18 @@ export function StopList({
     );
   }
 
+  // RUN-08: admin override — bypasses the normal driver/volunteer transition
+  // path for a single stop (e.g. correcting a missed mark-done in the field).
+  function doOverride(stopId: string, status: StopStatus) {
+    start(async () => {
+      const res = await overrideStopStatus(stopId, status);
+      if (res.ok) {
+        toast.success(tCommon("toast.updated"));
+        router.refresh();
+      } else toast.error(res.message ?? tCommon("toast.error"));
+    });
+  }
+
   // RUN-04: reorder by swapping the seq of a stop with its neighbour.
   function move(index: number, dir: -1 | 1) {
     const target = index + dir;
@@ -74,7 +94,28 @@ export function StopList({
             {stop.kind === "pickup" ? t("runs.kindPickup") : t("runs.kindDrop")}
           </span>
           <span className="flex-1 truncate text-sm">{stop.address ?? "—"}</span>
-          <StopStatusPill status={stop.status} />
+          {editable ? (
+            <Select
+              value={stop.status}
+              onValueChange={(v) => doOverride(stop.id, v as StopStatus)}
+            >
+              <SelectTrigger
+                className="h-8 w-28 shrink-0 text-xs"
+                aria-label={t("runs.overrideStatus")}
+              >
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {STOP_STATUSES.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {tCommon(`stopStatus.${s}`)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          ) : (
+            <StopStatusPill status={stop.status} />
+          )}
           {editable && (
             <>
               <div className="flex flex-col">

@@ -23,6 +23,7 @@
       "status": "Status",
       "donor": "Donor",
       "volunteer": "Volunteer",
+      "driver": "Driver",
       "category": "Category",
       "quantity": "Quantity",
       "location": "Location",
@@ -33,10 +34,10 @@
       "unassigned": "Unassigned"
     },
     "assign": {
-      "button": "Assign volunteer",
+      "button": "Assign a driver",
       "label": "Assign to",
-      "placeholder": "Select volunteer",
-      "noVolunteers": "No volunteers available",
+      "placeholder": "Select driver",
+      "noDrivers": "No drivers available",
       "submitButton": "Assign",
       "successMessage": "Pickup assigned.",
       "errorMessage": "Failed to assign pickup."
@@ -222,12 +223,20 @@
     "stopsSection": "Stops",
     "addStop": "Add stop",
     "removeStop": "Remove stop",
+    "overrideStatus": "Override stop status",
     "moveUp": "Move up",
     "moveDown": "Move down",
     "delete": "Delete run",
+    "editButton": "Edit run",
+    "editTitle": "Edit run",
     "slotMorning": "Morning drive",
     "slotNight": "Night drive",
     "status": { "advance": "Set to {status}" },
+    "assignDriver": {
+      "sectionTitle": "Driver",
+      "label": "Driver",
+      "noDrivers": "No drivers available"
+    },
     "form": {
       "title": "Create run",
       "slot": "Drive slot",

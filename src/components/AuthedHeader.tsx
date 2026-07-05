@@ -7,6 +7,7 @@ import { UserButton } from "@clerk/nextjs";
 import { getTranslations } from "next-intl/server";
 import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher";
 import { ThemeToggle } from "@/features/public/components/ThemeToggle";
+import { NotificationBell } from "@/features/notifications";
 
 export async function AuthedHeader({ homeHref }: { homeHref: string }) {
   const t = await getTranslations("common");
@@ -23,6 +24,7 @@ export async function AuthedHeader({ homeHref }: { homeHref: string }) {
           />
         </Link>
         <div className="flex items-center gap-2">
+          <NotificationBell />
           <LanguageSwitcher />
           <ThemeToggle />
           <UserButton
