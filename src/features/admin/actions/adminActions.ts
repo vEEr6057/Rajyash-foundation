@@ -69,11 +69,11 @@ async function assignOne(
 /**
  * ADM-02: assign a requested pickup to a chosen DRIVER (mirrors claim + emit).
  * dispatch-model-v2 made the driver the collector role — the picker sources
- * listAssignableDrivers, not listAssignableVolunteers (a volunteer assignee
- * could never advance the pickup afterward: claimPickup/advancePickup/
- * recordPing all gate on role === "driver"). pickupsRepo.assignToVolunteer
- * and the pickup.volunteerId column are unchanged — that column already
- * holds the assigned COLLECTOR's id (a driver, post dispatch-model-v2).
+ * listAssignableDrivers, not volunteers (a volunteer assignee could never
+ * advance the pickup afterward: claimPickup/advancePickup/recordPing all gate
+ * on role === "driver"). pickupsRepo.assignToVolunteer and the
+ * pickup.volunteerId column are unchanged — that column already holds the
+ * assigned COLLECTOR's id (a driver, post dispatch-model-v2).
  */
 export async function assignPickup(
   pickupId: string,

@@ -12,6 +12,7 @@ import { PickupStatusPill } from "@/features/pickups/components/PickupStatusPill
 import { formatQuantity, formatWindow } from "@/features/pickups/lib/format";
 import { buildStatusHistory } from "@/features/admin/lib/statusHistory";
 import { PickupHistorySection } from "@/features/admin/components/PickupHistorySection";
+import { VerifyToggle } from "@/features/admin/components/VerifyToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -20,8 +21,10 @@ export const dynamic = "force-dynamic";
  * `/portal/pickups/[id]` page donor/driver/volunteer views share — this
  * surface exists specifically to show the full status_events history with the
  * ACTOR resolved (who did it, not just what happened), which isn't information
- * the portal view exposes to every role. Read-only: mutations (assign, verify)
- * stay on the admin pickups table / pickup detail's existing entry points.
+ * the portal view exposes to every role. Mostly read-only: the one mutation
+ * kept here is verify/unverify (`VerifyToggle`), since the "View" action in
+ * the admin pickups table routes here and admins need that toggle reachable
+ * from their primary browse flow. Assign stays on the admin pickups table.
  */
 export default async function AdminPickupDetailPage({
   params,
@@ -78,6 +81,12 @@ export default async function AdminPickupDetailPage({
           </span>
         }
         action={<PickupStatusPill status={pickup.status} />}
+      />
+
+      <VerifyToggle
+        pickupId={id}
+        verifiedAt={pickup.verifiedAt ?? null}
+        verifiedBy={pickup.verifiedBy ?? null}
       />
 
       <div className="space-y-3 rounded-lg border border-border p-4">
