@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Route, PackageOpen } from "lucide-react";
+import { PackageOpen } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
@@ -12,11 +12,13 @@ import {
 } from "@/server/db/repositories/stats";
 import { reportsRepo } from "@/server/db/repositories/reports";
 import { partnersRepo } from "@/server/db/repositories/partners";
+import { profilesRepo } from "@/server/db/repositories/profiles";
 import { logger } from "@/lib/logger";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { LedgerRow } from "@/components/LedgerRow";
 import { LogSurplusSheet } from "@/features/admin/components/LogSurplusSheet";
+import { NewRunSheet } from "@/features/runs/components/NewRunSheet";
 import {
   DeliveriesTrendChart,
   StatusDonut,
@@ -78,8 +80,12 @@ export default async function AdminOverviewPage() {
     getLocale(),
   ]);
 
-  // Partners power the Log-surplus popup (rendered in the header, not a separate page).
-  const partners = await partnersRepo.list().catch(() => []);
+  // Partners power the Log-surplus popup; drivers power the New-run popup
+  // (both rendered in the header, not a separate page).
+  const [partners, drivers] = await Promise.all([
+    partnersRepo.list().catch(() => []),
+    profilesRepo.listByRole("driver").catch(() => []),
+  ]);
 
   let o: AdminOverview = EMPTY_OVERVIEW;
   let trend: TrendPoint[] = [];
@@ -136,12 +142,7 @@ export default async function AdminOverviewPage() {
         action={
           <>
             <LogSurplusSheet partners={partners} />
-            <Link
-              href={`${ROUTES.adminRuns}/new`}
-              className={buttonVariants({ variant: "leaf", size: "sm" })}
-            >
-              <Route className="size-4" /> {t("runs.newButton")}
-            </Link>
+            <NewRunSheet drivers={drivers} />
             <Link
               href={ROUTES.adminPickups}
               className={buttonVariants({ variant: "outline", size: "sm" })}
@@ -155,8 +156,12 @@ export default async function AdminOverviewPage() {
       {/* Impact ledger — one hairline-ruled row, provenance stated (charter §3.3) */}
       <LedgerRow
         stats={[
-          { value: o.impact.servings.toLocaleString(), label: ov("servings") },
-          { value: o.impact.kg.toLocaleString(), label: ov("kg") },
+          {
+            value: o.impact.servings.toLocaleString(),
+            label: ov("servings"),
+            hint: ov("servingsHint"),
+          },
+          { value: o.impact.kg.toLocaleString(), label: ov("kg"), hint: ov("kgHint") },
           { value: o.impact.count.toLocaleString(), label: ov("deliveries") },
           { value: o.pickups.open.toLocaleString(), label: ov("openPickups") },
           { value: o.pickups.inProgress.toLocaleString(), label: ov("inProgress") },

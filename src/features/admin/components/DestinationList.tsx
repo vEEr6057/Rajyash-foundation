@@ -21,12 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { FormSheet } from "@/components/forms";
 import { deleteDestination } from "../actions/destinationActions";
 import type { Destination } from "@/server/db/schema";
 import { DestinationForm } from "./DestinationForm";
@@ -132,33 +127,34 @@ export function DestinationList({ destinations }: { destinations: Destination[] 
         </TableBody>
       </Table>
 
-      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-xl">
-          <DialogHeader>
-            <DialogTitle>{t("destinations.addDestination")}</DialogTitle>
-          </DialogHeader>
-          {editing && (
-            <DestinationForm
-              mode="edit"
-              destinationId={editing.id}
-              defaults={{
-                name: editing.name,
-                area: editing.area ?? "",
-                address: editing.address ?? "",
-                mapsLink: editing.mapsLink ?? "",
-                lat: editing.lat,
-                lng: editing.lng,
-                city: editing.city,
-                active: editing.active,
-              }}
-              onDone={() => {
-                setEditing(null);
-                router.refresh();
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <FormSheet
+        open={!!editing}
+        onOpenChange={(o) => !o && setEditing(null)}
+        title={t("destinations.addDestination")}
+        className="sm:max-w-xl"
+      >
+        {editing && (
+          <DestinationForm
+            mode="edit"
+            destinationId={editing.id}
+            defaults={{
+              name: editing.name,
+              area: editing.area ?? "",
+              address: editing.address ?? "",
+              mapsLink: editing.mapsLink ?? "",
+              lat: editing.lat,
+              lng: editing.lng,
+              city: editing.city,
+              active: editing.active,
+            }}
+            onDone={() => {
+              setEditing(null);
+              router.refresh();
+            }}
+            onCancel={() => setEditing(null)}
+          />
+        )}
+      </FormSheet>
     </>
   );
 }

@@ -9,9 +9,16 @@ import { cn } from "@/lib/utils";
  * A stat may carry an optional `href`; when present its cell becomes a link
  * (anchor wrapper, `hover:bg-surface-2`) — used by the dashboard directory.
  * Backward-compatible: stats without `href` render as plain cells.
+ *
+ * A stat may also carry an optional `hint` — a one-line explainer (e.g. why
+ * "meals" and "kg" are never added together) surfaced as an accessible "?"
+ * next to the label. No tooltip primitive exists in this app yet, so this is
+ * the deliberately simple form: a focusable glyph with a native `title` +
+ * `aria-label` (charter §5 accessibility floor — still keyboard-reachable and
+ * announced, just without a custom popover).
  */
 
-export type LedgerStat = { value: string; label: string; href?: string };
+export type LedgerStat = { value: string; label: string; href?: string; hint?: string };
 
 // Static class map so Tailwind sees literal grid-cols utilities (dynamic
 // `md:grid-cols-${n}` would be purged).
@@ -31,8 +38,18 @@ function StatBody({ stat }: { stat: LedgerStat }) {
       <div className="font-display font-medium tabular-nums text-[clamp(1.75rem,3vw,2.25rem)] leading-none">
         {stat.value}
       </div>
-      <div className="mt-1.5 text-[13px] text-muted-foreground">
+      <div className="mt-1.5 flex items-center gap-1 text-[13px] text-muted-foreground">
         {stat.label}
+        {stat.hint && (
+          <span
+            tabIndex={0}
+            title={stat.hint}
+            aria-label={stat.hint}
+            className="inline-flex size-4 shrink-0 items-center justify-center rounded-full border border-border text-[10px] leading-none text-muted-foreground"
+          >
+            ?
+          </span>
+        )}
       </div>
     </>
   );

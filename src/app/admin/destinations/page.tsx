@@ -4,7 +4,7 @@ import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
 import { DestinationList } from "@/features/admin/components/DestinationList";
-import { AddDestinationDialog } from "@/features/admin/components/AddDestinationDialog";
+import { AddDestinationSheet } from "@/features/admin/components/AddDestinationSheet";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 
@@ -32,14 +32,14 @@ export default async function AdminDestinationsPage() {
         eyebrow={t("eyebrow")}
         title={t("destinations.title")}
         meta={t("destinations.meta", { count: destinations.length })}
-        action={<AddDestinationDialog />}
+        action={<AddDestinationSheet />}
       />
 
       {destinations.length === 0 ? (
         <EmptyState
           title={t("destinations.empty.title")}
           body={t("destinations.empty.body")}
-          action={<AddDestinationDialog />}
+          action={<AddDestinationSheet />}
         />
       ) : (
         <DestinationList destinations={destinations} />

@@ -17,6 +17,9 @@ const eslintConfig = [
       ".next/**",
       ".open-next/**",
       ".wrangler/**",
+      // Agent worktrees are full checkouts (with their own .next builds) — never
+      // our source to lint. Mirrors the same exclusion in vitest.config.ts.
+      ".claude/**",
       "out/**",
       "build/**",
       "next-env.d.ts",

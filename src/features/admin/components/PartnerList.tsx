@@ -22,12 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { FormSheet } from "@/components/forms";
 import { type PartnerType } from "@/config/constants";
 import { deletePartner } from "@/features/admin";
 import type { Partner } from "@/server/db/schema";
@@ -124,32 +119,32 @@ export function PartnerList({ partners }: { partners: Partner[] }) {
         </TableBody>
       </Table>
 
-      <Dialog open={!!editing} onOpenChange={(o) => !o && setEditing(null)}>
-        <DialogContent className="max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>{t("partners.addPartner")}</DialogTitle>
-          </DialogHeader>
-          {editing && (
-            <PartnerForm
-              mode="edit"
-              partnerId={editing.id}
-              defaults={{
-                name: editing.name,
-                type: editing.type as PartnerType,
-                contactName: editing.contactName ?? "",
-                contactPhone: editing.contactPhone ?? "",
-                contactEmail: editing.contactEmail ?? "",
-                address: editing.address ?? "",
-                city: editing.city,
-              }}
-              onDone={() => {
-                setEditing(null);
-                router.refresh();
-              }}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
+      <FormSheet
+        open={!!editing}
+        onOpenChange={(o) => !o && setEditing(null)}
+        title={t("partners.addPartner")}
+      >
+        {editing && (
+          <PartnerForm
+            mode="edit"
+            partnerId={editing.id}
+            defaults={{
+              name: editing.name,
+              type: editing.type as PartnerType,
+              contactName: editing.contactName ?? "",
+              contactPhone: editing.contactPhone ?? "",
+              contactEmail: editing.contactEmail ?? "",
+              address: editing.address ?? "",
+              city: editing.city,
+            }}
+            onDone={() => {
+              setEditing(null);
+              router.refresh();
+            }}
+            onCancel={() => setEditing(null)}
+          />
+        )}
+      </FormSheet>
     </>
   );
 }

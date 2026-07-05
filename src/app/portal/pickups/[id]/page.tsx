@@ -158,7 +158,9 @@ export default async function PickupDetailPage({
             />
           </div>
         )}
-        {isDonorOwner && <DonorPickupActions pickupId={id} status={pickup.status} />}
+        {isDonorOwner && (
+          <DonorPickupActions pickupId={id} status={pickup.status} pickup={pickup} />
+        )}
         <PickupClaimSection role={session.role} status={pickup.status} pickupId={id} />
         {isAssignedDriver &&
           (pickup.status === "accepted" || isActive) && (

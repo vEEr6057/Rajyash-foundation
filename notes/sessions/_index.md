@@ -4,6 +4,7 @@ Use this file to quickly jump to recent session logs.
 
 ## Recent Sessions
 
+- [[notes/sessions/2026-07-05-0604-production-era-cutover-handover-6-prs]] - Production era — cutover docs, deep review, security review, 11 PRs shipped (2026-07-05)
 - [[notes/sessions/2026-07-04-2111-comprehensive-gap-hunt-auth-i18n-guards]] - Comprehensive gap hunt — auth flows, exhaustive sweep, all fixes (#79/#80/#81), invite-admin (#82) (2026-07-04)
 - [[notes/sessions/2026-07-04-1300-verification-owner-tasks-razorpay-merge-recovery]] - Verification pass + owner tasks + Razorpay dark scaffold + merge-leak recovery (2026-07-04)
 - [[notes/sessions/2026-07-04-0320-app-ui-batches-i18n-backend-b1-b3]] - App-wide UI upgrade (5 batches) + i18n + backend B1–B3 (2026-07-04)

@@ -1,37 +1,36 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+import { Button, type ButtonProps } from "@/components/ui/button";
+import { FormSheet } from "@/components/forms";
 import { BuildRunForm } from "./BuildRunForm";
 import type { Profile } from "@/server/db/schema";
 
-/** New-run as a side sheet (longer form) — replaces navigating to /admin/runs/new.
- * BuildRunForm navigates to the new run's detail on success, which closes the sheet. */
-export function NewRunSheet({ drivers }: { drivers: Profile[] }) {
+/** New-run as the shared form sheet (longer form) — replaces navigating to
+ * /admin/runs/new. BuildRunForm navigates to the new run's detail on
+ * success, which closes the sheet. `triggerVariant`/`triggerSize` let callers
+ * (runs list vs admin dashboard) match their own action-row styling. */
+export function NewRunSheet({
+  drivers,
+  triggerVariant = "leaf",
+  triggerSize = "sm",
+}: {
+  drivers: Profile[];
+  triggerVariant?: ButtonProps["variant"];
+  triggerSize?: ButtonProps["size"];
+}) {
   const t = useTranslations("admin");
-  const [open, setOpen] = useState(false);
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
-        <Button variant="leaf" size="sm">
+    <FormSheet
+      trigger={
+        <Button variant={triggerVariant} size={triggerSize}>
           <Plus className="size-4" /> {t("runs.newButton")}
         </Button>
-      </SheetTrigger>
-      <SheetContent side="right" className="sm:max-w-lg">
-        <SheetHeader>
-          <SheetTitle>{t("runs.form.title")}</SheetTitle>
-        </SheetHeader>
-        <BuildRunForm drivers={drivers} />
-      </SheetContent>
-    </Sheet>
+      }
+      title={t("runs.form.title")}
+    >
+      {(close) => <BuildRunForm drivers={drivers} onCancel={close} />}
+    </FormSheet>
   );
 }
