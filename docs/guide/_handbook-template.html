@@ -1,0 +1,436 @@
+<title>Food Porter — User Handbook</title>
+<style>
+  :root {
+    --paper: #FBF7F0;
+    --paper-2: #F3ECDE;
+    --card: #FFFFFF;
+    --ink: #2B2A26;
+    --ink-soft: #6E6658;
+    --ink-faint: #928A7B;
+    --green: #2E7D46;
+    --green-strong: #256B3B;
+    --gold: #99691C;
+    --hairline: rgba(43, 42, 38, 0.12);
+    --hairline-soft: rgba(43, 42, 38, 0.07);
+    --shadow: 0 1px 2px rgba(43,42,38,.06), 0 8px 24px rgba(43,42,38,.07);
+    --maxread: 44rem;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper: #1A1714;
+      --paper-2: #221E19;
+      --card: #24201A;
+      --ink: #ECE5D7;
+      --ink-soft: #B3AA98;
+      --ink-faint: #8A8171;
+      --green: #5BB477;
+      --green-strong: #6FC088;
+      --gold: #D0A44E;
+      --hairline: rgba(236, 229, 215, 0.14);
+      --hairline-soft: rgba(236, 229, 215, 0.08);
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1A1714; --paper-2: #221E19; --card: #24201A;
+    --ink: #ECE5D7; --ink-soft: #B3AA98; --ink-faint: #8A8171;
+    --green: #5BB477; --green-strong: #6FC088; --gold: #D0A44E;
+    --hairline: rgba(236,229,215,0.14); --hairline-soft: rgba(236,229,215,0.08);
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px rgba(0,0,0,.35);
+  }
+  :root[data-theme="light"] {
+    --paper: #FBF7F0; --paper-2: #F3ECDE; --card: #FFFFFF;
+    --ink: #2B2A26; --ink-soft: #6E6658; --ink-faint: #928A7B;
+    --green: #2E7D46; --green-strong: #256B3B; --gold: #99691C;
+    --hairline: rgba(43,42,38,0.12); --hairline-soft: rgba(43,42,38,0.07);
+    --shadow: 0 1px 2px rgba(43,42,38,.06), 0 8px 24px rgba(43,42,38,.07);
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Segoe UI", Roboto, "Helvetica Neue", system-ui, -apple-system, sans-serif;
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  .slab { font-family: "Roboto Slab", "Zilla Slab", Rockwell, "Bitstream Vera Serif", Georgia, serif; }
+
+  /* Layout */
+  .wrap { display: grid; grid-template-columns: 17rem minmax(0, 1fr); gap: 0; max-width: 78rem; margin: 0 auto; }
+  nav.toc {
+    position: sticky; top: 0; align-self: start; height: 100vh; overflow-y: auto;
+    padding: 2.2rem 1.4rem 3rem 1.6rem; border-right: 1px solid var(--hairline);
+    background: var(--paper-2);
+  }
+  main { padding: 3rem clamp(1.2rem, 4vw, 4rem) 6rem; min-width: 0; }
+  .col { max-width: var(--maxread); margin: 0 auto; }
+
+  /* TOC */
+  .brand { display: flex; align-items: baseline; gap: .5rem; margin-bottom: 1.6rem; }
+  .brand .mark { font-size: 1.15rem; font-weight: 700; color: var(--green); letter-spacing: -0.01em; }
+  .brand .sub { font-size: .7rem; text-transform: uppercase; letter-spacing: .13em; color: var(--gold); }
+  .toc ol { list-style: none; margin: 0; padding: 0; counter-reset: sec; }
+  .toc > ol > li { counter-increment: sec; margin: .1rem 0; }
+  .toc a {
+    display: flex; gap: .6rem; align-items: baseline; text-decoration: none; color: var(--ink-soft);
+    padding: .38rem .5rem; border-radius: 7px; font-size: .92rem; line-height: 1.3;
+  }
+  .toc > ol > li > a::before { content: counter(sec); color: var(--gold); font-variant-numeric: tabular-nums; font-weight: 600; min-width: 1ch; }
+  .toc a:hover { background: var(--hairline-soft); color: var(--ink); }
+  .toc a:focus-visible { outline: 2px solid var(--green); outline-offset: 1px; }
+
+  /* Cover */
+  .cover { border-bottom: 1px solid var(--hairline); padding-bottom: 2.4rem; margin-bottom: 2.6rem; }
+  .eyebrow { text-transform: uppercase; letter-spacing: .15em; font-size: .72rem; font-weight: 700; color: var(--gold); margin: 0 0 .7rem; }
+  h1.title { font-size: clamp(2.1rem, 5vw, 3rem); line-height: 1.05; margin: 0 0 .6rem; text-wrap: balance; letter-spacing: -0.015em; }
+  .lede { font-size: 1.12rem; color: var(--ink-soft); max-width: 40rem; }
+  .model {
+    margin-top: 1.8rem; padding: 1.1rem 1.3rem; border-left: 3px solid var(--green);
+    background: var(--paper-2); border-radius: 0 10px 10px 0; font-size: 1rem;
+  }
+  .model strong { color: var(--green); }
+
+  /* Sections */
+  section { scroll-margin-top: 1.5rem; padding-top: 2.6rem; }
+  section > .eyebrow { margin-bottom: .4rem; }
+  h2 { font-size: 1.7rem; line-height: 1.12; margin: .1rem 0 1rem; letter-spacing: -0.01em; text-wrap: balance; }
+  h3 { font-size: 1.22rem; margin: 2rem 0 .6rem; letter-spacing: -0.005em; }
+  h4 { font-size: 1.02rem; margin: 1.4rem 0 .4rem; color: var(--ink); }
+  p { margin: 0 0 1rem; }
+  a { color: var(--green-strong); }
+  strong { color: var(--ink); font-weight: 650; }
+  ul, ol { margin: 0 0 1.1rem; padding-left: 1.2rem; }
+  li { margin: .3rem 0; }
+  hr { border: 0; border-top: 1px solid var(--hairline); margin: 3rem 0 0; }
+
+  .callout {
+    margin: 1.3rem 0; padding: .9rem 1.15rem; background: var(--paper-2);
+    border: 1px solid var(--hairline-soft); border-left: 3px solid var(--gold);
+    border-radius: 0 9px 9px 0; font-size: .96rem; color: var(--ink-soft);
+  }
+  .callout strong { color: var(--gold); }
+
+  /* Figures */
+  figure { margin: 1.6rem 0; }
+  figure img {
+    display: block; width: 100%; height: auto; border-radius: 12px;
+    border: 1px solid var(--hairline); box-shadow: var(--shadow); background: var(--card);
+  }
+  figcaption { font-size: .82rem; color: var(--ink-faint); margin-top: .55rem; text-align: center; }
+
+  /* Tables */
+  .tablewrap { overflow-x: auto; margin: 1.2rem 0 1.4rem; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+  th, td { text-align: left; padding: .6rem .8rem; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  th { font-size: .74rem; text-transform: uppercase; letter-spacing: .07em; color: var(--ink-faint); font-weight: 700; }
+  tbody tr:last-child td { border-bottom: 0; }
+
+  /* Status pills */
+  .pill { display: inline-block; padding: .08rem .5rem; border-radius: 999px; font-size: .8rem; font-weight: 600; white-space: nowrap; }
+  .pill.req { background: color-mix(in srgb, var(--gold) 18%, transparent); color: var(--gold); }
+  .pill.prog { background: color-mix(in srgb, var(--green) 16%, transparent); color: var(--green-strong); }
+  .pill.done { background: color-mix(in srgb, var(--green) 22%, transparent); color: var(--green-strong); }
+
+  /* Flow diagram */
+  .flow { display: flex; flex-wrap: wrap; align-items: stretch; gap: .5rem; margin: 1.2rem 0 1.4rem; }
+  .flow .step {
+    flex: 1 1 8rem; padding: .7rem .85rem; background: var(--paper-2); border: 1px solid var(--hairline-soft);
+    border-radius: 10px; font-size: .9rem; line-height: 1.35;
+  }
+  .flow .step b { color: var(--green-strong); display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; margin-bottom: .15rem; }
+
+  /* Theme toggle */
+  .themebtn {
+    position: fixed; top: 1rem; right: 1rem; z-index: 20; width: 2.4rem; height: 2.4rem;
+    border-radius: 50%; border: 1px solid var(--hairline); background: var(--card); color: var(--ink);
+    cursor: pointer; font-size: 1rem; box-shadow: var(--shadow); display: grid; place-items: center;
+  }
+  .themebtn:focus-visible { outline: 2px solid var(--green); outline-offset: 2px; }
+
+  code { font-family: "Roboto Mono", ui-monospace, "SF Mono", Menlo, monospace; font-size: .88em; background: var(--paper-2); padding: .1em .35em; border-radius: 4px; }
+
+  @media (max-width: 60rem) {
+    .wrap { grid-template-columns: 1fr; }
+    nav.toc { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--hairline); }
+    .themebtn { top: auto; bottom: 1rem; }
+  }
+  @media print {
+    nav.toc, .themebtn { display: none; }
+    .wrap { display: block; max-width: none; }
+    main { padding: 0; }
+    figure img { box-shadow: none; }
+    section { page-break-inside: auto; }
+    figure, table { page-break-inside: avoid; }
+  }
+</style>
+
+<button class="themebtn" id="themebtn" aria-label="Toggle light or dark theme" title="Toggle theme">◐</button>
+
+<div class="wrap">
+  <nav class="toc" aria-label="Contents">
+    <div class="brand">
+      <span class="mark slab">Food Porter</span>
+    </div>
+    <div class="sub" style="font-size:.68rem;text-transform:uppercase;letter-spacing:.13em;color:var(--gold);margin:-1.2rem 0 1.4rem;">User Handbook</div>
+    <ol>
+      <li><a href="#s1">For everyone</a></li>
+      <li><a href="#s2">The public website</a></li>
+      <li><a href="#s3">Donor guide</a></li>
+      <li><a href="#s4">Volunteer guide</a></li>
+      <li><a href="#s5">Driver guide</a></li>
+      <li><a href="#s6">Admin &amp; staff guide</a></li>
+      <li><a href="#s7">Appendix</a></li>
+    </ol>
+  </nav>
+
+  <main>
+    <div class="col">
+      <header class="cover">
+        <p class="eyebrow">Rajyash Foundation · Food Rescue</p>
+        <h1 class="title slab">Food Porter — Complete User Handbook</h1>
+        <p class="lede">A screen-by-screen guide to the whole platform, for everyone who uses it:
+          donors who share surplus food, volunteers who help distribute it, drivers who run the
+          deliveries, and foundation staff who coordinate it all.</p>
+        <div class="model">
+          <strong>How the rescue works.</strong> A donor posts surplus food. The foundation's
+          <strong>driver collects it</strong>, and <strong>volunteers ride along as helping hands
+          to distribute</strong> it to people in need. Staff coordinate pickups into delivery
+          <strong>runs</strong> and watch everything live on one dashboard.
+        </div>
+      </header>
+
+      <section id="s1">
+        <p class="eyebrow">Section 1</p>
+        <h2 class="slab">For everyone</h2>
+        <p>Whoever you are, a few things work the same across the whole app.</p>
+
+        <h3>The four roles</h3>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Role</th><th>Who they are</th><th>What they do in the app</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Donor</strong></td><td>A restaurant, hostel, family, or event host with surplus food</td><td>Posts food for pickup; tracks it to delivery</td></tr>
+            <tr><td><strong>Volunteer</strong></td><td>A helper who assists with distribution</td><td>Sees available pickups; helps deliver alongside the driver</td></tr>
+            <tr><td><strong>Driver</strong></td><td>The foundation's driver</td><td>Runs the assigned collection &amp; delivery route</td></tr>
+            <tr><td><strong>Admin (staff)</strong></td><td>Foundation coordinators</td><td>Coordinate pickups, build runs, manage people &amp; places, read reports</td></tr>
+          </tbody>
+        </table></div>
+        <p>Your role is set once, the first time you sign in. Admin access is granted by the
+          foundation — you can't choose it yourself.</p>
+
+        <h3>Signing in</h3>
+        <ul>
+          <li><strong>Donors, volunteers, drivers:</strong> choose <strong>Sign in</strong> or <strong>Become a volunteer</strong>, then enter the code we email you — no password to remember.</li>
+          <li><strong>Foundation staff:</strong> use the <strong>Staff sign-in</strong> page (footer link, or <code>/staff</code>).</li>
+        </ul>
+
+        <h3>The top bar</h3>
+        <ul>
+          <li><strong>EN · ગુ · हि</strong> — switch language (English, Gujarati, Hindi) any time; the whole app follows.</li>
+          <li><strong>Moon / Sun</strong> — light or dark theme.</li>
+          <li><strong>Your avatar</strong> — account menu and sign-out.</li>
+        </ul>
+
+        <h3>Notifications</h3>
+        <ul>
+          <li><strong>Phone / browser push</strong> (the main channel) — tap <strong>Enable notifications</strong> and choose <strong>Allow</strong>. This is what lets alerts reach your phone when the app is closed.</li>
+          <li><strong>Email</strong> (secondary) — receipts and some updates.</li>
+        </ul>
+        <div class="callout"><strong>Not getting alerts?</strong> The usual reason is that "Allow notifications" was never tapped in the browser. Push only works after you allow it.</div>
+      </section>
+
+      <section id="s2">
+        <p class="eyebrow">Section 2</p>
+        <h2 class="slab">The public website</h2>
+        <p>Anyone can visit without signing in. This is the foundation's public face and the donation entry point.</p>
+
+        <h3>Homepage</h3>
+        <figure><img src="{{IMG:01-home-full}}" alt="Food Porter homepage" /><figcaption>The homepage — mission, live impact stats, and the calls to volunteer or donate.</figcaption></figure>
+        <ul>
+          <li><strong>Hero</strong> — the mission and two calls to action: <em>Become a volunteer</em> and <em>donate surplus food</em>.</li>
+          <li><strong>Live impact stats</strong> — people helped, volunteers, programmes, and the year the work began.</li>
+          <li><strong>Footer</strong> — contact, social links, and the legal pages (Privacy, Terms, Refund &amp; Cancellation).</li>
+        </ul>
+        <div class="callout"><strong>For staff:</strong> the homepage numbers come from real delivery records — not hand-typed — so they stay honest as the work grows.</div>
+
+        <h3>Signing in &amp; creating an account</h3>
+        <figure><img src="{{IMG:02-signin}}" alt="Sign in screen" /><figcaption>Sign in with your email and a one-time code.</figcaption></figure>
+        <figure><img src="{{IMG:03-signup}}" alt="Create account screen" /><figcaption>New users create an account, then answer one question — how they want to help — which sets their role.</figcaption></figure>
+
+        <h3>Staff sign-in</h3>
+        <figure><img src="{{IMG:04-staff-signin}}" alt="Staff sign-in screen" /><figcaption>Foundation coordinators sign in here.</figcaption></figure>
+      </section>
+
+      <section id="s3">
+        <p class="eyebrow">Section 3 · Donor</p>
+        <h2 class="slab">Donor guide</h2>
+        <p>You have surplus food — a restaurant tray, a wedding's extra thalis, a hostel's leftovers. Here's how to get it to people who need it, in about a minute.</p>
+
+        <h3>Your dashboard</h3>
+        <figure><img src="{{IMG:10-donor-dashboard}}" alt="Donor dashboard" /><figcaption>"My Kitchen" — your running tally and quick actions.</figcaption></figure>
+        <ul>
+          <li><strong>Total posted · Open · In progress · Delivered</strong> — your tally at a glance.</li>
+          <li><strong>Post a pickup</strong> — start here to share food.</li>
+          <li><strong>Recent pickups</strong> — your latest posts and their status.</li>
+        </ul>
+
+        <h3>Posting a pickup — step by step</h3>
+        <figure><img src="{{IMG:12-donor-new-pickup}}" alt="Post surplus food form" /><figcaption>One short form: what, how much, when, and where.</figcaption></figure>
+        <ol>
+          <li><strong>Food type</strong> — cooked meal, bakery, packaged, raw produce…</li>
+          <li><strong>Quantity + Unit</strong> — how much, in <em>servings</em> or <em>kg</em>.</li>
+          <li><strong>Description</strong> <em>(optional)</em> — e.g. "40 veg thalis from a wedding."</li>
+          <li><strong>When to pick up</strong> — the <em>from</em> and <em>until</em> times. Choose a realistic window; food safety depends on it.</li>
+          <li><strong>Pickup address</strong> — paste a Google Maps link or type an area/landmark, then tap <strong>Find</strong> to drop the pin.</li>
+          <li><strong>Food photo</strong> <em>(optional)</em> — helps, and is nice for the records.</li>
+          <li><strong>Confirm</strong> the food is fresh and safe, then <strong>Post pickup</strong>.</li>
+        </ol>
+        <div class="callout"><strong>Food-safety promise.</strong> The confirmation checkbox is a real commitment: only post food that is fresh and safe to eat at pickup time.</div>
+
+        <h3>My pickups &amp; tracking</h3>
+        <figure><img src="{{IMG:11-donor-pickups}}" alt="My pickups list" /><figcaption>Everything you've posted, with live status.</figcaption></figure>
+        <p>Open any pickup to see its details and, once it's on the way, <strong>track it live on a map</strong>. When it turns <span class="pill done">Delivered</span>, your food reached someone. You can <strong>edit or cancel</strong> a pickup only while it's still <span class="pill req">Requested</span> — once claimed, it's in motion.</p>
+      </section>
+
+      <section id="s4">
+        <p class="eyebrow">Section 4 · Volunteer</p>
+        <h2 class="slab">Volunteer guide</h2>
+        <p>You help get rescued food to people who need it. Here's your side of the app.</p>
+
+        <h3>Your dashboard</h3>
+        <figure><img src="{{IMG:20-volunteer-dashboard}}" alt="Volunteer dashboard" /><figcaption>Your portal home, with a shortcut to the pickup board.</figcaption></figure>
+
+        <h3>The pickup board</h3>
+        <figure><img src="{{IMG:21-volunteer-board}}" alt="Available pickups board" /><figcaption>Everything waiting to be collected — switch between List and Map.</figcaption></figure>
+        <p>A card per pickup shows the food type, quantity, time window, and area, with a <span class="pill req">Requested</span> pill until it's collected. A counter shows how many are waiting.</p>
+
+        <h3>A pickup up close</h3>
+        <figure><img src="{{IMG:22-volunteer-pickup-detail}}" alt="Pickup detail with map and claim button" /><figcaption>Full details, the location on a live map, and <em>Claim this pickup</em>.</figcaption></figure>
+        <p>Claiming assigns the pickup so two people never turn up for the same food. Once active, it moves through <em>accepted → en route → picked up → delivered</em>, and the donor can watch it live. Volunteers ride with the driver to hand out the food and confirm the drop.</p>
+        <div class="callout"><strong>Tip:</strong> if you can't collect it after all, don't claim it — leave it for someone who can.</div>
+      </section>
+
+      <section id="s5">
+        <p class="eyebrow">Section 5 · Driver</p>
+        <h2 class="slab">Driver guide</h2>
+        <p>You collect the food and run the delivery route. The app gives you today's run and lets you tick off each stop.</p>
+
+        <h3>My Run</h3>
+        <figure><img src="{{IMG:25-driver-run}}" alt="Driver's My Run screen" /><figcaption>Your assigned route for the shift. When none is assigned yet, you see this with the coordinator's number.</figcaption></figure>
+        <p>When a run is assigned, this becomes your working checklist:</p>
+        <ul>
+          <li><strong>Your stops in order</strong> — each pickup to collect and each destination to drop at.</li>
+          <li><strong>Mark each stop done</strong> as you go; the run auto-completes when every stop is finished.</li>
+          <li><strong>Live location</strong> — while your run is active, the app shares your location so coordinators and donors see progress on the map. Keep your screen on during the run for continuous tracking.</li>
+          <li>Volunteers riding with you can also confirm drops.</li>
+        </ul>
+        <p>The structure of a run — its ordered pickup and drop stops — is the same one staff build; see <a href="#s6">the run detail screen</a> in the admin guide.</p>
+      </section>
+
+      <section id="s6">
+        <p class="eyebrow">Section 6 · Staff</p>
+        <h2 class="slab">Admin &amp; staff guide</h2>
+        <p>The coordinator's cockpit. Everything the foundation needs to run the operation lives under <strong>Staff sign-in → Admin</strong>. This section is your training and support reference. The left sidebar is your map: <em>Overview · Pickups · Dispatch Runs · Destinations · Partners · Users · Reports</em>.</p>
+
+        <h3>Overview</h3>
+        <figure><img src="{{IMG:30-admin-dashboard}}" alt="Admin overview dashboard" /><figcaption>The daily picture — all from real records.</figcaption></figure>
+        <ul>
+          <li><strong>Top-line tiles</strong> — meals &amp; kg rescued, deliveries, open pickups, in-progress, active runs.</li>
+          <li><strong>Deliveries (30 days)</strong>, <strong>Pickup status</strong> donut, <strong>Top partners &amp; destinations</strong>, and directory counts.</li>
+        </ul>
+        <div class="callout"><strong>Use it to</strong> spot a pile-up of <em>Open pickups</em> that need dispatching, or <em>In progress</em> items that have stalled.</div>
+
+        <h3>Pickups</h3>
+        <figure><img src="{{IMG:31-admin-pickups}}" alt="Admin pickups list" /><figcaption>The master list — filter, sort, assign, and open any record.</figcaption></figure>
+        <p><strong>What to do when:</strong> a pickup sits <span class="pill req">Open</span> too long → assign it (or it auto-cancels after its window lapses). Need a specific person on it → open and assign the volunteer/driver.</p>
+
+        <h3>Dispatch Runs</h3>
+        <figure><img src="{{IMG:32-admin-runs}}" alt="Admin runs list" /><figcaption>Every delivery run with its date, slot, status, and driver.</figcaption></figure>
+        <p>A <strong>run</strong> is a driver's route — a set of pickup and drop stops done in one trip.</p>
+
+        <h4>Building a new run</h4>
+        <figure><img src="{{IMG:37-admin-new-run}}" alt="New run form" /><figcaption>Pick a date &amp; slot, assign a driver, add pickup and drop stops.</figcaption></figure>
+        <p>Assigning a driver notifies them.</p>
+
+        <h4>Inside a run</h4>
+        <figure><img src="{{IMG:39-admin-run-detail}}" alt="Run detail screen" /><figcaption>Live control for one route — its ordered stops and their status.</figcaption></figure>
+        <p>Reorder, add, or remove stops, override a stop's status, and follow the driver's progress. This is exactly what the driver sees as their checklist.</p>
+
+        <h3>Destinations</h3>
+        <figure><img src="{{IMG:33-admin-destinations}}" alt="Admin destinations" /><figcaption>The places rescued food is delivered to.</figcaption></figure>
+        <p>Shelters, night zones, community points. They become the <strong>drop stops</strong> you choose when building runs.</p>
+
+        <h3>Partners</h3>
+        <figure><img src="{{IMG:34-admin-partners}}" alt="Admin partners" /><figcaption>The restaurants, hostels, and organisations that regularly donate.</figcaption></figure>
+        <p>Linking a donor to a partner lets the foundation <strong>attribute rescued food to that partner</strong> in reports.</p>
+
+        <h3>Users</h3>
+        <figure><img src="{{IMG:35-admin-users}}" alt="Admin users" /><figcaption>Everyone in the system — change roles, invite, deactivate.</figcaption></figure>
+        <p><strong>What to do when:</strong> onboard a coordinator → invite by email with the admin role. Someone should lose access → deactivate them (immediate). Safeguards prevent removing the last admin.</p>
+
+        <h3>Reports</h3>
+        <figure><img src="{{IMG:36-admin-reports}}" alt="Admin reports" /><figcaption>The numbers donors, CSR partners, and auditors ask for — over any date range.</figcaption></figure>
+        <ul>
+          <li><strong>Meals / kg rescued and deliveries</strong> for the period.</li>
+          <li><strong>Average and 90%-within rescue time</strong> (posted → delivered) — the food-safety and impact headline.</li>
+          <li>Breakdowns by run, destination, and partner, with <strong>CSV export</strong>.</li>
+        </ul>
+
+        <h3>Log surplus</h3>
+        <figure><img src="{{IMG:38-admin-log-surplus}}" alt="Log surplus" /><figcaption>Record a pickup directly, for food that came in by phone or in person.</figcaption></figure>
+      </section>
+
+      <section id="s7">
+        <p class="eyebrow">Section 7</p>
+        <h2 class="slab">Appendix</h2>
+
+        <h3>The rescue loop</h3>
+        <div class="flow">
+          <div class="step"><b>1 · Post</b>Donor posts surplus food</div>
+          <div class="step"><b>2 · Dispatch</b>Staff build it into a run</div>
+          <div class="step"><b>3 · Pickup</b>Driver collects the food</div>
+          <div class="step"><b>4 · Distribute</b>Driver + volunteers deliver</div>
+          <div class="step"><b>5 · Delivered</b>Reached people in need ✓</div>
+        </div>
+        <p>Every step is recorded with who did it and when. Nothing is marked delivered without going through the proper stages.</p>
+
+        <h3>Pickup statuses</h3>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Status</th><th>Meaning</th></tr></thead>
+          <tbody>
+            <tr><td><span class="pill req">Requested</span></td><td>Posted, waiting to be collected (donor can still edit/cancel)</td></tr>
+            <tr><td><span class="pill prog">Accepted</span></td><td>Claimed/assigned — someone is on it</td></tr>
+            <tr><td><span class="pill prog">En route</span></td><td>On the way to collect</td></tr>
+            <tr><td><span class="pill prog">Picked up</span></td><td>Food collected, heading to the destination</td></tr>
+            <tr><td><span class="pill done">Delivered</span></td><td>Reached people in need — done</td></tr>
+            <tr><td><span class="pill">Cancelled</span></td><td>Called off, or auto-cancelled after its window lapsed</td></tr>
+          </tbody>
+        </table></div>
+
+        <h3>Languages &amp; access</h3>
+        <p>The entire app works in <strong>English, Gujarati, and Hindi</strong>, in <strong>light and dark</strong> themes, and installs on any phone as an app — tap your browser's "Add to Home Screen." All screenshots here show the English interface; the same layouts appear in every language.</p>
+
+        <h3>Support</h3>
+        <p>Questions about the platform or a specific rescue:<br>
+          <strong>rajyashfoundation@rajyashgroup.com · +91-9875041206</strong><br>
+          Satellite, Ahmedabad 380015</p>
+      </section>
+    </div>
+  </main>
+</div>
+
+<script>
+  (function () {
+    var btn = document.getElementById('themebtn');
+    var root = document.documentElement;
+    btn.addEventListener('click', function () {
+      var cur = root.getAttribute('data-theme');
+      if (!cur) cur = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      root.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+    });
+  })();
+</script>
