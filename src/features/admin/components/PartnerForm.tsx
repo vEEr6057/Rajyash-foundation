@@ -5,8 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { FormField, FormSelect } from "@/components/forms";
+import { FormField, FormSelect, FormActions } from "@/components/forms";
 import { PARTNER_TYPES } from "@/config/constants";
 import {
   partnerSchema,
@@ -24,11 +23,14 @@ export function PartnerForm({
   partnerId,
   defaults,
   onDone,
+  onCancel,
 }: {
   mode: "create" | "edit";
   partnerId?: string;
   defaults?: Partial<PartnerInput>;
   onDone?: () => void;
+  // A FormSheet host passes its `close` so Cancel dismisses the sheet.
+  onCancel?: () => void;
 }) {
   const router = useRouter();
   const t = useTranslations("admin");
@@ -109,13 +111,16 @@ export function PartnerForm({
       <FormField control={control} name="address" id="p-addr" label={t("partners.form.address")} errorClassName={ERR} />
       <FormField control={control} name="city" id="p-city" label={t("partners.form.city")} errorClassName={ERR} />
       {err && <p className="text-sm text-destructive">{err}</p>}
-      <Button type="submit" size="lg" disabled={pending}>
-        {pending
-          ? tCommon("buttons.loading")
-          : mode === "create"
+      <FormActions
+        onCancel={onCancel}
+        cancelLabel={tCommon("buttons.cancel")}
+        submitLabel={
+          mode === "create"
             ? t("partners.form.addButton")
-            : t("partners.form.saveButton")}
-      </Button>
+            : t("partners.form.saveButton")
+        }
+        pending={pending}
+      />
     </form>
   );
 }

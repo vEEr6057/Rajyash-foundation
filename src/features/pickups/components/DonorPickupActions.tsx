@@ -2,22 +2,42 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { RotateCcw } from "lucide-react";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { ROUTES } from "@/config/constants";
 import { cancelPickup, repostPickup } from "@/features/pickups/actions/pickupActions";
+import { EditPickupSheet } from "./EditPickupSheet";
+import type { Pickup } from "@/server/db/schema";
+
+type EditablePickup = Pick<
+  Pickup,
+  | "id"
+  | "category"
+  | "description"
+  | "quantity"
+  | "quantityUnit"
+  | "windowStart"
+  | "windowEnd"
+  | "address"
+  | "lat"
+  | "lng"
+  | "foodPhotoPath"
+>;
 
 /** Donor controls on a pickup detail: edit/cancel (while requested), repost (any). */
 export function DonorPickupActions({
   pickupId,
   status,
+  pickup,
 }: {
   pickupId: string;
   status: string;
+  // Only required while `editable` (status === "requested") — the detail page
+  // always has the full row, so it's simplest to just pass it through.
+  pickup: EditablePickup;
 }) {
   const router = useRouter();
   const t = useTranslations("portal");
@@ -55,12 +75,14 @@ export function DonorPickupActions({
     <div>
       <div className="flex flex-wrap gap-2">
         {editable && (
-          <Link
-            href={ROUTES.editPickup(pickupId)}
-            className={buttonVariants({ variant: "outline", size: "sm" })}
-          >
-            {tCommon("buttons.edit")}
-          </Link>
+          <EditPickupSheet
+            pickup={pickup}
+            trigger={
+              <Button variant="outline" size="sm">
+                {tCommon("buttons.edit")}
+              </Button>
+            }
+          />
         )}
         <Button variant="outline" size="sm" onClick={repost} disabled={isPending}>
           <RotateCcw className="size-4" />

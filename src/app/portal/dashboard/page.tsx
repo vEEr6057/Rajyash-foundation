@@ -8,12 +8,13 @@ import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { runsRepo } from "@/server/db/repositories/runs";
 import { ROUTES, type PickupStatus } from "@/config/constants";
 import type { Pickup } from "@/server/db/schema";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { LedgerRow } from "@/components/LedgerRow";
 import { APP_TIME_ZONE } from "@/features/pickups/lib/format";
 import { PickupCard } from "@/features/pickups/components/PickupCard";
+import { PostPickupSheet } from "@/features/pickups/components/PostPickupSheet";
 import { PushOptIn } from "@/features/notifications";
 
 export const dynamic = "force-dynamic";
@@ -89,9 +90,13 @@ async function DonorDashboard({ userId }: { userId: string }) {
       />
 
       <div className="mt-6 flex flex-wrap gap-3">
-        <Link href={ROUTES.newPickup} className={buttonVariants({ size: "lg" })}>
-          <Plus className="size-4" /> {t("dashboard.postPickup")}
-        </Link>
+        <PostPickupSheet
+          trigger={
+            <Button size="lg">
+              <Plus className="size-4" /> {t("dashboard.postPickup")}
+            </Button>
+          }
+        />
         <Link href={ROUTES.donorPickups} className={buttonVariants({ variant: "outline", size: "lg" })}>
           <HeartHandshake className="size-4" /> {t("dashboard.myPickups")}
         </Link>
@@ -103,9 +108,9 @@ async function DonorDashboard({ userId }: { userId: string }) {
             title={t("pickup.donor.emptyTitle")}
             body={t("pickup.donor.emptyBody")}
             action={
-              <Link href={ROUTES.newPickup} className={buttonVariants()}>
-                {t("pickup.donor.firstPickupCta")}
-              </Link>
+              <PostPickupSheet
+                trigger={<Button>{t("pickup.donor.firstPickupCta")}</Button>}
+              />
             }
           />
         ) : (

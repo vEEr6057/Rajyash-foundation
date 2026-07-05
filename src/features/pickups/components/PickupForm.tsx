@@ -10,7 +10,7 @@ import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FormField, FormSelect, FormTextarea, FormDateTime } from "@/components/forms";
+import { FormField, FormSelect, FormTextarea, FormDateTime, FormActions } from "@/components/forms";
 import {
   FOOD_CATEGORIES,
   QUANTITY_UNITS,
@@ -53,6 +53,8 @@ export function PickupForm({
   onSubmit: onSubmitOverride,
   submitLabel,
   submitting,
+  onCancel,
+  onSuccess,
 }: {
   mode: "create" | "edit";
   pickupId?: string;
@@ -62,6 +64,15 @@ export function PickupForm({
   onSubmit?: (data: PickupFormInput) => void | Promise<void>;
   submitLabel?: string;
   submitting?: boolean;
+  // Cancel affordance: defaults to browser-back (standalone-page behavior).
+  // A FormSheet host passes its own `close` so Cancel dismisses the sheet
+  // instead of navigating.
+  onCancel?: () => void;
+  // Called with the pickup id after a successful default create/update
+  // instead of the default `router.push` to the detail page — used by an
+  // in-place edit sheet that just wants to close + refresh, not navigate.
+  // Has no effect when `onSubmit` is provided (that path owns its own routing).
+  onSuccess?: (id: string) => void;
 }) {
   const router = useRouter();
   const t = useTranslations("portal");
@@ -126,7 +137,11 @@ export function PickupForm({
         mode === "create"
           ? (res as unknown as { id: string }).id
           : pickupId!;
-      router.push(ROUTES.pickup(id));
+      if (onSuccess) {
+        onSuccess(id);
+      } else {
+        router.push(ROUTES.pickup(id));
+      }
     });
   }
 
@@ -258,30 +273,20 @@ export function PickupForm({
         <p className="mt-5 text-sm text-destructive" role="alert">{serverError}</p>
       )}
 
-      <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button
-          type="button"
-          variant="ghost"
-          size="lg"
-          className="w-full sm:w-auto"
-          onClick={() => router.back()}
-          disabled={isPending || submitting}
-        >
-          {tCommon("buttons.cancel")}
-        </Button>
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full sm:w-auto"
-          disabled={isPending || submitting}
-        >
-          {isPending || submitting
-            ? tCommon("buttons.loading")
-            : (submitLabel ??
-              (mode === "create"
-                ? t("pickup.form.submitCreate")
-                : t("pickup.form.submitEdit")))}
-        </Button>
+      <div className="mt-6">
+        <FormActions
+          onCancel={onCancel ?? (() => router.back())}
+          cancelLabel={tCommon("buttons.cancel")}
+          submitLabel={
+            isPending || submitting
+              ? tCommon("buttons.loading")
+              : (submitLabel ??
+                (mode === "create"
+                  ? t("pickup.form.submitCreate")
+                  : t("pickup.form.submitEdit")))
+          }
+          pending={isPending || submitting}
+        />
       </div>
     </form>
   );

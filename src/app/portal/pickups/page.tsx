@@ -1,14 +1,14 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Plus } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { ROUTES } from "@/config/constants";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { PickupCard } from "@/features/pickups/components/PickupCard";
+import { PostPickupSheet } from "@/features/pickups/components/PostPickupSheet";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "My pickups — Rajyash Food Porter" };
@@ -35,9 +35,13 @@ export default async function DonorPickupsPage() {
         title={t("pickup.donor.title")}
         meta={t("pickup.donor.meta", { active, delivered })}
         action={
-          <Link href={ROUTES.newPickup} className={buttonVariants({ size: "sm" })}>
-            <Plus className="size-4" /> {t("pickup.donor.newButton")}
-          </Link>
+          <PostPickupSheet
+            trigger={
+              <Button size="sm">
+                <Plus className="size-4" /> {t("pickup.donor.newButton")}
+              </Button>
+            }
+          />
         }
       />
 
@@ -46,9 +50,7 @@ export default async function DonorPickupsPage() {
           title={t("pickup.donor.emptyTitle")}
           body={t("pickup.donor.emptyBody")}
           action={
-            <Link href={ROUTES.newPickup} className={buttonVariants()}>
-              {t("pickup.form.title")}
-            </Link>
+            <PostPickupSheet trigger={<Button>{t("pickup.form.title")}</Button>} />
           }
         />
       ) : (

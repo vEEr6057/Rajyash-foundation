@@ -10,7 +10,7 @@ import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FormField } from "@/components/forms";
+import { FormField, FormActions } from "@/components/forms";
 import { MapView } from "@/features/pickups/components/MapView";
 import { resolvePickupLocation } from "@/features/pickups/actions/pickupActions";
 import {
@@ -30,11 +30,14 @@ export function DestinationForm({
   destinationId,
   defaults,
   onDone,
+  onCancel,
 }: {
   mode: "create" | "edit";
   destinationId?: string;
   defaults?: Partial<DestinationInput>;
   onDone?: () => void;
+  // A FormSheet host passes its `close` so Cancel dismisses the sheet.
+  onCancel?: () => void;
 }) {
   const router = useRouter();
   const t = useTranslations("admin");
@@ -179,13 +182,16 @@ export function DestinationForm({
       />
 
       {err && <p className="text-sm text-destructive">{err}</p>}
-      <Button type="submit" size="lg" disabled={pending}>
-        {pending
-          ? tCommon("buttons.loading")
-          : mode === "create"
+      <FormActions
+        onCancel={onCancel}
+        cancelLabel={tCommon("buttons.cancel")}
+        submitLabel={
+          mode === "create"
             ? t("destinations.form.addButton")
-            : t("destinations.form.saveButton")}
-      </Button>
+            : t("destinations.form.saveButton")
+        }
+        pending={pending}
+      />
     </form>
   );
 }

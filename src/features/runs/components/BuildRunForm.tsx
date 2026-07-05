@@ -5,9 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { FormSelect, FormDateTime } from "@/components/forms";
+import { FormSelect, FormDateTime, FormActions } from "@/components/forms";
 import { createRun } from "@/features/runs/actions/runActions";
 import { createRunSchema, type CreateRunInput } from "@/features/runs/validations/run";
 import { ROUTES } from "@/config/constants";
@@ -16,9 +14,17 @@ import type { Profile } from "@/server/db/schema";
 const SELECT = "mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm";
 const ERR = "mt-1 text-xs text-destructive";
 
-export function BuildRunForm({ drivers }: { drivers: Profile[] }) {
+export function BuildRunForm({
+  drivers,
+  onCancel,
+}: {
+  drivers: Profile[];
+  // A FormSheet host passes its `close` so Cancel dismisses the sheet.
+  onCancel?: () => void;
+}) {
   const router = useRouter();
   const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const [pending, start] = useTransition();
   const [err, setErr] = useState<string | null>(null);
 
@@ -85,10 +91,13 @@ export function BuildRunForm({ drivers }: { drivers: Profile[] }) {
           {err}
         </p>
       )}
-      <Button type="submit" variant="leaf" disabled={pending} className="w-full">
-        {pending ? <Loader2 className="size-4 animate-spin" /> : null}
-        {pending ? t("runs.form.creating") : t("runs.form.create")}
-      </Button>
+      <FormActions
+        onCancel={onCancel}
+        cancelLabel={tCommon("buttons.cancel")}
+        submitLabel={pending ? t("runs.form.creating") : t("runs.form.create")}
+        pending={pending}
+        submitVariant="leaf"
+      />
     </form>
   );
 }

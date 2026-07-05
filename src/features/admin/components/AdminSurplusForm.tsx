@@ -13,9 +13,12 @@ import type { Partner } from "@/server/db/schema";
 
 interface Props {
   partners: Pick<Partner, "id" | "name" | "type" | "address">[];
+  // Passed by LogSurplusSheet (its FormSheet `close`) so Cancel dismisses the
+  // sheet instead of navigating back — same affordance every form-sheet gets.
+  onCancel?: () => void;
 }
 
-export function AdminSurplusForm({ partners }: Props) {
+export function AdminSurplusForm({ partners, onCancel }: Props) {
   const t = useTranslations("admin");
   const router = useRouter();
   const [partnerId, setPartnerId] = useState<string>("");
@@ -73,6 +76,7 @@ export function AdminSurplusForm({ partners }: Props) {
         }
         submitLabel={t("surplus.submitLabel")}
         submitting={isPending}
+        onCancel={onCancel}
       />
     </div>
   );

@@ -3,3 +3,5 @@ export { FormSelect } from "./FormSelect";
 export { FormTextarea } from "./FormTextarea";
 export { FormDateTime } from "./FormDateTime";
 export { FieldError, DEFAULT_ERROR_CLASS } from "./FieldError";
+export { FormSheet } from "./FormSheet";
+export { FormActions } from "./FormActions";

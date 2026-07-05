@@ -7,7 +7,7 @@ import { profilesRepo } from "@/server/db/repositories/profiles";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PartnerList } from "@/features/admin/components/PartnerList";
 import { LinkDonorControl } from "@/features/admin/components/LinkDonorControl";
-import { AddPartnerDialog } from "@/features/admin/components/AddPartnerDialog";
+import { AddPartnerSheet } from "@/features/admin/components/AddPartnerSheet";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 
@@ -40,7 +40,7 @@ export default async function AdminPartnersPage() {
         eyebrow={t("eyebrow")}
         title={t("partners.title")}
         meta={t("partners.meta", { count: partners.length })}
-        action={<AddPartnerDialog />}
+        action={<AddPartnerSheet />}
       />
 
       {partners.length === 0 ? (
