@@ -8,7 +8,7 @@
   "pickup": {
     "form": {
       "title": "Post surplus food",
-      "subtitle": "Tell us what's available and where — a volunteer will pick it up.",
+      "subtitle": "Tell us what's available and where — our driver will pick it up.",
       "eyebrow": "Donate",
       "editTitle": "Edit pickup",
       "editMetaTitle": "Edit pickup — Rajyash Food Porter",
@@ -87,7 +87,7 @@
       "newButton": "New",
       "emptyState": "No pickups yet.",
       "emptyTitle": "Nothing posted yet",
-      "emptyBody": "When your kitchen has surplus, post it here — a volunteer picks it up the same evening.",
+      "emptyBody": "When your kitchen has surplus, post it here — our driver picks it up the same evening.",
       "firstPickupCta": "Post your first pickup"
     }
   },
