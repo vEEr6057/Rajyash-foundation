@@ -10,7 +10,7 @@ import { MapPin, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FormField, FormActions } from "@/components/forms";
+import { FormField, FormActions, FormSwitch } from "@/components/forms";
 import { MapView } from "@/features/pickups/components/MapView";
 import { resolvePickupLocation } from "@/features/pickups/actions/pickupActions";
 import {
@@ -180,6 +180,18 @@ export function DestinationForm({
         label={t("destinations.form.city")}
         errorClassName="mt-1 text-xs text-destructive"
       />
+
+      {/* UX-15: edit-only — a new destination is always active by default (schema
+          default `true`); the toggle only matters once it's in use by pickers/runs. */}
+      {mode === "edit" && (
+        <FormSwitch
+          control={control}
+          name="active"
+          id="dest-active"
+          label={t("destinations.form.active")}
+          description={t("destinations.form.activeHint")}
+        />
+      )}
 
       {err && <p className="text-sm text-destructive">{err}</p>}
       <FormActions

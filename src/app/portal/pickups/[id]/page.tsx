@@ -4,6 +4,7 @@ import { Clock, MapPin, Package } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
+import { profilesRepo } from "@/server/db/repositories/profiles";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
 import { getSignedDownloadUrl } from "@/lib/storage";
 import { ROUTES } from "@/config/constants";
@@ -20,7 +21,11 @@ import { DonorPickupActions } from "@/features/pickups/components/DonorPickupAct
 import { LiveTrackingMap } from "@/features/pickups/components/LiveTrackingMap";
 import { VolunteerTracker } from "@/features/pickups/components/VolunteerTracker";
 import { NavigateButton } from "@/features/pickups/components/NavigateButton";
+import { CallButton } from "@/features/pickups/components/CallButton";
 import { VerifyToggle } from "@/features/admin/components/VerifyToggle";
+import { PickupStatusTimeline } from "@/features/pickups/components/PickupStatusTimeline";
+import { DeliveryProofBack } from "@/features/pickups/components/DeliveryProofBack";
+import { buildStatusTimeline } from "@/features/pickups/lib/timeline";
 
 export const dynamic = "force-dynamic";
 
@@ -77,10 +82,12 @@ export default async function PickupDetailPage({
   const donorTrackable = isDonorOwner && pickup.status === "en_route";
   const showLiveTrackingMap = donorTrackable || ((isAdmin || isVolunteer) && isActive);
 
-  const [foodUrl, proofUrl, events] = await Promise.all([
+  const [foodUrl, proofUrl, events, donor] = await Promise.all([
     safeSignedUrl(pickup.foodPhotoPath),
     safeSignedUrl(pickup.proofPhotoPath),
     statusEventsRepo.listForPickup(id),
+    // UX-3: only the assigned driver gets the donor's phone number.
+    isAssignedDriver ? profilesRepo.getById(pickup.donorId) : Promise.resolve(null),
   ]);
 
   return (
@@ -147,6 +154,11 @@ export default async function PickupDetailPage({
         </div>
       )}
 
+      {/* UX-8: donor-only "your food reached people in need" moment — gated on
+          isDonorOwner (ownership already established above), reusing the same
+          signed proofUrl the generic photo grid above resolves. */}
+      {isDonorOwner && <DeliveryProofBack status={pickup.status} proofUrl={proofUrl} />}
+
       {/* Actions by viewer */}
       <div className="mt-6">
         {isAdmin && (
@@ -164,8 +176,9 @@ export default async function PickupDetailPage({
         <PickupClaimSection role={session.role} status={pickup.status} pickupId={id} />
         {isAssignedDriver &&
           (pickup.status === "accepted" || isActive) && (
-            <div className="mb-3">
+            <div className="mb-3 space-y-2">
               <NavigateButton lat={pickup.lat} lng={pickup.lng} />
+              <CallButton phone={donor?.phone} />
             </div>
           )}
         {isAssignedDriver && (
@@ -180,28 +193,43 @@ export default async function PickupDetailPage({
         )}
       </div>
 
-      {events.length > 0 && (
+      {/* UX-7: the donor gets a proper stage timeline (posted → claimed →
+          en route → delivered/cancelled) built from the SAME ownership-checked
+          read as the rest of this page (canView above already required
+          isDonorOwner for this branch) — always shown (even with zero
+          statusEvents, since "posted" comes from the pickup row itself, not an
+          event). Every other viewer keeps the original flat event log. */}
+      {isDonorOwner ? (
         <div className="mt-8">
-          <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-muted-foreground">
             {tPortal("pickup.detail.history")}
           </h2>
-          <ul className="space-y-1 text-sm text-muted-foreground">
-            {events.map((e) => (
-              <li key={e.id}>
-                → {tCommon(`status.${e.toStatus}`)}{" "}
-                <span className="text-subtle-foreground tabular-nums">
-                  {new Intl.DateTimeFormat(`${locale}-IN`, {
-                    timeZone: "Asia/Kolkata",
-                    day: "numeric",
-                    month: "short",
-                    hour: "numeric",
-                    minute: "2-digit",
-                  }).format(e.createdAt)}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <PickupStatusTimeline stages={buildStatusTimeline(pickup, events)} />
         </div>
+      ) : (
+        events.length > 0 && (
+          <div className="mt-8">
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
+              {tPortal("pickup.detail.history")}
+            </h2>
+            <ul className="space-y-1 text-sm text-muted-foreground">
+              {events.map((e) => (
+                <li key={e.id}>
+                  → {tCommon(`status.${e.toStatus}`)}{" "}
+                  <span className="text-subtle-foreground tabular-nums">
+                    {new Intl.DateTimeFormat(`${locale}-IN`, {
+                      timeZone: "Asia/Kolkata",
+                      day: "numeric",
+                      month: "short",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    }).format(e.createdAt)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
       )}
     </main>
   );

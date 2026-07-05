@@ -72,3 +72,22 @@ jobs:
       # --- build (Linux) + deploy ---
       - name: Build + deploy to Cloudflare
         run: pnpm run deploy
+
+      # --- post-deploy asset-integrity guard (UX-19 / D1) ---
+      # A deploy once shipped with every client JS chunk 404ing while the HTML itself
+      # served 200 — curl-the-HTML smoke checks cannot catch a dead client bundle
+      # (lesson: curl-smoke-check-misses-dead-client-js). Fetch the live homepage,
+      # extract a referenced /_next/static chunk URL, and require it to be 200.
+      - name: Verify client assets are live
+        run: |
+          BASE="https://rajyash-food-rescue.shahveerkeaten.workers.dev"
+          HTML="$(curl -fsSL --retry 3 --retry-delay 5 "$BASE/")"
+          CHUNK="$(printf '%s' "$HTML" | grep -oE '/_next/static/[^"]+\.js' | head -1)"
+          if [ -z "$CHUNK" ]; then
+            echo "::error::No /_next/static/*.js reference found in the homepage HTML — build looks broken."
+            exit 1
+          fi
+          echo "Checking asset: $CHUNK"
+          curl -fsS -o /dev/null --retry 3 --retry-delay 5 "$BASE$CHUNK" \
+            || { echo "::error::Client asset $CHUNK is not serving 200 — deploy shipped a dead client bundle."; exit 1; }
+          echo "Client asset integrity OK."

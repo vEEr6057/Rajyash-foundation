@@ -10,7 +10,11 @@ import {
   type AdminOverview,
   type TrendPoint,
 } from "@/server/db/repositories/stats";
-import { reportsRepo } from "@/server/db/repositories/reports";
+import {
+  reportsRepo,
+  type PartnerBreakdownRow,
+  type DestinationBreakdownRow,
+} from "@/server/db/repositories/reports";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { logger } from "@/lib/logger";
@@ -74,47 +78,50 @@ export default async function AdminOverviewPage() {
     throw e;
   }
 
-  const [t, tCommon, locale] = await Promise.all([
-    getTranslations("admin"),
-    getTranslations("common"),
-    getLocale(),
-  ]);
-
-  // Partners power the Log-surplus popup; drivers power the New-run popup
-  // (both rendered in the header, not a separate page).
-  const [partners, drivers] = await Promise.all([
-    partnersRepo.list().catch(() => []),
-    profilesRepo.listByRole("driver").catch(() => []),
-  ]);
-
-  let o: AdminOverview = EMPTY_OVERVIEW;
-  let trend: TrendPoint[] = [];
-  let topPartners: BarDatum[] = [];
-  let topDestinations: BarDatum[] = [];
-  try {
-    const [overview, t30, partnerRows, destRows] = await Promise.all([
-      getAdminOverview(),
-      getDeliveriesTrend(30),
-      reportsRepo.partnerBreakdown(ALL_TIME_FROM, ALL_TIME_TO),
-      reportsRepo.destinationBreakdown(ALL_TIME_FROM, ALL_TIME_TO),
+  // UX-11: every independent read for this page in ONE Promise.all fan-out —
+  // translations, the header-popup directories (partners/drivers), and the
+  // analytics aggregates all used to be two SEQUENTIAL Promise.all stages
+  // (the popup directories awaited to completion before the analytics calls
+  // even started), which serialized two batches of round trips against the
+  // Workers-bounded connection pool (max: 5, server/db/client.ts) for no
+  // reason — neither batch depends on the other. Each analytics promise below
+  // catches its OWN failure (previously one failure discarded all four), so a
+  // single slow/broken aggregate degrades just that panel, not the page.
+  const [t, tCommon, locale, partners, drivers, o, trend, partnerRows, destRows] =
+    await Promise.all([
+      getTranslations("admin"),
+      getTranslations("common"),
+      getLocale(),
+      // Partners power the Log-surplus popup; drivers power the New-run popup
+      // (both rendered in the header, not a separate page).
+      partnersRepo.list().catch(() => []),
+      profilesRepo.listByRole("driver").catch(() => []),
+      getAdminOverview().catch((e: unknown) => {
+        logger.error("admin overview stats failed", { err: String(e) });
+        return EMPTY_OVERVIEW;
+      }),
+      getDeliveriesTrend(30).catch((e: unknown) => {
+        logger.error("admin deliveries trend failed", { err: String(e) });
+        return [] as TrendPoint[];
+      }),
+      reportsRepo.partnerBreakdown(ALL_TIME_FROM, ALL_TIME_TO).catch((e: unknown) => {
+        logger.error("admin partner breakdown failed", { err: String(e) });
+        return [] as PartnerBreakdownRow[];
+      }),
+      reportsRepo.destinationBreakdown(ALL_TIME_FROM, ALL_TIME_TO).catch((e: unknown) => {
+        logger.error("admin destination breakdown failed", { err: String(e) });
+        return [] as DestinationBreakdownRow[];
+      }),
     ]);
-    o = overview;
-    trend = t30;
-    topPartners = partnerRows
-      .slice(0, 5)
-      .map((p) => ({
-        name: p.partnerId ? p.partnerName : tCommon("unknownPartner"),
-        value: p.count,
-      }));
-    topDestinations = destRows
-      .slice(0, 5)
-      .map((d) => ({
-        name: d.destinationId ? d.destinationName : tCommon("adHocDestination"),
-        value: d.completedDropCount,
-      }));
-  } catch (e) {
-    logger.error("admin overview stats failed", { err: String(e) });
-  }
+
+  const topPartners: BarDatum[] = partnerRows.slice(0, 5).map((p) => ({
+    name: p.partnerId ? p.partnerName : tCommon("unknownPartner"),
+    value: p.count,
+  }));
+  const topDestinations: BarDatum[] = destRows.slice(0, 5).map((d) => ({
+    name: d.destinationId ? d.destinationName : tCommon("adHocDestination"),
+    value: d.completedDropCount,
+  }));
 
   const ov = (k: string, values?: Record<string, string>) =>
     t(`dashboard.overview.${k}`, values);

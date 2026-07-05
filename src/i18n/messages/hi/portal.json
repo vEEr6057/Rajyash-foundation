@@ -43,14 +43,16 @@
       "notes": "नोट्स (वैकल्पिक)",
       "attestation": "मैं पुष्टि करता/करती हूँ कि यह भोजन ताज़ा, सुरक्षित और साझा करने योग्य है.",
       "submitCreate": "पिकअप पोस्ट करें",
-      "submitEdit": "बदलाव सहेजें"
+      "submitEdit": "बदलाव सहेजें",
+      "repeatLast": "पिछला पिकअप दोहराएँ"
     },
     "card": {
       "postedBy": "{name} द्वारा पोस्ट",
       "window": "{start} – {end} उपलब्ध",
       "quantity": "{amount} {unit}",
       "claimButton": "यह पिकअप लें",
-      "claiming": "दावा हो रहा है…"
+      "claiming": "दावा हो रहा है…",
+      "claim": "लें"
     },
     "detail": {
       "title": "पिकअप विवरण",
@@ -71,7 +73,18 @@
       "needsProofHint": "डिलीवरी सक्षम करने के लिए प्रूफ फ़ोटो जोड़ें.",
       "navigate": "रास्ता दिखाओ",
       "etaAway": "~{minutes} मिनट दूर",
-      "etaEstimate": "अनुमान"
+      "etaEstimate": "अनुमान",
+      "timeline": {
+        "posted": "पोस्ट किया",
+        "claimed": "लिया गया",
+        "enRoute": "मार्ग पर",
+        "delivered": "डिलीवर किया",
+        "cancelled": "रद्द"
+      },
+      "proofBack": {
+        "title": "आपका भोजन ज़रूरतमंद परिवारों तक पहुँच गया",
+        "alt": "डिलीवरी प्रमाण फोटो"
+      }
     },
     "board": {
       "title": "उपलब्ध पिकअप",
@@ -98,7 +111,8 @@
   },
   "notifications": {
     "title": "सूचनाएँ",
-    "empty": "अभी तक कोई सूचना नहीं.",
+    "emptyTitle": "अभी तक कोई सूचना नहीं",
+    "empty": "पिकअप अलर्ट और स्टेटस अपडेट यहाँ दिखाई देंगे.",
     "markRead": "पढ़ा हुआ चिह्नित करें",
     "markAllRead": "सभी पढ़ा हुआ चिह्नित करें",
     "push": {

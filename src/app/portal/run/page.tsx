@@ -2,16 +2,19 @@ import { redirect } from "next/navigation";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { runsRepo } from "@/server/db/repositories/runs";
+import { partnersRepo } from "@/server/db/repositories/partners";
 import { ROUTES, RUN_SLOT_LABEL_KEYS } from "@/config/constants";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { LeafMark } from "@/components/LeafMark";
 import { APP_TIME_ZONE } from "@/features/pickups/lib/format";
 import { NavigateButton } from "@/features/pickups/components/NavigateButton";
+import { CallButton } from "@/features/pickups/components/CallButton";
 import { StopStatusPill } from "@/features/runs/components/StopStatusPill";
 import { MarkStopDoneButton } from "@/features/runs/components/MarkStopDoneButton";
 import { RunTracker } from "@/features/runs/components/RunTracker";
 import { RunLiveMap } from "@/features/runs/components/RunLiveMap";
+import type { RunStop } from "@/server/db/schema";
 
 export const dynamic = "force-dynamic";
 
@@ -71,6 +74,25 @@ export default async function DriverRunPage() {
       ? { lat: currentStop.lat, lng: currentStop.lng }
       : null;
 
+  // UX-3: a pickup stop's contact is the partner org (restaurant/hall/etc.)
+  // — drop stops have no contact. Batch-fetch the distinct partners once
+  // rather than per-stop (a run rarely has more than a handful of stops).
+  const partnerIds = [
+    ...new Set(
+      stops
+        .filter((s) => s.kind === "pickup" && s.partnerId)
+        .map((s) => s.partnerId as string),
+    ),
+  ];
+  const partners = await Promise.all(partnerIds.map((pid) => partnersRepo.getById(pid)));
+  const partnerPhoneById = new Map(
+    partners.filter((p) => p !== null).map((p) => [p.id, p.contactPhone]),
+  );
+  function stopContactPhone(stop: RunStop): string | null {
+    if (stop.kind !== "pickup" || !stop.partnerId) return null;
+    return partnerPhoneById.get(stop.partnerId) ?? null;
+  }
+
   const locale = await getLocale();
   const runDate = new Date(activeRun.runDate).toLocaleDateString(`${locale}-IN`, {
     timeZone: APP_TIME_ZONE,
@@ -119,9 +141,12 @@ export default async function DriverRunPage() {
                 </p>
               )}
               <div className="mt-4 flex flex-col gap-2">
-                {currentStop.lat !== null && currentStop.lng !== null && (
-                  <NavigateButton lat={currentStop.lat} lng={currentStop.lng} />
-                )}
+                <NavigateButton
+                  lat={currentStop.lat}
+                  lng={currentStop.lng}
+                  address={currentStop.address}
+                />
+                <CallButton phone={stopContactPhone(currentStop)} />
                 <MarkStopDoneButton
                   stopId={currentStop.id}
                   stopStatus={currentStop.status}
@@ -155,7 +180,11 @@ export default async function DriverRunPage() {
                   <span className="flex-1 truncate text-base">
                     {stop.address ?? "—"}
                   </span>
-                  <StopStatusPill status={stop.status} />
+                  <div className="flex shrink-0 items-center gap-1.5">
+                    <NavigateButton lat={stop.lat} lng={stop.lng} address={stop.address} compact />
+                    <CallButton phone={stopContactPhone(stop)} compact />
+                    <StopStatusPill status={stop.status} />
+                  </div>
                 </div>
               ))}
             </div>

@@ -14,6 +14,8 @@ import { EditRunSheet } from "@/features/runs/components/EditRunSheet";
 import { StopList } from "@/features/runs/components/StopList";
 import { AddStopForm } from "@/features/runs/components/AddStopForm";
 import { RunLiveMap } from "@/features/runs/components/RunLiveMap";
+import { StopHistorySection } from "@/features/runs/components/StopHistorySection";
+import { buildStopTimeline } from "@/features/runs/lib/stopHistory";
 
 export const dynamic = "force-dynamic";
 
@@ -36,7 +38,8 @@ export default async function AdminRunDetailPage({
   const [runWithStops, partners, destinations, drivers] = await Promise.all([
     runsRepo.getRunWithStops(id),
     partnersRepo.list(),
-    destinationsRepo.list(),
+    // UX-15: the add-stop picker may only offer active destinations.
+    destinationsRepo.list({ activeOnly: true }),
     // Backs both the (re)assign-driver control and the edit-run sheet below.
     profilesRepo.listByRole("driver"),
   ]);
@@ -120,6 +123,8 @@ export default async function AdminRunDetailPage({
         <h2 className="mb-3 font-display text-[15px] font-semibold">{t("runs.stopsSection")}</h2>
         <StopList stops={runWithStops.stops} runId={runWithStops.id} editable={editable} />
       </section>
+
+      <StopHistorySection rows={buildStopTimeline(runWithStops.stops)} />
 
       {editable && (
         <section className="border-t border-border pt-6">

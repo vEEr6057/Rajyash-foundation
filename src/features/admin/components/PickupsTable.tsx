@@ -154,7 +154,9 @@ export function PickupsTable({
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => router.push(ROUTES.pickup(p.id))}>
+                    {/* UX-14: admin's own detail page (History with actor + time),
+                        not the shared donor/driver/volunteer portal view. */}
+                    <DropdownMenuItem onClick={() => router.push(ROUTES.adminPickup(p.id))}>
                       <Eye /> {tCommon("buttons.view")}
                     </DropdownMenuItem>
                     {p.status === "requested" && (

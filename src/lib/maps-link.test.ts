@@ -4,6 +4,7 @@ import {
   isGoogleMapsUrl,
   isShortGoogleMapsUrl,
   googleMapsDirectionsUrl,
+  googleMapsDirectionsUrlForAddress,
 } from "./maps-link";
 
 describe("parseLatLngFromGoogleMapsUrl", () => {
@@ -57,5 +58,12 @@ describe("googleMapsDirectionsUrl", () => {
   it("builds a zero-cost dir deep link", () => {
     expect(googleMapsDirectionsUrl(23.0225, 72.5714))
       .toBe("https://www.google.com/maps/dir/?api=1&destination=23.0225,72.5714");
+  });
+});
+
+describe("googleMapsDirectionsUrlForAddress", () => {
+  it("URL-encodes the address into the same dir deep link", () => {
+    expect(googleMapsDirectionsUrlForAddress("Satellite, Ahmedabad"))
+      .toBe("https://www.google.com/maps/dir/?api=1&destination=Satellite%2C%20Ahmedabad");
   });
 });

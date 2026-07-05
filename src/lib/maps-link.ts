@@ -75,3 +75,12 @@ export function isShortGoogleMapsUrl(s: string): boolean {
 export function googleMapsDirectionsUrl(lat: number, lng: number): string {
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
 }
+
+/**
+ * UX-4: same free deep link, keyed off a free-text address for the (rare)
+ * case a destination has no coordinates yet (e.g. an ad-hoc run stop typed
+ * in without geocoding). Google Maps resolves the address itself.
+ */
+export function googleMapsDirectionsUrlForAddress(address: string): string {
+  return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(address)}`;
+}
