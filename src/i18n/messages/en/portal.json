@@ -97,7 +97,8 @@
   },
   "notifications": {
     "title": "Notifications",
-    "empty": "No notifications yet.",
+    "emptyTitle": "No notifications yet",
+    "empty": "Pickup alerts and status updates will show up here.",
     "markRead": "Mark as read",
     "markAllRead": "Mark all read",
     "push": {

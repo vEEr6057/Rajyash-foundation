@@ -139,5 +139,11 @@
     "roleFor": "Role for {name}"
   },
   "unknownPartner": "Unknown partner",
-  "adHocDestination": "Ad-hoc"
+  "adHocDestination": "Ad-hoc",
+  "pwa": {
+    "installTitle": "Install Food Porter for one-tap access",
+    "installButton": "Install",
+    "iosHint": "Tap Share, then \"Add to Home Screen\".",
+    "dismissAriaLabel": "Dismiss install prompt"
+  }
 }

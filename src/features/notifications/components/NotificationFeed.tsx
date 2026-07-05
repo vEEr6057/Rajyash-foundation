@@ -1,7 +1,9 @@
 "use client";
 import Link from "next/link";
+import { Bell } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { ROUTES } from "@/config/constants";
+import { EmptyState } from "@/components/EmptyState";
 import type { Notification } from "@/server/db/schema";
 
 export function NotificationFeed({
@@ -14,9 +16,12 @@ export function NotificationFeed({
   const t = useTranslations("portal");
   if (items.length === 0) {
     return (
-      <p className="px-4 py-6 text-center text-sm text-muted-foreground">
-        {t("notifications.empty")}
-      </p>
+      <EmptyState
+        icon={Bell}
+        compact
+        title={t("notifications.emptyTitle")}
+        body={t("notifications.empty")}
+      />
     );
   }
   return (

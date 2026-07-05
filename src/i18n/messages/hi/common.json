@@ -143,5 +143,11 @@
     "roleFor": "{name} के लिए भूमिका"
   },
   "unknownPartner": "अज्ञात साझेदार",
-  "adHocDestination": "अन्य स्थान"
+  "adHocDestination": "अन्य स्थान",
+  "pwa": {
+    "installTitle": "एक-टैप एक्सेस के लिए Food Porter इंस्टॉल करें",
+    "installButton": "इंस्टॉल करें",
+    "iosHint": "Share पर टैप करें, फिर \"Add to Home Screen\".",
+    "dismissAriaLabel": "इंस्टॉल प्रॉम्प्ट बंद करें"
+  }
 }
