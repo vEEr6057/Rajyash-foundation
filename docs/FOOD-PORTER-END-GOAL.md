@@ -6,7 +6,7 @@
 
 ## What Food Porter is
 
-Food Porter connects people who have surplus food — restaurants, families, event halls — with
+Food Porter connects people who have surplus food — restaurants, hostels, event halls — with
 the foundation's food-rescue operation across Ahmedabad. A donor posts surplus food in under a
 minute; the foundation's driver collects it and, together with volunteers who ride along as
 helping hands, distributes it to people in need. The web platform runs the whole loop: the
