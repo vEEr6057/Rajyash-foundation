@@ -12,14 +12,21 @@ const withSerwist = withSerwistInit({
   swSrc: "src/app/sw.ts",
   swDest: "public/sw.js",
   disable: process.env.NODE_ENV !== "production",
-  // SECURITY (T-7-00-01): never precache authed routes — stale auth HTML served offline = security bug
-  exclude: [/\/api\//, /\/__clerk\//, /\/admin\//, /\/portal\//, /\/onboarding\//],
+  // SECURITY (T-7-00-01): never precache authed routes — stale auth HTML served offline = security bug.
+  // Also skip the 1.5 MB static handbook (public/guide.html) — no need to bloat the SW precache with it.
+  exclude: [/\/api\//, /\/__clerk\//, /\/admin\//, /\/portal\//, /\/onboarding\//, /guide\.html$/],
 });
 
 const nextConfig: NextConfig = {
   // Multiple lockfiles exist (a stale ~/package-lock.json alongside our pnpm-lock.yaml),
   // so Next inferred the workspace root as the home dir. Pin it to this project.
   outputFileTracingRoot: process.cwd(),
+  // Clean URL for the public user handbook: /guide serves the self-contained static
+  // book at public/guide.html (also reachable directly at /guide.html). /guide is
+  // allow-listed in middleware so it stays public (no auth).
+  async rewrites() {
+    return [{ source: "/guide", destination: "/guide.html" }];
+  },
 };
 
 // Serwist OUTERMOST (RESEARCH Pitfall 1: plugin order matters for webpack transform)
