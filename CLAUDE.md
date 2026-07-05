@@ -28,7 +28,11 @@ people in need — the rescue loop must work end to end. Everything else support
 - **Security**: payments verified server-side (webhook HMAC, never trust client callback); every server action
   re-checks session + role + ownership (no IDOR); validate env at boot.
 - **Real-time**: live pickup tracking is a v1 core requirement.
-- **Single-tenant**: one org, one city — deliberately no multi-tenancy/RLS.
+- **Single-tenant**: one org, one city — no cross-tenant isolation logic. NOT "no RLS": Supabase
+  RLS IS used and load-bearing — it is the only thing gating the public anon key (shipped in the
+  client bundle) from every table. RLS on all tables; `authenticated`-scoped SELECT policies on the
+  browser-read ping tables; default-deny elsewhere (server uses the service-role key). The RLS
+  layer must live in a committed migration (see `.claude/rules/production-discipline.md` §6).
 <!-- GSD:project-end -->
 
 ## Planning (GSD)
