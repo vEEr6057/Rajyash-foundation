@@ -2,12 +2,14 @@ import "server-only";
 import { and, eq, gte, lte, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { pickups, runs, partners, destinations, profiles } from "@/server/db/schema";
-import { pickupsRepo } from "./pickups";
 import {
   bucketPickupStatuses,
   bucketRunStatuses,
+  extractDeliveredImpact,
+  extractDirectoryCounts,
   type PickupBuckets,
   type RunBuckets,
+  type PickupStatusAggRow,
 } from "@/features/admin/lib/overview";
 import type { PickupStatus, RunStatus } from "@/config/constants";
 
@@ -21,42 +23,78 @@ export interface AdminOverview {
   drivers: number;
 }
 
-// All-time impact bounds (mirror impact.ts) — direct call, no unstable_cache
-// layer (the overview is force-dynamic; the cache wrapper is unnecessary here
-// and was preventing the page from rendering on Workers).
-const ALL_TIME_FROM = new Date(0);
-const ALL_TIME_TO = new Date(9999, 0, 1);
-
-/** Admin overview analytics — one parallel fan-out of cheap COUNT/GROUP BY queries. */
+/**
+ * Admin overview analytics (UX-11) — every independent aggregate fired in ONE
+ * Promise.all, down to 4 round trips (was 6):
+ *  - the all-time impact tile (servings/kg/delivered-count) is folded into the
+ *    SAME GROUP BY status query as the pickup-status buckets (FILTER
+ *    aggregates per status) instead of a second impactReport() call — the
+ *    epoch..year-9999 bounds that call used were already equivalent to "no
+ *    date filter", so this returns identical numbers.
+ *  - partners-count and destinations-count are two unrelated COUNT(*)s over
+ *    unrelated tables; merged into one round trip via UNION ALL.
+ *
+ * Deliberately NOT wrapped in `unstable_cache`: see commit 7025a16 / PR #27
+ * ("fix(ui): admin overview not loading") — getDb() (server/db/client.ts) is a
+ * React `cache()`-scoped PER-REQUEST Postgres connection (Cloudflare Workers
+ * can't reuse a socket across requests). `unstable_cache` runs its callback in
+ * a cache scope that can outlive/detach from that request; nesting a
+ * getDb()-calling function inside it reproduced the exact "blocked render on
+ * Workers" bug #27 was written to fix. The cache-safe path used elsewhere
+ * (impact.ts's getCachedImpactReport) only works because it's called from a
+ * page that is NOT force-dynamic — this page (dashboard/page.tsx) must stay
+ * force-dynamic (it's a per-admin authenticated view). So the latency fix here
+ * is fewer round trips against the Workers-bounded connection pool (max: 5),
+ * not a time-based cache.
+ */
 export async function getAdminOverview(): Promise<AdminOverview> {
   const db = getDb();
-  const one = (n: number | undefined) => n ?? 0;
 
-  const [impact, pickupRows, runRows, partnerRows, destRows, roleRows] =
-    await Promise.all([
-      pickupsRepo.impactReport(ALL_TIME_FROM, ALL_TIME_TO),
-      db
-        .select({ status: pickups.status, n: sql<number>`count(*)`.mapWith(Number) })
-        .from(pickups)
-        .groupBy(pickups.status),
-      db
-        .select({ status: runs.status, n: sql<number>`count(*)`.mapWith(Number) })
-        .from(runs)
-        .groupBy(runs.status),
-      db.select({ n: sql<number>`count(*)`.mapWith(Number) }).from(partners),
-      db.select({ n: sql<number>`count(*)`.mapWith(Number) }).from(destinations),
-      db
-        .select({ role: profiles.role, n: sql<number>`count(*)`.mapWith(Number) })
-        .from(profiles)
-        .groupBy(profiles.role),
-    ]);
+  const [pickupRows, runRows, dirCountRows, roleRows] = await Promise.all([
+    db
+      .select({
+        status: pickups.status,
+        n: sql<number>`count(*)`.mapWith(Number),
+        servings:
+          sql<number>`coalesce(sum(${pickups.quantity}) filter (where ${pickups.quantityUnit} = 'servings'), 0)`.mapWith(
+            Number,
+          ),
+        kg: sql<number>`coalesce(sum(${pickups.quantity}) filter (where ${pickups.quantityUnit} = 'kg'), 0)`.mapWith(
+          Number,
+        ),
+      })
+      .from(pickups)
+      .groupBy(pickups.status),
+    db
+      .select({ status: runs.status, n: sql<number>`count(*)`.mapWith(Number) })
+      .from(runs)
+      .groupBy(runs.status),
+    db
+      .select({ kind: sql<string>`'partners'`, n: sql<number>`count(*)`.mapWith(Number) })
+      .from(partners)
+      .unionAll(
+        db
+          .select({
+            kind: sql<string>`'destinations'`,
+            n: sql<number>`count(*)`.mapWith(Number),
+          })
+          .from(destinations),
+      ),
+    db
+      .select({ role: profiles.role, n: sql<number>`count(*)`.mapWith(Number) })
+      .from(profiles)
+      .groupBy(profiles.role),
+  ]);
+
+  const one = (n: number | undefined) => n ?? 0;
+  const dirCounts = extractDirectoryCounts(dirCountRows);
 
   return {
-    impact,
+    impact: extractDeliveredImpact(pickupRows as PickupStatusAggRow<PickupStatus>[]),
     pickups: bucketPickupStatuses(pickupRows as { status: PickupStatus; n: number }[]),
     runs: bucketRunStatuses(runRows as { status: RunStatus; n: number }[]),
-    partners: one(partnerRows[0]?.n),
-    destinations: one(destRows[0]?.n),
+    partners: dirCounts.partners,
+    destinations: dirCounts.destinations,
     volunteers: one(roleRows.find((r) => r.role === "volunteer")?.n),
     drivers: one(roleRows.find((r) => r.role === "driver")?.n),
   };

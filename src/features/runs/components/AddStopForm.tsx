@@ -162,14 +162,13 @@ export function AddStopForm({
                   <SelectValue placeholder={t("runs.form.selectDest")} />
                 </SelectTrigger>
                 <SelectContent>
-                  {destinations
-                    .filter((d) => d.active)
-                    .map((d) => (
-                      <SelectItem key={d.id} value={d.id}>
-                        {d.name}
-                        {d.area ? ` · ${d.area}` : ""}
-                      </SelectItem>
-                    ))}
+                  {/* Server passes activeOnly:true (UX-15) — no client filter needed. */}
+                  {destinations.map((d) => (
+                    <SelectItem key={d.id} value={d.id}>
+                      {d.name}
+                      {d.area ? ` · ${d.area}` : ""}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>

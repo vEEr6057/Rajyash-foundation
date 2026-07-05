@@ -25,6 +25,9 @@ export const ROUTES = {
   portalDashboard: "/portal/dashboard",
   adminDashboard: "/admin/dashboard",
   adminPickups: "/admin/pickups",
+  // UX-14: admin-only pickup detail (History section — actor + from/to + time),
+  // distinct from the shared portal detail (ROUTES.pickup) donor/driver/volunteer use.
+  adminPickup: (id: string) => `/admin/pickups/${id}`,
   adminUsers: "/admin/users",
   adminPartners: "/admin/partners",
   adminReports: "/admin/reports",

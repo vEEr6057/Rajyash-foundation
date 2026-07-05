@@ -45,6 +45,12 @@
     "export": {
       "button": "Export CSV",
       "filename": "pickups-export"
+    },
+    "detail": {
+      "eyebrow": "Admin · Pickup",
+      "historyTitle": "History ({count})",
+      "actorUnknown": "Unknown",
+      "partnerLabel": "Partner"
     }
   },
   "users": {
@@ -181,6 +187,7 @@
     "editClose": "Close",
     "seedNote": "Add the zones and shelters your drivers deliver to.",
     "openInMaps": "Open in Maps",
+    "inactiveBadge": "Inactive",
     "table": {
       "name": "Name",
       "area": "Area",
@@ -200,7 +207,9 @@
       "geocodeAddress": "Address (to geocode)",
       "geocodeButton": "Geocode",
       "saveButton": "Save destination",
-      "addButton": "Add destination"
+      "addButton": "Add destination",
+      "active": "Active",
+      "activeHint": "Inactive destinations are hidden from run-building pickers but kept for past reports."
     }
   },
   "runs": {
@@ -213,6 +222,9 @@
     "newButton": "New run",
     "emptyState": "No runs yet. Create one to start dispatching.",
     "detailEyebrow": "Admin · Dispatch",
+    "detail": {
+      "historyTitle": "History ({count})"
+    },
     "stopCount": "stops",
     "stopCountMeta": "{count, plural, one {# stop} other {# stops}}",
     "table": { "driver": "Driver" },

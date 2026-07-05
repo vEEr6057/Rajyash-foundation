@@ -25,9 +25,19 @@ export const destinationsRepo = {
     return rows[0] ?? null;
   },
 
-  async list(): Promise<Destination[]> {
+  /**
+   * All destinations, newest first. The admin destinations LIST page wants
+   * every row (active + inactive, badge distinguishes them); any picker/select
+   * feeding a NEW stop/run wants `activeOnly: true` so a deactivated drop point
+   * can't be chosen again (UX-15) — the deactivate guidance in
+   * deleteDestination's conflict message only holds if pickers actually honour it.
+   */
+  async list({ activeOnly = false }: { activeOnly?: boolean } = {}): Promise<Destination[]> {
     const db = getDb();
-    return db.select().from(destinations).orderBy(desc(destinations.createdAt));
+    const q = db.select().from(destinations);
+    return activeOnly
+      ? q.where(eq(destinations.active, true)).orderBy(desc(destinations.createdAt))
+      : q.orderBy(desc(destinations.createdAt));
   },
 
   async update(

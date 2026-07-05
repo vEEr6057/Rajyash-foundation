@@ -48,6 +48,12 @@
     "export": {
       "button": "CSV निर्यात",
       "filename": "pickups-export"
+    },
+    "detail": {
+      "eyebrow": "एडमिन · पिकअप",
+      "historyTitle": "इतिहास ({count})",
+      "actorUnknown": "अज्ञात",
+      "partnerLabel": "भागीदार"
     }
   },
   "users": {
@@ -181,6 +187,7 @@
     "editClose": "बंद करें",
     "seedNote": "वे क्षेत्र और आश्रय जोड़ें जहाँ ड्राइवर डिलीवरी करते हैं।",
     "openInMaps": "मैप्स में खोलें",
+    "inactiveBadge": "निष्क्रिय",
     "meta": "{count, plural, one {# गंतव्य} other {# गंतव्य}}",
     "empty": {
       "title": "कोई गंतव्य सहेजा नहीं",
@@ -205,7 +212,9 @@
       "geocodeAddress": "पता (Geocode)",
       "geocodeButton": "Geocode",
       "saveButton": "गंतव्य सहेजें",
-      "addButton": "गंतव्य जोड़ें"
+      "addButton": "गंतव्य जोड़ें",
+      "active": "सक्रिय",
+      "activeHint": "निष्क्रिय गंतव्य रन-निर्माण पिकर से छिपे रहते हैं पर पुरानी रिपोर्ट के लिए रखे जाते हैं।"
     }
   },
   "runs": {
@@ -219,6 +228,9 @@
     "newButton": "नई रन",
     "emptyState": "अभी तक कोई रन नहीं है। डिस्पैच शुरू करने के लिए एक बनाएं।",
     "detailEyebrow": "एडमिन · डिस्पैच",
+    "detail": {
+      "historyTitle": "इतिहास ({count})"
+    },
     "stopCount": "स्टॉप",
     "stopCountMeta": "{count, plural, one {# स्टॉप} other {# स्टॉप}}",
     "table": { "driver": "ड्राइवर" },
