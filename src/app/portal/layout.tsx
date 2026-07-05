@@ -11,7 +11,9 @@ export default async function PortalLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   const session = await getSession();
   const role = session?.role;
-  const hasBottomNav = role === "donor" || role === "volunteer";
+  // dispatch-model-v2: drivers now have two screens (claim board + my run), so
+  // they get the bottom nav too.
+  const hasBottomNav = role === "donor" || role === "volunteer" || role === "driver";
 
   return (
     <>

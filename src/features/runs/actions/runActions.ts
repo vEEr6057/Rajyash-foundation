@@ -343,6 +343,8 @@ export async function markStopDone(
 
   revalidateRuns(stop.runId);
   revalidatePath(ROUTES.driverRun);
+  // dispatch-model-v2: volunteers confirm drops from the distributions list.
+  revalidatePath(ROUTES.distributions);
   return { ok: true, runCompleted };
 }
 

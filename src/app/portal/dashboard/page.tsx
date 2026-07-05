@@ -1,10 +1,11 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Plus, HeartHandshake, Map as MapIcon, PackageOpen } from "lucide-react";
+import { Plus, HeartHandshake, Route as RouteIcon, PackageOpen } from "lucide-react";
 import { getLocale, getTranslations } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
+import { runsRepo } from "@/server/db/repositories/runs";
 import { ROUTES, type PickupStatus } from "@/config/constants";
 import type { Pickup } from "@/server/db/schema";
 import { buttonVariants } from "@/components/ui/button";
@@ -49,11 +50,7 @@ export default async function PortalDashboardPage() {
         meta={isDonor ? istDate : t("dashboard.volunteerCta")}
       />
 
-      {isDonor ? (
-        <DonorDashboard userId={session.userId} />
-      ) : (
-        <VolunteerDashboard userId={session.userId} />
-      )}
+      {isDonor ? <DonorDashboard userId={session.userId} /> : <VolunteerDashboard />}
 
       <div className="mt-6">
         <PushOptIn />
@@ -123,51 +120,47 @@ async function DonorDashboard({ userId }: { userId: string }) {
   );
 }
 
-async function VolunteerDashboard({ userId }: { userId: string }) {
-  const [t, open, mine] = await Promise.all([
+// dispatch-model-v2 (docs/specs/dispatch-model-v2.md): volunteers never claim
+// or get assigned a pickup — they help distribute at active runs. The ledger
+// and CTAs reflect that: open pickups is awareness, active runs is "what can
+// I help with right now."
+async function VolunteerDashboard() {
+  const [t, open, allRuns] = await Promise.all([
     getTranslations("portal"),
     pickupsRepo.listOpen(),
-    pickupsRepo.listByVolunteer(userId),
+    runsRepo.listRuns(),
   ]);
-  const active = mine.filter((p) => ACTIVE.includes(p.status));
-  const delivered = mine.filter((p) => p.status === "delivered").length;
+  const activeRuns = allRuns.filter((r) => r.status === "active");
 
   return (
     <>
       <LedgerRow
         stats={[
           { value: open.length.toLocaleString(), label: t("dashboard.stats.openNow") },
-          { value: active.length.toLocaleString(), label: t("dashboard.stats.myActive") },
-          { value: delivered.toLocaleString(), label: t("dashboard.stats.deliveredByMe") },
+          { value: activeRuns.length.toLocaleString(), label: t("dashboard.stats.myActive") },
         ]}
         provenance={t("dashboard.volunteerStatsProvenance")}
       />
 
       <div className="mt-6 flex flex-wrap gap-3">
-        <Link href={ROUTES.volunteerBoard} className={buttonVariants({ size: "lg" })}>
-          <PackageOpen className="size-4" /> {t("dashboard.browsePickups")}
+        <Link href={ROUTES.distributions} className={buttonVariants({ size: "lg" })}>
+          <RouteIcon className="size-4" /> {t("distributions.title")}
         </Link>
-        <Link href={ROUTES.volunteerBoardMap} className={buttonVariants({ variant: "outline", size: "lg" })}>
-          <MapIcon className="size-4" /> {t("dashboard.mapView")}
+        <Link href={ROUTES.volunteerBoard} className={buttonVariants({ variant: "outline", size: "lg" })}>
+          <PackageOpen className="size-4" /> {t("dashboard.browsePickups")}
         </Link>
       </div>
 
       <Section title={t("dashboard.activeTitle")}>
-        {active.length === 0 ? (
-          <EmptyState
-            title={t("dashboard.noActive")}
-            action={
-              <Link href={ROUTES.volunteerBoard} className={buttonVariants()}>
-                {t("dashboard.browsePickups")}
-              </Link>
-            }
-          />
+        {activeRuns.length === 0 ? (
+          <EmptyState title={t("dashboard.noActive")} />
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
-            {active.map((p) => (
-              <PickupCard key={p.id} pickup={p} />
-            ))}
-          </div>
+          <p className="text-sm text-muted-foreground">
+            {t("distributions.metaCount", { count: activeRuns.length })} —{" "}
+            <Link href={ROUTES.distributions} className="font-semibold text-primary">
+              {t("distributions.title")}
+            </Link>
+          </p>
         )}
       </Section>
     </>

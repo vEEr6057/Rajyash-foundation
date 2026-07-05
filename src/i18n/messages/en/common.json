@@ -65,7 +65,7 @@
     "cancelRunBody": "The run and its stops will be marked cancelled.",
     "cancelRunConfirm": "Cancel run",
     "cancelPickupTitle": "Cancel this pickup?",
-    "cancelPickupBody": "Volunteers will no longer see it.",
+    "cancelPickupBody": "Drivers will no longer see it.",
     "cancelPickupConfirm": "Cancel pickup",
     "removeStopTitle": "Remove this stop?",
     "removeStopBody": "It will be removed from the run.",

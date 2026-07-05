@@ -14,7 +14,7 @@ import {
 } from "@/features/pickups/lib/format";
 import { PickupStatusPill } from "@/features/pickups/components/PickupStatusPill";
 import { MapView } from "@/features/pickups/components/MapView";
-import { ClaimButton } from "@/features/pickups/components/ClaimButton";
+import { PickupClaimSection } from "@/features/pickups/components/PickupClaimSection";
 import { StatusAdvanceSection } from "@/features/pickups/components/StatusAdvanceSection";
 import { DonorPickupActions } from "@/features/pickups/components/DonorPickupActions";
 import { LiveTrackingMap } from "@/features/pickups/components/LiveTrackingMap";
@@ -50,22 +50,32 @@ export default async function PickupDetailPage({
   const pickup = await pickupsRepo.getById(id);
   if (!pickup) notFound();
 
+  // dispatch-model-v2 (docs/specs/dispatch-model-v2.md): the collector role is
+  // now the driver — `pickup.volunteerId` still holds that column (kept to
+  // avoid a destructive rename in v1) but it means "assigned driver".
   const isDonorOwner = pickup.donorId === session.userId;
-  const isAssignedVolunteer = pickup.volunteerId === session.userId;
+  const isDriver = session.role === "driver";
   const isVolunteer = session.role === "volunteer";
   const isAdmin = session.role === "admin";
-  // Visibility: owner, the assigned volunteer, an admin, or any volunteer while open.
-  if (
-    !isDonorOwner &&
-    !isAssignedVolunteer &&
-    !isAdmin &&
-    !(isVolunteer && pickup.status === "requested")
-  ) {
-    notFound();
-  }
+  const isAssignedDriver = isDriver && pickup.volunteerId === session.userId;
   // TRK: live tracking runs only while the pickup is in motion.
   const isActive =
     pickup.status === "en_route" || pickup.status === "picked_up";
+  // Visibility: owner, the assigned driver, an admin; a driver/volunteer
+  // browsing the open board; or any volunteer while a pickup is trackable
+  // (leg-aware tracking — the "any active volunteer can view" assumption in
+  // the spec's Open assumptions §1).
+  const canView =
+    isDonorOwner ||
+    isAdmin ||
+    isAssignedDriver ||
+    ((isDriver || isVolunteer) && pickup.status === "requested") ||
+    (isVolunteer && isActive);
+  if (!canView) notFound();
+  // The donor's live view ends once the food is collected (spec: leg-aware
+  // visibility) — admin/volunteer keep watching through both legs.
+  const donorTrackable = isDonorOwner && pickup.status === "en_route";
+  const showLiveTrackingMap = donorTrackable || ((isAdmin || isVolunteer) && isActive);
 
   const [foodUrl, proofUrl, events] = await Promise.all([
     safeSignedUrl(pickup.foodPhotoPath),
@@ -106,7 +116,7 @@ export default async function PickupDetailPage({
 
       {/* Map — same hairline frame; tracking components untouched */}
       <div className="mt-4 rounded-lg border border-border p-4">
-        {(isDonorOwner || isAdmin) && isActive ? (
+        {showLiveTrackingMap ? (
           <LiveTrackingMap
             pickupId={id}
             active={isActive}
@@ -149,21 +159,21 @@ export default async function PickupDetailPage({
           </div>
         )}
         {isDonorOwner && <DonorPickupActions pickupId={id} status={pickup.status} />}
-        {isVolunteer && pickup.status === "requested" && <ClaimButton pickupId={id} />}
-        {isAssignedVolunteer &&
+        <PickupClaimSection role={session.role} status={pickup.status} pickupId={id} />
+        {isAssignedDriver &&
           (pickup.status === "accepted" || isActive) && (
             <div className="mb-3">
               <NavigateButton lat={pickup.lat} lng={pickup.lng} />
             </div>
           )}
-        {isAssignedVolunteer && (
+        {isAssignedDriver && (
           <StatusAdvanceSection
             pickupId={id}
             status={pickup.status}
             hasProof={!!pickup.proofPhotoPath}
           />
         )}
-        {isAssignedVolunteer && (
+        {isAssignedDriver && (
           <VolunteerTracker pickupId={id} active={isActive} />
         )}
       </div>
