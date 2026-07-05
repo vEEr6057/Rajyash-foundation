@@ -50,7 +50,8 @@
       "window": "{start} – {end} ઉપલબ્ધ",
       "quantity": "{amount} {unit}",
       "claimButton": "આ પિકઅપ લો",
-      "claiming": "દાવો કરી રહ્યા છીએ…"
+      "claiming": "દાવો કરી રહ્યા છીએ…",
+      "claim": "લો"
     },
     "detail": {
       "title": "પિકઅપ વિગત",

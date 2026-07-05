@@ -54,7 +54,7 @@ export default async function PickupBoardPage() {
           listSlot={
             <div className="grid gap-3 md:grid-cols-2">
               {open.map((p) => (
-                <PickupCard key={p.id} pickup={p} />
+                <PickupCard key={p.id} pickup={p} role={session.role} />
               ))}
             </div>
           }

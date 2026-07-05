@@ -46,7 +46,8 @@
     "back": "પાછળ",
     "loading": "લોડ થઈ રહ્યું છે…",
     "retry": "ફરી પ્રયાસ",
-    "view": "જુઓ"
+    "view": "જુઓ",
+    "call": "{phone} ને કૉલ કરો"
   },
   "toast": {
     "saved": "સાચવ્યું.",
@@ -72,6 +73,9 @@
     "removeStopTitle": "આ સ્ટોપ દૂર કરવો?",
     "removeStopBody": "તે રનમાંથી દૂર થશે.",
     "removeStopConfirm": "દૂર કરો",
+    "claimPickupTitle": "આ પિકઅપ લેવું?",
+    "claimPickupBody": "તેને ઉઠાવવાની જવાબદારી તમારી રહેશે — ખાતરી કરો કે તમે જઈ રહ્યા છો.",
+    "claimPickupConfirm": "લો",
     "keep": "રાખો"
   },
   "status": {

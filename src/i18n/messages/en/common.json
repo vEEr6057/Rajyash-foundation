@@ -44,7 +44,8 @@
     "back": "Back",
     "loading": "Loading…",
     "retry": "Retry",
-    "view": "View"
+    "view": "View",
+    "call": "Call {phone}"
   },
   "toast": {
     "saved": "Saved.",
@@ -70,6 +71,9 @@
     "removeStopTitle": "Remove this stop?",
     "removeStopBody": "It will be removed from the run.",
     "removeStopConfirm": "Remove",
+    "claimPickupTitle": "Claim this pickup?",
+    "claimPickupBody": "You'll be responsible for collecting it — make sure you're on your way.",
+    "claimPickupConfirm": "Claim",
     "keep": "Keep"
   },
   "status": {

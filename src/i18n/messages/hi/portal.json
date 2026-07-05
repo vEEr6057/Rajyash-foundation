@@ -50,7 +50,8 @@
       "window": "{start} – {end} उपलब्ध",
       "quantity": "{amount} {unit}",
       "claimButton": "यह पिकअप लें",
-      "claiming": "दावा हो रहा है…"
+      "claiming": "दावा हो रहा है…",
+      "claim": "लें"
     },
     "detail": {
       "title": "पिकअप विवरण",

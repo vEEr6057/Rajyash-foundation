@@ -4,6 +4,7 @@ import { Clock, MapPin, Package } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import { getSession } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
+import { profilesRepo } from "@/server/db/repositories/profiles";
 import { statusEventsRepo } from "@/server/db/repositories/statusEvents";
 import { getSignedDownloadUrl } from "@/lib/storage";
 import { ROUTES } from "@/config/constants";
@@ -20,6 +21,7 @@ import { DonorPickupActions } from "@/features/pickups/components/DonorPickupAct
 import { LiveTrackingMap } from "@/features/pickups/components/LiveTrackingMap";
 import { VolunteerTracker } from "@/features/pickups/components/VolunteerTracker";
 import { NavigateButton } from "@/features/pickups/components/NavigateButton";
+import { CallButton } from "@/features/pickups/components/CallButton";
 import { VerifyToggle } from "@/features/admin/components/VerifyToggle";
 
 export const dynamic = "force-dynamic";
@@ -77,10 +79,12 @@ export default async function PickupDetailPage({
   const donorTrackable = isDonorOwner && pickup.status === "en_route";
   const showLiveTrackingMap = donorTrackable || ((isAdmin || isVolunteer) && isActive);
 
-  const [foodUrl, proofUrl, events] = await Promise.all([
+  const [foodUrl, proofUrl, events, donor] = await Promise.all([
     safeSignedUrl(pickup.foodPhotoPath),
     safeSignedUrl(pickup.proofPhotoPath),
     statusEventsRepo.listForPickup(id),
+    // UX-3: only the assigned driver gets the donor's phone number.
+    isAssignedDriver ? profilesRepo.getById(pickup.donorId) : Promise.resolve(null),
   ]);
 
   return (
@@ -164,8 +168,9 @@ export default async function PickupDetailPage({
         <PickupClaimSection role={session.role} status={pickup.status} pickupId={id} />
         {isAssignedDriver &&
           (pickup.status === "accepted" || isActive) && (
-            <div className="mb-3">
+            <div className="mb-3 space-y-2">
               <NavigateButton lat={pickup.lat} lng={pickup.lng} />
+              <CallButton phone={donor?.phone} />
             </div>
           )}
         {isAssignedDriver && (

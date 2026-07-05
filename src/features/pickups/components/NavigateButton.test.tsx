@@ -16,4 +16,17 @@ describe("NavigateButton", () => {
     expect(link).toHaveAttribute("target", "_blank");
     expect(link).toHaveAttribute("rel", expect.stringContaining("noopener"));
   });
+
+  it("falls back to the address deep-link when coords are missing", () => {
+    render(<NavigateButton lat={null} lng={null} address="Satellite, Ahmedabad" />);
+    expect(screen.getByRole("link")).toHaveAttribute(
+      "href",
+      "https://www.google.com/maps/dir/?api=1&destination=Satellite%2C%20Ahmedabad",
+    );
+  });
+
+  it("renders nothing when neither coords nor an address are available", () => {
+    const { container } = render(<NavigateButton lat={null} lng={null} address={null} />);
+    expect(container).toBeEmptyDOMElement();
+  });
 });

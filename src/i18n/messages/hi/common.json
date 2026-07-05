@@ -46,7 +46,8 @@
     "back": "वापस",
     "loading": "लोड हो रहा है…",
     "retry": "पुनः प्रयास",
-    "view": "देखें"
+    "view": "देखें",
+    "call": "{phone} पर कॉल करें"
   },
   "toast": {
     "saved": "सहेजा गया.",
@@ -72,6 +73,9 @@
     "removeStopTitle": "यह स्टॉप हटाएं?",
     "removeStopBody": "यह रन से हटा दिया जाएगा.",
     "removeStopConfirm": "हटाएं",
+    "claimPickupTitle": "यह पिकअप लें?",
+    "claimPickupBody": "इसे उठाने की ज़िम्मेदारी आपकी होगी — सुनिश्चित करें कि आप जा रहे हैं.",
+    "claimPickupConfirm": "लें",
     "keep": "रखें"
   },
   "status": {

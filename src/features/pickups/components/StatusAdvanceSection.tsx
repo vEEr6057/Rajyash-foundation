@@ -77,18 +77,28 @@ export function StatusAdvanceSection({
         </div>
       )}
 
-      <Button
-        variant="leaf"
-        size="lg"
-        className="w-full"
-        onClick={advance}
-        disabled={isPending}
-      >
-        {isPending ? <Loader2 className="size-4 animate-spin" /> : null}
-        {isPending
-          ? t("pickup.detail.advancing")
-          : t("pickup.detail.advanceButton", { nextStatus: tCommon(`status.${next}`) })}
-      </Button>
+      {/* UX-5: sticky bottom bar on mobile — thumb-reach without hunting for the
+          button after scrolling through photos/history. Sits just above the
+          fixed PortalBottomNav (bottom-14); resets to normal in-flow placement
+          at sm:+, where the page has room to keep it inline instead. */}
+      <div className="fixed inset-x-0 bottom-14 z-30 border-t border-border bg-background p-3 pb-[env(safe-area-inset-bottom)] sm:static sm:z-auto sm:border-0 sm:bg-transparent sm:p-0">
+        <Button
+          variant="leaf"
+          size="lg"
+          className="mx-auto block min-h-12 w-full max-w-2xl"
+          onClick={advance}
+          disabled={isPending}
+        >
+          {isPending ? <Loader2 className="size-4 animate-spin" /> : null}
+          {isPending
+            ? t("pickup.detail.advancing")
+            : t("pickup.detail.advanceButton", { nextStatus: tCommon(`status.${next}`) })}
+        </Button>
+      </div>
+      {/* Reserves the space the fixed bar occupies (mobile only) so it never
+          covers whatever renders after this section (e.g. the history list). */}
+      <div aria-hidden className="h-16 sm:hidden" />
+
       {error && (
         <p className="text-sm text-destructive" role="alert">
           {error}{" "}

@@ -48,7 +48,8 @@
       "window": "Available {start} – {end}",
       "quantity": "{amount} {unit}",
       "claimButton": "Claim this pickup",
-      "claiming": "Claiming…"
+      "claiming": "Claiming…",
+      "claim": "Claim"
     },
     "detail": {
       "title": "Pickup details",
