@@ -1,7 +1,9 @@
 "use server";
 
+import { headers } from "next/headers";
 import { env } from "@/config/env";
 import { createRazorpayOrder } from "@/server/payments/razorpay";
+import { verifyTurnstile } from "@/server/payments/turnstile";
 import { donationsRepo } from "@/server/db/repositories/donations";
 import { logger } from "@/lib/logger";
 import {
@@ -27,6 +29,7 @@ function fail<T = unknown>(code: string, message: string): Result<T> {
  */
 export async function createDonationOrder(
   input: DonationOrderInput,
+  turnstileToken?: string,
 ): Promise<Result<{ orderId: string; amount: number; keyId: string }>> {
   if (!env.PAYMENTS_ENABLED) {
     return fail("DISABLED", "Donations are not enabled yet.");
@@ -35,6 +38,15 @@ export async function createDonationOrder(
   if (!keyId) {
     logger.error("createDonationOrder: PAYMENTS_ENABLED but key id missing");
     return fail("SERVER_ERROR", "Donations are temporarily unavailable.");
+  }
+
+  // Abuse gate (security-review MED-1): this flow is unauthenticated, so a bot-check
+  // stands in for a login before we mint a Razorpay order + write a DB row. Skips
+  // automatically when Turnstile isn't configured (see verifyTurnstile).
+  const ipHeader = (await headers()).get("cf-connecting-ip");
+  const humanOk = await verifyTurnstile(turnstileToken, ipHeader);
+  if (!humanOk) {
+    return fail("TURNSTILE", "Please complete the verification and try again.");
   }
 
   const parsed = donationOrderSchema.safeParse(input);

@@ -49,6 +49,11 @@ export const env = createEnv({
     RAZORPAY_KEY_ID: z.string().optional(),
     RAZORPAY_KEY_SECRET: z.string().optional(),
     RAZORPAY_WEBHOOK_SECRET: z.string().optional(),
+    // Cloudflare Turnstile secret (security-review MED-1) — the abuse gate on the
+    // UNAUTHENTICATED donate flow. OPTIONAL: when unset, verifyTurnstile() skips (gate
+    // off) so payments can go live before Turnstile is wired; set it to arm the gate.
+    // Owner-provided (Cloudflare dashboard → Turnstile → Add site).
+    TURNSTILE_SECRET_KEY: z.string().optional(),
     // ── Kill switches (production-discipline §3) ────────────────────────────────
     // Default ON (opposite of PAYMENTS_ENABLED, which is dark-by-default): unset or
     // anything except an explicit "0"/"false" keeps the feature running. Flip via
@@ -93,6 +98,10 @@ export const env = createEnv({
     // Razorpay *public* key id — safe in the browser (the Checkout widget needs it).
     // OPTIONAL: only read when the flag is on; the secret + webhook secret stay server-only.
     NEXT_PUBLIC_RAZORPAY_KEY_ID: z.string().optional(),
+    // Turnstile *site* key (security-review MED-1) — public by design (rendered in the
+    // donate widget). OPTIONAL: when unset the widget isn't rendered and the server gate
+    // skips (see TURNSTILE_SECRET_KEY). Owner-provided, paired with the secret.
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: z.string().optional(),
   },
   // Next.js inlines NEXT_PUBLIC_* at build time, so they must be listed explicitly.
   experimental__runtimeEnv: {
@@ -110,6 +119,7 @@ export const env = createEnv({
     NEXT_PUBLIC_CF_BEACON_TOKEN: process.env.NEXT_PUBLIC_CF_BEACON_TOKEN,
     NEXT_PUBLIC_PAYMENTS_ENABLED: process.env.NEXT_PUBLIC_PAYMENTS_ENABLED,
     NEXT_PUBLIC_RAZORPAY_KEY_ID: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+    NEXT_PUBLIC_TURNSTILE_SITE_KEY: process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY,
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   emptyStringAsUndefined: true,
