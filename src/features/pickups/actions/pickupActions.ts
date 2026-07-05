@@ -41,8 +41,10 @@ function fail<T = unknown>(code: string, message: string): Result<T> {
 async function donor() {
   return requireRole(["donor"]);
 }
-async function volunteer() {
-  return requireRole(["volunteer"]);
+// dispatch-model-v2 (docs/specs/dispatch-model-v2.md): the collector role gate is now
+// the driver, not the volunteer — volunteers are distribution helpers, not collectors.
+async function driver() {
+  return requireRole(["driver"]);
 }
 
 function revalidatePickups(id?: string) {
@@ -299,16 +301,16 @@ export async function repostPickup(id: string): Promise<Result<{ id: string }>> 
   return { ok: true, id: row.id };
 }
 
-/** VOL-03: atomic claim. */
+/** VOL-03 (dispatch-model-v2: driver-led): atomic claim. */
 export async function claimPickup(id: string): Promise<Result> {
   let userId: string;
   try {
-    ({ userId } = await volunteer());
+    ({ userId } = await driver());
   } catch {
-    return fail("FORBIDDEN", "Only volunteers can claim pickups.");
+    return fail("FORBIDDEN", "Only drivers can claim pickups.");
   }
   const row = await pickupsRepo.claimIfAvailable(id, userId);
-  if (!row) return fail("TAKEN", "Just taken by another volunteer.");
+  if (!row) return fail("TAKEN", "Just taken by another driver.");
   await statusEventsRepo.record({
     pickupId: id,
     actorId: userId,
@@ -331,13 +333,13 @@ export async function claimPickup(id: string): Promise<Result> {
   return { ok: true };
 }
 
-/** VOL-04: advance to the next status (assigned volunteer only, server-validated). */
+/** VOL-04 (dispatch-model-v2: driver-led): advance to the next status (assigned driver only, server-validated). */
 export async function advancePickup(id: string): Promise<Result<{ status: PickupStatus }>> {
   let userId: string;
   try {
-    ({ userId } = await volunteer());
+    ({ userId } = await driver());
   } catch {
-    return fail("FORBIDDEN", "Only volunteers can update pickups.");
+    return fail("FORBIDDEN", "Only drivers can update pickups.");
   }
   const pickup = await pickupsRepo.getById(id);
   if (!pickup) return fail("NOT_FOUND", "Pickup not found.");
@@ -380,13 +382,13 @@ export async function advancePickup(id: string): Promise<Result<{ status: Pickup
   return { ok: true, status: to };
 }
 
-/** VOL-05: attach the proof-of-delivery photo (assigned volunteer only). */
+/** VOL-05 (dispatch-model-v2: driver-led): attach the proof-of-delivery photo (assigned driver only). */
 export async function setProofPhoto(id: string, path: string): Promise<Result> {
   let userId: string;
   try {
-    ({ userId } = await volunteer());
+    ({ userId } = await driver());
   } catch {
-    return fail("FORBIDDEN", "Only volunteers can upload proof.");
+    return fail("FORBIDDEN", "Only drivers can upload proof.");
   }
   if (!path) return fail("VALIDATION", "Missing photo.");
   const row = await pickupsRepo.setProofPhoto(id, userId, path);
@@ -398,10 +400,10 @@ export async function setProofPhoto(id: string, path: string): Promise<Result> {
 // ── Live tracking (Phase 3) ──────────────────────────────────────────
 
 /**
- * TRK-01 / D-05: record one GPS ping. The volunteer's browser is read/subscribe
- * only — it NEVER writes with the anon key; every ping comes through here so the
- * write reuses the same guards as the rest of the rescue loop (no IDOR):
- *   1) volunteer role, 2) assigned volunteer of THIS pickup, 3) status active.
+ * TRK-01 / D-05 (dispatch-model-v2: driver-led): record one GPS ping. The driver's
+ * browser is read/subscribe only — it NEVER writes with the anon key; every ping comes
+ * through here so the write reuses the same guards as the rest of the rescue loop (no IDOR):
+ *   1) driver role, 2) assigned driver of THIS pickup, 3) status active.
  * Coordinates are range-validated (V5) before the insert.
  */
 export async function recordPing(
@@ -412,9 +414,9 @@ export async function recordPing(
 ): Promise<Result> {
   let userId: string;
   try {
-    ({ userId } = await volunteer());
+    ({ userId } = await driver());
   } catch {
-    return fail("FORBIDDEN", "Only volunteers can share location.");
+    return fail("FORBIDDEN", "Only drivers can share location.");
   }
 
   // V5 — reject impossible coordinates before touching the DB. Number.isFinite
@@ -451,9 +453,12 @@ export async function recordPing(
 }
 
 /**
- * TRK-02/03 polling fallback (D-06): newest ping for a pickup. Read is gated to
- * the pickup's donor or an admin (no IDOR) — mirrors the SELECT RLS that gates the
- * browser subscription, enforced again here server-side for the polling path.
+ * TRK-02/03 polling fallback (D-06): newest ping for a pickup. Leg-aware read gate
+ * (dispatch-model-v2, docs/specs/dispatch-model-v2.md) mirrors the SELECT RLS that
+ * gates the browser subscription (0014), enforced again here server-side for the
+ * polling path: admin always; the donor-owner only while the pickup is en_route
+ * (their view ends once the food is collected); any volunteer (distribution helper
+ * awareness). The assigned driver doesn't need this — it's their own position.
  */
 export async function getLatestPing(
   pickupId: string,
@@ -473,9 +478,10 @@ export async function getLatestPing(
   const pickup = await pickupsRepo.getById(pickupId);
   if (!pickup) return fail("NOT_FOUND", "Pickup not found.");
 
-  const isDonorOwner = pickup.donorId === session.userId;
+  const isDonorOwner = pickup.donorId === session.userId && pickup.status === "en_route";
   const isAdmin = session.role === "admin";
-  if (!isDonorOwner && !isAdmin) return fail("FORBIDDEN", "Not allowed.");
+  const isVolunteer = session.role === "volunteer";
+  if (!isDonorOwner && !isAdmin && !isVolunteer) return fail("FORBIDDEN", "Not allowed.");
 
   const latest = await pingsRepo.latestForPickup(pickupId);
   return {
@@ -495,8 +501,10 @@ export async function getLatestPing(
  * Watcher route + ETA (bridge §5). Driver's current pos comes from the client
  * (it already has it via the realtime/polling subscription); the destination is
  * read server-side from the pickup row (never trust a client-supplied dest).
- * OSRM road route when available, else a straight line + haversine ETA. Auth:
- * pickup owner, the assigned volunteer, or an admin (no IDOR).
+ * OSRM road route when available, else a straight line + haversine ETA. Leg-aware
+ * auth (dispatch-model-v2): admin; the assigned collector/driver (their own route);
+ * the donor-owner only while en_route (view ends once collected); any volunteer
+ * (distribution helper awareness). No IDOR — all resolved server-side.
  */
 export async function getPickupRoute(
   pickupId: string,
@@ -513,10 +521,11 @@ export async function getPickupRoute(
   const pickup = await pickupsRepo.getById(pickupId);
   if (!pickup) return fail("NOT_FOUND", "Pickup not found.");
 
-  const allowed =
-    pickup.donorId === session.userId ||
-    pickup.volunteerId === session.userId ||
-    session.role === "admin";
+  const isDonorOwner = pickup.donorId === session.userId && pickup.status === "en_route";
+  const isAssignedDriver = pickup.volunteerId === session.userId;
+  const isAdmin = session.role === "admin";
+  const isVolunteer = session.role === "volunteer";
+  const allowed = isDonorOwner || isAssignedDriver || isAdmin || isVolunteer;
   if (!allowed) return fail("FORBIDDEN", "Not allowed to view this route.");
 
   const from = { lat: fromLat, lng: fromLng };

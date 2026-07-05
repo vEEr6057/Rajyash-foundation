@@ -17,10 +17,12 @@ vi.mock("@/server/db/repositories/pings", () => ({
 vi.mock("@/server/db/repositories/statusEvents", () => ({
   statusEventsRepo: { record: vi.fn().mockResolvedValue(undefined) },
 }));
+// advancePickup is driver-gated (dispatch-model-v2); cancelPickup stays donor-gated.
+// This mock ignores the requested role list, so one shared actor covers both call sites.
 vi.mock("@/server/auth/session", () => ({
   AuthError: class AuthError extends Error {},
-  requireRole: vi.fn().mockResolvedValue({ userId: "vol-1", role: "volunteer" }),
-  getSession: vi.fn().mockResolvedValue({ userId: "vol-1", role: "volunteer" }),
+  requireRole: vi.fn().mockResolvedValue({ userId: "driver-1", role: "driver" }),
+  getSession: vi.fn().mockResolvedValue({ userId: "driver-1", role: "driver" }),
 }));
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/server/inngest/client", () => ({
@@ -46,7 +48,7 @@ describe("advancePickup purge (TRK-04)", () => {
     // picked_up + proof present → next status is delivered
     h.pickupState.current = {
       id: "p1",
-      volunteerId: "vol-1",
+      volunteerId: "driver-1",
       status: "picked_up",
       proofPhotoPath: "proof/x.jpg",
     };
@@ -60,7 +62,7 @@ describe("advancePickup purge (TRK-04)", () => {
     // en_route → picked_up
     h.pickupState.current = {
       id: "p1",
-      volunteerId: "vol-1",
+      volunteerId: "driver-1",
       status: "en_route",
     };
     const res = await advancePickup("p1");
@@ -72,7 +74,7 @@ describe("advancePickup purge (TRK-04)", () => {
     // picked_up + no proof → still advances to delivered (no PROOF_REQUIRED gate)
     h.pickupState.current = {
       id: "p1",
-      volunteerId: "vol-1",
+      volunteerId: "driver-1",
       status: "picked_up",
       proofPhotoPath: null,
     };
