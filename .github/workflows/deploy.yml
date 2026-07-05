@@ -38,6 +38,9 @@ jobs:
       # Cloudflare Web Analytics beacon token (B5). PUBLIC by design — it is embedded in
       # the client HTML for every visitor, so a literal here is correct (not a secret).
       NEXT_PUBLIC_CF_BEACON_TOKEN: "22ff4d173055492fa0dff67fb4b9d64f"
+      # Turnstile SITE key (MED-1). PUBLIC by design — rendered in the donate widget.
+      # The paired TURNSTILE_SECRET_KEY is a Worker secret (dashboard), never here.
+      NEXT_PUBLIC_TURNSTILE_SITE_KEY: "0x4AAAAAADvw_PneE6vlgLyv"
       # Cloudflare deploy auth.
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: "23a2b1c11f499225ec43f734cba12e60"
