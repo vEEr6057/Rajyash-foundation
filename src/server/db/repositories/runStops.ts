@@ -1,7 +1,12 @@
 import "server-only";
 import { asc, eq, inArray, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
-import { runStops, type NewRunStop, type RunStop } from "@/server/db/schema";
+import {
+  runStops,
+  stopStatusEvents,
+  type NewRunStop,
+  type RunStop,
+} from "@/server/db/schema";
 import type { StopStatus } from "@/config/constants";
 
 export const runStopsRepo = {
@@ -64,17 +69,37 @@ export const runStopsRepo = {
     );
   },
 
-  async setStopStatus(
-    id: string,
-    status: StopStatus,
-    doneAt: Date | null,
-  ): Promise<RunStop | null> {
+  /**
+   * Sets a stop's status AND appends a stop_status_events audit row (from →
+   * to · actor) atomically — mirrors pickupsRepo.cancelStaleRequested's
+   * update+event transaction so a mid-way failure never strands a status
+   * change without its audit trail. `fromStatus` is the caller-read prior
+   * status (read outside the tx, before calling this).
+   */
+  async setStopStatusWithEvent(input: {
+    id: string;
+    status: StopStatus;
+    doneAt: Date | null;
+    actorId: string;
+    fromStatus: StopStatus | null;
+  }): Promise<RunStop | null> {
     const db = getDb();
-    const rows = await db
-      .update(runStops)
-      .set({ status, doneAt: doneAt ?? undefined })
-      .where(eq(runStops.id, id))
-      .returning();
-    return rows[0] ?? null;
+    return db.transaction(async (tx) => {
+      const rows = await tx
+        .update(runStops)
+        .set({ status: input.status, doneAt: input.doneAt ?? undefined })
+        .where(eq(runStops.id, input.id))
+        .returning();
+      const row = rows[0] ?? null;
+      if (row) {
+        await tx.insert(stopStatusEvents).values({
+          stopId: input.id,
+          actorId: input.actorId,
+          fromStatus: input.fromStatus,
+          toStatus: input.status,
+        });
+      }
+      return row;
+    });
   },
 };

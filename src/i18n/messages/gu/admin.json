@@ -235,7 +235,8 @@
     "emptyState": "હજી સુધી કોઈ રન નથી. ડિસ્પેચ શરૂ કરવા માટે એક બનાવો.",
     "detailEyebrow": "એડમિન · ડિસ્પેચ",
     "detail": {
-      "historyTitle": "ઇતિહાસ ({count})"
+      "historyTitle": "ઇતિહાસ ({count})",
+      "actorUnknown": "અજ્ઞાત"
     },
     "stopCount": "સ્ટોપ",
     "stopCountMeta": "{count, plural, one {# સ્ટોપ} other {# સ્ટોપ}}",

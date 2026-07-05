@@ -324,7 +324,13 @@ export async function markStopDone(
     return fail("CONFLICT", "Stop is already done or skipped.");
   }
 
-  await runStopsRepo.setStopStatus(stopId, "done", new Date());
+  await runStopsRepo.setStopStatusWithEvent({
+    id: stopId,
+    status: "done",
+    doneAt: new Date(),
+    actorId: session.userId,
+    fromStatus: stop.status,
+  });
 
   // Auto-complete the run when all stops are done/skipped — but only via a legal run
   // transition. A driver can mark stops on a `planned` run; planned→completed skips
@@ -350,8 +356,9 @@ export async function markStopDone(
 
 // ── RUN-08: admin override stop status ─────────────────────────────
 export async function overrideStopStatus(stopId: string, status: StopStatus): Promise<Result> {
+  let adminId: string;
   try {
-    await admin();
+    ({ userId: adminId } = await admin());
   } catch {
     return fail("FORBIDDEN", "Admins only.");
   }
@@ -364,7 +371,13 @@ export async function overrideStopStatus(stopId: string, status: StopStatus): Pr
   if (run.status === "completed" || run.status === "cancelled") {
     return fail("CONFLICT", "This run is closed — stop statuses are final.");
   }
-  await runStopsRepo.setStopStatus(stopId, status, status === "done" ? new Date() : null);
+  await runStopsRepo.setStopStatusWithEvent({
+    id: stopId,
+    status,
+    doneAt: status === "done" ? new Date() : null,
+    actorId: adminId,
+    fromStatus: stop.status,
+  });
   const allStops = await runStopsRepo.getByRunId(stop.runId);
   const updated = allStops.map((s) => (s.id === stopId ? { ...s, status } : s));
   if (allStopsDone(updated) && status !== "pending") {
