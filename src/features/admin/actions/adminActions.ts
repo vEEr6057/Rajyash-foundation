@@ -32,6 +32,41 @@ async function admin() {
 }
 
 /**
+ * Core atomic assignment step shared by assignPickup (single) and
+ * assignPickupsBulk (UX-12) — the SAME per-pickup conditional update
+ * (pickupsRepo.assignToVolunteer's WHERE status='requested' guard, zero rows
+ * = already taken) + statusEvents recording + best-effort notification.
+ * Extracted so bulk assign never becomes a blanket UPDATE — every pickup's
+ * outcome is independent, driven through this one path.
+ */
+async function assignOne(
+  pickupId: string,
+  driverId: string,
+  adminId: string,
+): Promise<{ ok: true } | { ok: false; reason: string }> {
+  const row = await pickupsRepo.assignToVolunteer(pickupId, driverId);
+  if (!row) return { ok: false, reason: "Already claimed or assigned." };
+  await statusEventsRepo.record({
+    pickupId,
+    actorId: adminId,
+    fromStatus: "requested",
+    toStatus: "accepted",
+  });
+  try {
+    await inngest.send({
+      name: NOTIFICATION_EVENTS.pickupClaimed,
+      data: { pickupId, eventId: buildEventId("claimed", pickupId) },
+    });
+  } catch (e) {
+    logger.error("inngest emit pickup/claimed (admin assign) failed", {
+      pickupId,
+      err: String(e),
+    });
+  }
+  return { ok: true };
+}
+
+/**
  * ADM-02: assign a requested pickup to a chosen DRIVER (mirrors claim + emit).
  * dispatch-model-v2 made the driver the collector role — the picker sources
  * listAssignableDrivers, not listAssignableVolunteers (a volunteer assignee
@@ -55,31 +90,74 @@ export async function assignPickup(
     if (!assignable.some((d) => d.id === driverId)) {
       return fail("VALIDATION", "Choose an available driver.");
     }
-    const row = await pickupsRepo.assignToVolunteer(pickupId, driverId);
-    if (!row) return fail("CONFLICT", "Already claimed or assigned.");
-    await statusEventsRepo.record({
-      pickupId,
-      actorId: adminId,
-      fromStatus: "requested",
-      toStatus: "accepted",
-    });
-    try {
-      await inngest.send({
-        name: NOTIFICATION_EVENTS.pickupClaimed,
-        data: { pickupId, eventId: buildEventId("claimed", pickupId) },
-      });
-    } catch (e) {
-      logger.error("inngest emit pickup/claimed (admin assign) failed", {
-        pickupId,
-        err: String(e),
-      });
-    }
+    const res = await assignOne(pickupId, driverId, adminId);
+    if (!res.ok) return fail("CONFLICT", res.reason);
     revalidatePath(ROUTES.adminPickups);
     revalidatePath(ROUTES.pickup(pickupId));
     return { ok: true };
   } catch (e) {
     logger.error("assignPickup failed", { pickupId, err: String(e) });
     return fail("SERVER_ERROR", "Could not assign the pickup.");
+  }
+}
+
+/** Hard cap on a single bulk-assign call — the picker only ever selects rows off one admin page. */
+const BULK_ASSIGN_MAX = 100;
+
+/**
+ * UX-12: bulk variant of assignPickup — ONE driver validation up front, then
+ * each pickup runs through the SAME atomic per-row path as assignPickup
+ * (assignOne): its own conditional update + statusEvent + notification.
+ * A pickup claimed/assigned by someone else in the meantime fails alone
+ * (CONFLICT, isolated in `failed`) — it never aborts the rest of the batch,
+ * and there is never a single blanket UPDATE across the selection. Runs
+ * sequentially (not Promise.all) to keep load on the pooled DB connection
+ * predictable (same reasoning as UX-11's serial-vs-parallel note).
+ */
+export async function assignPickupsBulk(
+  pickupIds: string[],
+  driverId: string,
+): Promise<
+  Result<{ assigned: string[]; failed: { id: string; reason: string }[] }>
+> {
+  let adminId: string;
+  try {
+    ({ userId: adminId } = await admin());
+  } catch {
+    return fail("FORBIDDEN", "Admins only.");
+  }
+  if (pickupIds.length === 0) {
+    return fail("VALIDATION", "Select at least one pickup.");
+  }
+  if (pickupIds.length > BULK_ASSIGN_MAX) {
+    return fail("VALIDATION", "Select fewer pickups and try again.");
+  }
+  try {
+    const assignable = await profilesRepo.listAssignableDrivers();
+    if (!assignable.some((d) => d.id === driverId)) {
+      return fail("VALIDATION", "Choose an available driver.");
+    }
+    const assigned: string[] = [];
+    const failed: { id: string; reason: string }[] = [];
+    for (const id of pickupIds) {
+      try {
+        const res = await assignOne(id, driverId, adminId);
+        if (res.ok) assigned.push(id);
+        else failed.push({ id, reason: res.reason });
+      } catch (e) {
+        logger.error("assignPickupsBulk: per-pickup assign failed", {
+          id,
+          err: String(e),
+        });
+        failed.push({ id, reason: "Could not assign this pickup." });
+      }
+    }
+    revalidatePath(ROUTES.adminPickups);
+    for (const id of assigned) revalidatePath(ROUTES.pickup(id));
+    return { ok: true, assigned, failed };
+  } catch (e) {
+    logger.error("assignPickupsBulk failed", { err: String(e) });
+    return fail("SERVER_ERROR", "Could not assign the pickups.");
   }
 }
 

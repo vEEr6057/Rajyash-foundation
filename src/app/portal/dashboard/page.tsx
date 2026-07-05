@@ -126,9 +126,16 @@ async function DonorDashboard({ userId }: { userId: string }) {
 }
 
 // dispatch-model-v2 (docs/specs/dispatch-model-v2.md): volunteers never claim
-// or get assigned a pickup — they help distribute at active runs. The ledger
-// and CTAs reflect that: open pickups is awareness, active runs is "what can
-// I help with right now."
+// or get assigned a pickup — they help distribute at active runs.
+//
+// UX-10 (volunteer landing rebalance): Today's distributions is the volunteer's
+// primary surface now — it leads with distribution activity (active runs +
+// drop stops) and a prominent CTA. The read-only board is demoted to a small
+// "what's cooking" link/section further down; volunteers keep board access,
+// nothing is removed. Judgment call (spec flagged this "wants co-founder
+// eyes"): building the moderate version — emphasis/order/copy only, no route
+// or scope change — per the orchestrator's authorization; a co-founder can
+// still revisit the exact wording/threshold in review.
 async function VolunteerDashboard() {
   const [t, open, allRuns] = await Promise.all([
     getTranslations("portal"),
@@ -136,23 +143,27 @@ async function VolunteerDashboard() {
     runsRepo.listRuns(),
   ]);
   const activeRuns = allRuns.filter((r) => r.status === "active");
+  const runsWithStops = await Promise.all(
+    activeRuns.map((r) => runsRepo.getRunWithStops(r.id)),
+  );
+  const dropStopCount = runsWithStops.reduce(
+    (sum, run) => sum + (run?.stops.filter((s) => s.kind === "drop").length ?? 0),
+    0,
+  );
 
   return (
     <>
       <LedgerRow
         stats={[
-          { value: open.length.toLocaleString(), label: t("dashboard.stats.openNow") },
           { value: activeRuns.length.toLocaleString(), label: t("dashboard.stats.myActive") },
+          { value: dropStopCount.toLocaleString(), label: t("dashboard.stats.dropStops") },
         ]}
         provenance={t("dashboard.volunteerStatsProvenance")}
       />
 
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="mt-6">
         <Link href={ROUTES.distributions} className={buttonVariants({ size: "lg" })}>
           <RouteIcon className="size-4" /> {t("distributions.title")}
-        </Link>
-        <Link href={ROUTES.volunteerBoard} className={buttonVariants({ variant: "outline", size: "lg" })}>
-          <PackageOpen className="size-4" /> {t("dashboard.browsePickups")}
         </Link>
       </div>
 
@@ -167,6 +178,15 @@ async function VolunteerDashboard() {
             </Link>
           </p>
         )}
+      </Section>
+
+      <Section title={t("dashboard.whatsCookingTitle")}>
+        <p className="text-sm text-muted-foreground">
+          {t("dashboard.whatsCookingBody", { count: open.length })}{" "}
+          <Link href={ROUTES.volunteerBoard} className="inline-flex items-center gap-1 font-semibold text-primary">
+            <PackageOpen className="size-3.5" /> {t("dashboard.browsePickups")}
+          </Link>
+        </p>
       </Section>
     </>
   );

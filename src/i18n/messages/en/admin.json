@@ -42,6 +42,15 @@
       "successMessage": "Pickup assigned.",
       "errorMessage": "Failed to assign pickup."
     },
+    "bulkAssign": {
+      "selectAll": "Select all assignable pickups",
+      "selectRow": "Select this pickup",
+      "selected": "{count, plural, one {# selected} other {# selected}}",
+      "button": "Assign to driver",
+      "title": "Assign {count, plural, one {# pickup} other {# pickups}} to a driver",
+      "allAssigned": "{count, plural, one {# pickup assigned.} other {# pickups assigned.}}",
+      "partialResult": "{assigned} assigned, {failed} already taken."
+    },
     "export": {
       "button": "Export CSV",
       "filename": "pickups-export"
@@ -58,7 +67,15 @@
     "meta": "{count, plural, one {# user} other {# users}}",
     "empty": {
       "title": "No users found",
-      "body": "People appear here after their first sign-in."
+      "body": "People appear here after their first sign-in.",
+      "noMatchTitle": "No users match",
+      "noMatchBody": "Try clearing the search or role filter."
+    },
+    "filters": {
+      "searchPlaceholder": "Search name or email",
+      "searchLabel": "Search users by name or email",
+      "roleLabel": "Filter by role",
+      "allRoles": "All roles"
     },
     "you": "(you)",
     "yourAccount": "Your account",

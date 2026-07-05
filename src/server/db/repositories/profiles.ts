@@ -1,8 +1,14 @@
 import "server-only";
-import { and, count, desc, eq, isNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, ilike, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import { profiles, type NewProfile, type Profile } from "@/server/db/schema";
 import type { Role } from "@/config/constants";
+
+/** UX-13: admin users list filter. Both optional; and() drops undefined natively. */
+export interface AdminUserFilters {
+  q?: string; // matches name OR email, case-insensitive contains
+  role?: Role;
+}
 
 /** Thin data-access layer for profiles (no business logic — that lives in services). */
 export const profilesRepo = {
@@ -72,10 +78,28 @@ export const profilesRepo = {
   },
 
   // ── Admin (Phase 6) ──────────────────────────────────────────────
-  /** ADM-03: full user list for the admin table, newest first. */
-  async listAll(): Promise<Profile[]> {
+  /**
+   * ADM-03 / UX-13: full user list for the admin table, newest first.
+   * `q` matches name OR email (case-insensitive contains); `role` narrows to one
+   * role. Both optional and combine with AND. Server-side (not client-filtered)
+   * so the filtered set is shareable/reload-safe via URL searchParams.
+   */
+  async listAll(filter: AdminUserFilters = {}): Promise<Profile[]> {
     const db = getDb();
-    return db.select().from(profiles).orderBy(desc(profiles.createdAt));
+    const conditions = [
+      filter.role ? eq(profiles.role, filter.role) : undefined,
+      filter.q
+        ? or(
+            ilike(profiles.name, `%${filter.q}%`),
+            ilike(profiles.email, `%${filter.q}%`),
+          )
+        : undefined,
+    ].filter((c): c is NonNullable<typeof c> => c !== undefined);
+
+    const base = db.select().from(profiles);
+    return conditions.length > 0
+      ? base.where(and(...conditions)).orderBy(desc(profiles.createdAt))
+      : base.orderBy(desc(profiles.createdAt));
   },
 
   /**
