@@ -94,6 +94,7 @@
       "listTab": "List",
       "mapTab": "Map",
       "mapButton": "Map",
+      "distanceAway": "{distance} away",
       "volunteerNote": "The foundation's driver collects these — you'll help distribute the food once it reaches the drop point."
     },
     "donor": {
