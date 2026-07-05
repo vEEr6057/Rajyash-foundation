@@ -246,7 +246,8 @@
     "emptyState": "No runs yet. Create one to start dispatching.",
     "detailEyebrow": "Admin · Dispatch",
     "detail": {
-      "historyTitle": "History ({count})"
+      "historyTitle": "History ({count})",
+      "actorUnknown": "Unknown"
     },
     "stopCount": "stops",
     "stopCountMeta": "{count, plural, one {# stop} other {# stops}}",

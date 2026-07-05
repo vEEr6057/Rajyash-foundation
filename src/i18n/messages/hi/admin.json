@@ -254,7 +254,8 @@
     "emptyState": "अभी तक कोई रन नहीं है। डिस्पैच शुरू करने के लिए एक बनाएं।",
     "detailEyebrow": "एडमिन · डिस्पैच",
     "detail": {
-      "historyTitle": "इतिहास ({count})"
+      "historyTitle": "इतिहास ({count})",
+      "actorUnknown": "अज्ञात"
     },
     "stopCount": "स्टॉप",
     "stopCountMeta": "{count, plural, one {# स्टॉप} other {# स्टॉप}}",

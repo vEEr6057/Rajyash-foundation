@@ -404,6 +404,32 @@ export const runStops = pgTable(
 export type RunStop = typeof runStops.$inferSelect;
 export type NewRunStop = typeof runStops.$inferInsert;
 
+/**
+ * stop_status_events — append-only audit log of every run stop status
+ * transition (mirrors status_events for pickups). fromStatus is null on a
+ * stop's first recorded transition (there's no prior status to record).
+ */
+export const stopStatusEvents = pgTable(
+  "stop_status_events",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    stopId: text("stop_id")
+      .notNull()
+      .references(() => runStops.id, { onDelete: "cascade" }),
+    actorId: text("actor_id").notNull(), // Clerk userId who caused the change
+    fromStatus: stopStatusEnum("from_status"),
+    toStatus: stopStatusEnum("to_status").notNull(),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (t) => [index("stop_status_events_stop_idx").on(t.stopId)],
+);
+export type StopStatusEvent = typeof stopStatusEvents.$inferSelect;
+export type NewStopStatusEvent = typeof stopStatusEvents.$inferInsert;
+
 // ── Run Pings (Phase 10, Live Run Tracking / TRK-05) ───────────────────────
 /**
  * Ephemeral GPS breadcrumb trail for an ACTIVE run. The assigned driver's browser

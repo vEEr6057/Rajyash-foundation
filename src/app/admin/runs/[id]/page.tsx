@@ -5,6 +5,7 @@ import { runsRepo } from "@/server/db/repositories/runs";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
 import { profilesRepo } from "@/server/db/repositories/profiles";
+import { stopStatusEventsRepo } from "@/server/db/repositories/stopStatusEvents";
 import { ROUTES, RUN_SLOT_LABEL_KEYS } from "@/config/constants";
 import { PageHeader } from "@/components/PageHeader";
 import { RunStatusPill } from "@/features/runs/components/RunStatusPill";
@@ -15,7 +16,7 @@ import { StopList } from "@/features/runs/components/StopList";
 import { AddStopForm } from "@/features/runs/components/AddStopForm";
 import { RunLiveMap } from "@/features/runs/components/RunLiveMap";
 import { StopHistorySection } from "@/features/runs/components/StopHistorySection";
-import { buildStopTimeline } from "@/features/runs/lib/stopHistory";
+import { buildStopHistory } from "@/features/runs/lib/stopHistory";
 
 export const dynamic = "force-dynamic";
 
@@ -72,6 +73,26 @@ export default async function AdminRunDetailPage({
   const driverName = runWithStops.driverId
     ? (await profilesRepo.getById(runWithStops.driverId))?.name ?? null
     : null;
+
+  // UX-14 v2: full stop status audit trail — one batched query for every stop
+  // on this run, then resolve the distinct actors to display names (mirrors
+  // the admin pickup detail page's actor-resolution pattern).
+  const stopEvents = await stopStatusEventsRepo.listForStopIds(
+    runWithStops.stops.map((s) => s.id),
+  );
+  const stopActorIds = [...new Set(stopEvents.map((e) => e.actorId))];
+  const stopActorProfiles = await Promise.all(
+    stopActorIds.map((aid) => profilesRepo.getById(aid)),
+  );
+  const stopActorNameById = new Map(
+    stopActorIds.map((aid, i) => [aid, stopActorProfiles[i]?.name ?? t("runs.detail.actorUnknown")]),
+  );
+  const stopHistoryRows = buildStopHistory(
+    runWithStops.stops,
+    stopEvents,
+    stopActorNameById,
+    t("runs.detail.actorUnknown"),
+  );
   const meta = [
     runDate,
     t("runs.stopCountMeta", { count: runWithStops.stops.length }),
@@ -124,7 +145,7 @@ export default async function AdminRunDetailPage({
         <StopList stops={runWithStops.stops} runId={runWithStops.id} editable={editable} />
       </section>
 
-      <StopHistorySection rows={buildStopTimeline(runWithStops.stops)} />
+      <StopHistorySection rows={stopHistoryRows} />
 
       {editable && (
         <section className="border-t border-border pt-6">

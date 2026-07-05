@@ -17,7 +17,7 @@ const h = vi.hoisted(() => ({
   stopGetByRunId: vi.fn(),
   stopRemove: vi.fn(),
   stopReorder: vi.fn(),
-  stopSetStatus: vi.fn(),
+  stopSetStatusWithEvent: vi.fn(),
   // others
   partnerGetById: vi.fn(),
   destGetById: vi.fn(),
@@ -59,7 +59,7 @@ vi.mock("@/server/db/repositories/runStops", () => ({
     getByRunId: (...a: unknown[]) => h.stopGetByRunId(...a),
     remove: (...a: unknown[]) => h.stopRemove(...a),
     reorder: (...a: unknown[]) => h.stopReorder(...a),
-    setStopStatus: (...a: unknown[]) => h.stopSetStatus(...a),
+    setStopStatusWithEvent: (...a: unknown[]) => h.stopSetStatusWithEvent(...a),
   },
 }));
 vi.mock("@/server/db/repositories/partners", () => ({
@@ -132,7 +132,7 @@ describe("markStopDone — driver ownership", () => {
   it("lets an admin mark any stop done", async () => {
     h.getSession.mockResolvedValue({ userId: "admin-1", role: "admin" });
     h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
-    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
     h.stopGetByRunId.mockResolvedValue([{ id: "s1", status: "pending" }, { id: "s2", status: "done" }]);
     const res = await markStopDone("s1");
     expect(res.ok).toBe(true);
@@ -144,7 +144,7 @@ describe("markStopDone — auto-complete", () => {
     h.getSession.mockResolvedValue({ userId: "drv-1", role: "driver" });
     h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
     h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "active" });
-    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
     // After marking s1 done, all stops (s1 done via optimistic, s2 already done) → complete
     h.stopGetByRunId.mockResolvedValue([{ id: "s1", status: "pending" }, { id: "s2", status: "done" }]);
     await markStopDone("s1");
@@ -155,7 +155,7 @@ describe("markStopDone — auto-complete", () => {
     h.getSession.mockResolvedValue({ userId: "drv-1", role: "driver" });
     h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
     h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "active" });
-    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
     h.stopGetByRunId.mockResolvedValue([{ id: "s1", status: "pending" }, { id: "s2", status: "pending" }]);
     await markStopDone("s1");
     expect(h.runSetStatus).not.toHaveBeenCalled();
@@ -166,11 +166,11 @@ describe("markStopDone — auto-complete", () => {
     h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
     // A driver may act on a planned run; planned→completed skips `active` (invalid).
     h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "planned" });
-    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
     h.stopGetByRunId.mockResolvedValue([{ id: "s1", status: "pending" }, { id: "s2", status: "done" }]);
     const res = await markStopDone("s1");
     expect(res.ok).toBe(true);
-    expect(h.stopSetStatus).toHaveBeenCalled(); // stop still marked done
+    expect(h.stopSetStatusWithEvent).toHaveBeenCalled(); // stop still marked done
     expect(h.runSetStatus).not.toHaveBeenCalled(); // but run is NOT completed
     expect(res.ok && (res as { runCompleted: boolean }).runCompleted).toBe(false);
   });
@@ -181,7 +181,7 @@ describe("markStopDone — volunteer path (DEL-02)", () => {
     h.getSession.mockResolvedValue({ userId: "vol-1", role: "volunteer" });
     h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
     h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "active" });
-    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
     h.stopGetByRunId.mockResolvedValue([
       { id: "s1", status: "pending" },
       { id: "s2", status: "pending" },
@@ -196,6 +196,45 @@ describe("markStopDone — volunteer path (DEL-02)", () => {
     h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "planned" });
     const res = await markStopDone("s1");
     expect(!res.ok && (res as { code: string }).code).toBe("FORBIDDEN");
+  });
+});
+
+describe("markStopDone — audit trail (stop_status_events)", () => {
+  it("writes an event with from=prior status, to=done, actor=the session user", async () => {
+    h.getSession.mockResolvedValue({ userId: "drv-1", role: "driver" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "active" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([
+      { id: "s1", status: "pending" },
+      { id: "s2", status: "pending" },
+    ]);
+    await markStopDone("s1");
+    expect(h.stopSetStatusWithEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "s1",
+        status: "done",
+        actorId: "drv-1",
+        fromStatus: "pending",
+      }),
+    );
+  });
+
+  it("preserves the auto-complete-run path alongside the audit write", async () => {
+    h.getSession.mockResolvedValue({ userId: "drv-1", role: "driver" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", driverId: "drv-1", status: "active" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([
+      { id: "s1", status: "pending" },
+      { id: "s2", status: "done" },
+    ]);
+    const res = await markStopDone("s1");
+    expect(h.stopSetStatusWithEvent).toHaveBeenCalledWith(
+      expect.objectContaining({ actorId: "drv-1", fromStatus: "pending", status: "done" }),
+    );
+    expect(h.runSetStatus).toHaveBeenCalledWith("r1", "completed");
+    expect(res.ok && (res as { runCompleted: boolean }).runCompleted).toBe(true);
   });
 });
 
@@ -299,7 +338,7 @@ describe("run notification emits (B3)", () => {
     h.getSession.mockResolvedValue({ userId: "drv-1", role: "driver" });
     h.stopGetById.mockResolvedValue({ id: "s1", runId: "r7", status: "pending" });
     h.runGetById.mockResolvedValue({ id: "r7", driverId: "drv-1", status: "active" });
-    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
     h.stopGetByRunId.mockResolvedValue([
       { id: "s1", status: "pending" },
       { id: "s2", status: "done" },
@@ -362,7 +401,7 @@ describe("overrideStopStatus — closed-run rejection (B4)", () => {
     h.runGetById.mockResolvedValue({ id: "r1", status: "completed" });
     const res = await overrideStopStatus("s1", "pending");
     expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
-    expect(h.stopSetStatus).not.toHaveBeenCalled();
+    expect(h.stopSetStatusWithEvent).not.toHaveBeenCalled();
   });
 
   it("rejects an override on a cancelled run", async () => {
@@ -370,20 +409,52 @@ describe("overrideStopStatus — closed-run rejection (B4)", () => {
     h.runGetById.mockResolvedValue({ id: "r1", status: "cancelled" });
     const res = await overrideStopStatus("s1", "done");
     expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
-    expect(h.stopSetStatus).not.toHaveBeenCalled();
+    expect(h.stopSetStatusWithEvent).not.toHaveBeenCalled();
   });
 
   it("allows an override on an active run", async () => {
     h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
     h.runGetById.mockResolvedValue({ id: "r1", status: "active" });
-    h.stopSetStatus.mockResolvedValue({ id: "s1" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
     h.stopGetByRunId.mockResolvedValue([
       { id: "s1", status: "pending" },
       { id: "s2", status: "pending" },
     ]);
     const res = await overrideStopStatus("s1", "skipped");
     expect(res.ok).toBe(true);
-    expect(h.stopSetStatus).toHaveBeenCalled();
+    expect(h.stopSetStatusWithEvent).toHaveBeenCalled();
+  });
+});
+
+describe("overrideStopStatus — audit trail (stop_status_events)", () => {
+  it("writes an event with from=prior status, to=override status, actor=the admin", async () => {
+    h.requireRole.mockResolvedValue({ userId: "admin-9", role: "admin" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "pending" });
+    h.runGetById.mockResolvedValue({ id: "r1", status: "active" });
+    h.stopSetStatusWithEvent.mockResolvedValue({ id: "s1" });
+    h.stopGetByRunId.mockResolvedValue([
+      { id: "s1", status: "skipped" },
+      { id: "s2", status: "pending" },
+    ]);
+    await overrideStopStatus("s1", "skipped");
+    expect(h.stopSetStatusWithEvent).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: "s1",
+        status: "skipped",
+        actorId: "admin-9",
+        fromStatus: "pending",
+        doneAt: null,
+      }),
+    );
+  });
+
+  it("still enforces closed-run rejection before writing any event", async () => {
+    h.requireRole.mockResolvedValue({ userId: "admin-9", role: "admin" });
+    h.stopGetById.mockResolvedValue({ id: "s1", runId: "r1", status: "done" });
+    h.runGetById.mockResolvedValue({ id: "r1", status: "completed" });
+    const res = await overrideStopStatus("s1", "pending");
+    expect(!res.ok && (res as { code: string }).code).toBe("CONFLICT");
+    expect(h.stopSetStatusWithEvent).not.toHaveBeenCalled();
   });
 });
 

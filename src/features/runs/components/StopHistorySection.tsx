@@ -8,16 +8,18 @@ import {
   CollapsibleContent,
 } from "@/components/ui/collapsible";
 import { intlLocale } from "@/features/pickups/lib/format";
-import type { StopTimelineRow } from "@/features/runs/lib/stopHistory";
+import type { StopHistoryRow } from "@/features/runs/lib/stopHistory";
 
 /**
- * UX-14: admin run detail History — a chronological "when was each stop
- * completed" timeline. NOTE: unlike the pickup History (PickupHistorySection),
- * run_stops has no actor/from audit trail in the schema (see stopHistory.ts) —
- * this intentionally shows completion time only, not a full transition log.
+ * UX-14 v2: admin run detail History — the full stop_status_events audit
+ * trail (from → to · actor · time), mirroring PickupHistorySection. A stop
+ * with no recorded events (legacy — created before stop_status_events
+ * shipped) falls back to a completion-time-only line (isLegacy) so old runs
+ * still show something instead of going blank.
  */
-export function StopHistorySection({ rows }: { rows: StopTimelineRow[] }) {
+export function StopHistorySection({ rows }: { rows: StopHistoryRow[] }) {
   const t = useTranslations("admin");
+  const tCommon = useTranslations("common");
   const locale = useLocale();
 
   if (rows.length === 0) return null;
@@ -47,7 +49,20 @@ export function StopHistorySection({ rows }: { rows: StopTimelineRow[] }) {
               {" · "}
               {r.address ?? "—"}
               {" · "}
-              <span className="tabular-nums">{fmt(r.doneAt)}</span>
+              {r.isLegacy ? (
+                <span className="tabular-nums">{fmt(r.createdAt)}</span>
+              ) : (
+                <>
+                  <span className="font-medium text-foreground">
+                    {r.fromStatus ? `${tCommon(`stopStatus.${r.fromStatus}`)} → ` : ""}
+                    {tCommon(`stopStatus.${r.toStatus}`)}
+                  </span>
+                  {" · "}
+                  {r.actorName ?? t("runs.detail.actorUnknown")}
+                  {" · "}
+                  <span className="tabular-nums">{fmt(r.createdAt)}</span>
+                </>
+              )}
             </li>
           ))}
         </ul>
