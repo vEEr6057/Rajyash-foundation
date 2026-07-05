@@ -65,6 +65,22 @@ export const pickupsRepo = {
       .limit(100);
   },
 
+  /**
+   * UX-6: the CALLER's own most recent pickup, for the "repeat last pickup"
+   * prefill. donorId is always the session's own id (server action guard) —
+   * the WHERE clause is the ownership check itself, never a client-supplied id.
+   */
+  async getLastByDonor(donorId: string): Promise<Pickup | null> {
+    const db = getDb();
+    const rows = await db
+      .select()
+      .from(pickups)
+      .where(eq(pickups.donorId, donorId))
+      .orderBy(desc(pickups.createdAt))
+      .limit(1);
+    return rows[0] ?? null;
+  },
+
   async listByVolunteer(volunteerId: string): Promise<Pickup[]> {
     const db = getDb();
     return db

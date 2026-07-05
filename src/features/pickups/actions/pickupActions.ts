@@ -29,6 +29,7 @@ import {
   canTransition,
   nextStatus,
 } from "@/features/pickups/lib/statusMachine";
+import { mapPickupToPrefill, type LastPickupPrefill } from "@/features/pickups/lib/prefill";
 
 type Result<T = unknown> =
   | ({ ok: true } & T)
@@ -299,6 +300,24 @@ export async function repostPickup(id: string): Promise<Result<{ id: string }>> 
   }
   revalidatePickups(row.id);
   return { ok: true, id: row.id };
+}
+
+/**
+ * UX-6: the donor's own most recent pickup, for the "repeat last pickup"
+ * prefill. Ownership is enforced in the WHERE clause itself (getLastByDonor
+ * filters on donorId = the session's own userId) — never a client-supplied id.
+ */
+export async function getMyLastPickup(): Promise<
+  Result<{ pickup: LastPickupPrefill | null }>
+> {
+  let userId: string;
+  try {
+    ({ userId } = await donor());
+  } catch {
+    return fail("FORBIDDEN", "Only donors can do this.");
+  }
+  const row = await pickupsRepo.getLastByDonor(userId);
+  return { ok: true, pickup: row ? mapPickupToPrefill(row) : null };
 }
 
 /** VOL-03 (dispatch-model-v2: driver-led): atomic claim. */

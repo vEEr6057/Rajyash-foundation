@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { useForm, type Resolver } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { MapPin, Loader2 } from "lucide-react";
+import { MapPin, Loader2, Repeat } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -26,7 +26,9 @@ import {
   createPickup,
   updatePickup,
   resolvePickupLocation,
+  getMyLastPickup,
 } from "@/features/pickups/actions/pickupActions";
+import type { LastPickupPrefill } from "@/features/pickups/lib/prefill";
 import { PhotoUploader } from "./PhotoUploader";
 import { MapView } from "./MapView";
 
@@ -101,6 +103,38 @@ export function PickupForm({
   const address = watch("address");
   const foodPhotoPath = watch("foodPhotoPath");
 
+  // UX-6: repeat-last-pickup prefill — only the plain donor create flow (not
+  // AdminSurplusForm, which supplies its own onSubmitOverride and isn't a
+  // donor repeating their own history).
+  const offersRepeatLast = mode === "create" && !onSubmitOverride;
+  const [lastPickup, setLastPickup] = useState<LastPickupPrefill | null>(null);
+
+  useEffect(() => {
+    if (!offersRepeatLast) return;
+    let cancelled = false;
+    getMyLastPickup().then((res) => {
+      if (!cancelled && res.ok) setLastPickup(res.pickup);
+    });
+    return () => {
+      cancelled = true;
+    };
+    // Fetch once on mount for the create flow — no deps to re-run on.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function applyLastPickup() {
+    if (!lastPickup) return;
+    // Window and food photo are deliberately NEVER prefilled — always fresh.
+    setValue("category", lastPickup.category, { shouldValidate: true, shouldDirty: true });
+    setValue("description", lastPickup.description, { shouldDirty: true });
+    setValue("quantity", lastPickup.quantity, { shouldValidate: true, shouldDirty: true });
+    setValue("quantityUnit", lastPickup.quantityUnit, { shouldDirty: true });
+    setValue("address", lastPickup.address, { shouldValidate: true, shouldDirty: true });
+    setValue("lat", lastPickup.lat, { shouldValidate: true, shouldDirty: true });
+    setValue("lng", lastPickup.lng, { shouldValidate: true, shouldDirty: true });
+    setValue("googleMapsUrl", lastPickup.googleMapsUrl, { shouldDirty: true });
+  }
+
   async function findOnMap() {
     if (!address) return;
     setGeocoding(true);
@@ -149,6 +183,19 @@ export function PickupForm({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      {offersRepeatLast && lastPickup && (
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          className="mb-5"
+          onClick={applyLastPickup}
+        >
+          <Repeat className="size-4" />
+          {t("pickup.form.repeatLast")}
+        </Button>
+      )}
+
       {/* Section: What you're sharing (charter §3.5 — hairline sections, not cards) */}
       <section className="space-y-5">
         <h2 className="font-display text-[15px] font-semibold">
@@ -286,6 +333,7 @@ export function PickupForm({
                   : t("pickup.form.submitEdit")))
           }
           pending={isPending || submitting}
+          sticky={offersRepeatLast}
         />
       </div>
     </form>

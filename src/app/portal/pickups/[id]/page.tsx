@@ -21,6 +21,9 @@ import { LiveTrackingMap } from "@/features/pickups/components/LiveTrackingMap";
 import { VolunteerTracker } from "@/features/pickups/components/VolunteerTracker";
 import { NavigateButton } from "@/features/pickups/components/NavigateButton";
 import { VerifyToggle } from "@/features/admin/components/VerifyToggle";
+import { PickupStatusTimeline } from "@/features/pickups/components/PickupStatusTimeline";
+import { DeliveryProofBack } from "@/features/pickups/components/DeliveryProofBack";
+import { buildStatusTimeline } from "@/features/pickups/lib/timeline";
 
 export const dynamic = "force-dynamic";
 
@@ -147,6 +150,11 @@ export default async function PickupDetailPage({
         </div>
       )}
 
+      {/* UX-8: donor-only "your food reached people in need" moment — gated on
+          isDonorOwner (ownership already established above), reusing the same
+          signed proofUrl the generic photo grid above resolves. */}
+      {isDonorOwner && <DeliveryProofBack status={pickup.status} proofUrl={proofUrl} />}
+
       {/* Actions by viewer */}
       <div className="mt-6">
         {isAdmin && (
@@ -180,28 +188,43 @@ export default async function PickupDetailPage({
         )}
       </div>
 
-      {events.length > 0 && (
+      {/* UX-7: the donor gets a proper stage timeline (posted → claimed →
+          en route → delivered/cancelled) built from the SAME ownership-checked
+          read as the rest of this page (canView above already required
+          isDonorOwner for this branch) — always shown (even with zero
+          statusEvents, since "posted" comes from the pickup row itself, not an
+          event). Every other viewer keeps the original flat event log. */}
+      {isDonorOwner ? (
         <div className="mt-8">
-          <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
+          <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-muted-foreground">
             {tPortal("pickup.detail.history")}
           </h2>
-          <ul className="space-y-1 text-sm text-muted-foreground">
-            {events.map((e) => (
-              <li key={e.id}>
-                → {tCommon(`status.${e.toStatus}`)}{" "}
-                <span className="text-subtle-foreground tabular-nums">
-                  {new Intl.DateTimeFormat(`${locale}-IN`, {
-                    timeZone: "Asia/Kolkata",
-                    day: "numeric",
-                    month: "short",
-                    hour: "numeric",
-                    minute: "2-digit",
-                  }).format(e.createdAt)}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <PickupStatusTimeline stages={buildStatusTimeline(pickup, events)} />
         </div>
+      ) : (
+        events.length > 0 && (
+          <div className="mt-8">
+            <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-muted-foreground">
+              {tPortal("pickup.detail.history")}
+            </h2>
+            <ul className="space-y-1 text-sm text-muted-foreground">
+              {events.map((e) => (
+                <li key={e.id}>
+                  → {tCommon(`status.${e.toStatus}`)}{" "}
+                  <span className="text-subtle-foreground tabular-nums">
+                    {new Intl.DateTimeFormat(`${locale}-IN`, {
+                      timeZone: "Asia/Kolkata",
+                      day: "numeric",
+                      month: "short",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    }).format(e.createdAt)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
       )}
     </main>
   );
