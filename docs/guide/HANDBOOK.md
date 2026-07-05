@@ -48,6 +48,9 @@ builds; this handbook reflects the app **with those gaps closed**.
 
 Your role is set once, the first time you sign in (see **Onboarding** below). Admins are
 appointed by the foundation through an **invite** — you can't pick "admin" yourself at sign-up.
+If foundation staff invited you directly (any role — see **Invite a user** in the
+[admin guide](#users)), your role and profile were already set at invite time: you **skip
+onboarding entirely** and land straight on your dashboard.
 
 ### Signing in
 
@@ -67,16 +70,17 @@ The very first time you sign in, you're asked one quick question before you see 
 1. **Pick a role** — three cards: **Donate food** ("I have surplus food to share"), **Volunteer**
    ("I'll help distribute food"), and **Driver** ("I drive collections & deliveries"). Tap one —
    it's not a dropdown. If you arrived via a specific link (e.g. the homepage's "Become a
-   volunteer" button, or an admin's invite), the matching card may already be pre-selected.
+   volunteer" button), the matching card may already be pre-selected.
 2. **Complete your profile** — name (pre-filled from your account if available), phone
    *(optional)*, and city. One page, no sheet.
 
 Submitting takes you straight to your home screen: `/portal/dashboard` for donor/volunteer,
 `/portal/run` for driver.
 
-> **Admin-invited users skip the role picker entirely.** If the foundation invited you with the
-> admin role already set (see **Invite a user** in the [admin guide](#users) below), onboarding
-> only asks for your profile details and lands you on `/admin/dashboard` — you never see the
+> **Invited users never see this screen.** If the foundation invited you (any role — see
+> **Invite a user** in the [admin guide](#users) below), your name, role, and city were set at
+> invite time; your first sign-in provisions your profile automatically and lands you straight
+> on your dashboard (admins on `/admin/dashboard`) — you never see the
 > three role cards.
 
 ### The top bar (everywhere once signed in)
@@ -577,11 +581,16 @@ Everyone in the system: name, email, role, status, actions.
   one) **fires immediately on change — there's no confirm dialog.** Your own row shows a static
   badge instead of a dropdown (you can't change your own role), and the server independently
   blocks any change that would demote the platform's **last active admin**.
-- **Invite a user** — the **Invite** button opens a modal: email + a role dropdown. Selecting
+- **Invite a user** — the **Invite** button opens a modal: **email, the person's name** (required),
+  a role dropdown offering **all four roles** (donor / volunteer / driver / admin — admin can
+  *only* be assigned here, never self-selected), and optional **phone** and **city**. Selecting
   **Admin** shows a small hint note right there in the form, because this is **the way you make
-  someone an admin** — there's no separate "promote to admin" control; invite them with the
-  admin role preset. On success the modal shows an inline **"invite sent"** confirmation (not a
-  toast), so you can immediately invite another person without losing context.
+  someone an admin** — there's no separate "promote to admin" control. On send, the person gets
+  an email invite; when they sign in through it they **skip onboarding entirely** — their profile
+  (name, role, phone, city) is provisioned automatically from what you entered, and they land
+  straight on their dashboard (admins on `/admin/dashboard`). On success the modal shows an
+  inline **"invite sent"** confirmation (not a toast), so you can immediately invite another
+  person without losing context.
 
   ![Invite a user](assets/35b-admin-invite-user.png)
 

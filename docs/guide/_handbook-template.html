@@ -239,7 +239,7 @@
           <li><strong>Pick a role</strong> — three cards: <em>Donate food</em> ("I have surplus food to share"), <em>Volunteer</em> ("I'll help distribute food"), <em>Driver</em> ("I drive collections &amp; deliveries"). Not a dropdown — tap a card. May arrive pre-selected from a link.</li>
           <li><strong>Complete your profile</strong> — name (pre-filled from your account when available), phone <em>(optional)</em>, city.</li>
         </ol>
-        <div class="callout"><strong>Admin-invited users skip the role picker.</strong> If staff invited you with the admin role already set, onboarding only asks for your profile and lands you on the admin dashboard — the three role cards never appear.</div>
+        <div class="callout"><strong>Invited users never see onboarding.</strong> If staff invited you (any role), your name, role, and city were set at invite time — your first sign-in provisions your profile automatically and lands you straight on your dashboard (admins on the admin dashboard). The three role cards never appear.</div>
 
         <h3>The top bar</h3>
         <ul>
@@ -449,11 +449,11 @@
         <figure><img src="{{IMG:35-admin-users}}" alt="Admin users" /><figcaption>Per-row Role dropdown, Deactivate, and Add user.</figcaption></figure>
         <ul>
           <li><strong>Change role</strong> — the row's dropdown fires immediately, no confirm dialog; your own row shows a static badge; the server blocks demoting the last active admin.</li>
-          <li><strong>Invite a user</strong> — email + preset role; selecting Admin shows a hint — <strong>this is how you make someone an admin</strong>, there's no separate "promote" control.</li>
+          <li><strong>Invite a user</strong> — email, the person's <strong>name</strong>, a role dropdown offering all four roles, plus optional phone/city; selecting Admin shows a hint — <strong>this is how you make someone an admin</strong>, there's no separate "promote" control. Invited users <strong>skip onboarding entirely</strong>: their profile is provisioned automatically from what you entered, and they land straight on their dashboard after signing in via the emailed link.</li>
           <li><strong>Deactivate</strong> — confirms first; blocked on the last admin or your own account.</li>
           <li><strong>Reactivate</strong> — shown only on deactivated rows, fires immediately, no confirm (asymmetric on purpose).</li>
         </ul>
-        <figure><img src="{{IMG:35b-admin-invite-user}}" alt="Invite a user modal" /><figcaption>Email + preset role — selecting Admin is how you make someone an admin.</figcaption></figure>
+        <figure><img src="{{IMG:35b-admin-invite-user}}" alt="Invite a user modal" /><figcaption>Email, name, role (all four), optional phone/city — invitees skip onboarding; selecting Admin is how you make someone an admin.</figcaption></figure>
 
         <h3>Reports</h3>
         <figure><img src="{{IMG:36-admin-reports}}" alt="Admin reports" /><figcaption>Meals/kg/deliveries, rescue-time metrics, breakdowns, and CSV export.</figcaption></figure>

@@ -78,9 +78,15 @@
     "invite": {
       "button": "Add user",
       "title": "Invite a user",
-      "subtitle": "Send an email invitation with a preset role. They finish sign-up via the link.",
+      "subtitle": "Send an email invitation with a preset role. They skip onboarding entirely — sign in via the link and go straight to their dashboard.",
       "email": "Email",
+      "name": "Name",
+      "namePlaceholder": "Full name",
       "role": "Role",
+      "phone": "Phone",
+      "phoneOptional": "Optional",
+      "city": "City",
+      "cityOptional": "Optional — defaults to Ahmedabad",
       "send": "Send invite",
       "sent": "Invitation sent to {email}.",
       "adminHint": "Admins get full access — pickups, dispatch, users, and reports."
