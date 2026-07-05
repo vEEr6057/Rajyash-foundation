@@ -1,6 +1,6 @@
 // src/app/onboarding/page.tsx — modified to accept ?role=volunteer searchParam (PUB-03)
 import { getTranslations } from "next-intl/server";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { AuthSplitLayout } from "@/features/auth/components/AuthSplitLayout";
 import { OnboardingForm } from "@/features/auth/components/OnboardingForm";
 import { getSession } from "@/server/auth/session";
 
@@ -31,16 +31,16 @@ export default async function OnboardingPage({
   const isAdminInvite = session?.role === "admin";
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-lg flex-col justify-center px-4 py-10">
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("title")}</CardTitle>
-          <CardDescription>{t("description")}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <OnboardingForm defaultRole={defaultRole} isAdminInvite={isAdminInvite} />
-        </CardContent>
-      </Card>
-    </main>
+    <AuthSplitLayout eyebrow={t("eyebrow")} headline={t("headline")} subline={t("subline")}>
+      <div className="w-full max-w-md space-y-6">
+        <div className="text-center lg:text-left">
+          <h1 className="font-display text-2xl font-medium text-foreground">
+            {t("title")}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">{t("description")}</p>
+        </div>
+        <OnboardingForm defaultRole={defaultRole} isAdminInvite={isAdminInvite} />
+      </div>
+    </AuthSplitLayout>
   );
 }
