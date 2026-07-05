@@ -13,8 +13,10 @@ vi.mock("next/navigation", () => ({
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 const assignPickup = vi.fn();
+const assignPickupsBulk = vi.fn();
 vi.mock("@/features/admin", () => ({
   assignPickup: (...a: unknown[]) => assignPickup(...a),
+  assignPickupsBulk: (...a: unknown[]) => assignPickupsBulk(...a),
 }));
 
 import { PickupsTable } from "./PickupsTable";

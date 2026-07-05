@@ -45,6 +45,16 @@
       "successMessage": "પિકઅપ સોંપ્યું.",
       "errorMessage": "પિકઅપ સોંપવામાં નિષ્ફ઼ળ."
     },
+    "bulkAssign": {
+      "_review": "pending",
+      "selectAll": "બધા સોંપી શકાય તેવા પિકઅપ પસંદ કરો",
+      "selectRow": "આ પિકઅપ પસંદ કરો",
+      "selected": "{count, plural, one {# પસંદ કર્યું} other {# પસંદ કર્યાં}}",
+      "button": "ડ્રાઇવરને સોંપો",
+      "title": "{count, plural, one {# પિકઅપ} other {# પિકઅપ}} ડ્રાઇવરને સોંપો",
+      "allAssigned": "{count, plural, one {# પિકઅપ સોંપાયું.} other {# પિકઅપ સોંપાયાં.}}",
+      "partialResult": "{assigned} સોંપાયાં, {failed} પહેલેથી લેવાયેલ."
+    },
     "export": {
       "button": "CSV નિકાસ",
       "filename": "pickups-export"
@@ -61,7 +71,16 @@
     "meta": "{count, plural, one {# વપરાશકર્તા} other {# વપરાશકર્તાઓ}}",
     "empty": {
       "title": "કોઈ વપરાશકર્તા મળ્યા નથી",
-      "body": "લોકો તેમના પ્રથમ સાઇન-ઇન પછી અહીં દેખાય છે."
+      "body": "લોકો તેમના પ્રથમ સાઇન-ઇન પછી અહીં દેખાય છે.",
+      "noMatchTitle": "કોઈ વપરાશકર્તા મેળ ખાતા નથી",
+      "noMatchBody": "શોધ અથવા ભૂમિકા ફ઼િલ્ટર સાફ કરી જુઓ."
+    },
+    "filters": {
+      "_review": "pending",
+      "searchPlaceholder": "નામ અથવા ઇમેઇલ શોધો",
+      "searchLabel": "નામ કે ઇમેઇલથી વપરાશકર્તા શોધો",
+      "roleLabel": "ભૂમિકા દ્વારા ફ઼િલ્ટર કરો",
+      "allRoles": "બધી ભૂમિકાઓ"
     },
     "you": "(તમે)",
     "yourAccount": "તમારું ખાતું",

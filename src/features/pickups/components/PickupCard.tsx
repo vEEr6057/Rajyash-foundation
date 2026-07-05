@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { MapPin, Clock, Package } from "lucide-react";
 import { getTranslations, getLocale } from "next-intl/server";
 import type { Pickup } from "@/server/db/schema";
@@ -11,9 +12,20 @@ import { BoardClaimButton } from "./BoardClaimButton";
  * Presentational pickup summary card (links to detail). UX-1: when a driver
  * views an available pickup, a claim button sits below the (still fully
  * clickable) card body — a sibling of the Link, never nested inside it, so
- * tapping Claim never also navigates.
+ * tapping Claim never also navigates. UX-2: an optional `distanceChip` slot
+ * (a client component instance, e.g. `<DistanceChip lat lng />`) renders next
+ * to the status pill — passed in by the caller, so PickupCard itself stays
+ * agnostic of geolocation/context and every other caller is unaffected.
  */
-export async function PickupCard({ pickup, role }: { pickup: Pickup; role?: Role }) {
+export async function PickupCard({
+  pickup,
+  role,
+  distanceChip,
+}: {
+  pickup: Pickup;
+  role?: Role;
+  distanceChip?: ReactNode;
+}) {
   const [t, locale] = await Promise.all([getTranslations("common"), getLocale()]);
   const showClaim = role === "driver" && pickup.status === "requested";
   return (
@@ -24,7 +36,10 @@ export async function PickupCard({ pickup, role }: { pickup: Pickup; role?: Role
             <Package className="size-4 text-primary" />
             {t(`foodCategory.${pickup.category}`)}
           </span>
-          <PickupStatusPill status={pickup.status} />
+          <div className="flex items-center gap-1.5">
+            {distanceChip}
+            <PickupStatusPill status={pickup.status} />
+          </div>
         </div>
         <p className="font-display text-sm font-medium tabular-nums text-foreground">
           {formatQuantity(pickup.quantity, pickup.quantityUnit, t)}

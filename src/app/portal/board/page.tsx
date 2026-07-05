@@ -6,6 +6,8 @@ import { ROUTES } from "@/config/constants";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { PickupCard } from "@/features/pickups/components/PickupCard";
+import { DistanceChip } from "@/features/pickups/components/DistanceChip";
+import { DistanceAwareBoardList } from "@/features/pickups/components/DistanceAwareBoardList";
 import { MapView } from "@/features/pickups/components/MapView";
 import { BoardTabs } from "@/features/pickups/components/BoardTabs";
 import { VolunteerClaimNote } from "@/features/pickups/components/VolunteerClaimNote";
@@ -52,11 +54,29 @@ export default async function PickupBoardPage() {
       ) : (
         <BoardTabs
           listSlot={
-            <div className="grid gap-3 md:grid-cols-2">
-              {open.map((p) => (
-                <PickupCard key={p.id} pickup={p} role={session.role} />
-              ))}
-            </div>
+            session.role === "driver" ? (
+              <DistanceAwareBoardList
+                items={open.map((p) => ({
+                  id: p.id,
+                  lat: p.lat,
+                  lng: p.lng,
+                  node: (
+                    <PickupCard
+                      key={p.id}
+                      pickup={p}
+                      role={session.role}
+                      distanceChip={<DistanceChip lat={p.lat} lng={p.lng} />}
+                    />
+                  ),
+                }))}
+              />
+            ) : (
+              <div className="grid gap-3 md:grid-cols-2">
+                {open.map((p) => (
+                  <PickupCard key={p.id} pickup={p} role={session.role} />
+                ))}
+              </div>
+            )
           }
           mapSlot={<MapView markers={markers} height="min(70dvh, 640px)" />}
         />

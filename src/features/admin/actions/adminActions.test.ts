@@ -70,7 +70,13 @@ vi.mock("@/server/notifications/events", () => ({
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/logger", () => ({ logger: { error: vi.fn(), info: vi.fn() } }));
 
-import { setUserRole, deactivateUser, assignPickup, inviteUser } from "./adminActions";
+import {
+  setUserRole,
+  deactivateUser,
+  assignPickup,
+  assignPickupsBulk,
+  inviteUser,
+} from "./adminActions";
 
 beforeEach(() => {
   requireRole.mockResolvedValue({ userId: "admin-1", role: "admin" });
@@ -191,6 +197,77 @@ describe("assignPickup (ADM-02, dispatch-model-v2)", () => {
     const r = await assignPickup("pk1", "d1");
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.code).toBe("CONFLICT");
+  });
+});
+
+describe("assignPickupsBulk (UX-12)", () => {
+  it("returns FORBIDDEN for a non-admin caller and never touches a pickup", async () => {
+    requireRole.mockRejectedValueOnce(new Error("no"));
+    const r = await assignPickupsBulk(["pk1"], "d1");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("FORBIDDEN");
+    expect(assignToVolunteer).not.toHaveBeenCalled();
+  });
+
+  it("rejects an empty selection with VALIDATION", async () => {
+    const r = await assignPickupsBulk([], "d1");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("VALIDATION");
+    expect(assignToVolunteer).not.toHaveBeenCalled();
+  });
+
+  it("rejects a driver not in the assignable set before touching any pickup", async () => {
+    const r = await assignPickupsBulk(["pk1", "pk2"], "ghost");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("VALIDATION");
+    expect(assignToVolunteer).not.toHaveBeenCalled();
+  });
+
+  it("runs each pickup through its own atomic call — one taken pickup fails alone, the rest still succeed", async () => {
+    assignToVolunteer.mockImplementation(async (id: string) =>
+      id === "pk2" ? null : { id, status: "accepted" },
+    );
+    const r = await assignPickupsBulk(["pk1", "pk2", "pk3"], "d1");
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.assigned).toEqual(["pk1", "pk3"]);
+      expect(r.failed).toEqual([
+        { id: "pk2", reason: "Already claimed or assigned." },
+      ]);
+    }
+    // one call per pickup — never a single batch UPDATE across the selection
+    expect(assignToVolunteer).toHaveBeenCalledTimes(3);
+    expect(assignToVolunteer).toHaveBeenNthCalledWith(1, "pk1", "d1");
+    expect(assignToVolunteer).toHaveBeenNthCalledWith(2, "pk2", "d1");
+    expect(assignToVolunteer).toHaveBeenNthCalledWith(3, "pk3", "d1");
+    // statusEvents recorded only for the ones that actually succeeded
+    expect(record).toHaveBeenCalledTimes(2);
+    expect(record).toHaveBeenCalledWith(
+      expect.objectContaining({
+        pickupId: "pk1",
+        actorId: "admin-1",
+        fromStatus: "requested",
+        toStatus: "accepted",
+      }),
+    );
+    expect(record).toHaveBeenCalledWith(
+      expect.objectContaining({ pickupId: "pk3", actorId: "admin-1" }),
+    );
+  });
+
+  it("isolates a per-pickup exception without aborting the rest of the batch", async () => {
+    assignToVolunteer.mockImplementation(async (id: string) => {
+      if (id === "pk2") throw new Error("db blip");
+      return { id, status: "accepted" };
+    });
+    const r = await assignPickupsBulk(["pk1", "pk2", "pk3"], "d1");
+    expect(r.ok).toBe(true);
+    if (r.ok) {
+      expect(r.assigned).toEqual(["pk1", "pk3"]);
+      expect(r.failed).toEqual([
+        { id: "pk2", reason: "Could not assign this pickup." },
+      ]);
+    }
   });
 });
 

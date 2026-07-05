@@ -45,6 +45,16 @@
       "successMessage": "पिकअप सौंपा गया.",
       "errorMessage": "पिकअप सौंपने में विफल."
     },
+    "bulkAssign": {
+      "_review": "pending",
+      "selectAll": "सभी सौंपे जा सकने वाले पिकअप चुनें",
+      "selectRow": "यह पिकअप चुनें",
+      "selected": "{count, plural, one {# चयनित} other {# चयनित}}",
+      "button": "ड्राइवर को सौंपें",
+      "title": "{count, plural, one {# पिकअप} other {# पिकअप}} ड्राइवर को सौंपें",
+      "allAssigned": "{count, plural, one {# पिकअप सौंपा गया.} other {# पिकअप सौंपे गए.}}",
+      "partialResult": "{assigned} सौंपे गए, {failed} पहले से लिए जा चुके."
+    },
     "export": {
       "button": "CSV निर्यात",
       "filename": "pickups-export"
@@ -61,7 +71,16 @@
     "meta": "{count, plural, one {# उपयोगकर्ता} other {# उपयोगकर्ता}}",
     "empty": {
       "title": "कोई उपयोगकर्ता नहीं मिला",
-      "body": "लोग अपने पहले साइन-इन के बाद यहाँ दिखते हैं."
+      "body": "लोग अपने पहले साइन-इन के बाद यहाँ दिखते हैं.",
+      "noMatchTitle": "कोई उपयोगकर्ता मेल नहीं खाता",
+      "noMatchBody": "खोज या भूमिका फ़िल्टर हटाकर देखें."
+    },
+    "filters": {
+      "_review": "pending",
+      "searchPlaceholder": "नाम या ईमेल खोजें",
+      "searchLabel": "नाम या ईमेल से उपयोगकर्ता खोजें",
+      "roleLabel": "भूमिका के अनुसार फ़िल्टर करें",
+      "allRoles": "सभी भूमिकाएँ"
     },
     "you": "(आप)",
     "yourAccount": "आपका खाता",

@@ -1,11 +1,13 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { ReactNode } from "react";
 import {
   MapContainer,
   TileLayer,
   Marker,
   Polyline,
+  Popup,
   useMap,
   useMapEvents,
 } from "react-leaflet";
@@ -24,6 +26,8 @@ export interface MapMarker {
   id: string;
   lat: number;
   lng: number;
+  /** UX-9: optional popup content shown on tap (e.g. distributions map pins). */
+  popup?: ReactNode;
 }
 
 // Ahmedabad default center.
@@ -194,7 +198,9 @@ export default function MapViewInner({
             )}
             <LiveMarker pos={live} stale={liveStale} />
             {markers.map((m) => (
-              <Marker key={m.id} position={[m.lat, m.lng]} />
+              <Marker key={m.id} position={[m.lat, m.lng]}>
+                {m.popup && <Popup>{m.popup}</Popup>}
+              </Marker>
             ))}
           </>
         )}
