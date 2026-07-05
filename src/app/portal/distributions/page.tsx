@@ -7,6 +7,8 @@ import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { APP_TIME_ZONE } from "@/features/pickups/lib/format";
 import { DistributionRunCard } from "@/features/runs/components/DistributionRunCard";
+import { DistributionsMap } from "@/features/runs/components/DistributionsMap";
+import { toDistributionMapPins } from "@/features/runs/lib/distributionMapPins";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Today's distributions — Rajyash Food Porter" };
@@ -34,6 +36,24 @@ export default async function DistributionsPage() {
     activeRuns.map((r) => runsRepo.getRunWithStops(r.id)),
   );
 
+  // Pre-compute each run's display meta + sorted drop stops once, so the
+  // card list and the map (UX-9) render from the same data — no drift.
+  const runCards = runsWithStops
+    .filter((run): run is NonNullable<typeof run> => run != null)
+    .map((run) => {
+      const dropStops = run.stops
+        .filter((s) => s.kind === "drop")
+        .sort((a, b) => a.seq - b.seq);
+      const runDate = new Date(run.runDate).toLocaleDateString(`${locale}-IN`, {
+        timeZone: APP_TIME_ZONE,
+        day: "numeric",
+        month: "short",
+      });
+      const meta = [tAdmin(RUN_SLOT_LABEL_KEYS[run.slot]), runDate].join(" · ");
+      return { id: run.id, meta, dropStops };
+    });
+  const mapPins = toDistributionMapPins(runCards);
+
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
       <PageHeader
@@ -49,26 +69,17 @@ export default async function DistributionsPage() {
         />
       ) : (
         <div className="space-y-4">
-          {runsWithStops.map((run) => {
-            if (!run) return null;
-            const dropStops = run.stops
-              .filter((s) => s.kind === "drop")
-              .sort((a, b) => a.seq - b.seq);
-            const runDate = new Date(run.runDate).toLocaleDateString(`${locale}-IN`, {
-              timeZone: APP_TIME_ZONE,
-              day: "numeric",
-              month: "short",
-            });
-            const meta = [tAdmin(RUN_SLOT_LABEL_KEYS[run.slot]), runDate].join(" · ");
-            return (
-              <DistributionRunCard
-                key={run.id}
-                meta={meta}
-                dropStops={dropStops}
-                noDropStopsLabel={t("distributions.noDropStops")}
-              />
-            );
-          })}
+          {/* UX-9: only rendered when at least one drop stop has coordinates
+              — no empty map. */}
+          {mapPins.length > 0 && <DistributionsMap pins={mapPins} />}
+          {runCards.map(({ id, meta, dropStops }) => (
+            <DistributionRunCard
+              key={id}
+              meta={meta}
+              dropStops={dropStops}
+              noDropStopsLabel={t("distributions.noDropStops")}
+            />
+          ))}
         </div>
       )}
     </main>

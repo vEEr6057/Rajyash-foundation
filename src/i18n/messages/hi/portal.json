@@ -152,6 +152,8 @@
     "recentTitle": "हाल के पिकअप",
     "activeTitle": "आज की वितरण गतिविधि",
     "noActive": "अभी कोई वितरण चालू नहीं है — लंच या डिनर सर्विस के बाद फिर जाँचें.",
+    "whatsCookingTitle": "क्या बन रहा है",
+    "whatsCookingBody": "{count} पिकअप अभी बोर्ड पर हैं.",
     "stats": {
       "total": "कुल पोस्ट",
       "open": "खुले",
@@ -159,6 +161,7 @@
       "delivered": "डिलीवर",
       "openNow": "अभी खुले",
       "myActive": "अभी सक्रिय",
+      "dropStops": "आज के ड्रॉप स्टॉप",
       "deliveredByMe": "मैंने डिलीवर किए"
     }
   },
