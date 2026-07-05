@@ -6,23 +6,25 @@
 
 ## What Food Porter is
 
-Food Porter connects people who have surplus food — restaurants, families, event halls — with
-volunteers who pick it up and deliver it to people in need across Ahmedabad. The web platform
-runs the entire loop: a donor posts food in under a minute, a volunteer claims it, the pickup is
-tracked live on a map from door to door, and the foundation sees everything on one dashboard.
-It also gives the foundation a modern public website with online donations (UPI/cards via
-Razorpay) in English, Gujarati, and Hindi.
+Food Porter connects people who have surplus food — restaurants, hostels, event halls — with
+the foundation's food-rescue operation across Ahmedabad. A donor posts surplus food in under a
+minute; the foundation's driver collects it and, together with volunteers who ride along as
+helping hands, distributes it to people in need. The web platform runs the whole loop: the
+pickup and delivery are tracked live on a map from door to door, and the foundation sees
+everything on one dashboard. It also gives the foundation a modern public website with online
+donations (UPI/cards via Razorpay) in English, Gujarati, and Hindi.
 
 Under the hood it is built the same way large delivery platforms (Swiggy, Porter, Uber) are
-built — the same guarantees that no two volunteers can claim the same pickup, that every status
-change is recorded with who did it and when, and that no donation payment can ever be counted
-twice or lost.
+built — the same guarantees that no two people are ever dispatched to the same pickup, that
+every status change is recorded with who did it and when, and that no donation payment can ever
+be counted twice or lost.
 
 ## Where we are today
 
 The platform is **ready to launch now, at ₹0/month** in running costs:
 
-- Complete rescue loop: post → claim → pick up → live tracking → deliver — tested end to end.
+- Complete rescue loop: donor posts → driver picks up → volunteers help distribute → live
+  tracking → delivered — tested end to end.
 - Admin dashboard: pickups, delivery runs, volunteers, partners, destinations, reports.
 - Public website with online donation flow (goes fully live once Razorpay NGO verification clears).
 - Three languages, light/dark themes, installable on any phone as an app (no app store needed).
@@ -35,8 +37,9 @@ accounts, and the Razorpay paperwork already in progress.
 ## The end goal
 
 A platform the foundation can run for years and point to with pride: **every rescued meal
-counted and visible, every volunteer coordinated through the channels they actually use, every
-donation safe and receipted, and the service reliable enough that partners plan around it.**
+counted and visible, every driver and volunteer coordinated through the channels they actually
+use, every donation safe and receipted, and the service reliable enough that partners plan
+around it.**
 
 Getting there is four stages. Each stage stands on its own — the foundation decides the pace.
 
@@ -51,11 +54,11 @@ in place from day one.
 **Needs from the foundation:** domain access (GoDaddy), a foundation email to own the accounts,
 the content decision on the old site's program pages, and the Razorpay KYC push.
 
-### Stage 2 — Volunteers on WhatsApp (~₹500–1,000/month)
+### Stage 2 — Drivers & volunteers on WhatsApp (~₹500–1,000/month)
 
-Today the platform notifies volunteers by app notification and email. Indian volunteers live on
-WhatsApp — the most successful volunteer networks in India (e.g. Robin Hood Army) coordinate
-entirely there. This stage adds official WhatsApp messages for new pickups, claims, and
+Today the platform notifies drivers and volunteers by app notification and email. In India they
+live on WhatsApp — the most successful food-rescue networks (e.g. Robin Hood Army) coordinate
+entirely there. This stage adds official WhatsApp messages for new pickups, assignments, and
 delivery confirmations.
 
 Cost is per message (about 12 paise each); at current scale that is roughly **₹300–500/month**,
@@ -88,7 +91,7 @@ stays near zero (Play Store: ₹2,200 one-time).
 | Stage | What the foundation gets | Monthly cost |
 |---|---|---|
 | 1 · Launch | Full platform, live on rajyashfoundation.com | **₹0** |
-| 2 · WhatsApp | Volunteer coordination where volunteers actually are | **~₹500–1,000** |
+| 2 · WhatsApp | Driver & volunteer coordination where they actually are | **~₹500–1,000** |
 | 3 · Professional grade | Guaranteed backups & uptime + public impact counters | **~₹2,500–3,500** |
 | 4 · Native app | Background tracking, offline support, Play Store | Project cost; ~₹0/month |
 
