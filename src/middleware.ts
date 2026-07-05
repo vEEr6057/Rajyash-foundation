@@ -17,6 +17,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/client-error", // §3 — browser error reports; errors happen signed-out too
   "/api/razorpay/webhook", // PAY-02 — Razorpay authenticates via HMAC signature, not Clerk
   "/donate", // PAY-03 — public donate page (flag-gated to notFound() when payments are off)
+  "/guide", // public user handbook (static book at public/guide.html; /guide rewrites to it)
 ]);
 const isOnboardingRoute = createRouteMatcher(["/onboarding(.*)"]);
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
