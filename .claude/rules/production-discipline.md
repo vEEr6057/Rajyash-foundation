@@ -71,6 +71,37 @@ follow them:
 - **Risky changes roll out gradually** — Workers gradual deployments (% traffic) for anything
   touching auth, payments, or the claim path; `wrangler rollback` is the undo (runbook).
 
+## 6. Security (the RLS boundary is the crown jewel)
+
+- **RLS lives in migrations, never only in the dashboard.** Supabase's anon role has default
+  FULL table grants — RLS is the *only* thing between the public anon key (in the client bundle)
+  and every row. That protection MUST be reproducible: `ENABLE ROW LEVEL SECURITY`, every
+  `CREATE POLICY`, and any `private.*` helper function live in a committed SQL migration, reviewed
+  in the PR. A boundary that exists only in the live DB is one `drizzle-kit migrate` (new dev
+  project, prod restore) away from a wide-open database. Drizzle does NOT manage RLS — hand-author
+  the SQL migration. **Verify a fresh project: sign in as nobody, confirm the anon key reads zero
+  rows.** (Pre-launch review 2026-07-05 found the entire RLS layer was dashboard-only — HIGH-1.)
+- **Public endpoints need an abuse gate, not just auth.** Any unauthenticated mutating surface
+  (donation order minting, error/CSP sinks) carries a rate limit or Cloudflare Turnstile — free
+  tiers turn a flood into a DoS + quota-burn. Keep genuinely-public flows public (Turnstile, not
+  login).
+- **CSP enforcing before the real domain.** Report-only is a telemetry mode, not a defense.
+- **Periodic security review is a gate, not a favor.** Run the full pass (below) before any
+  launch/cutover, before enabling payments live, and after any change to auth, RLS, payments, or a
+  new public route. Findings → `docs/security/SECURITY-REVIEW-<date>.md`; HIGH blocks the milestone.
+
+  **Review checklist** (each a concrete check, not a vibe):
+  1. `pnpm audit --prod` clean; `git log --all -- .env*` empty; no live keys in `src` grep.
+  2. RLS: query the live DB (`pg_class.relrowsecurity`, `pg_policies`, anon/authenticated grants) —
+     confirm every browser-read table has a scoped policy and everything else is default-deny; and
+     that all of it is in a migration.
+  3. Every server action taking an id re-checks ownership (reads + deletes), authz values
+     server-resolved. Every public route re-justified in the middleware allowlist.
+  4. Payments: HMAC constant-time, webhook idempotent, amounts server-authoritative.
+  5. Injection/XSS: no `eval`/`new Function`; every `dangerouslySetInnerHTML` is static.
+  6. Abuse: every public POST has a rate/Turnstile gate. Signed-URL paths server-composed.
+  7. Headers: HSTS, frame-deny, nosniff, CSP mode. Secrets not logged.
+
 ## 5. Vendors & operations
 
 - **Foundation owns everything** — every account (Cloudflare, Supabase, Clerk, GitHub org,
@@ -88,4 +119,5 @@ follow them:
 
 A change is done when: CI green (typecheck, lint, tests, build) · rules §2 patterns followed ·
 reviewed via PR · deployed by CI · smoke check passed. For schema changes: migration file
-reviewed + applied + backup verified after.
+reviewed + applied + backup verified after — and if the change touches RLS/policies/grants, the
+SQL is IN the migration (§6), not the dashboard.
