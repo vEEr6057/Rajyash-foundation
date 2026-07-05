@@ -116,29 +116,12 @@ export const profilesRepo = {
       .orderBy(desc(profiles.createdAt));
   },
 
-  /** ADM-02 assign-target source: onboarded, NON-deactivated volunteers + names. */
-  async listAssignableVolunteers(): Promise<{ id: string; name: string }[]> {
-    const db = getDb();
-    return db
-      .select({ id: profiles.id, name: profiles.name })
-      .from(profiles)
-      .where(
-        and(
-          eq(profiles.role, "volunteer"),
-          eq(profiles.onboardingComplete, true),
-          isNull(profiles.deactivatedAt),
-        ),
-      )
-      .orderBy(desc(profiles.createdAt));
-  },
-
   /**
    * ADM-02 assign-target source: onboarded, NON-deactivated drivers + names.
-   * Mirrors listAssignableVolunteers — dispatch-model-v2 made the DRIVER the
-   * collector role, so the admin manual-assign picker sources this, not
-   * listAssignableVolunteers (a volunteer assignee could never advance the
-   * pickup afterward — claimPickup/advancePickup/recordPing all gate on
-   * role === "driver").
+   * dispatch-model-v2 made the DRIVER the collector role, so the admin
+   * manual-assign picker sources this (a volunteer assignee could never
+   * advance the pickup afterward — claimPickup/advancePickup/recordPing all
+   * gate on role === "driver").
    */
   async listAssignableDrivers(): Promise<{ id: string; name: string }[]> {
     const db = getDb();

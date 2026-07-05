@@ -14,6 +14,7 @@ import { StopStatusPill } from "@/features/runs/components/StopStatusPill";
 import { MarkStopDoneButton } from "@/features/runs/components/MarkStopDoneButton";
 import { RunTracker } from "@/features/runs/components/RunTracker";
 import { RunLiveMap } from "@/features/runs/components/RunLiveMap";
+import { PushOptIn } from "@/features/notifications";
 import type { RunStop } from "@/server/db/schema";
 
 export const dynamic = "force-dynamic";
@@ -50,6 +51,9 @@ export default async function DriverRunPage() {
     return (
       <main className="mx-auto max-w-2xl px-4 py-8">
         <PageHeader eyebrow={t("run.eyebrow")} title={t("run.title")} />
+        <div className="mb-6">
+          <PushOptIn />
+        </div>
         <EmptyState title={t("run.emptyTitle")} body={t("run.emptyState")} />
         <p className="mx-auto max-w-sm border-t border-border pt-4 text-center text-sm text-muted-foreground">
           {t("run.help")}{" "}
@@ -109,6 +113,10 @@ export default async function DriverRunPage() {
   return (
     <main className="mx-auto max-w-2xl px-4 py-8">
       <PageHeader eyebrow={t("run.eyebrow")} title={t("run.title")} meta={meta} />
+
+      <div className="mb-6">
+        <PushOptIn />
+      </div>
 
       {stops.length === 0 ? (
         <div className="rounded-xl border border-dashed border-border-strong p-8 text-center text-muted-foreground">
