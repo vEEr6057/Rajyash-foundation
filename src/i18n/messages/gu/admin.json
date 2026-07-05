@@ -25,6 +25,7 @@
       "status": "સ્ટેટસ",
       "donor": "દાતા",
       "volunteer": "સ્વયંસેવક",
+      "driver": "ડ્રાઇવર",
       "category": "શ્રેણી",
       "quantity": "જથ્થો",
       "location": "સ્થળ",
@@ -35,10 +36,11 @@
       "unassigned": "સોંપ્યું નથી"
     },
     "assign": {
-      "button": "સ્વયંસેવક સોંપો",
+      "_review": "pending",
+      "button": "ડ્રાઇવર સોંપો",
       "label": "ને સોંપો",
-      "placeholder": "સ્વયંસેવક પસંદ કરો",
-      "noVolunteers": "કોઈ સ્વયંસેવક ઉપલબ્ધ નથી",
+      "placeholder": "ડ્રાઇવર પસંદ કરો",
+      "noDrivers": "કોઈ ડ્રાઇવર ઉપલબ્ધ નથી",
       "submitButton": "સોંપો",
       "successMessage": "પિકઅપ સોંપ્યું.",
       "errorMessage": "પિકઅપ સોંપવામાં નિષ્ફ઼ળ."
@@ -227,12 +229,20 @@
     "stopsSection": "સ્ટોપ",
     "addStop": "સ્ટોપ ઉમેરો",
     "removeStop": "સ્ટોપ દૂર કરો",
+    "overrideStatus": "સ્ટોપ સ્ટેટસ ઓવરરાઇડ કરો",
     "moveUp": "ઉપર ખસેડો",
     "moveDown": "નીચે ખસેડો",
     "delete": "રન કાઢી નાખો",
+    "editButton": "રન સંપાદિત કરો",
+    "editTitle": "રન સંપાદિત કરો",
     "slotMorning": "સવારની ડ્રાઇવ",
     "slotNight": "રાત્રિ ડ્રાઇવ",
     "status": { "advance": "{status} પર સેટ કરો" },
+    "assignDriver": {
+      "sectionTitle": "ડ્રાઇવર",
+      "label": "ડ્રાઇવર",
+      "noDrivers": "કોઈ ડ્રાઇવર ઉપલબ્ધ નથી"
+    },
     "form": {
       "title": "રન બનાવો",
       "slot": "ડ્રાઇવ સ્લોટ",

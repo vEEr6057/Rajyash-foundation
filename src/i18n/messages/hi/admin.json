@@ -25,6 +25,7 @@
       "status": "स्थिति",
       "donor": "दाता",
       "volunteer": "स्वयंसेवक",
+      "driver": "ड्राइवर",
       "category": "श्रेणी",
       "quantity": "मात्रा",
       "location": "स्थान",
@@ -35,10 +36,11 @@
       "unassigned": "सौंपा नहीं"
     },
     "assign": {
-      "button": "स्वयंसेवक सौंपें",
+      "_review": "pending",
+      "button": "ड्राइवर सौंपें",
       "label": "को सौंपें",
-      "placeholder": "स्वयंसेवक चुनें",
-      "noVolunteers": "कोई स्वयंसेवक उपलब्ध नहीं",
+      "placeholder": "ड्राइवर चुनें",
+      "noDrivers": "कोई ड्राइवर उपलब्ध नहीं",
       "submitButton": "सौंपें",
       "successMessage": "पिकअप सौंपा गया.",
       "errorMessage": "पिकअप सौंपने में विफल."
@@ -227,12 +229,20 @@
     "stopsSection": "स्टॉप",
     "addStop": "स्टॉप जोड़ें",
     "removeStop": "स्टॉप हटाएं",
+    "overrideStatus": "स्टॉप स्थिति ओवरराइड करें",
     "moveUp": "ऊपर ले जाएं",
     "moveDown": "नीचे ले जाएं",
     "delete": "रन हटाएं",
+    "editButton": "रन संपादित करें",
+    "editTitle": "रन संपादित करें",
     "slotMorning": "सुबह ड्राइव",
     "slotNight": "रात ड्राइव",
     "status": { "advance": "{status} पर सेट करें" },
+    "assignDriver": {
+      "sectionTitle": "ड्राइवर",
+      "label": "ड्राइवर",
+      "noDrivers": "कोई ड्राइवर उपलब्ध नहीं"
+    },
     "form": {
       "title": "रन बनाएं",
       "slot": "ड्राइव स्लॉट",

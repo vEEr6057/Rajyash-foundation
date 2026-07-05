@@ -9,6 +9,8 @@ import { ROUTES, RUN_SLOT_LABEL_KEYS } from "@/config/constants";
 import { PageHeader } from "@/components/PageHeader";
 import { RunStatusPill } from "@/features/runs/components/RunStatusPill";
 import { RunStatusControls } from "@/features/runs/components/RunStatusControls";
+import { AssignRunDriverForm } from "@/features/runs/components/AssignRunDriverForm";
+import { EditRunSheet } from "@/features/runs/components/EditRunSheet";
 import { StopList } from "@/features/runs/components/StopList";
 import { AddStopForm } from "@/features/runs/components/AddStopForm";
 import { RunLiveMap } from "@/features/runs/components/RunLiveMap";
@@ -31,10 +33,12 @@ export default async function AdminRunDetailPage({
   }
 
   const t = await getTranslations("admin");
-  const [runWithStops, partners, destinations] = await Promise.all([
+  const [runWithStops, partners, destinations, drivers] = await Promise.all([
     runsRepo.getRunWithStops(id),
     partnersRepo.list(),
     destinationsRepo.list(),
+    // Backs both the (re)assign-driver control and the edit-run sheet below.
+    profilesRepo.listByRole("driver"),
   ]);
   if (!runWithStops) notFound();
 
@@ -51,12 +55,15 @@ export default async function AdminRunDetailPage({
       ? { lat: nextPending.lat, lng: nextPending.lng }
       : null;
   const locale = await getLocale();
-  const runDate = new Date(runWithStops.runDate).toLocaleDateString(`${locale}-IN`, {
+  const runDateObj = new Date(runWithStops.runDate);
+  const runDate = runDateObj.toLocaleDateString(`${locale}-IN`, {
     timeZone: "Asia/Kolkata",
     day: "numeric",
     month: "short",
     year: "numeric",
   });
+  // yyyy-mm-dd for the edit-run form's date input (defaultValues, not display).
+  const runDateISO = runDateObj.toISOString().slice(0, 10);
 
   // Driver name for the header meta (existing read; no query change).
   const driverName = runWithStops.driverId
@@ -78,9 +85,29 @@ export default async function AdminRunDetailPage({
         meta={meta}
         action={<RunStatusPill status={runWithStops.status} />}
       />
-      <div className="mb-6">
+      <div className="mb-6 flex flex-wrap items-center gap-2">
         <RunStatusControls runId={runWithStops.id} status={runWithStops.status} />
+        {editable && (
+          <EditRunSheet
+            runId={runWithStops.id}
+            slot={runWithStops.slot}
+            runDate={runDateISO}
+          />
+        )}
       </div>
+
+      {editable && (
+        <section className="mb-6 border-t border-border pt-6">
+          <h2 className="mb-3 font-display text-[15px] font-semibold">
+            {t("runs.assignDriver.sectionTitle")}
+          </h2>
+          <AssignRunDriverForm
+            runId={runWithStops.id}
+            currentDriverId={runWithStops.driverId}
+            drivers={drivers}
+          />
+        </section>
+      )}
 
       {runWithStops.status === "active" && (
         <section className="mb-6 border-t border-border pt-6">
