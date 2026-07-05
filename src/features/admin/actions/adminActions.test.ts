@@ -202,37 +202,83 @@ describe("inviteUser", () => {
 
   it("returns FORBIDDEN for non-admin and does not invite", async () => {
     requireRole.mockRejectedValueOnce(new Error("no"));
-    const r = await inviteUser("a@b.com", "volunteer");
+    const r = await inviteUser("a@b.com", "volunteer", "New Person");
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.code).toBe("FORBIDDEN");
     expect(createInvitation).not.toHaveBeenCalled();
   });
 
   it("rejects an invalid email with VALIDATION", async () => {
-    const r = await inviteUser("not-an-email", "volunteer");
+    const r = await inviteUser("not-an-email", "volunteer", "New Person");
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.code).toBe("VALIDATION");
     expect(createInvitation).not.toHaveBeenCalled();
   });
 
-  it("creates a Clerk invitation carrying the role on the happy path", async () => {
-    const r = await inviteUser("New.Person@Example.com", "driver");
+  it("rejects a missing/too-short name with VALIDATION", async () => {
+    const r1 = await inviteUser("a@b.com", "volunteer", "");
+    expect(r1.ok).toBe(false);
+    if (!r1.ok) expect(r1.code).toBe("VALIDATION");
+    const r2 = await inviteUser("a@b.com", "volunteer", "A");
+    expect(r2.ok).toBe(false);
+    if (!r2.ok) expect(r2.code).toBe("VALIDATION");
+    expect(createInvitation).not.toHaveBeenCalled();
+  });
+
+  it("rejects an invalid phone with VALIDATION", async () => {
+    const r = await inviteUser("a@b.com", "volunteer", "New Person", "12345");
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.code).toBe("VALIDATION");
+    expect(createInvitation).not.toHaveBeenCalled();
+  });
+
+  it("creates a Clerk invitation with onboardingComplete:true + seeded name on the happy path", async () => {
+    const r = await inviteUser(
+      "New.Person@Example.com",
+      "driver",
+      "  Driver Dan  ",
+      "9876543210",
+      "Surat",
+    );
     expect(r.ok).toBe(true);
     expect(createInvitation).toHaveBeenCalledWith(
       expect.objectContaining({
         emailAddress: "new.person@example.com",
-        publicMetadata: { role: "driver" },
+        publicMetadata: {
+          role: "driver",
+          onboardingComplete: true,
+          invitedName: "Driver Dan",
+          invitedPhone: "9876543210",
+          invitedCity: "Surat",
+        },
+        ignoreExisting: true,
       }),
     );
   });
 
-  it("invites an admin — carries role in metadata; they onboard + stay admin (completeOnboarding preserves it)", async () => {
-    const r = await inviteUser("boss@example.com", "admin");
+  it("defaults city to DEFAULT_CITY and phone to null when omitted", async () => {
+    const r = await inviteUser("plain@example.com", "donor", "Plain Donor");
+    expect(r.ok).toBe(true);
+    expect(createInvitation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        publicMetadata: expect.objectContaining({
+          invitedCity: "Ahmedabad",
+          invitedPhone: null,
+        }),
+      }),
+    );
+  });
+
+  it("invites an admin — the one place admin may be assigned; carries role + onboardingComplete", async () => {
+    const r = await inviteUser("boss@example.com", "admin", "Boss Person");
     expect(r.ok).toBe(true);
     expect(createInvitation).toHaveBeenCalledWith(
       expect.objectContaining({
         emailAddress: "boss@example.com",
-        publicMetadata: { role: "admin" },
+        publicMetadata: expect.objectContaining({
+          role: "admin",
+          onboardingComplete: true,
+        }),
       }),
     );
   });
