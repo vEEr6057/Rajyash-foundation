@@ -213,18 +213,19 @@ tick off each stop.*
 
 ![My Run](assets/25-driver-run.png)
 
-**My Run** shows the route a coordinator has assigned you. When you have no run yet, you'll see
-*"No run assigned to you yet — check back later,"* with the coordinator's phone number if you
-have questions.
+**My Run** shows the route a coordinator has assigned you — its name and date, and your **stops
+in order**. It's your working checklist for the shift:
 
-**When a run is assigned,** this screen becomes your working checklist for the shift:
-
-- **Your stops in order** — each pickup to collect and each destination to drop at.
-- **Mark each stop done** as you complete it. The run auto-completes when every stop is finished.
-- **Live location** — while your run is active, the app shares your location so coordinators and
-  donors can see progress on the map. *(On the web app, keep your screen on during the run for
-  continuous tracking.)*
+- **Each stop in order** — a *Pickup* to collect food or a *Drop* to deliver it, with its area
+  and a **Pending** marker until you complete it.
+- **Mark done** — tap it as you finish each stop; the run auto-completes when every stop is done.
+- **Sharing your location** — while your run is active, the app shares your live location on the
+  map so coordinators and donors can see progress. It's deleted the moment you mark delivered.
+  *(On the web app, keep your screen on during the run for continuous tracking.)*
 - Volunteers riding with you can also confirm drops on an active run.
+
+*(Before a run is assigned, this screen simply reads "No run assigned to you yet — check back
+later," with the coordinator's phone number.)*
 
 The structure of a run (its ordered pickup and drop stops) is the same one staff build on the
 admin side — see the **run detail** screen in the admin guide for the full picture.
