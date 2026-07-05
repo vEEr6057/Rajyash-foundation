@@ -78,16 +78,30 @@ jobs:
       # served 200 — curl-the-HTML smoke checks cannot catch a dead client bundle
       # (lesson: curl-smoke-check-misses-dead-client-js). Fetch the live homepage,
       # extract a referenced /_next/static chunk URL, and require it to be 200.
+      #
+      # Cloudflare's edge does not serve the new bundle the instant `wrangler deploy`
+      # returns — there's a short propagation window where the freshly-activated worker
+      # already returns HTML referencing new-hash chunks that the edge hasn't finished
+      # serving, so a single immediate check 404s on a perfectly healthy deploy
+      # (lesson: asset-guard-needs-propagation-settle). So: re-derive the chunk from
+      # FRESH html each attempt (hashes change between builds) and retry on 404 with a
+      # settle delay before declaring the bundle dead. curl --retry does NOT retry 4xx,
+      # hence the explicit loop.
       - name: Verify client assets are live
         run: |
           BASE="https://rajyash-food-rescue.shahveerkeaten.workers.dev"
-          HTML="$(curl -fsSL --retry 3 --retry-delay 5 "$BASE/")"
-          CHUNK="$(printf '%s' "$HTML" | grep -oE '/_next/static/[^"]+\.js' | head -1)"
-          if [ -z "$CHUNK" ]; then
-            echo "::error::No /_next/static/*.js reference found in the homepage HTML — build looks broken."
-            exit 1
-          fi
-          echo "Checking asset: $CHUNK"
-          curl -fsS -o /dev/null --retry 3 --retry-delay 5 "$BASE$CHUNK" \
-            || { echo "::error::Client asset $CHUNK is not serving 200 — deploy shipped a dead client bundle."; exit 1; }
-          echo "Client asset integrity OK."
+          for attempt in 1 2 3 4 5 6; do
+            HTML="$(curl -fsSL --retry 2 --retry-delay 3 "$BASE/")" || { echo "attempt $attempt: homepage not reachable yet"; sleep 15; continue; }
+            CHUNK="$(printf '%s' "$HTML" | grep -oE '/_next/static/[^\"]+\.js' | head -1)"
+            if [ -z "$CHUNK" ]; then
+              echo "attempt $attempt: no /_next/static/*.js reference in HTML yet"; sleep 15; continue
+            fi
+            if curl -fsS -o /dev/null "$BASE$CHUNK"; then
+              echo "Client asset integrity OK (attempt $attempt): $CHUNK"
+              exit 0
+            fi
+            echo "attempt $attempt: $CHUNK not serving 200 yet — waiting for edge propagation"
+            sleep 15
+          done
+          echo "::error::Client assets still not serving 200 after retries — deploy likely shipped a dead client bundle."
+          exit 1
