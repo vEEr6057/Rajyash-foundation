@@ -1,7 +1,7 @@
 import { requireRole, AuthError } from "@/server/auth/session";
 import { pickupsRepo } from "@/server/db/repositories/pickups";
-import { toCsv } from "@/features/admin/lib/csv";
-import { parseAdminFilters } from "@/features/admin/validations/filters";
+import { toCsv } from "@/features/admin";
+import { parseAdminFilters } from "@/features/admin";
 
 /** ADM-06: export the filtered pickups list as CSV. Re-checks admin (Pitfall P4). */
 export async function GET(req: Request) {

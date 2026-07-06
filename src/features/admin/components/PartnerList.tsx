@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { FormSheet } from "@/components/forms";
 import { type PartnerType } from "@/config/constants";
-import { deletePartner } from "@/features/admin";
+import { deletePartner } from "../actions/adminActions";
 import type { Partner } from "@/server/db/schema";
 import { PartnerForm } from "./PartnerForm";
 

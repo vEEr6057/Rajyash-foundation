@@ -37,9 +37,9 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { PickupStatusPill } from "@/features/pickups/components/PickupStatusPill";
-import { formatQuantity } from "@/features/pickups/lib/format";
-import { assignPickup, assignPickupsBulk } from "@/features/admin";
+import { PickupStatusPill } from "@/features/pickups";
+import { formatQuantity } from "@/features/pickups";
+import { assignPickup, assignPickupsBulk } from "../actions/adminActions";
 import { ROUTES } from "@/config/constants";
 import type { Pickup } from "@/server/db/schema";
 

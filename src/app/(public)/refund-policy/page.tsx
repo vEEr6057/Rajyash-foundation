@@ -1,6 +1,6 @@
 // Public Refund & Cancellation Policy — required by Razorpay's website-compliance
 // review for payment activation. PUBLIC route; content in the `policies` namespace.
-import { PolicyPage } from "@/features/public/components/PolicyPage";
+import { PolicyPage } from "@/features/public";
 
 export const metadata = {
   title: "Refund & Cancellation Policy",

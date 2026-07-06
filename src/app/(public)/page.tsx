@@ -2,9 +2,9 @@
 // Public landing route — replaces src/app/page.tsx placeholder.
 // Route group (public) does not affect the URL — still resolves to /.
 // This page is PUBLIC and unauthenticated — no auth check here.
-import { PublicHeader } from "@/features/public/components/PublicHeader";
-import { LandingPage } from "@/features/public/components/LandingPage";
-import { PublicFooter } from "@/features/public/components/PublicFooter";
+import { PublicHeader } from "@/features/public";
+import { LandingPage } from "@/features/public";
+import { PublicFooter } from "@/features/public";
 import { SOCIAL_LINKS } from "@/config/constants";
 
 export const metadata = {

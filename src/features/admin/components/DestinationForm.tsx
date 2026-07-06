@@ -11,8 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FormField, FormActions, FormSwitch } from "@/components/forms";
-import { MapView } from "@/features/pickups/components/MapView";
-import { resolvePickupLocation } from "@/features/pickups/actions/pickupActions";
+import { MapView } from "@/features/pickups";
+import { resolvePickupLocation } from "@/features/pickups/server";
 import {
   destinationSchema,
   type DestinationInput,

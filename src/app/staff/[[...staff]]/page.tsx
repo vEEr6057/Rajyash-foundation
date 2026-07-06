@@ -1,6 +1,6 @@
 import { SignIn } from "@clerk/nextjs";
 import { getTranslations } from "next-intl/server";
-import { AuthSplitLayout } from "@/features/auth/components/AuthSplitLayout";
+import { AuthSplitLayout } from "@/features/auth";
 
 export const metadata = { title: "Staff sign in — Rajyash Food Porter" };
 

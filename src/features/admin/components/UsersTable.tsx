@@ -16,7 +16,7 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { ROLES, type Role } from "@/config/constants";
-import { setUserRole, deactivateUser, reactivateUser } from "@/features/admin";
+import { setUserRole, deactivateUser, reactivateUser } from "../actions/adminActions";
 import type { Profile } from "@/server/db/schema";
 
 const SELECT = "rj-field h-9 rounded-lg border border-input bg-surface px-2 text-sm";

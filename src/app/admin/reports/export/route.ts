@@ -1,6 +1,6 @@
 import { requireRole, AuthError } from "@/server/auth/session";
 import { reportsRepo } from "@/server/db/repositories/reports";
-import { toCsv } from "@/features/admin/lib/csv";
+import { toCsv } from "@/features/admin";
 
 const parseDate = (s: string | null, fallback: Date): Date => {
   if (!s) return fallback;

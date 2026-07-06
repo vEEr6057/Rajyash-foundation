@@ -2,10 +2,10 @@
 // account). Pure chrome: admin access is enforced by middleware + per-page
 // requireRole(["admin"]) (AUTH-05); the layout adds no auth logic.
 import { UserButton } from "@clerk/nextjs";
-import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher";
-import { ThemeToggle } from "@/features/public/components/ThemeToggle";
+import { LanguageSwitcher } from "@/features/public";
+import { ThemeToggle } from "@/features/public";
 import { NotificationBell } from "@/features/notifications";
-import { AdminSidebar, AdminMobileNav } from "@/features/admin/components/AdminNav";
+import { AdminSidebar, AdminMobileNav } from "@/features/admin";
 import { InstallNudgeBanner } from "@/features/pwa";
 
 export default function AdminLayout({

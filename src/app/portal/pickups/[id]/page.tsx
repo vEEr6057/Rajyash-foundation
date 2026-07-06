@@ -12,20 +12,20 @@ import { PageHeader } from "@/components/PageHeader";
 import {
   formatQuantity,
   formatWindow,
-} from "@/features/pickups/lib/format";
-import { PickupStatusPill } from "@/features/pickups/components/PickupStatusPill";
-import { MapView } from "@/features/pickups/components/MapView";
-import { PickupClaimSection } from "@/features/pickups/components/PickupClaimSection";
-import { StatusAdvanceSection } from "@/features/pickups/components/StatusAdvanceSection";
-import { DonorPickupActions } from "@/features/pickups/components/DonorPickupActions";
-import { LiveTrackingMap } from "@/features/pickups/components/LiveTrackingMap";
-import { VolunteerTracker } from "@/features/pickups/components/VolunteerTracker";
-import { NavigateButton } from "@/features/pickups/components/NavigateButton";
-import { CallButton } from "@/features/pickups/components/CallButton";
-import { VerifyToggle } from "@/features/admin/components/VerifyToggle";
-import { PickupStatusTimeline } from "@/features/pickups/components/PickupStatusTimeline";
-import { DeliveryProofBack } from "@/features/pickups/components/DeliveryProofBack";
-import { buildStatusTimeline } from "@/features/pickups/lib/timeline";
+} from "@/features/pickups";
+import { PickupStatusPill } from "@/features/pickups";
+import { MapView } from "@/features/pickups";
+import { PickupClaimSection } from "@/features/pickups";
+import { StatusAdvanceSection } from "@/features/pickups";
+import { DonorPickupActions } from "@/features/pickups";
+import { LiveTrackingMap } from "@/features/pickups";
+import { VolunteerTracker } from "@/features/pickups";
+import { NavigateButton } from "@/features/pickups";
+import { CallButton } from "@/features/pickups";
+import { VerifyToggle } from "@/features/admin";
+import { PickupStatusTimeline } from "@/features/pickups";
+import { DeliveryProofBack } from "@/features/pickups";
+import { buildStatusTimeline } from "@/features/pickups";
 
 export const dynamic = "force-dynamic";
 

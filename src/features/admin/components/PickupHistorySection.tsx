@@ -7,7 +7,7 @@ import {
   CollapsibleTrigger,
   CollapsibleContent,
 } from "@/components/ui/collapsible";
-import { intlLocale } from "@/features/pickups/lib/format";
+import { intlLocale } from "@/features/pickups";
 import type { StatusHistoryRow } from "@/features/admin/lib/statusHistory";
 
 /**
