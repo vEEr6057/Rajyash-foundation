@@ -1,7 +1,7 @@
 // src/app/onboarding/page.tsx — modified to accept ?role=volunteer searchParam (PUB-03)
 import { getTranslations } from "next-intl/server";
-import { AuthSplitLayout } from "@/features/auth/components/AuthSplitLayout";
-import { OnboardingForm } from "@/features/auth/components/OnboardingForm";
+import { AuthSplitLayout } from "@/features/auth";
+import { OnboardingForm } from "@/features/auth";
 import { getSession } from "@/server/auth/session";
 
 export const metadata = { title: "Welcome — Rajyash Food Porter" };

@@ -3,7 +3,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
-import { setUserPartner } from "@/features/admin";
+import { setUserPartner } from "../actions/adminActions";
 
 const SELECT =
   "rj-field h-9 rounded-lg border border-input bg-surface px-2 text-sm";

@@ -1,6 +1,7 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
+import boundaries from "eslint-plugin-boundaries";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,6 +34,61 @@ const eslintConfig = [
       ".remember/**",
       "src/server/db/migrations/**",
     ],
+  },
+  // Modulith boundaries: features are modules; their public API is index.ts (client-safe)
+  // and server.ts (actions). Cross-module deep imports are lint errors — this is the
+  // enforcement half of the modular monolith (folders alone are just intent).
+  {
+    files: ["src/**/*.{ts,tsx}"],
+    plugins: { boundaries },
+    settings: {
+      "boundaries/elements": [
+        { type: "feature", pattern: "src/features/*", capture: ["featureName"] },
+        { type: "app", pattern: "src/app/**" },
+        { type: "server", pattern: "src/server/**" },
+        {
+          type: "shared",
+          pattern: [
+            "src/components/**",
+            "src/lib/**",
+            "src/config/**",
+            "src/i18n/**",
+            "src/types/**",
+            "src/test/**",
+            "src/middleware.ts",
+          ],
+        },
+      ],
+      "boundaries/include": ["src/**/*.{ts,tsx}"],
+      "import/resolver": { typescript: { alwaysTryTypes: true } },
+    },
+    rules: {
+      "boundaries/element-types": [
+        "error",
+        {
+          default: "disallow",
+          rules: [
+            { from: "app", allow: ["app", "feature", "server", "shared"] },
+            { from: "feature", allow: ["feature", "server", "shared"] },
+            // server -> feature is inverted-dependency debt (stats.ts); allowed via
+            // barrel only, tracked for a future extraction of the shared shapes.
+            { from: "server", allow: ["server", "shared", "feature"] },
+            { from: "shared", allow: ["shared", "server"] },
+          ],
+        },
+      ],
+      // Other modules may only enter a feature through its public API.
+      "boundaries/entry-point": [
+        "error",
+        {
+          default: "allow",
+          rules: [
+            { target: ["feature"], disallow: ["**"] },
+            { target: ["feature"], allow: ["index.ts", "server.ts"] },
+          ],
+        },
+      ],
+    },
   },
 ];
 

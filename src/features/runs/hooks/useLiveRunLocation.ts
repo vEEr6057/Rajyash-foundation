@@ -5,10 +5,10 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 import { useSupabaseBrowser } from "@/lib/supabase/browser";
 import { getLatestRunPing } from "@/features/runs/actions/runPingActions";
 import { POLL_INTERVAL_MS } from "@/config/constants";
-import { isStale, formatLastSeen } from "@/features/pickups/lib/staleness";
-import type { LivePosition } from "@/features/pickups/hooks/useLivePickupLocation";
+import { isStale, formatLastSeen } from "@/features/pickups";
+import type { LivePosition } from "@/features/pickups";
 
-export type { LivePosition } from "@/features/pickups/hooks/useLivePickupLocation";
+export type { LivePosition } from "@/features/pickups";
 
 /**
  * Viewer (coordinator/volunteer) live driver location for a run (TRK-05). Mirrors

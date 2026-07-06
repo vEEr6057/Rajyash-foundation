@@ -1,7 +1,7 @@
 import { SignUp } from "@clerk/nextjs";
-import { AuthSplitLayout } from "@/features/auth/components/AuthSplitLayout";
+import { AuthSplitLayout } from "@/features/auth";
 
-export const metadata = { title: "Create account — Rajyash Food Porter" };
+export const metadata = { title: "Create account" };
 
 export default async function SignUpPage({
   searchParams,

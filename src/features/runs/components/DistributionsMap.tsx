@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { MapView } from "@/features/pickups/components/MapView";
+import { MapView } from "@/features/pickups";
 import type { DistributionMapPin } from "@/features/runs/lib/distributionMapPins";
 
 /**

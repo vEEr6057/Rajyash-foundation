@@ -7,12 +7,8 @@ import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { FormField, FormSelect, FormActions } from "@/components/forms";
 import { PARTNER_TYPES } from "@/config/constants";
-import {
-  partnerSchema,
-  type PartnerInput,
-  createPartner,
-  updatePartner,
-} from "@/features/admin";
+import { partnerSchema, type PartnerInput } from "../validations/partner";
+import { createPartner, updatePartner } from "../actions/adminActions";
 
 const SELECT =
   "rj-field h-11 w-full rounded-lg border border-input bg-surface px-3 text-[15px]";

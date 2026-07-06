@@ -1,7 +1,7 @@
 // Public Terms & Conditions (Razorpay website-compliance + basic legal hygiene).
 // PUBLIC route (listed in middleware isPublicRoute); content lives in the
 // `policies` i18n namespace (EN/GU/HI).
-import { PolicyPage } from "@/features/public/components/PolicyPage";
+import { PolicyPage } from "@/features/public";
 
 export const metadata = {
   title: "Terms & Conditions",

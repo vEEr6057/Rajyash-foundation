@@ -3,8 +3,8 @@ import { getTranslations } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
-import { DestinationList } from "@/features/admin/components/DestinationList";
-import { AddDestinationSheet } from "@/features/admin/components/AddDestinationSheet";
+import { DestinationList } from "@/features/admin";
+import { AddDestinationSheet } from "@/features/admin";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 

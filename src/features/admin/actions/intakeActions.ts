@@ -9,7 +9,7 @@ import { ROUTES } from "@/config/constants";
 import {
   pickupFormSchema,
   type PickupFormInput,
-} from "@/features/pickups/validations/pickup";
+} from "@/features/pickups";
 
 type Result<T = unknown> =
   | ({ ok: true } & T)

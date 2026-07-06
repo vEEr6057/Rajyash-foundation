@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { MapView } from "@/features/pickups/components/MapView";
+import { MapView } from "@/features/pickups";
 import { useLiveRunLocation } from "@/features/runs/hooks/useLiveRunLocation";
 import { useRunRoute } from "@/features/runs/hooks/useRunRoute";
 

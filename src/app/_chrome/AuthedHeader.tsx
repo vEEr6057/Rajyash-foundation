@@ -5,8 +5,8 @@
 import Link from "next/link";
 import { UserButton } from "@clerk/nextjs";
 import { getTranslations } from "next-intl/server";
-import { LanguageSwitcher } from "@/features/public/components/LanguageSwitcher";
-import { ThemeToggle } from "@/features/public/components/ThemeToggle";
+import { LanguageSwitcher } from "@/features/public";
+import { ThemeToggle } from "@/features/public";
 import { NotificationBell } from "@/features/notifications";
 
 export async function AuthedHeader({ homeHref }: { homeHref: string }) {

@@ -5,9 +5,9 @@ import { ROUTES } from "@/config/constants";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PartnerList } from "@/features/admin/components/PartnerList";
-import { LinkDonorControl } from "@/features/admin/components/LinkDonorControl";
-import { AddPartnerSheet } from "@/features/admin/components/AddPartnerSheet";
+import { PartnerList } from "@/features/admin";
+import { LinkDonorControl } from "@/features/admin";
+import { AddPartnerSheet } from "@/features/admin";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 

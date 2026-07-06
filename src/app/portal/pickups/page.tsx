@@ -7,8 +7,8 @@ import { ROUTES } from "@/config/constants";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
-import { PickupCard } from "@/features/pickups/components/PickupCard";
-import { PostPickupSheet } from "@/features/pickups/components/PostPickupSheet";
+import { PickupCard } from "@/features/pickups";
+import { PostPickupSheet } from "@/features/pickups";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "My pickups — Rajyash Food Porter" };

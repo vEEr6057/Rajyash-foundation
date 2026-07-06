@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useLiveLocation } from "@/features/pickups/hooks/useLiveLocation";
+import { useLiveLocation } from "@/features/pickups";
 import { recordRunPing } from "@/features/runs/actions/runPingActions";
-import { SharingLocationBanner } from "@/features/pickups/components/SharingLocationBanner";
+import { SharingLocationBanner } from "@/features/pickups";
 
 /**
  * Assigned-driver GPS capture for a run (TRK-05). Mirrors VolunteerTracker: wires

@@ -5,10 +5,10 @@ import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Label } from "@/components/ui/label";
-import { PickupForm } from "@/features/pickups/components/PickupForm";
+import { PickupForm } from "@/features/pickups";
 import { logSurplus } from "@/features/admin/actions/intakeActions";
 import { ROUTES } from "@/config/constants";
-import type { PickupFormInput } from "@/features/pickups/validations/pickup";
+import type { PickupFormInput } from "@/features/pickups";
 import type { Partner } from "@/server/db/schema";
 
 interface Props {

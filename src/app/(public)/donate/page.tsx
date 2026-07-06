@@ -7,9 +7,9 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { env } from "@/config/env";
-import { PublicHeader } from "@/features/public/components/PublicHeader";
-import { PublicFooter } from "@/features/public/components/PublicFooter";
-import { DonateForm } from "@/features/donations/components/DonateForm";
+import { PublicHeader } from "@/features/public";
+import { PublicFooter } from "@/features/public";
+import { DonateForm } from "@/features/donations";
 
 export const metadata = {
   title: "Donate",

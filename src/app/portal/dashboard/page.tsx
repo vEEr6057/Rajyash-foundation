@@ -12,9 +12,9 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 import { LedgerRow } from "@/components/LedgerRow";
-import { APP_TIME_ZONE } from "@/features/pickups/lib/format";
-import { PickupCard } from "@/features/pickups/components/PickupCard";
-import { PostPickupSheet } from "@/features/pickups/components/PostPickupSheet";
+import { APP_TIME_ZONE } from "@/features/pickups";
+import { PickupCard } from "@/features/pickups";
+import { PostPickupSheet } from "@/features/pickups";
 import { PushOptIn } from "@/features/notifications";
 
 export const dynamic = "force-dynamic";

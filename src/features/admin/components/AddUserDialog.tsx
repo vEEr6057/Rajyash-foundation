@@ -24,7 +24,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { ROLES, type Role } from "@/config/constants";
-import { inviteUser } from "@/features/admin";
+import { inviteUser } from "../actions/adminActions";
 
 export function AddUserDialog() {
   const t = useTranslations("admin");

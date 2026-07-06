@@ -2,9 +2,9 @@
 // Per-page getSession/redirect guards stay in the pages themselves (AUTH-05);
 // the layout reads the session only to choose the bottom-nav items.
 import { ROUTES } from "@/config/constants";
-import { AuthedHeader } from "@/components/AuthedHeader";
+import { AuthedHeader } from "@/app/_chrome/AuthedHeader";
 import { getSession } from "@/server/auth/session";
-import { PortalBottomNav } from "@/features/portal/components/PortalBottomNav";
+import { PortalBottomNav } from "@/features/portal";
 import { InstallNudgeBanner } from "@/features/pwa";
 
 export default async function PortalLayout({

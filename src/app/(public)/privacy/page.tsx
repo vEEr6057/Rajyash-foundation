@@ -4,8 +4,8 @@
 // app's real data practices — no boilerplate claims. This page is PUBLIC (added to
 // isPublicRoute in middleware.ts); no auth check here.
 import { getTranslations } from "next-intl/server";
-import { PublicHeader } from "@/features/public/components/PublicHeader";
-import { PublicFooter } from "@/features/public/components/PublicFooter";
+import { PublicHeader } from "@/features/public";
+import { PublicFooter } from "@/features/public";
 
 export const metadata = {
   title: "Privacy",

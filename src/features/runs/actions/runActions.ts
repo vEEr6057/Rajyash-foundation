@@ -9,7 +9,7 @@ import { haversineMeters, estimateEtaMinutes, straightLineRoute } from "@/lib/ro
 import { fetchOsrmRoute } from "@/lib/routing.server";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { destinationsRepo } from "@/server/db/repositories/destinations";
-import { geocodeDestinationAddress } from "@/features/admin/actions/destinationActions";
+import { geocodeDestinationAddress } from "@/features/admin/server";
 import {
   allStopsDone,
   canRunTransition,

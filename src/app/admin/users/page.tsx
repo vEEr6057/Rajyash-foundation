@@ -4,9 +4,9 @@ import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { parseUserFilters } from "@/features/admin";
-import { UsersTable } from "@/features/admin/components/UsersTable";
-import { UsersFilters } from "@/features/admin/components/UsersFilters";
-import { AddUserDialog } from "@/features/admin/components/AddUserDialog";
+import { UsersTable } from "@/features/admin";
+import { UsersFilters } from "@/features/admin";
+import { AddUserDialog } from "@/features/admin";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 
