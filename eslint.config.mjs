@@ -70,9 +70,10 @@ const eslintConfig = [
           rules: [
             { from: "app", allow: ["app", "feature", "server", "shared"] },
             { from: "feature", allow: ["feature", "server", "shared"] },
-            // server -> feature is inverted-dependency debt (stats.ts); allowed via
-            // barrel only, tracked for a future extraction of the shared shapes.
-            { from: "server", allow: ["server", "shared", "feature"] },
+            // server never imports features — the one offender (stats.ts -> admin
+            // analytics shapes) was extracted to src/server/analytics on 2026-07-07
+            // after client-carrying barrel re-exports zeroed the live dashboard.
+            { from: "server", allow: ["server", "shared"] },
             { from: "shared", allow: ["shared", "server"] },
           ],
         },

@@ -10,7 +10,7 @@ import {
   type PickupBuckets,
   type RunBuckets,
   type PickupStatusAggRow,
-} from "@/features/admin";
+} from "@/server/analytics/overview";
 import type { PickupStatus, RunStatus } from "@/config/constants";
 
 export interface AdminOverview {

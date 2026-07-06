@@ -17,7 +17,6 @@ export * from "./components/UsersFilters";
 export * from "./components/UsersTable";
 export * from "./components/VerifyToggle";
 export * from "./lib/csv";
-export * from "./lib/overview";
 export * from "./lib/reportRange";
 export * from "./lib/statusHistory";
 export * from "./validations/filters";
