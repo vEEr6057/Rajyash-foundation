@@ -54,8 +54,34 @@ jobs:
       - name: Lint
         run: pnpm lint
 
+      # Dead code gate: unused files, dependencies, exports drift (config in knip.json).
+      - name: Dead code (knip)
+        run: pnpm knip
+
       - name: Tests
         run: pnpm test:run
 
       - name: Build
         run: pnpm build
+
+  # Repo hygiene (public repo): secret scan over full history + lock-safety lint on
+  # any migration SQL added in the PR. Separate job — runs in parallel with validate.
+  hygiene:
+    name: hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # gitleaks scans history; squawk diffs against the base ref
+
+      - name: Secret scan (gitleaks, full history)
+        uses: gitleaks/gitleaks-action@ff98106e4c7b2bc287b24eaf42907196329070c7 # v2.3.9, SHA-pinned
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Migration lock-safety lint (squawk, changed files only)
+        if: github.event_name == 'pull_request'
+        run: |
+          mapfile -t FILES < <(git diff --name-only --diff-filter=AM "origin/${{ github.base_ref }}...HEAD" -- 'src/server/db/migrations/*.sql')
+          if [ ${#FILES[@]} -eq 0 ]; then echo "No migration changes in this PR."; exit 0; fi
+          npx --yes squawk-cli@2.59.0 "${FILES[@]}"

@@ -1,0 +1,9 @@
+# Default owner for everything — review required from the maintainer.
+* @vEEr6057
+
+# Payment and security-critical paths: no change without maintainer eyes.
+/src/server/payments/ @vEEr6057
+/src/app/api/razorpay/ @vEEr6057
+/src/server/db/migrations/ @vEEr6057
+/src/middleware.ts @vEEr6057
+/.github/ @vEEr6057
