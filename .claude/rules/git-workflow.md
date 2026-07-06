@@ -38,6 +38,12 @@ Workflow:
 
 When a lower PR merges to `main`: rebase the rest of the stack onto `main` and retarget the next PR's base to `main` (repeat up the stack). `git rebase --onto main feature/phase-(N-1)-<slug> feature/phase-N-<slug>`.
 
+**Gotcha (cost us PR #117, 2026-07-06): merging the base PR with `--delete-branch` CLOSES every
+PR stacked on it, and GitHub refuses to reopen or retarget them.** Either retarget the upper PR
+to `main` BEFORE merging the base, or merge the base without `--delete-branch`, retarget, then
+delete. Recovery if it happens: rebase the branch onto main (`--onto`), force-with-lease push,
+open a fresh PR referencing the closed one.
+
 Phase 1 = `feature/phase-1-foundation` (PR #1 → `main`). Phase 2 branches off it.
 
 ## Commit messages
@@ -48,8 +54,10 @@ Phase 1 = `feature/phase-1-foundation` (PR #1 → `main`). Phase 2 branches off 
 
 ## Definition of done
 
-A change is done when it passes `pnpm typecheck` + `pnpm lint` + the production build, has meaningful tests per
-[testing-practices.md](testing-practices.md), and follows [frontend-practices.md](frontend-practices.md).
+A change is done when it passes `pnpm typecheck` + `pnpm lint` (boundaries rules included) + `pnpm knip` +
+the production build, has meaningful tests per [testing-practices.md](testing-practices.md), and follows
+[frontend-practices.md](frontend-practices.md). CI also runs a gitleaks full-history secret scan and squawk
+on any migration SQL changed in the PR (the `hygiene` job) — a red hygiene job blocks merge like any other check.
 
 ## Not borrowed from kaka (deliberately out of scope)
 
