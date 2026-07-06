@@ -61,8 +61,10 @@ follow them:
 ## 4. Change management (how code reaches production)
 
 - **`main` is protected** — no direct pushes; PR with green CI required to merge.
-- **PR CI ≠ deploy CI** — `ci.yml` runs typecheck + lint + tests + build on every PR;
-  `deploy.yml` deploys only from `main`. A PR that would break the deploy fails *before* merge.
+- **PR CI ≠ deploy CI** — `ci.yml` runs typecheck + lint (incl. modulith boundaries rules) + knip
+  + tests + build on every PR, plus a parallel `hygiene` job (gitleaks full-history secret scan;
+  squawk lock-safety lint on changed migration SQL); `deploy.yml` deploys only from `main`. A PR
+  that would break the deploy fails *before* merge.
 - **Deploys happen only from CI** — never from a laptop (`pnpm run deploy` locally is banned for
   prod; the Windows-build Worker-500 lesson is one reason, uniformity is the other).
 - **PR discipline** (ported from kaka `pr-discipline.md`) — one spec/topic per PR; no surprise
@@ -93,7 +95,9 @@ follow them:
   new public route. Findings → `docs/security/SECURITY-REVIEW-<date>.md`; HIGH blocks the milestone.
 
   **Review checklist** (each a concrete check, not a vibe):
-  1. `pnpm audit --prod` clean; `git log --all -- .env*` empty; no live keys in `src` grep.
+  1. `pnpm audit --prod` clean; `git log --all -- .env*` empty; no live keys in `src` grep
+     (gitleaks runs the full-history version of this on every PR — the manual grep is the
+     double-check, not the only line).
   2. RLS: query the live DB (`pg_class.relrowsecurity`, `pg_policies`, anon/authenticated grants) —
      confirm every browser-read table has a scoped policy and everything else is default-deny; and
      that all of it is in a migration.

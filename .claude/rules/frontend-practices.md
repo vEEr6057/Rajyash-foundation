@@ -40,7 +40,15 @@ If a **substantial** block (a form section, a card, a non-trivial hook/transform
 ## 4. Thin pages, single-purpose components
 
 - Route files (`app/**/page.tsx`) just orchestrate: read params, call the data hook / server action, compose components. No business logic, no raw `fetch` in the page.
-- Feature code lives in `src/features/<name>/{components,hooks,services,store,types,validations}`, reached via its `index.ts` barrel — not deep paths from another feature.
+- **Modulith — machine-enforced (2026-07, PR #118).** Features are modules with a public API:
+  `index.ts` (client-safe: components/hooks/lib/validations) + `server.ts` (server actions —
+  separate so action re-exports never ride the client-safe barrel). `eslint-plugin-boundaries`
+  makes violations lint errors: other modules and `app/**` enter a feature only through those two
+  files; within a feature use relative sibling imports (a module never imports its own barrel —
+  that's a cycle). Adding to a module's public surface = add the `export *` line to the right barrel.
+- Chrome components that compose feature UI (e.g. `AuthedHeader`) are app-layer composition —
+  they live in `src/app/_chrome/`, not `src/components/` (shared may not import features).
+- Feature code lives in `src/features/<name>/{components,hooks,services,store,types,validations}`.
 - One component, one job. If it fetches *and* lays out *and* renders a form *and* a table, that's several components.
 - Keep components small (~5–40 lines); lift a section out before it grows past that.
 
@@ -56,7 +64,7 @@ If a **substantial** block (a form section, a card, a non-trivial hook/transform
   ```
 
 - **Adapter/mapper layer is mandatory.** DB/API shapes are mapped through pure mapper functions before reaching components — don't import raw DB row types into JSX. Mappers take no hooks, do no I/O, and own seams (e.g. 0-indexed UI ↔ 1-indexed API, enum normalization).
-- **UI state** → Zustand, one store per feature; reset dependent state in setters (e.g. changing a filter resets `page` → 0); persist with `partialize`.
+- **UI state** → Zustand, one store per feature; reset dependent state in setters (e.g. changing a filter resets `page` → 0); persist with `partialize`. (Dep removed 2026-07-06 as unused — v1 shipped on server components; `pnpm add zustand` again when the first real client store appears.)
 - **One source of truth per value** — if the backend owns it (a status name, dial code), normalize it in one helper and reuse, not inline in three places.
 - **Centralize query keys** in `src/config/constants.ts` (`QUERY_KEYS.pickups`, `QUERY_KEYS.pickup(id)`).
 
@@ -71,6 +79,6 @@ Validate env at startup via Zod (`src/config/env.ts`) and refuse to boot on a mi
 
 ## 8. Done means
 
-Passes `pnpm typecheck` + `pnpm lint` + the production build. Log via `logger` from `src/lib` (no `console.*` outside the logger). Use design tokens / Tailwind classes (no hardcoded hex when a token exists).
+Passes `pnpm typecheck` + `pnpm lint` (includes boundaries rules) + `pnpm knip` (dead files/deps gate) + the production build. Log via `logger` from `src/lib` (no `console.*` outside the logger). Use design tokens / Tailwind classes (no hardcoded hex when a token exists). Page `metadata.title` never hardcodes the brand suffix — the layout template appends it.
 
 For what (and what not) to test, see [testing-practices.md](testing-practices.md) — meaningful behavior/logic tests, never a test-per-file.
