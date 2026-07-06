@@ -47,7 +47,7 @@ if echo "$LOWER" | grep -qE 'migration|schema|prisma|drizzle|database|postgres';
   TAGS+=("db")
   INVARIANTS+=("Schema changes go through the ORM migration tool with a checked-in migration + rollback. No ad-hoc prod SQL")
 fi
-if echo "$LOWER" | grep -qE 'test|vitest|testing.library'; then
+if echo "$LOWER" | grep -qE 'test|vitest|testing.library|e2e|playwright|smoke|credential'; then
   TAGS+=("testing")
   INVARIANTS+=("Test only what could really break (Zod schemas, logic hooks, mappers, stores, decision components). No test-per-file, no 'renders without throwing'")
 fi
