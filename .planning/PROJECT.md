@@ -1,12 +1,15 @@
-# Rajyash Food Rescue
+# Food Porter
 
 ## What This Is
 
-An end-to-end web application for the Rajyash Foundation's food-rescue program (Food Porter). It connects
+An end-to-end web application for the Rajyash Foundation's food-rescue program. It connects
 surplus-food donors (restaurants, families, event planners) with volunteers/drivers who pick up and deliver
 that food to people in need across Ahmedabad, with live pickup→delivery tracking, an admin dashboard for
-foundation staff, and a public site for awareness and monetary donations. It is a fresh-start replacement —
-the existing 2023 "Rajyash Food Porter" mobile app is not a dependency.
+foundation staff, a public site for awareness and monetary donations, and a public user handbook at `/guide`.
+It replaced the 2023 "Rajyash Food Porter" mobile app (not a dependency). The product/brand name is
+**"Food Porter"** (renamed from "Food Rescue", PR #88, EN/GU/HI); "rescue" survives only as the verb and
+program description. Status 2026-07: built + audited, production-cutover to rajyashfoundation.com in
+progress (see docs/production-cutover.md).
 
 ## Core Value
 
