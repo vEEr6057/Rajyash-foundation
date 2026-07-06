@@ -51,6 +51,22 @@ if echo "$LOWER" | grep -qE 'test|vitest|testing.library'; then
   TAGS+=("testing")
   INVARIANTS+=("Test only what could really break (Zod schemas, logic hooks, mappers, stores, decision components). No test-per-file, no 'renders without throwing'")
 fi
+if echo "$LOWER" | grep -qE 'design|charter|screen|ui|style|color|token|component|portal|admin.page|redesign'; then
+  TAGS+=("design")
+  INVARIANTS+=("Design canon = docs/design/APP-UI-CHARTER.md (LOCKED): Roboto Slab 500/600, gold as ink never fill, hairlines over boxes, solid green fill = interactive only (state = soft pill), paper #FAF7F1. Saffron/Bricolage era retired. Live tokens: src/app/globals.css")
+fi
+if echo "$LOWER" | grep -qE 'i18n|translat|locale|gujarati|hindi|message.key|string|copy|wording|mojibake'; then
+  TAGS+=("i18n")
+  INVARIANTS+=("AUTO-APPLY SKILL i18n-parity: after any src/i18n/messages or UI-string change, run 'node .claude/skills/i18n-parity/check.mjs' before claiming done (EN=reference; GU/HI parity + mojibake canary)")
+fi
+if echo "$LOWER" | grep -qE 'deploy|rollback|smoke|went.live|shipped.to.prod|wrangler'; then
+  TAGS+=("deploy")
+  INVARIANTS+=("AUTO-APPLY SKILL post-deploy-smoke: after every production deploy or rollback, run the smoke skill (.claude/skills/post-deploy-smoke) — health probe, page probes, browser console pass; hand sign-in step to user if no creds")
+fi
+if echo "$LOWER" | grep -qE 'rls|policy|policies|public.route|middleware|cutover|launch|go.live|webhook|security'; then
+  TAGS+=("security")
+  INVARIANTS+=("AUTO-APPLY SKILL security-review-pass: before cutover/launch/live-payments and after auth/RLS/payments/middleware/public-route changes, run all 7 checklist items (.claude/skills/security-review-pass) — findings to docs/security/, HIGH blocks milestone")
+fi
 
 [[ ${#TAGS[@]} -eq 0 ]] && exit 0
 
