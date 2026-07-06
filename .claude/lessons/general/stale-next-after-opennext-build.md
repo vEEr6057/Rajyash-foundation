@@ -32,3 +32,12 @@ pnpm dev
 After ANY `pnpm run deploy` (or `opennextjs-cloudflare build` / `next build`), clear `.next` before
 `pnpm dev`. Don't interleave deploy and dev without the wipe. (Also `.open-next` can get held by a
 leftover `workerd.exe` on Windows — kill it before re-deploying.) Tags: next-dev, stale-cache, opennext-windows.
+
+## Addendum (2026-07-07): the service-worker variant
+The Serwist SW registered during a `pnpm start` prod-build session PERSISTS in the browser for
+localhost and precaches that build's chunk URLs. The user's next `pnpm dev` then 404s every
+precached chunk → `bad-precaching-response` + ChunkLoadError → "Application error: client-side
+exception" that looks like an auth/Clerk failure. Fix: DevTools → Application → Clear site data
+(unregisters SW), plus `rm -rf .next`. And: an agent that runs `pnpm start` for E2E must KILL
+that server before handing localhost back — the user's dev workflow inherits the port AND the
+poisoned SW otherwise (bit us: user "why cant i login via clerk on local?").
