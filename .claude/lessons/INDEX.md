@@ -1,5 +1,6 @@
 # Food Rescue Lessons — INDEX
 
+- [2026-07-06 testing/HIGH/verified] url-landing-is-not-page-loaded — playwright sweeps asserting only final-URL reported 403 "Forbidden" bodies + landing-redirects as "loaded" (3 false positives in one night); every route assertion = URL + h1/h2 content + console count; print window.Clerk.user.publicMetadata before trusting role behavior → testing/url-landing-is-not-page-loaded.md
 Format (newest first, ≤200 lines):
 `- [YYYY-MM-DD topic/SEVERITY/status] short-id — one-line summary`
 

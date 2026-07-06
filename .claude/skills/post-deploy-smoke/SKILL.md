@@ -31,6 +31,11 @@ Load `$BASE/` and one portal-adjacent public page; PASS = page renders (not a Wo
 page) and **zero console errors**. Console errors on phones are otherwise invisible — this is
 the only pre-user check for them.
 
+**URL-landing is NOT page-loaded** (bit us 3× on 2026-07-06): a middleware 403 keeps the
+requested URL with a 9-char "Forbidden" body, and redirects land on plausible-looking pages.
+Every route assertion = URL + content marker (`h1/h2` text + `body.innerText.length`) +
+console count. Never report a route as working from the URL alone.
+
 ### 3. Signed-in pass (manual or with test credentials)
 Sign in → portal dashboard loads → volunteer board renders pickups. No test credentials are
 stored for the agent; if none provided, output step 3 as a checklist for the user — do NOT
