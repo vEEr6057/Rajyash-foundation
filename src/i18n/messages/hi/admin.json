@@ -1,6 +1,9 @@
 {
   "_review": "pending",
-  "_meta": { "review": "pending", "source": "machine-draft 2026-06-27" },
+  "_meta": {
+    "review": "pending",
+    "source": "machine-draft 2026-06-27"
+  },
   "eyebrow": "एडमिन",
   "pickups": {
     "title": "पिकअप",
@@ -259,7 +262,9 @@
     },
     "stopCount": "स्टॉप",
     "stopCountMeta": "{count, plural, one {# स्टॉप} other {# स्टॉप}}",
-    "table": { "driver": "ड्राइवर" },
+    "table": {
+      "driver": "ड्राइवर"
+    },
     "noDriver": "ड्राइवर नहीं चुना",
     "noStops": "अभी तक कोई स्टॉप नहीं जोड़ा गया।",
     "kindPickup": "पिकअप",
@@ -275,7 +280,9 @@
     "editTitle": "रन संपादित करें",
     "slotMorning": "सुबह ड्राइव",
     "slotNight": "रात ड्राइव",
-    "status": { "advance": "{status} पर सेट करें" },
+    "status": {
+      "advance": "{status} पर सेट करें"
+    },
     "assignDriver": {
       "sectionTitle": "ड्राइवर",
       "label": "ड्राइवर",
@@ -380,5 +387,12 @@
     "destinationsDesc": "रन के लिए ड्रॉप-ऑफ क्षेत्र",
     "runsLink": "डिस्पैच रन",
     "runsDesc": "दैनिक पिकअप + डिलीवरी रन"
+  },
+  "list": {
+    "_review": "pending",
+    "searchPlaceholder": "खोजें…",
+    "searchLabel": "इस सूची में खोजें",
+    "searchDriverPlaceholder": "ड्राइवर के नाम से खोजें…",
+    "searchPickupPlaceholder": "पता या विवरण से खोजें…"
   }
 }

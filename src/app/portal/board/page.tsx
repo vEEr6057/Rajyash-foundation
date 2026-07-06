@@ -13,7 +13,7 @@ import { BoardTabs } from "@/features/pickups";
 import { VolunteerClaimNote } from "@/features/pickups";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Pickup board — Rajyash Food Porter" };
+export const metadata = { title: "Pickup board" };
 
 // dispatch-model-v2: the board is the driver's claim surface; volunteers keep
 // read-only access for awareness (browse + map + live tracking), no claim.

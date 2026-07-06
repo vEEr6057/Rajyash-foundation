@@ -11,7 +11,7 @@ import { PickupCard } from "@/features/pickups";
 import { PostPickupSheet } from "@/features/pickups";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "My pickups — Rajyash Food Porter" };
+export const metadata = { title: "My pickups" };
 
 export default async function DonorPickupsPage() {
   const session = await getSession();

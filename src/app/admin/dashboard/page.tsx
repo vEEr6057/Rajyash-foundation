@@ -55,7 +55,7 @@ const CHART_COLORS = {
 } as const;
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Admin · Overview — Rajyash Food Porter" };
+export const metadata = { title: "Admin · Overview" };
 
 /** Hairline chart panel (charter §3 / batch-3 §1.1): one rule, no shadow. */
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {

@@ -102,6 +102,38 @@ export const profilesRepo = {
       : base.orderBy(desc(profiles.createdAt));
   },
 
+  /** listAll, windowed for the admin users table. page is 1-based. */
+  async listAllPaged(
+    filter: AdminUserFilters,
+    page: number,
+    pageSize: number,
+  ): Promise<{ rows: Profile[]; total: number }> {
+    const db = getDb();
+    const where = and(
+      filter.role ? eq(profiles.role, filter.role) : undefined,
+      filter.q
+        ? or(
+            ilike(profiles.name, `%${filter.q}%`),
+            ilike(profiles.email, `%${filter.q}%`),
+          )
+        : undefined,
+    );
+    const [rows, totalRows] = await Promise.all([
+      db
+        .select()
+        .from(profiles)
+        .where(where)
+        .orderBy(desc(profiles.createdAt))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize),
+      db
+        .select({ count: sql`count(*)`.mapWith(Number) })
+        .from(profiles)
+        .where(where),
+    ]);
+    return { rows, total: totalRows[0]?.count ?? 0 };
+  },
+
   /**
    * Active (non-deactivated) profiles of a single role, newest first. Lets a
    * single-role screen skip pulling the whole profiles table just to filter it

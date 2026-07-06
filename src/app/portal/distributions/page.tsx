@@ -11,7 +11,7 @@ import { DistributionsMap } from "@/features/runs";
 import { toDistributionMapPins } from "@/features/runs";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Today's distributions — Rajyash Food Porter" };
+export const metadata = { title: "Today's distributions" };
 
 /**
  * dispatch-model-v2 (docs/specs/dispatch-model-v2.md): volunteers never claim

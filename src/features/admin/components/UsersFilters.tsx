@@ -51,6 +51,7 @@ export function UsersFilters({
       if (next.role) params.set("role", next.role);
       else params.delete("role");
     }
+    params.delete("page"); // filter change -> back to page 1 (list is paginated)
     router.replace(params.size > 0 ? `${pathname}?${params.toString()}` : pathname);
   }
 

@@ -4,7 +4,7 @@ import { AuthSplitLayout } from "@/features/auth";
 import { OnboardingForm } from "@/features/auth";
 import { getSession } from "@/server/auth/session";
 
-export const metadata = { title: "Welcome — Rajyash Food Porter" };
+export const metadata = { title: "Welcome" };
 
 type SelectableRole = "volunteer" | "donor" | "driver";
 const asSelectable = (r: string | undefined): SelectableRole | undefined =>

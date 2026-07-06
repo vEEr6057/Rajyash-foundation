@@ -1,5 +1,5 @@
 import "server-only";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import {
   destinations,
@@ -38,6 +38,36 @@ export const destinationsRepo = {
     return activeOnly
       ? q.where(eq(destinations.active, true)).orderBy(desc(destinations.createdAt))
       : q.orderBy(desc(destinations.createdAt));
+  },
+
+  /** Admin destinations table: windowed + name/area/address search. page is 1-based. */
+  async listPaged(
+    q: string | undefined,
+    page: number,
+    pageSize: number,
+  ): Promise<{ rows: Destination[]; total: number }> {
+    const db = getDb();
+    const where = q
+      ? or(
+          ilike(destinations.name, `%${q}%`),
+          ilike(destinations.area, `%${q}%`),
+          ilike(destinations.address, `%${q}%`),
+        )
+      : undefined;
+    const [rows, totalRows] = await Promise.all([
+      db
+        .select()
+        .from(destinations)
+        .where(where)
+        .orderBy(desc(destinations.createdAt))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize),
+      db
+        .select({ count: sql`count(*)`.mapWith(Number) })
+        .from(destinations)
+        .where(where),
+    ]);
+    return { rows, total: totalRows[0]?.count ?? 0 };
   },
 
   async update(
