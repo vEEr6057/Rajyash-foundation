@@ -5,12 +5,12 @@ import { pickupsRepo } from "@/server/db/repositories/pickups";
 import { ROUTES } from "@/config/constants";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
-import { PickupCard } from "@/features/pickups/components/PickupCard";
-import { DistanceChip } from "@/features/pickups/components/DistanceChip";
-import { DistanceAwareBoardList } from "@/features/pickups/components/DistanceAwareBoardList";
-import { MapView } from "@/features/pickups/components/MapView";
-import { BoardTabs } from "@/features/pickups/components/BoardTabs";
-import { VolunteerClaimNote } from "@/features/pickups/components/VolunteerClaimNote";
+import { PickupCard } from "@/features/pickups";
+import { DistanceChip } from "@/features/pickups";
+import { DistanceAwareBoardList } from "@/features/pickups";
+import { MapView } from "@/features/pickups";
+import { BoardTabs } from "@/features/pickups";
+import { VolunteerClaimNote } from "@/features/pickups";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Pickup board — Rajyash Food Porter" };

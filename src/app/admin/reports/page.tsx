@@ -15,9 +15,9 @@ import {
   TableHead,
   TableCell,
 } from "@/components/ui/table";
-import { ImpactReport } from "@/features/admin/components/ImpactReport";
-import { TopBar } from "@/features/admin/components/AnalyticsCharts";
-import { formatReportRange } from "@/features/admin/lib/reportRange";
+import { ImpactReport } from "@/features/admin";
+import { TopBar } from "@/features/admin";
+import { formatReportRange } from "@/features/admin";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Admin · Reports — Rajyash Food Porter" };

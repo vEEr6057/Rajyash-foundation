@@ -80,6 +80,8 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "15.5.19",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-boundaries": "^7.0.0",
     "jsdom": "^29.1.1",
     "knip": "^6.24.0",
     "serwist": "^9.5.11",

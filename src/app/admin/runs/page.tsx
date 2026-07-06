@@ -5,8 +5,8 @@ import { runsRepo } from "@/server/db/repositories/runs";
 import { runStopsRepo } from "@/server/db/repositories/runStops";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { ROUTES } from "@/config/constants";
-import { RunsTable } from "@/features/runs/components/RunsTable";
-import { NewRunSheet } from "@/features/runs/components/NewRunSheet";
+import { RunsTable } from "@/features/runs";
+import { NewRunSheet } from "@/features/runs";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 

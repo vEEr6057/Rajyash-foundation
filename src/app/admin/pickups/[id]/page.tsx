@@ -8,11 +8,11 @@ import { profilesRepo } from "@/server/db/repositories/profiles";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { ROUTES } from "@/config/constants";
 import { PageHeader } from "@/components/PageHeader";
-import { PickupStatusPill } from "@/features/pickups/components/PickupStatusPill";
-import { formatQuantity, formatWindow } from "@/features/pickups/lib/format";
-import { buildStatusHistory } from "@/features/admin/lib/statusHistory";
-import { PickupHistorySection } from "@/features/admin/components/PickupHistorySection";
-import { VerifyToggle } from "@/features/admin/components/VerifyToggle";
+import { PickupStatusPill } from "@/features/pickups";
+import { formatQuantity, formatWindow } from "@/features/pickups";
+import { buildStatusHistory } from "@/features/admin";
+import { PickupHistorySection } from "@/features/admin";
+import { VerifyToggle } from "@/features/admin";
 
 export const dynamic = "force-dynamic";
 

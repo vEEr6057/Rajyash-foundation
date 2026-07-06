@@ -22,15 +22,15 @@ import { withTimeout } from "@/lib/withTimeout";
 import { buttonVariants } from "@/components/ui/button";
 import { PageHeader } from "@/components/PageHeader";
 import { LedgerRow } from "@/components/LedgerRow";
-import { LogSurplusSheet } from "@/features/admin/components/LogSurplusSheet";
-import { NewRunSheet } from "@/features/runs/components/NewRunSheet";
+import { LogSurplusSheet } from "@/features/admin";
+import { NewRunSheet } from "@/features/runs";
 import {
   DeliveriesTrendChart,
   StatusDonut,
   TopBar,
   type DonutSlice,
   type BarDatum,
-} from "@/features/admin/components/AnalyticsCharts";
+} from "@/features/admin";
 
 const EMPTY_OVERVIEW: AdminOverview = {
   impact: { servings: 0, kg: 0, count: 0 },

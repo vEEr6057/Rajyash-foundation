@@ -14,7 +14,7 @@ vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
 
 const assignPickup = vi.fn();
 const assignPickupsBulk = vi.fn();
-vi.mock("@/features/admin", () => ({
+vi.mock("../actions/adminActions", () => ({
   assignPickup: (...a: unknown[]) => assignPickup(...a),
   assignPickupsBulk: (...a: unknown[]) => assignPickupsBulk(...a),
 }));
