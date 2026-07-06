@@ -5,16 +5,10 @@ import { getTranslations, getLocale } from "next-intl/server";
 import { getSession, requireRole, AuthError } from "@/server/auth/session";
 import { ROUTES } from "@/config/constants";
 import {
-  getAdminOverview,
-  getDeliveriesTrend,
+  getAdminDashboardData,
   type AdminOverview,
-  type TrendPoint,
+  type AdminDashboardData,
 } from "@/server/db/repositories/stats";
-import {
-  reportsRepo,
-  type PartnerBreakdownRow,
-  type DestinationBreakdownRow,
-} from "@/server/db/repositories/reports";
 import { partnersRepo } from "@/server/db/repositories/partners";
 import { profilesRepo } from "@/server/db/repositories/profiles";
 import { logger } from "@/lib/logger";
@@ -42,8 +36,12 @@ const EMPTY_OVERVIEW: AdminOverview = {
   drivers: 0,
 };
 
-const ALL_TIME_FROM = new Date(0);
-const ALL_TIME_TO = new Date(9999, 0, 1);
+const EMPTY_DASHBOARD: AdminDashboardData = {
+  overview: EMPTY_OVERVIEW,
+  trend: [],
+  partnerBreakdown: [],
+  destinationBreakdown: [],
+};
 
 // Pickup-status composition colours draw from the status-pill DOT tokens so the
 // donut reads the same language as the pills elsewhere (charter §1.2).
@@ -79,73 +77,42 @@ export default async function AdminOverviewPage() {
     throw e;
   }
 
-  // UX-11: every independent read for this page in ONE Promise.all fan-out —
-  // translations, the header-popup directories (partners/drivers), and the
-  // analytics aggregates all used to be two SEQUENTIAL Promise.all stages
-  // (the popup directories awaited to completion before the analytics calls
-  // even started), which serialized two batches of round trips against the
-  // Workers-bounded connection pool (max: 5, server/db/client.ts) for no
-  // reason — neither batch depends on the other. Each analytics promise below
-  // catches its OWN failure (previously one failure discarded all four), so a
-  // single slow/broken aggregate degrades just that panel, not the page.
-  // Each DB read is bounded (withTimeout): the aggregates are sub-millisecond on real
-  // data, but a cold/contended connection can stall one read long enough to block the
-  // whole SSR (a 74s render was observed against a cold remote DB during load). The
-  // timeout caps each read's contribution so a slow moment degrades ONE panel to its
-  // empty state instead of hanging the page (production-discipline §3). .catch() still
-  // handles genuine errors; the timeout only guards latency.
+  // UX-11 → single-round-trip rewrite (2026-07-07): the previous shape fired
+  // the four analytics aggregates as separate wrapped promises (~9 queries
+  // total with the popup directories). On Workers each request opens fresh
+  // Postgres connections (pool max 5, server/db/client.ts) and pays
+  // cross-region RTT per query, so the batch routinely blew the 8s budget and
+  // EVERY tile degraded to zero (wrangler-tail evidence: "withTimeout:
+  // dependency exceeded budget, label: dashboard.overview/trend"). All
+  // aggregates now ride ONE json_build_object statement
+  // (getAdminDashboardData) — one connection, one round trip — leaving three
+  // DB reads total. withTimeout still bounds each so a slow moment degrades a
+  // panel, not the page (production-discipline §3).
   const DB_BUDGET_MS = 8000;
-  const [t, tCommon, locale, partners, drivers, o, trend, partnerRows, destRows] =
-    await Promise.all([
-      getTranslations("admin"),
-      getTranslations("common"),
-      getLocale(),
-      // Partners power the Log-surplus popup; drivers power the New-run popup
-      // (both rendered in the header, not a separate page).
-      withTimeout(partnersRepo.list().catch(() => []), DB_BUDGET_MS, [], "dashboard.partners"),
-      withTimeout(
-        profilesRepo.listByRole("driver").catch(() => []),
-        DB_BUDGET_MS,
-        [],
-        "dashboard.drivers",
-      ),
-      withTimeout(
-        getAdminOverview().catch((e: unknown) => {
-          logger.error("admin overview stats failed", { err: String(e) });
-          return EMPTY_OVERVIEW;
-        }),
-        DB_BUDGET_MS,
-        EMPTY_OVERVIEW,
-        "dashboard.overview",
-      ),
-      withTimeout(
-        getDeliveriesTrend(30).catch((e: unknown) => {
-          logger.error("admin deliveries trend failed", { err: String(e) });
-          return [] as TrendPoint[];
-        }),
-        DB_BUDGET_MS,
-        [] as TrendPoint[],
-        "dashboard.trend",
-      ),
-      withTimeout(
-        reportsRepo.partnerBreakdown(ALL_TIME_FROM, ALL_TIME_TO).catch((e: unknown) => {
-          logger.error("admin partner breakdown failed", { err: String(e) });
-          return [] as PartnerBreakdownRow[];
-        }),
-        DB_BUDGET_MS,
-        [] as PartnerBreakdownRow[],
-        "dashboard.partnerBreakdown",
-      ),
-      withTimeout(
-        reportsRepo.destinationBreakdown(ALL_TIME_FROM, ALL_TIME_TO).catch((e: unknown) => {
-          logger.error("admin destination breakdown failed", { err: String(e) });
-          return [] as DestinationBreakdownRow[];
-        }),
-        DB_BUDGET_MS,
-        [] as DestinationBreakdownRow[],
-        "dashboard.destinationBreakdown",
-      ),
-    ]);
+  const [t, tCommon, locale, partners, drivers, dash] = await Promise.all([
+    getTranslations("admin"),
+    getTranslations("common"),
+    getLocale(),
+    // Partners power the Log-surplus popup; drivers power the New-run popup
+    // (both rendered in the header, not a separate page).
+    withTimeout(partnersRepo.list().catch(() => []), DB_BUDGET_MS, [], "dashboard.partners"),
+    withTimeout(
+      profilesRepo.listByRole("driver").catch(() => []),
+      DB_BUDGET_MS,
+      [],
+      "dashboard.drivers",
+    ),
+    withTimeout(
+      getAdminDashboardData(30).catch((e: unknown) => {
+        logger.error("admin dashboard aggregates failed", { err: String(e) });
+        return EMPTY_DASHBOARD;
+      }),
+      DB_BUDGET_MS,
+      EMPTY_DASHBOARD,
+      "dashboard.aggregates",
+    ),
+  ]);
+  const { overview: o, trend, partnerBreakdown: partnerRows, destinationBreakdown: destRows } = dash;
 
   const topPartners: BarDatum[] = partnerRows.slice(0, 5).map((p) => ({
     name: p.partnerId ? p.partnerName : tCommon("unknownPartner"),

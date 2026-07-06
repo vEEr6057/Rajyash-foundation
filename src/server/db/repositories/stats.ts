@@ -152,3 +152,127 @@ export async function getDeliveriesTrend(days = 30): Promise<TrendPoint[]> {
   }
   return out;
 }
+
+export interface AdminDashboardData {
+  overview: AdminOverview;
+  trend: TrendPoint[];
+  partnerBreakdown: {
+    partnerId: string | null;
+    partnerName: string;
+    servings: number;
+    kg: number;
+    count: number;
+  }[];
+  destinationBreakdown: {
+    destinationId: string | null;
+    destinationName: string;
+    completedDropCount: number;
+  }[];
+}
+
+/**
+ * EVERY dashboard aggregate in ONE SQL statement / ONE round trip.
+ *
+ * Why: on Workers each request opens fresh Postgres connections (pool max 5,
+ * no socket reuse across requests) and pays cross-region RTT per query. The
+ * dashboard's previous shape — getAdminOverview (4 queries) + trend + two
+ * breakdowns + two pickers — serialized ~9 round trips and routinely blew the
+ * 8s withTimeout budget, so every tile fell back to zero (wrangler-tail
+ * evidence 2026-07-07: "withTimeout: dependency exceeded budget,
+ * label: dashboard.overview/trend"). json_build_object with subselects makes
+ * the database do the fan-out server-side instead.
+ *
+ * The per-aggregate functions above remain for other callers (reports page).
+ */
+export async function getAdminDashboardData(trendDays = 30): Promise<AdminDashboardData> {
+  const db = getDb();
+  const to = new Date();
+  const from = new Date();
+  from.setDate(from.getDate() - (trendDays - 1));
+  from.setHours(0, 0, 0, 0);
+
+  const result = await db.execute(sql`
+    select json_build_object(
+      'pickupAgg', (select coalesce(json_agg(t), '[]'::json) from (
+        select status, count(*)::int as n,
+          coalesce(sum(quantity) filter (where quantity_unit = 'servings'), 0)::int as servings,
+          coalesce(sum(quantity) filter (where quantity_unit = 'kg'), 0)::int as kg
+        from pickups group by status) t),
+      'runAgg', (select coalesce(json_agg(t), '[]'::json) from (
+        select status, count(*)::int as n from runs group by status) t),
+      'partners', (select count(*)::int from partners),
+      'destinations', (select count(*)::int from destinations),
+      'roleAgg', (select coalesce(json_agg(t), '[]'::json) from (
+        select role, count(*)::int as n from profiles group by role) t),
+      'trend', (select coalesce(json_agg(t), '[]'::json) from (
+        select to_char(delivered_at, 'YYYY-MM-DD') as day, count(*)::int as deliveries,
+          coalesce(sum(quantity) filter (where quantity_unit = 'servings'), 0)::int as servings,
+          coalesce(sum(quantity) filter (where quantity_unit = 'kg'), 0)::int as kg
+        from pickups
+        where status = 'delivered'
+          and delivered_at >= ${from.toISOString()}::timestamptz
+          and delivered_at <= ${to.toISOString()}::timestamptz
+        group by 1 order by 1) t),
+      'partnerBreakdown', (select coalesce(json_agg(t), '[]'::json) from (
+        select p.partner_id as "partnerId",
+          coalesce(pa.name, 'Unknown partner') as "partnerName",
+          coalesce(sum(p.quantity) filter (where p.quantity_unit = 'servings'), 0)::int as servings,
+          coalesce(sum(p.quantity) filter (where p.quantity_unit = 'kg'), 0)::int as kg,
+          count(*)::int as count
+        from pickups p left join partners pa on pa.id = p.partner_id
+        where p.status = 'delivered'
+        group by p.partner_id, pa.name order by count(*) desc) t),
+      'destinationBreakdown', (select coalesce(json_agg(t), '[]'::json) from (
+        select rs.destination_id as "destinationId",
+          coalesce(d.name, 'Ad-hoc') as "destinationName",
+          count(*)::int as "completedDropCount"
+        from run_stops rs
+          left join runs r on r.id = rs.run_id
+          left join destinations d on d.id = rs.destination_id
+        where rs.kind = 'drop' and rs.status = 'done'
+        group by rs.destination_id, d.name order by count(*) desc) t)
+    ) as data
+  `);
+
+  const raw = (result as unknown as { data: unknown }[])[0]?.data;
+  const data = (typeof raw === "string" ? JSON.parse(raw) : raw) as {
+    pickupAgg: PickupStatusAggRow<PickupStatus>[];
+    runAgg: { status: RunStatus; n: number }[];
+    partners: number;
+    destinations: number;
+    roleAgg: { role: string; n: number }[];
+    trend: { day: string; deliveries: number; servings: number; kg: number }[];
+    partnerBreakdown: AdminDashboardData["partnerBreakdown"];
+    destinationBreakdown: AdminDashboardData["destinationBreakdown"];
+  };
+
+  const byDay = new Map(data.trend.map((r) => [r.day, r]));
+  const trend: TrendPoint[] = [];
+  for (let i = 0; i < trendDays; i++) {
+    const d = new Date(from);
+    d.setDate(from.getDate() + i);
+    const key = d.toISOString().slice(0, 10);
+    const r = byDay.get(key);
+    trend.push({
+      date: key,
+      deliveries: r?.deliveries ?? 0,
+      servings: r?.servings ?? 0,
+      kg: r?.kg ?? 0,
+    });
+  }
+
+  return {
+    overview: {
+      impact: extractDeliveredImpact(data.pickupAgg),
+      pickups: bucketPickupStatuses(data.pickupAgg),
+      runs: bucketRunStatuses(data.runAgg),
+      partners: data.partners,
+      destinations: data.destinations,
+      volunteers: data.roleAgg.find((r) => r.role === "volunteer")?.n ?? 0,
+      drivers: data.roleAgg.find((r) => r.role === "driver")?.n ?? 0,
+    },
+    trend,
+    partnerBreakdown: data.partnerBreakdown,
+    destinationBreakdown: data.destinationBreakdown,
+  };
+}
