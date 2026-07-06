@@ -54,3 +54,6 @@ yarn-debug.log*
 /*.jpeg
 /*.jpg
 /*.png
+
+# playwright-cli session artifacts (smoke checks)
+.playwright-cli/
