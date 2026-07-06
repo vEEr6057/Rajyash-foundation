@@ -15,6 +15,7 @@ export const filtersSchema = z.object({
   volunteerId: z.preprocess(blankToUndefined, z.string().optional()),
   from: z.preprocess(blankToUndefined, z.coerce.date().optional()),
   to: z.preprocess(blankToUndefined, z.coerce.date().optional()),
+  q: z.preprocess(blankToUndefined, z.string().max(200).optional()),
 });
 export type AdminPickupFiltersInput = z.infer<typeof filtersSchema>;
 
@@ -26,6 +27,7 @@ export function parseAdminFilters(params: URLSearchParams): AdminPickupFilters {
     volunteerId: params.get("volunteerId") ?? undefined,
     from: params.get("from") ?? undefined,
     to: params.get("to") ?? undefined,
+    q: params.get("q") ?? undefined,
   });
   return parsed.success ? parsed.data : {};
 }

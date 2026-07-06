@@ -251,7 +251,9 @@
     },
     "stopCount": "stops",
     "stopCountMeta": "{count, plural, one {# stop} other {# stops}}",
-    "table": { "driver": "Driver" },
+    "table": {
+      "driver": "Driver"
+    },
     "noDriver": "No driver assigned",
     "noStops": "No stops added yet. Add pickup and drop stops below.",
     "kindPickup": "Pickup",
@@ -267,7 +269,9 @@
     "editTitle": "Edit run",
     "slotMorning": "Morning drive",
     "slotNight": "Night drive",
-    "status": { "advance": "Set to {status}" },
+    "status": {
+      "advance": "Set to {status}"
+    },
     "assignDriver": {
       "sectionTitle": "Driver",
       "label": "Driver",
@@ -368,5 +372,11 @@
     "destinationsDesc": "Drop-off zones for runs",
     "runsLink": "Dispatch Runs",
     "runsDesc": "Build and manage daily pickup + delivery runs"
+  },
+  "list": {
+    "searchPlaceholder": "Search…",
+    "searchLabel": "Search this list",
+    "searchDriverPlaceholder": "Search by driver name…",
+    "searchPickupPlaceholder": "Search address or description…"
   }
 }

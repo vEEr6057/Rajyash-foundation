@@ -1,5 +1,5 @@
 import "server-only";
-import { and, asc, desc, eq, gte, inArray, lt, lte, sql } from "drizzle-orm";
+import { and, asc, desc, eq, gte, ilike, inArray, lt, lte, or, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import {
   pickups,
@@ -25,6 +25,7 @@ export interface AdminPickupFilters {
   volunteerId?: string;
   from?: Date; // by createdAt
   to?: Date;
+  q?: string; // address/description contains (case-insensitive)
 }
 
 /** Thin data-access for pickups. Business rules (status machine, ownership) live in the service. */
@@ -208,6 +209,12 @@ export const pickupsRepo = {
           f.volunteerId ? eq(pickups.volunteerId, f.volunteerId) : undefined,
           f.from ? gte(pickups.createdAt, f.from) : undefined,
           f.to ? lte(pickups.createdAt, f.to) : undefined,
+          f.q
+            ? or(
+                ilike(pickups.address, `%${f.q}%`),
+                ilike(pickups.description, `%${f.q}%`),
+              )
+            : undefined,
         ),
       )
       .orderBy(desc(pickups.createdAt));
@@ -232,6 +239,12 @@ export const pickupsRepo = {
       f.volunteerId ? eq(pickups.volunteerId, f.volunteerId) : undefined,
       f.from ? gte(pickups.createdAt, f.from) : undefined,
       f.to ? lte(pickups.createdAt, f.to) : undefined,
+      f.q
+        ? or(
+            ilike(pickups.address, `%${f.q}%`),
+            ilike(pickups.description, `%${f.q}%`),
+          )
+        : undefined,
     );
     const col = PICKUP_SORT_COLUMNS[sort] ?? pickups.createdAt;
     const dirFn = dir === "asc" ? asc : desc;

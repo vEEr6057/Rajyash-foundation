@@ -10,11 +10,12 @@ import { AdminPickupFilters } from "@/features/admin";
 import { PickupsTable } from "@/features/admin";
 import { LogSurplusSheet } from "@/features/admin";
 import { Pagination } from "@/components/ui/pagination";
+import { SearchParamInput } from "@/components/forms/SearchParamInput";
 import { PageHeader } from "@/components/PageHeader";
 import { EmptyState } from "@/components/EmptyState";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Admin · Pickups — Rajyash Food Porter" };
+export const metadata = { title: "Admin · Pickups" };
 
 export default async function AdminPickupsPage({
   searchParams,
@@ -68,6 +69,12 @@ export default async function AdminPickupsPage({
         title={t("pickups.title")}
         meta={t("pickups.meta", { total, page, pages: Math.max(1, totalPages) })}
         action={<LogSurplusSheet partners={partners} />}
+      />
+
+      <SearchParamInput
+        current={filters.q}
+        placeholder={t("list.searchPickupPlaceholder")}
+        ariaLabel={t("list.searchLabel")}
       />
 
       <AdminPickupFilters

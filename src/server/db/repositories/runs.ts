@@ -1,9 +1,10 @@
 import "server-only";
-import { asc, desc, eq } from "drizzle-orm";
+import { asc, desc, eq, getTableColumns, ilike, sql } from "drizzle-orm";
 import { getDb } from "@/server/db/client";
 import {
   runs,
   runStops,
+  profiles,
   type Run,
   type NewRun,
   type RunStop,
@@ -49,6 +50,35 @@ export const runsRepo = {
       // Cap for the Workers CPU budget (each row is SSR-serialized); newest 100.
       // Paginate when a coordinator actually exceeds it.
       .limit(100);
+  },
+
+  /**
+   * Coordinator board (paged): windowed + driver-name search (left join on
+   * profiles — unassigned runs match only when no q). page is 1-based.
+   */
+  async listRunsPaged(
+    q: string | undefined,
+    page: number,
+    pageSize: number,
+  ): Promise<{ rows: Run[]; total: number }> {
+    const db = getDb();
+    const where = q ? ilike(profiles.name, `%${q}%`) : undefined;
+    const [rows, totalRows] = await Promise.all([
+      db
+        .select(getTableColumns(runs))
+        .from(runs)
+        .leftJoin(profiles, eq(runs.driverId, profiles.id))
+        .where(where)
+        .orderBy(desc(runs.runDate), desc(runs.createdAt))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize),
+      db
+        .select({ count: sql`count(*)`.mapWith(Number) })
+        .from(runs)
+        .leftJoin(profiles, eq(runs.driverId, profiles.id))
+        .where(where),
+    ]);
+    return { rows, total: totalRows[0]?.count ?? 0 };
   },
 
   /** Runs assigned to a driver, newest run-date first. */

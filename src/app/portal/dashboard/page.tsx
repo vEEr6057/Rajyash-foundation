@@ -18,7 +18,7 @@ import { PostPickupSheet } from "@/features/pickups";
 import { PushOptIn } from "@/features/notifications";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Dashboard — Rajyash Food Porter" };
+export const metadata = { title: "Dashboard" };
 
 const ACTIVE: PickupStatus[] = ["accepted", "en_route", "picked_up"];
 
