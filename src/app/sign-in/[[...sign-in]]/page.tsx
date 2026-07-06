@@ -1,7 +1,7 @@
 import { SignIn } from "@clerk/nextjs";
 import { AuthSplitLayout } from "@/features/auth";
 
-export const metadata = { title: "Sign in — Rajyash Food Porter" };
+export const metadata = { title: "Sign in" };
 
 export default function SignInPage() {
   return (
