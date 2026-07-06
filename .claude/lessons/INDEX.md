@@ -1,5 +1,7 @@
 # Food Rescue Lessons — INDEX
 
+- [2026-07-07 db/HIGH/verified] workers-rtt-aggregate-fanout — dashboard all-zero for days: ~9 queries × cross-region RTT on 5-conn per-request pool blew the 8s withTimeout budget, .catch(zeros) made failure look like data; fix = ALL aggregates in ONE json_build_object statement (9 reads → 3); count round trips not query cost; fallback firing every request = alarm → db/workers-rtt-aggregate-fanout.md
+- [2026-07-07 db/MEDIUM/verified] rawsql-date-params-workers — raw sql`` Date params throw ERR_INVALID_ARG_TYPE (drizzle builder converts, raw has no column info; real error hides in e.cause); pass toISOString() + ::timestamptz → db/rawsql-date-params-workers.md
 - [2026-07-06 testing/HIGH/verified] url-landing-is-not-page-loaded — playwright sweeps asserting only final-URL reported 403 "Forbidden" bodies + landing-redirects as "loaded" (3 false positives in one night); every route assertion = URL + h1/h2 content + console count; print window.Clerk.user.publicMetadata before trusting role behavior → testing/url-landing-is-not-page-loaded.md
 Format (newest first, ≤200 lines):
 `- [YYYY-MM-DD topic/SEVERITY/status] short-id — one-line summary`
